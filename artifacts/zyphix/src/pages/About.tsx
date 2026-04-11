@@ -59,7 +59,7 @@ export function About() {
             { v: '2024', l: 'Founded', color: G },
             { v: '100+', l: 'Cities', color: '#7C3AED' },
             { v: '5 Lakh+', l: 'Customers', color: '#EA580C' },
-            { v: '10,000+', l: 'Partners', color: G },
+            { v: '200+', l: 'Partner Stores', color: G },
           ].map(({ v, l, color }, i) => (
             <motion.div key={i} initial={{ opacity: 0, y: 12 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: i * .07 }}>
               <div style={{ background: W, border: `1px solid ${BD}`, borderRadius: 18, padding: '24px', textAlign: 'center', boxShadow: '0 1px 4px rgba(0,0,0,.06)' }}>

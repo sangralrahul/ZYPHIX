@@ -137,7 +137,7 @@ export function ZyphixBook() {
                   {[
                     { icon: '✅', title: 'Verified Professionals', desc: 'Every pro is background-checked' },
                     { icon: '💰', title: 'Zero Cancellation Fee', desc: 'Cancel up to 1hr before for free' },
-                    { icon: '⭐', title: 'Rated 4.8/5', desc: 'By 10,000+ customers in Jammu' },
+                    { icon: '⭐', title: 'Rated 4.8/5', desc: 'By early customers in Jammu' },
                     { icon: '📍', title: 'Hyperlocal', desc: 'Pros within 2km of you' },
                   ].map((item, i) => (
                     <div key={i} className="flex items-start gap-3 py-3 border-b last:border-0" style={{ borderColor: 'rgba(30,58,110,0.5)' }}>

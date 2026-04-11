@@ -100,8 +100,8 @@ function Countdown({ seconds, onDone }: { seconds: number; onDone: () => void })
 }
 
 const PERKS = [
-  { icon: <Zap size={14} fill="#6EE7B7" color="#6EE7B7" />, text: 'Grocery delivered in 10 minutes' },
-  { icon: <ShoppingCart size={14} color="#6EE7B7" />, text: '2,000+ restaurants near you' },
+  { icon: <Zap size={14} fill="#6EE7B7" color="#6EE7B7" />, text: 'Grocery delivered in 30 minutes' },
+  { icon: <ShoppingCart size={14} color="#6EE7B7" />, text: 'Local restaurants near you' },
   { icon: <CalendarCheck size={14} color="#6EE7B7" />, text: 'Verified home service pros' },
 ];
 

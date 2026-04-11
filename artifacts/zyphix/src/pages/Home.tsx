@@ -101,17 +101,20 @@ function Rat({ r }: { r: number }) {
 function AnnoBar() {
   const msgs = [
     '🎉 Use code ZYPHIX50 — 50% off your first order',
-    '⚡ 30-minute delivery in 100+ cities across India',
-    '🛡️ 10,000+ verified partner stores — zero surge pricing',
+    '🚀 Zyphix is launching in Jammu, J&K — Join the waitlist',
+    '🏪 Are you a kirana store owner? List for free → Register now',
   ];
   const [i, setI] = useState(0);
   useEffect(() => { const t = setInterval(() => setI(x => (x + 1) % msgs.length), 3500); return () => clearInterval(t); }, []);
+  const scrollToWaitlist = () => document.getElementById('waitlist')?.scrollIntoView({ behavior: 'smooth' });
   return (
     <div style={{ background: T1, padding: '8px 16px', textAlign: 'center', overflow: 'hidden' }}>
       <AnimatePresence mode="wait">
         <motion.p key={i} initial={{ y: 12, opacity: 0 }} animate={{ y: 0, opacity: 1 }} exit={{ y: -12, opacity: 0 }} transition={{ duration: .3 }}
           style={{ fontSize: 12.5, fontWeight: 600, color: 'rgba(255,255,255,.85)', letterSpacing: '.01em' }}>
-          {msgs[i]}
+          {i === 2 ? (
+            <>🏪 Are you a kirana store owner? List for free → <span onClick={scrollToWaitlist} style={{ textDecoration: 'underline', cursor: 'pointer', color: '#6EE7B7' }}>Register now</span></>
+          ) : msgs[i]}
         </motion.p>
       </AnimatePresence>
     </div>
@@ -120,7 +123,7 @@ function AnnoBar() {
 
 /* ═══════════════ NAVBAR ═══════════════ */
 const SVCS = [
-  { id: 'now' as TabId, name: 'Zyphix Now', tag: 'Grocery · 10 min', color: G, img: 'https://images.unsplash.com/photo-1542838132-92c53300491e?w=64&h=64&fit=crop&q=80' },
+  { id: 'now' as TabId, name: 'Zyphix Now', tag: 'Grocery · 30 min', color: G, img: 'https://images.unsplash.com/photo-1542838132-92c53300491e?w=64&h=64&fit=crop&q=80' },
   { id: 'eats' as TabId, name: 'Zyphix Eats', tag: 'Food delivery', color: '#EA580C', img: 'https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=64&h=64&fit=crop&q=80' },
 ];
 
@@ -225,9 +228,9 @@ function Navbar({ tab, setTab }: { tab: TabId; setTab: (t: TabId) => void }) {
 /* ═══════════════ HERO ═══════════════ */
 
 const HERO_DATA: Record<string, { name: string; headline: string; sub: string; cta: string; color: string; dark: string; img: string; badge: string; tags: string[] }> = {
-  now:    { name: 'Zyphix Now',      headline: 'Groceries delivered\nin 10 minutes.',        sub: 'Kirana stores · Pharmacy · Supermarket · 1,000+ products at kirana prices', cta: 'Order Groceries', color: G,         dark: '#065F46', img: 'https://images.unsplash.com/photo-1542838132-92c53300491e?w=1400&h=600&fit=crop&q=90', badge: '⚡ Fastest delivery in India',   tags: ['Vegetables','Dairy','Snacks','Pharmacy','Beverages','Household'] },
-  eats:   { name: 'Zyphix Eats',     headline: 'Food from your\nfavourite places.',         sub: 'Restaurants · Dhabas · Cloud kitchens · Local gems near you',               cta: 'Order Food',      color: '#EA580C', dark: '#9A3412', img: 'https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=1400&h=600&fit=crop&q=90', badge: '🍱 2,000+ restaurants',           tags: ['Biryani','Pizza','Burgers','Thali','Desserts','Drinks'] },
-  map:    { name: 'Stores Near Me',  headline: 'Find local stores\nnear you.',               sub: 'Kirana · Medical · Supermarkets — all on the map',                          cta: 'Explore Map',     color: G,         dark: '#065F46', img: 'https://images.unsplash.com/photo-1604719312566-8912e9227c6a?w=1400&h=600&fit=crop&q=90', badge: '📍 100+ cities',                  tags: [] },
+  now:    { name: 'Zyphix Now',      headline: 'Groceries delivered\nin 30 minutes.',        sub: 'Kirana stores · Pharmacy · Supermarket · 200+ partner stores near you', cta: 'Order Groceries', color: G,         dark: '#065F46', img: 'https://images.unsplash.com/photo-1542838132-92c53300491e?w=1400&h=600&fit=crop&q=90', badge: '⚡ Fastest delivery in India',   tags: ['Vegetables','Dairy','Snacks','Pharmacy','Beverages','Household'] },
+  eats:   { name: 'Zyphix Eats',     headline: 'Food from your\nfavourite places.',         sub: 'Restaurants · Dhabas · Cloud kitchens · Local gems near you',               cta: 'Order Food',      color: '#EA580C', dark: '#9A3412', img: 'https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=1400&h=600&fit=crop&q=90', badge: '🍱 Local restaurants near you',  tags: ['Biryani','Pizza','Burgers','Thali','Desserts','Drinks'] },
+  map:    { name: 'Stores Near Me',  headline: 'Find local stores\nnear you.',               sub: 'Kirana · Medical · Supermarkets — all on the map',                          cta: 'Explore Map',     color: G,         dark: '#065F46', img: 'https://images.unsplash.com/photo-1604719312566-8912e9227c6a?w=1400&h=600&fit=crop&q=90', badge: '📍 Jammu, J&K',                  tags: [] },
   offers: { name: 'Exclusive Offers',headline: "Deals you won't\nfind elsewhere.",           sub: 'Promo codes · Flash sales · First-order discounts',                          cta: 'See All Offers',  color: '#D97706', dark: '#92400E', img: 'https://images.unsplash.com/photo-1607082348824-0a96f2a4b9da?w=1400&h=600&fit=crop&q=90', badge: '🏷️ New deals daily',               tags: [] },
 };
 
@@ -235,13 +238,23 @@ const HERO_DATA: Record<string, { name: string; headline: string; sub: string; c
 function DualHeroBanners({ setTab }: { setTab: (t: TabId) => void }) {
   const [hovNow, setHovNow] = useState(false);
   const [hovEats, setHovEats] = useState(false);
+  const scrollToWaitlist = () => document.getElementById('waitlist')?.scrollIntoView({ behavior: 'smooth' });
   return (
     <div style={{ background: W }}>
-      <div style={{ maxWidth: 1320, margin: '0 auto', padding: '20px 24px 36px', display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 18 }}>
+      <style>{`
+        @media (max-width: 767px) {
+          .hero-grid { grid-template-columns: 1fr !important; }
+          .hero-panel { height: 340px !important; min-height: 320px !important; }
+          .hero-headline { font-size: 1.65rem !important; }
+          .hero-pills { flex-wrap: wrap !important; }
+        }
+      `}</style>
+      <div className="hero-grid" style={{ maxWidth: 1320, margin: '0 auto', padding: '20px 24px 36px', display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 18 }}>
 
         {/* ── ZyphixNow ── */}
         <motion.div
           initial={{ opacity: 0, y: 18 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: .32 }}
+          className="hero-panel"
           style={{ position: 'relative', height: 480, borderRadius: 26, overflow: 'hidden', cursor: 'pointer', boxShadow: hovNow ? '0 24px 64px rgba(6,95,70,.38)' : SH2, transition: 'box-shadow .28s, transform .28s', transform: hovNow ? 'translateY(-5px)' : 'none' }}
           onMouseEnter={() => setHovNow(true)} onMouseLeave={() => setHovNow(false)}
           onClick={() => setTab('now')}
@@ -249,33 +262,34 @@ function DualHeroBanners({ setTab }: { setTab: (t: TabId) => void }) {
           <img src="https://images.unsplash.com/photo-1542838132-92c53300491e?w=1400&h=960&fit=crop&q=90" alt="Zyphix Now"
             style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover', transform: hovNow ? 'scale(1.05)' : 'scale(1)', transition: 'transform .45s ease' }} />
           <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(175deg, rgba(3,32,18,.2) 0%, rgba(4,58,34,.68) 45%, rgba(2,26,14,.98) 100%)' }} />
-          {/* Decorative glow */}
           <div style={{ position: 'absolute', top: -60, right: -40, width: 220, height: 220, borderRadius: '50%', background: 'rgba(16,214,120,.12)', filter: 'blur(40px)', pointerEvents: 'none' }} />
           <div style={{ position: 'absolute', inset: 0, padding: '32px 36px', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
-            {/* Top row */}
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
               <span style={{ background: 'rgba(16,214,120,.18)', backdropFilter: 'blur(10px)', border: '1px solid rgba(16,214,120,.38)', color: '#6EE7B7', fontSize: 12, fontWeight: 700, padding: '5px 16px', borderRadius: 99, letterSpacing: '.03em' }}>
-                ⚡ Now · 10 min delivery
+                ⚡ Now · 30 min delivery
               </span>
               <div style={{ width: 44, height: 44, borderRadius: 13, background: 'linear-gradient(145deg, #10D678 0%, #059E5C 100%)', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 4px 18px rgba(16,214,120,.5)' }}>
                 <PinIcon size={22} />
               </div>
             </div>
-            {/* Bottom content */}
             <div>
               <p style={{ fontSize: 11.5, fontWeight: 700, color: '#86EFAC', letterSpacing: '.11em', textTransform: 'uppercase', marginBottom: 10 }}>Zyphix Now</p>
-              <h2 style={{ fontFamily: "'Outfit',sans-serif", fontWeight: 900, color: '#fff', lineHeight: 1.04, fontSize: 'clamp(2rem,3.2vw,2.95rem)', letterSpacing: '-.045em', marginBottom: 13 }}>Groceries<br />in 10 minutes.</h2>
-              <p style={{ fontSize: 14, color: 'rgba(255,255,255,.6)', marginBottom: 20, lineHeight: 1.6 }}>Fresh produce · Dairy · Pharmacy · Snacks<br />1,000+ products at kirana prices</p>
-              <div style={{ display: 'flex', gap: 7, flexWrap: 'wrap', marginBottom: 26 }}>
+              <h2 className="hero-headline" style={{ fontFamily: "'Outfit',sans-serif", fontWeight: 900, color: '#fff', lineHeight: 1.04, fontSize: 'clamp(1.65rem,3.2vw,2.95rem)', letterSpacing: '-.045em', marginBottom: 13 }}>Groceries<br />in 30 minutes.</h2>
+              <p style={{ fontSize: 14, color: 'rgba(255,255,255,.6)', marginBottom: 16, lineHeight: 1.6 }}>Fresh produce · Dairy · Pharmacy · Snacks<br />200+ partner stores at kirana prices</p>
+              <div className="hero-pills" style={{ display: 'flex', gap: 7, flexWrap: 'wrap', marginBottom: 10 }}>
                 {['Vegetables', 'Dairy', 'Snacks', 'Pharmacy', 'Household'].map(tag => (
                   <span key={tag} style={{ background: 'rgba(255,255,255,.1)', backdropFilter: 'blur(6px)', color: 'rgba(255,255,255,.84)', fontSize: 12, fontWeight: 600, padding: '5px 13px', borderRadius: 9, border: '1px solid rgba(255,255,255,.18)' }}>{tag}</span>
                 ))}
               </div>
-              <button style={{ display: 'inline-flex', alignItems: 'center', gap: 8, background: G, color: '#fff', fontSize: 15, fontWeight: 800, padding: '14px 30px', borderRadius: 13, boxShadow: '0 8px 28px rgba(16,214,120,.48)', border: 'none', cursor: 'pointer', transition: 'filter .15s' }}
-                onMouseEnter={e => (e.currentTarget as HTMLElement).style.filter = 'brightness(1.1)'}
-                onMouseLeave={e => (e.currentTarget as HTMLElement).style.filter = 'brightness(1)'}>
-                Order Groceries <ArrowRight size={16} />
-              </button>
+              <p style={{ fontSize: 13, color: 'rgba(255,255,255,.68)', fontStyle: 'italic', marginBottom: 20 }}>Sourced from kirana stores near you — not dark warehouses</p>
+              <div>
+                <button onClick={e => { e.stopPropagation(); scrollToWaitlist(); }} style={{ display: 'inline-flex', alignItems: 'center', gap: 8, background: G, color: '#fff', fontSize: 15, fontWeight: 800, padding: '14px 30px', borderRadius: 13, boxShadow: '0 8px 28px rgba(16,214,120,.48)', border: 'none', cursor: 'pointer', transition: 'filter .15s' }}
+                  onMouseEnter={e => (e.currentTarget as HTMLElement).style.filter = 'brightness(1.1)'}
+                  onMouseLeave={e => (e.currentTarget as HTMLElement).style.filter = 'brightness(1)'}>
+                  Join Waitlist <ArrowRight size={16} />
+                </button>
+                <p style={{ fontSize: 12, color: 'rgba(255,255,255,.45)', marginTop: 8 }}>Launching soon in Jammu</p>
+              </div>
             </div>
           </div>
         </motion.div>
@@ -283,6 +297,7 @@ function DualHeroBanners({ setTab }: { setTab: (t: TabId) => void }) {
         {/* ── ZyphixEats ── */}
         <motion.div
           initial={{ opacity: 0, y: 18 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: .32, delay: .1 }}
+          className="hero-panel"
           style={{ position: 'relative', height: 480, borderRadius: 26, overflow: 'hidden', cursor: 'pointer', boxShadow: hovEats ? '0 24px 64px rgba(154,52,18,.38)' : SH2, transition: 'box-shadow .28s, transform .28s', transform: hovEats ? 'translateY(-5px)' : 'none' }}
           onMouseEnter={() => setHovEats(true)} onMouseLeave={() => setHovEats(false)}
           onClick={() => setTab('eats')}
@@ -290,33 +305,33 @@ function DualHeroBanners({ setTab }: { setTab: (t: TabId) => void }) {
           <img src="https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=1400&h=960&fit=crop&q=90" alt="Zyphix Eats"
             style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover', transform: hovEats ? 'scale(1.05)' : 'scale(1)', transition: 'transform .45s ease' }} />
           <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(175deg, rgba(50,10,5,.15) 0%, rgba(100,22,5,.65) 45%, rgba(40,4,0,.98) 100%)' }} />
-          {/* Decorative glow */}
           <div style={{ position: 'absolute', top: -60, right: -40, width: 220, height: 220, borderRadius: '50%', background: 'rgba(249,115,22,.12)', filter: 'blur(40px)', pointerEvents: 'none' }} />
           <div style={{ position: 'absolute', inset: 0, padding: '32px 36px', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
-            {/* Top row */}
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
               <span style={{ background: 'rgba(251,146,60,.18)', backdropFilter: 'blur(10px)', border: '1px solid rgba(251,146,60,.38)', color: '#FDBA74', fontSize: 12, fontWeight: 700, padding: '5px 16px', borderRadius: 99, letterSpacing: '.03em' }}>
-                🍱 Eats · 2,000+ restaurants
+                🍱 Eats · Local restaurants near you
               </span>
               <div style={{ width: 44, height: 44, borderRadius: 13, background: 'linear-gradient(145deg, #F97316 0%, #EA580C 100%)', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 4px 18px rgba(249,115,22,.5)' }}>
                 <PinIcon size={22} />
               </div>
             </div>
-            {/* Bottom content */}
             <div>
               <p style={{ fontSize: 11.5, fontWeight: 700, color: '#FDBA74', letterSpacing: '.11em', textTransform: 'uppercase', marginBottom: 10 }}>Zyphix Eats</p>
-              <h2 style={{ fontFamily: "'Outfit',sans-serif", fontWeight: 900, color: '#fff', lineHeight: 1.04, fontSize: 'clamp(2rem,3.2vw,2.95rem)', letterSpacing: '-.045em', marginBottom: 13 }}>Food from your<br />favourite places.</h2>
+              <h2 className="hero-headline" style={{ fontFamily: "'Outfit',sans-serif", fontWeight: 900, color: '#fff', lineHeight: 1.04, fontSize: 'clamp(1.65rem,3.2vw,2.95rem)', letterSpacing: '-.045em', marginBottom: 13 }}>Food from your<br />favourite places.</h2>
               <p style={{ fontSize: 14, color: 'rgba(255,255,255,.6)', marginBottom: 20, lineHeight: 1.6 }}>Restaurants · Dhabas · Cloud kitchens<br />Local gems near you, delivered hot</p>
-              <div style={{ display: 'flex', gap: 7, flexWrap: 'wrap', marginBottom: 26 }}>
+              <div className="hero-pills" style={{ display: 'flex', gap: 7, flexWrap: 'wrap', marginBottom: 26 }}>
                 {['Biryani', 'Pizza', 'Burgers', 'Thali', 'Desserts'].map(tag => (
                   <span key={tag} style={{ background: 'rgba(255,255,255,.1)', backdropFilter: 'blur(6px)', color: 'rgba(255,255,255,.84)', fontSize: 12, fontWeight: 600, padding: '5px 13px', borderRadius: 9, border: '1px solid rgba(255,255,255,.18)' }}>{tag}</span>
                 ))}
               </div>
-              <button style={{ display: 'inline-flex', alignItems: 'center', gap: 8, background: '#EA580C', color: '#fff', fontSize: 15, fontWeight: 800, padding: '14px 30px', borderRadius: 13, boxShadow: '0 8px 28px rgba(234,88,12,.48)', border: 'none', cursor: 'pointer', transition: 'filter .15s' }}
-                onMouseEnter={e => (e.currentTarget as HTMLElement).style.filter = 'brightness(1.1)'}
-                onMouseLeave={e => (e.currentTarget as HTMLElement).style.filter = 'brightness(1)'}>
-                Order Food <ArrowRight size={16} />
-              </button>
+              <div>
+                <button onClick={e => { e.stopPropagation(); scrollToWaitlist(); }} style={{ display: 'inline-flex', alignItems: 'center', gap: 8, background: '#EA580C', color: '#fff', fontSize: 15, fontWeight: 800, padding: '14px 30px', borderRadius: 13, boxShadow: '0 8px 28px rgba(234,88,12,.48)', border: 'none', cursor: 'pointer', transition: 'filter .15s' }}
+                  onMouseEnter={e => (e.currentTarget as HTMLElement).style.filter = 'brightness(1.1)'}
+                  onMouseLeave={e => (e.currentTarget as HTMLElement).style.filter = 'brightness(1)'}>
+                  Join Waitlist <ArrowRight size={16} />
+                </button>
+                <p style={{ fontSize: 12, color: 'rgba(255,255,255,.45)', marginTop: 8 }}>Be first to order</p>
+              </div>
             </div>
           </div>
         </motion.div>
@@ -327,22 +342,12 @@ function DualHeroBanners({ setTab }: { setTab: (t: TabId) => void }) {
 }
 
 /* ═══════════════ TRUST STRIP ═══════════════ */
-function CountUp({ to, suffix = '' }: { to: number; suffix?: string }) {
-  const [val, setVal] = useState(0);
-  useEffect(() => {
-    const steps = 55; const iv = 1600 / steps; let s = 0;
-    const t = setInterval(() => { s++; const ease = 1 - Math.pow(1 - s / steps, 3); setVal(Math.round(ease * to)); if (s >= steps) clearInterval(t); }, iv);
-    return () => clearInterval(t);
-  }, [to]);
-  return <>{val.toLocaleString('en-IN')}{suffix}</>;
-}
-
 function Trust() {
   const stats = [
-    { icon: <Zap size={16} color={G} />, label: '10 Min', sub: 'Guaranteed delivery', accent: true },
-    { icon: <Package size={16} color={T2} />, countTo: 10000, suffix: '+', sub: 'Verified partner stores', accent: false },
-    { icon: <MapPin size={16} color={T2} />, countTo: 30, suffix: '+ Cities', sub: 'Across India & growing', accent: false },
-    { icon: <Truck size={16} color={T2} />, label: '₹0 Surge', sub: 'Always fair pricing', accent: false },
+    { icon: <Zap size={16} color={G} />,      label: '30 Min',       sub: 'Guaranteed delivery',  accent: true },
+    { icon: <Package size={16} color={T2} />,  label: 'Jammu First',  sub: 'Launching in J&K',     accent: false },
+    { icon: <MapPin size={16} color={T2} />,   label: 'Tier 2 India', sub: 'Built for Bharat',     accent: false },
+    { icon: <Truck size={16} color={T2} />,    label: '₹0 Surge',     sub: 'Always fair pricing',  accent: false },
   ];
   return (
     <div style={{ background: BG, borderTop: `1px solid ${BD}`, borderBottom: `1px solid ${BD}` }}>
@@ -353,9 +358,7 @@ function Trust() {
             <motion.div initial={{ scale: 0.6, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} transition={{ delay: i * .13 + .1, type: 'spring', stiffness: 400 }}
               style={{ width: 34, height: 34, borderRadius: 9, background: s.accent ? 'rgba(13,163,102,.08)' : BG, border: `1px solid ${BD}`, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>{s.icon}</motion.div>
             <div>
-              <p style={{ fontWeight: 800, color: T1, fontSize: 14, lineHeight: 1 }}>
-                {s.countTo !== undefined ? <CountUp to={s.countTo} suffix={s.suffix ?? ''} /> : s.label}
-              </p>
+              <p style={{ fontWeight: 800, color: T1, fontSize: 14, lineHeight: 1 }}>{s.label}</p>
               <p style={{ fontSize: 11, color: T3, marginTop: 2 }}>{s.sub}</p>
             </div>
           </motion.div>
@@ -523,8 +526,8 @@ function NowTab() {
       <Scroller>
         {[
           { tag: 'New User Offer', h: '50% off your first order', sub: 'Code ZYPHIX50 · Max ₹100 off', code: 'ZYPHIX50', img: 'https://images.unsplash.com/photo-1543168256-418811576931?w=900&h=380&fit=crop&q=85' },
-          { tag: 'Partner Stores', h: '10,000+ local stores across India', sub: 'Zero surge pricing · Always fresh', code: '', img: 'https://images.unsplash.com/photo-1604719312566-8912e9227c6a?w=900&h=380&fit=crop&q=85' },
-          { tag: 'Pharmacy', h: 'Medicines in 10 minutes', sub: 'Prescription & OTC · All brands', code: '', img: 'https://images.unsplash.com/photo-1585435557343-3b092031a831?w=900&h=380&fit=crop&q=85' },
+          { tag: 'Partner Stores', h: '200+ partner stores in Jammu', sub: 'Zero surge pricing · Always fresh', code: '', img: 'https://images.unsplash.com/photo-1604719312566-8912e9227c6a?w=900&h=380&fit=crop&q=85' },
+          { tag: 'Pharmacy', h: 'Medicines delivered fast', sub: 'Prescription & OTC · All brands', code: '', img: 'https://images.unsplash.com/photo-1585435557343-3b092031a831?w=900&h=380&fit=crop&q=85' },
         ].map((b, i) => (
           <div key={i} className="snap-start shrink-0" style={{ width: 'min(660px,88vw)', height: 210, borderRadius: 20, overflow: 'hidden', position: 'relative', background: '#111', flexShrink: 0, boxShadow: SH2, cursor: 'pointer' }}>
             <img src={b.img} alt="" style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover', opacity: .32 }} />
@@ -1166,7 +1169,7 @@ function HowItWorks() {
   const steps = [
     { n: '01', title: 'Set your location', desc: 'Enter your address or allow GPS. We find verified stores, restaurants, and service pros near you instantly.', icon: <MapPin size={22} color={G} />, img: 'https://images.unsplash.com/photo-1512291313931-d4291048e7b6?w=400&h=280&fit=crop&q=80' },
     { n: '02', title: 'Browse & order', desc: 'Pick from 1,000+ grocery items, local restaurants, or book a certified professional — all in one app.', icon: <ShoppingCart size={22} color={G} />, img: 'https://images.unsplash.com/photo-1608198093002-ad4e005484ec?w=400&h=280&fit=crop&q=80' },
-    { n: '03', title: 'Delivered in 10 min', desc: 'Track live on a map. Our delivery partners reach you in under 10 minutes — no surge pricing, ever.', icon: <Truck size={22} color={G} />, img: 'https://images.unsplash.com/photo-1526367790999-0150786686a2?w=400&h=280&fit=crop&q=80' },
+    { n: '03', title: 'Delivered in 30 min', desc: 'Track live on a map. Our delivery partners reach you in under 30 minutes — no surge pricing, ever.', icon: <Truck size={22} color={G} />, img: 'https://images.unsplash.com/photo-1526367790999-0150786686a2?w=400&h=280&fit=crop&q=80' },
   ];
   return (
     <div style={{ background: BG, borderTop: `1px solid ${BD}`, padding: '64px 0' }}>
@@ -1209,7 +1212,7 @@ function HowItWorks() {
             { v: '5,00,000+', l: 'Orders delivered', color: G },
             { v: '100+', l: 'Cities across India', color: '#EA580C' },
             { v: '4.8 ★', l: 'Average app rating', color: '#7C3AED' },
-            { v: '< 10 min', l: 'Average delivery time', color: G },
+            { v: '< 30 min', l: 'Average delivery time', color: G },
           ].map(({ v, l, color }, i) => (
             <motion.div key={i} initial={{ opacity: 0, y: 12 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: i * .08 }}>
               <div style={{ background: W, border: `1px solid ${BD}`, borderRadius: 18, padding: '24px 22px', textAlign: 'center', boxShadow: SH }}>
@@ -1339,10 +1342,16 @@ function Footer() {
             <div style={{ marginBottom: 16 }}>
               <LogoMark size={30} dark />
             </div>
-            <p style={{ fontSize: 13.5, color: 'rgba(255,255,255,.4)', lineHeight: 1.7, marginBottom: 22, maxWidth: 260 }}>India's SuperLocal App — groceries &amp; food delivered in 10 minutes. 100+ cities, 10,000+ partners.</p>
+            <p style={{ fontSize: 13.5, color: 'rgba(255,255,255,.4)', lineHeight: 1.7, marginBottom: 10, maxWidth: 260 }}>India's SuperLocal App — groceries &amp; food delivered from kirana stores near you.</p>
+            <p style={{ fontSize: 12, color: 'rgba(255,255,255,.28)', lineHeight: 1.6, marginBottom: 22, maxWidth: 260 }}>Currently launching in Jammu, J&K · Expanding to Srinagar &amp; Chandigarh in 2025</p>
             <div style={{ display: 'flex', gap: 8, marginBottom: 24 }}>
-              {[<Twitter size={14} />, <Instagram size={14} />, <Linkedin size={14} />, <Phone size={14} />].map((ic, i) => (
-                <a key={i} href="#" style={{ width: 36, height: 36, borderRadius: 9, background: 'rgba(255,255,255,.07)', border: '1px solid rgba(255,255,255,.1)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'rgba(255,255,255,.4)', transition: 'all .15s' }}
+              {([
+                { ic: <Twitter size={14} />, href: '#' },
+                { ic: <Instagram size={14} />, href: '#' },
+                { ic: <Linkedin size={14} />, href: 'https://linkedin.com/in/rahulsangral' },
+                { ic: <Phone size={14} />, href: 'https://wa.me/919682394363' },
+              ] as { ic: React.ReactNode; href: string }[]).map(({ ic, href }, i) => (
+                <a key={i} href={href} target="_blank" rel="noopener noreferrer" style={{ width: 36, height: 36, borderRadius: 9, background: 'rgba(255,255,255,.07)', border: '1px solid rgba(255,255,255,.1)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'rgba(255,255,255,.4)', transition: 'all .15s' }}
                   onMouseEnter={e => { (e.currentTarget as HTMLElement).style.background = 'rgba(255,255,255,.14)'; (e.currentTarget as HTMLElement).style.color = '#fff'; }}
                   onMouseLeave={e => { (e.currentTarget as HTMLElement).style.background = 'rgba(255,255,255,.07)'; (e.currentTarget as HTMLElement).style.color = 'rgba(255,255,255,.4)'; }}>
                   {ic}
@@ -1364,7 +1373,7 @@ function Footer() {
           ))}
         </div>
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 10, paddingTop: 24, borderTop: '1px solid rgba(255,255,255,.07)' }}>
-          <p style={{ fontSize: 12, color: 'rgba(255,255,255,.28)' }}>© 2025 Zyphix Technologies Pvt. Ltd. · Bengaluru, India · All rights reserved</p>
+          <p style={{ fontSize: 12, color: 'rgba(255,255,255,.28)' }}>© 2025 Clavix Technologies Pvt. Ltd. · All rights reserved</p>
           <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
             <span style={{ width: 7, height: 7, borderRadius: '50%', background: G, display: 'block' }} />
             <p style={{ fontSize: 12, fontWeight: 600, color: G }}>All systems operational</p>
@@ -1372,6 +1381,119 @@ function Footer() {
         </div>
       </div>
     </footer>
+  );
+}
+
+/* ═══════════════ WHY ZYPHIX STRIP ═══════════════ */
+function WhyZyphixStrip() {
+  return (
+    <div style={{ background: '#131D30', padding: '12px 20px', borderTop: '1px solid rgba(255,255,255,.06)', borderBottom: '1px solid rgba(255,255,255,.06)' }}>
+      <p style={{ textAlign: 'center', fontSize: 13, color: '#00C9A7', fontWeight: 500, lineHeight: 1.7 }}>
+        ✓ No dark stores — real kirana shops near you &nbsp;·&nbsp; ✓ Lower commission than Swiggy/Zomato &nbsp;·&nbsp; ✓ Your neighbourhood, now digital
+      </p>
+    </div>
+  );
+}
+
+/* ═══════════════ WAITLIST SECTION ═══════════════ */
+function WaitlistSection() {
+  const [form, setForm] = useState({ name: '', phone: '', city: '', role: '' });
+  const [errors, setErrors] = useState<Record<string, string>>({});
+  const [submitted, setSubmitted] = useState(false);
+  const [count, setCount] = useState(() => {
+    try { return 500 + (JSON.parse(localStorage.getItem('zyphix_waitlist') || '[]') as unknown[]).length; }
+    catch { return 500; }
+  });
+  const teal = '#00C9A7';
+
+  const validate = () => {
+    const e: Record<string, string> = {};
+    if (!form.name.trim()) e.name = 'Name is required';
+    if (!/^[0-9]{10}$/.test(form.phone)) e.phone = 'Enter a valid 10-digit number';
+    if (!form.city) e.city = 'Please select a city';
+    if (!form.role) e.role = 'Please select a role';
+    return e;
+  };
+
+  const submit = () => {
+    const e = validate();
+    if (Object.keys(e).length) { setErrors(e); return; }
+    try {
+      const stored = JSON.parse(localStorage.getItem('zyphix_waitlist') || '[]') as object[];
+      stored.push({ ...form, ts: Date.now() });
+      localStorage.setItem('zyphix_waitlist', JSON.stringify(stored));
+      setCount(500 + stored.length);
+    } catch {}
+    setSubmitted(true);
+  };
+
+  return (
+    <div id="waitlist" style={{ background: '#0B1829', padding: '60px 20px' }}>
+      <div style={{ maxWidth: 520, margin: '0 auto' }}>
+        <div style={{ textAlign: 'center', marginBottom: 32 }}>
+          <span style={{ display: 'inline-block', background: 'rgba(0,201,167,.12)', border: '1px solid rgba(0,201,167,.3)', color: teal, fontSize: 12, fontWeight: 700, padding: '6px 16px', borderRadius: 99, marginBottom: 18 }}>🚀 Now accepting early access</span>
+          <h2 style={{ fontFamily: "'Outfit',sans-serif", fontWeight: 900, color: '#fff', fontSize: 'clamp(1.6rem,4vw,2.1rem)', letterSpacing: '-.035em', lineHeight: 1.12, marginBottom: 12 }}>Zyphix is launching in<br />Jammu, J&K</h2>
+          <p style={{ fontSize: 14, color: 'rgba(255,255,255,.5)', lineHeight: 1.7 }}>Join 500+ people already on the waitlist. Get ₹200 launch credit when we go live.</p>
+        </div>
+
+        {submitted ? (
+          <motion.div initial={{ scale: .9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} style={{ background: 'rgba(0,201,167,.1)', border: `1.5px solid ${teal}66`, borderRadius: 18, padding: '36px 28px', textAlign: 'center' }}>
+            <div style={{ fontSize: 48, marginBottom: 12 }}>🎉</div>
+            <h3 style={{ fontWeight: 800, color: '#fff', fontSize: '1.2rem', marginBottom: 8 }}>You're on the list!</h3>
+            <p style={{ color: 'rgba(255,255,255,.55)', fontSize: 14, lineHeight: 1.6 }}>We'll reach out before launch. Get ₹200 credit when we go live.</p>
+          </motion.div>
+        ) : (
+          <div style={{ background: 'rgba(255,255,255,.04)', border: '1px solid rgba(255,255,255,.08)', borderRadius: 20, padding: '30px 28px', display: 'flex', flexDirection: 'column', gap: 16 }}>
+            {/* Name */}
+            <div>
+              <label style={{ fontSize: 12.5, fontWeight: 700, color: 'rgba(255,255,255,.55)', marginBottom: 6, display: 'block' }}>Full Name</label>
+              <input value={form.name} onChange={e => { setForm(f => ({ ...f, name: e.target.value })); setErrors(x => ({ ...x, name: '' })); }}
+                placeholder="Your full name" style={{ width: '100%', padding: '12px 14px', borderRadius: 10, background: 'rgba(255,255,255,.07)', border: `1.5px solid ${errors.name ? '#EF4444' : 'rgba(255,255,255,.12)'}`, color: '#fff', fontSize: 14, outline: 'none', boxSizing: 'border-box' }} />
+              {errors.name && <p style={{ fontSize: 11.5, color: '#EF4444', marginTop: 4 }}>{errors.name}</p>}
+            </div>
+            {/* Phone */}
+            <div>
+              <label style={{ fontSize: 12.5, fontWeight: 700, color: 'rgba(255,255,255,.55)', marginBottom: 6, display: 'block' }}>Phone Number</label>
+              <input value={form.phone} onChange={e => { setForm(f => ({ ...f, phone: e.target.value })); setErrors(x => ({ ...x, phone: '' })); }} type="tel" inputMode="numeric" maxLength={10}
+                placeholder="10-digit mobile number" style={{ width: '100%', padding: '12px 14px', borderRadius: 10, background: 'rgba(255,255,255,.07)', border: `1.5px solid ${errors.phone ? '#EF4444' : 'rgba(255,255,255,.12)'}`, color: '#fff', fontSize: 14, outline: 'none', boxSizing: 'border-box' }} />
+              {errors.phone && <p style={{ fontSize: 11.5, color: '#EF4444', marginTop: 4 }}>{errors.phone}</p>}
+            </div>
+            {/* City */}
+            <div>
+              <label style={{ fontSize: 12.5, fontWeight: 700, color: 'rgba(255,255,255,.55)', marginBottom: 6, display: 'block' }}>City</label>
+              <select value={form.city} onChange={e => { setForm(f => ({ ...f, city: e.target.value })); setErrors(x => ({ ...x, city: '' })); }}
+                style={{ width: '100%', padding: '12px 14px', borderRadius: 10, background: '#0B1829', border: `1.5px solid ${errors.city ? '#EF4444' : 'rgba(255,255,255,.12)'}`, color: form.city ? '#fff' : 'rgba(255,255,255,.35)', fontSize: 14, outline: 'none', boxSizing: 'border-box', appearance: 'none' }}>
+                <option value="">Select your city</option>
+                {['Jammu', 'Srinagar', 'Chandigarh', 'Delhi', 'Other'].map(c => <option key={c} value={c} style={{ color: '#111', background: '#fff' }}>{c}</option>)}
+              </select>
+              {errors.city && <p style={{ fontSize: 11.5, color: '#EF4444', marginTop: 4 }}>{errors.city}</p>}
+            </div>
+            {/* Role */}
+            <div>
+              <label style={{ fontSize: 12.5, fontWeight: 700, color: 'rgba(255,255,255,.55)', marginBottom: 8, display: 'block' }}>I am a:</label>
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: 10 }}>
+                {[{ v: 'customer', e: '🛒', l: 'Customer' }, { v: 'merchant', e: '🏪', l: 'Merchant' }, { v: 'delivery', e: '🛵', l: 'Delivery Partner' }].map(({ v, e, l }) => (
+                  <button key={v} onClick={() => { setForm(f => ({ ...f, role: v })); setErrors(x => ({ ...x, role: '' })); }}
+                    style={{ padding: '12px 8px', borderRadius: 11, background: form.role === v ? 'rgba(0,201,167,.12)' : 'rgba(255,255,255,.04)', border: `1.5px solid ${form.role === v ? teal : 'rgba(255,255,255,.1)'}`, color: form.role === v ? teal : 'rgba(255,255,255,.55)', fontWeight: 700, fontSize: 12, textAlign: 'center', cursor: 'pointer', transition: 'all .15s', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 5 }}>
+                    <span style={{ fontSize: 22 }}>{e}</span>{l}
+                  </button>
+                ))}
+              </div>
+              {errors.role && <p style={{ fontSize: 11.5, color: '#EF4444', marginTop: 4 }}>{errors.role}</p>}
+            </div>
+            {/* Submit */}
+            <button onClick={submit} style={{ width: '100%', padding: '14px', borderRadius: 12, background: teal, color: '#0B1829', fontSize: 15, fontWeight: 800, border: 'none', cursor: 'pointer', marginTop: 4, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 7, boxShadow: '0 4px 24px rgba(0,201,167,.35)', transition: 'filter .15s' }}
+              onMouseEnter={e => (e.currentTarget as HTMLElement).style.filter = 'brightness(1.08)'}
+              onMouseLeave={e => (e.currentTarget as HTMLElement).style.filter = 'brightness(1)'}>
+              Join the Waitlist <ArrowRight size={16} />
+            </button>
+            <p style={{ textAlign: 'center', fontSize: 12.5, color: 'rgba(255,255,255,.3)', marginTop: -4 }}>
+              Join <span style={{ color: teal, fontWeight: 700 }}>{count}</span> others already waiting
+            </p>
+          </div>
+        )}
+      </div>
+    </div>
   );
 }
 
@@ -1386,6 +1508,8 @@ export function Home() {
       <AnnoBar />
       <Navbar tab={tab} setTab={setTab} />
       <DualHeroBanners setTab={setTab} />
+      <WaitlistSection />
+      <WhyZyphixStrip />
       <Trust />
       <BrandsMarquee />
 
