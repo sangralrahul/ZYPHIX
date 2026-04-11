@@ -619,7 +619,7 @@ function exportMerchantPDF(storeData: Record<string,string>, categories: Set<str
     @media print{body{padding:20px;}@page{margin:15mm;}}
   </style></head><body>
   <div class="header">
-    <div class="logo">ZYPH<span>IX</span></div>
+    <div class="logo">ZYPH<span style="font-weight:300;opacity:.75;">/</span><span>X</span></div>
     <span class="badge">Store Registration Confirmation</span>
   </div>
   <h1>Store Registration</h1>

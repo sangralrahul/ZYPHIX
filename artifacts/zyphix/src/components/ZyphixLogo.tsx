@@ -57,7 +57,8 @@ export function ZyphixLogo({
           userSelect: 'none',
         }}>
           <span style={{ color: wordmarkHighlight }}>ZYPH</span>
-          <span style={{ color: wordmarkColor }}>IX</span>
+          <span style={{ color: wordmarkHighlight, fontWeight: 300, letterSpacing: '-0.02em', opacity: 0.75 }}>/</span>
+          <span style={{ color: wordmarkColor }}>X</span>
         </span>
       )}
     </div>

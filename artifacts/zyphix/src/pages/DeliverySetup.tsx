@@ -490,7 +490,7 @@ function exportDeliveryPDF(personal: Record<string,string>) {
     @media print{body{padding:20px;}@page{margin:15mm;}}
   </style></head><body>
   <div class="header">
-    <div class="logo">ZYPH<span>IX</span></div>
+    <div class="logo">ZYPH<span style="font-weight:300;opacity:.75;">/</span><span>X</span></div>
     <span class="badge">Delivery Partner Application</span>
   </div>
   <h1>Application Submitted</h1>
