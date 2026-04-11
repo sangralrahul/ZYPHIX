@@ -9,8 +9,8 @@ const T3 = '#9CA3AF'; const BD = '#E5E7EB'; const W = '#FFFFFF'; const BG = '#F8
 const SH = '0 2px 8px rgba(0,0,0,.07)'; const SH2 = '0 4px 24px rgba(0,0,0,.10)';
 
 const tw = (emoji: string) => {
-  const cp = [...emoji].map(c=>c.codePointAt(0)!.toString(16)).filter(h=>parseInt(h,16)!==0xfe0f).join('-');
-  return `https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/assets/svg/${cp}.svg`;
+  const cp = [...emoji].map(c=>c.codePointAt(0)!.toString(16)).filter(h=>parseInt(h,16)!==0xfe0f && parseInt(h,16)!==0x200d).join('_');
+  return `https://fonts.gstatic.com/s/e/notoemoji/latest/${cp}/512.png`;
 };
 
 const CATS = [

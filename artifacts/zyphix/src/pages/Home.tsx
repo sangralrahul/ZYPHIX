@@ -1362,13 +1362,13 @@ function Footer() {
 }
 
 /* ═══════════════ QUICK BROWSE ═══════════════ */
-/* Convert an emoji character to its Twemoji SVG CDN URL */
+/* Convert an emoji character to its Google Noto Color Emoji 512px PNG URL */
 const tw = (emoji: string) => {
   const cp = [...emoji]
     .map(c => c.codePointAt(0)!.toString(16))
-    .filter(h => parseInt(h, 16) !== 0xfe0f)
-    .join('-');
-  return `https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/assets/svg/${cp}.svg`;
+    .filter(h => parseInt(h, 16) !== 0xfe0f && parseInt(h, 16) !== 0x200d)
+    .join('_');
+  return `https://fonts.gstatic.com/s/e/notoemoji/latest/${cp}/512.png`;
 };
 
 const GROC_CATS = [
