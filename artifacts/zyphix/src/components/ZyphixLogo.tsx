@@ -1,5 +1,7 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { motion, useAnimation } from 'framer-motion';
+
+let _logoAnimationPlayed = false;
 
 function PinMark({ size, animate: doAnimate }: { size: number; animate?: boolean }) {
   const r = Math.round(size * 0.265);
@@ -54,9 +56,13 @@ export function ZyphixLogo({
   const fs = fontSize ?? size * 0.6;
   const wordmarkControls = useAnimation();
   const [showSpark, setShowSpark] = useState(false);
+  const shouldAnimate = playAnimation && !_logoAnimationPlayed;
+  const ranRef = useRef(false);
 
   useEffect(() => {
-    if (!playAnimation) return;
+    if (!shouldAnimate || ranRef.current) return;
+    ranRef.current = true;
+    _logoAnimationPlayed = true;
     const run = async () => {
       await new Promise(r => setTimeout(r, 480));
       setShowSpark(true);
@@ -79,7 +85,7 @@ export function ZyphixLogo({
 
   return (
     <div style={{ display: 'flex', alignItems: 'center', gap, flexShrink: 0 }}>
-      <PinMark size={size} animate={playAnimation} />
+      <PinMark size={size} animate={shouldAnimate} />
       {showWordmark && (
         <motion.span
           animate={wordmarkControls}
@@ -97,8 +103,8 @@ export function ZyphixLogo({
           }}
         >
           <motion.span
-            initial={playAnimation ? { x: -60, opacity: 0 } : false}
-            animate={playAnimation ? { x: 0, opacity: 1 } : undefined}
+            initial={shouldAnimate ? { x: -60, opacity: 0 } : false}
+            animate={shouldAnimate ? { x: 0, opacity: 1 } : undefined}
             transition={{ type: 'spring', stiffness: 380, damping: 22, delay: 0.18 }}
             style={{
               fontStyle: 'italic',
@@ -131,8 +137,8 @@ export function ZyphixLogo({
           )}
 
           <motion.span
-            initial={playAnimation ? { x: 60, opacity: 0 } : false}
-            animate={playAnimation ? { x: 0, opacity: 1 } : undefined}
+            initial={shouldAnimate ? { x: 60, opacity: 0 } : false}
+            animate={shouldAnimate ? { x: 0, opacity: 1 } : undefined}
             transition={{ type: 'spring', stiffness: 380, damping: 22, delay: 0.18 }}
             style={{
               color: '#0A0F1A',
