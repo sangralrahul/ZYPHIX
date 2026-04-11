@@ -25,11 +25,18 @@ const SH2 = '0 4px 12px rgba(0,0,0,.1), 0 16px 40px rgba(0,0,0,.1)';
 
 /* ═══════════════ LOGO ═══════════════ */
 function ZIcon({ size = 20 }: { size?: number }) {
+  const s = size;
   return (
-    <svg width={size} height={size} viewBox="0 0 24 24" fill="none">
-      <path d="M5 5.5h14L6.5 18.5H19" stroke="#fff" strokeWidth="2.8" strokeLinecap="round" strokeLinejoin="round"/>
-      <circle cx="19.5" cy="5.5" r="1.6" fill="#6EE7B7"/>
-      <circle cx="4.5" cy="18.5" r="1.6" fill="#6EE7B7"/>
+    <svg width={s} height={s} viewBox="0 0 24 24" fill="none">
+      {/* Top bar */}
+      <rect x="2.5" y="3.5" width="19" height="4.2" rx="2.1" fill="white"/>
+      {/* Diagonal connector */}
+      <polygon points="20.2,7.7 17.6,7.7 3.8,16.3 6.4,16.3" fill="white"/>
+      {/* Bottom bar */}
+      <rect x="2.5" y="16.3" width="19" height="4.2" rx="2.1" fill="white"/>
+      {/* Accent dots */}
+      <circle cx="20.2" cy="5.6" r="1.6" fill="#6EE7B7"/>
+      <circle cx="3.8" cy="18.4" r="1.6" fill="#6EE7B7"/>
     </svg>
   );
 }
@@ -37,8 +44,8 @@ function ZIcon({ size = 20 }: { size?: number }) {
 function LogoMark({ size = 32, dark = false }: { size?: number; dark?: boolean }) {
   return (
     <div style={{ display: 'flex', alignItems: 'center', gap: 9, flexShrink: 0 }}>
-      <div style={{ width: size, height: size, borderRadius: Math.round(size * 0.28), background: `linear-gradient(135deg, #0DA366, #065F46)`, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, boxShadow: `0 2px 10px rgba(13,163,102,.4)` }}>
-        <ZIcon size={Math.round(size * 0.58)} />
+      <div style={{ width: size, height: size, borderRadius: '50%', background: `linear-gradient(145deg, #0DA366 0%, #047857 60%, #065F46 100%)`, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, boxShadow: `0 2px 12px rgba(13,163,102,.45), 0 0 0 2px rgba(13,163,102,.15)` }}>
+        <ZIcon size={Math.round(size * 0.56)} />
       </div>
       <span style={{ fontFamily: "'Outfit',sans-serif", fontWeight: 900, fontSize: size * 0.575, letterSpacing: '-.04em', color: dark ? '#fff' : T1, lineHeight: 1 }}>
         Zyp<span style={{ color: G }}>hix</span>
@@ -735,31 +742,104 @@ function OffersTab() {
   );
 }
 
-/* ═══════════════ BRANDS MARQUEE ═══════════════ */
-const BRANDS = [
-  { name: 'Amul', em: '🥛' }, { name: 'Tata', em: '🏷️' }, { name: 'Nestlé', em: '☕' },
-  { name: 'Britannia', em: '🍞' }, { name: 'ITC', em: '🌿' }, { name: 'Haldirams', em: '🍿' },
-  { name: 'Dabur', em: '🌱' }, { name: 'Patanjali', em: '🪷' }, { name: 'P&G', em: '🧴' },
-  { name: 'HUL', em: '🫧' }, { name: 'MDH', em: '🌶️' }, { name: 'Fortune', em: '🌾' },
-  { name: 'Mother Dairy', em: '🥛' }, { name: 'Godrej', em: '🛍️' }, { name: 'Marico', em: '🌻' },
+/* ═══════════════ PARTNER BRANDS ═══════════════ */
+interface BrandEntry { name: string; color: string; logo: React.ReactNode; }
+
+/* ── inline SVG logos – each in its brand colours ── */
+const AmulLogo = () => (
+  <svg viewBox="0 0 86 32" width={86} height={32}><ellipse cx="15" cy="16" rx="13" ry="13" fill="#1D6FB4"/><text x="15" y="14" textAnchor="middle" fill="#FCD116" fontSize="6.5" fontWeight="900" fontFamily="Arial,sans-serif" dominantBaseline="middle">UTTERLY</text><text x="15" y="21" textAnchor="middle" fill="white" fontSize="6" fontWeight="700" fontFamily="Arial,sans-serif" dominantBaseline="middle">BUTTERLY</text><text x="51" y="17" textAnchor="middle" fill="#1D6FB4" fontSize="18" fontWeight="900" fontFamily="Arial,sans-serif" dominantBaseline="middle">Amul</text></svg>
+);
+const TataLogo = () => (
+  <svg viewBox="0 0 72 32" width={72} height={32}><ellipse cx="36" cy="16" rx="34" ry="14" fill="none" stroke="#00285E" strokeWidth="2"/><text x="36" y="17" textAnchor="middle" fill="#00285E" fontSize="15" fontWeight="900" fontFamily="Arial,sans-serif" dominantBaseline="middle" letterSpacing="3">TATA</text></svg>
+);
+const NestleLogo = () => (
+  <svg viewBox="0 0 82 32" width={82} height={32}><path d="M8 22 Q14 10 20 22 Q14 30 8 22Z" fill="#C8102E" opacity="0.7"/><text x="52" y="17" textAnchor="middle" fill="#C8102E" fontSize="16" fontWeight="900" fontFamily="Georgia,serif" dominantBaseline="middle">Nestlé</text></svg>
+);
+const BritanniaLogo = () => (
+  <svg viewBox="0 0 94 32" width={94} height={32}><circle cx="16" cy="16" r="13" fill="#E42313"/><text x="16" y="17" textAnchor="middle" fill="white" fontSize="16" fontWeight="900" fontFamily="Georgia,serif" dominantBaseline="middle">B</text><text x="56" y="17" textAnchor="middle" fill="#E42313" fontSize="14" fontWeight="800" fontFamily="Georgia,serif" dominantBaseline="middle">Britannia</text></svg>
+);
+const ITCLogo = () => (
+  <svg viewBox="0 0 58 32" width={58} height={32}><rect x="2" y="6" width="54" height="20" rx="3" fill="none" stroke="#7B2335" strokeWidth="2"/><text x="29" y="17" textAnchor="middle" fill="#7B2335" fontSize="15" fontWeight="900" fontFamily="Arial,sans-serif" dominantBaseline="middle" letterSpacing="4">ITC</text></svg>
+);
+const HaldiLogo = () => (
+  <svg viewBox="0 0 96 32" width={96} height={32}><path d="M6 12 L14 8 L22 12 L22 22 L14 26 L6 22Z" fill="#E55126"/><text x="14" y="17" textAnchor="middle" fill="white" fontSize="7" fontWeight="900" fontFamily="Arial,sans-serif" dominantBaseline="middle">H</text><text x="60" y="17" textAnchor="middle" fill="#E55126" fontSize="13" fontWeight="900" fontFamily="Arial,sans-serif" dominantBaseline="middle">Haldirams</text></svg>
+);
+const DaburLogo = () => (
+  <svg viewBox="0 0 74 32" width={74} height={32}><path d="M10 26 Q10 6 18 8 Q22 4 14 10 Q22 6 14 22 Q22 28 10 26Z" fill="#007030" opacity="0.8"/><circle cx="15" cy="9" r="3" fill="#007030"/><text x="48" y="17" textAnchor="middle" fill="#007030" fontSize="16" fontWeight="900" fontFamily="Arial,sans-serif" dominantBaseline="middle">Dabur</text></svg>
+);
+const PatanjaliLogo = () => (
+  <svg viewBox="0 0 96 32" width={96} height={32}><path d="M12 6 L16 16 L8 16Z" fill="#F07800"/><rect x="7" y="16" width="10" height="10" rx="1" fill="#F07800" opacity="0.7"/><text x="58" y="17" textAnchor="middle" fill="#F07800" fontSize="13" fontWeight="900" fontFamily="Arial,sans-serif" dominantBaseline="middle">Patanjali</text></svg>
+);
+const PGLogo = () => (
+  <svg viewBox="0 0 62 32" width={62} height={32}><circle cx="18" cy="16" r="12" fill="none" stroke="#003DA5" strokeWidth="2.5"/><circle cx="28" cy="16" r="12" fill="none" stroke="#003DA5" strokeWidth="2.5"/><text x="16" y="17" textAnchor="middle" fill="#003DA5" fontSize="11" fontWeight="900" fontFamily="Arial,sans-serif" dominantBaseline="middle">P</text><text x="30" y="17" textAnchor="middle" fill="#003DA5" fontSize="11" fontWeight="900" fontFamily="Arial,sans-serif" dominantBaseline="middle">G</text></svg>
+);
+const HULLogo = () => (
+  <svg viewBox="0 0 70 32" width={70} height={32}><path d="M12 6 Q22 6 22 14 Q22 22 12 26 Q2 22 2 14 Q2 6 12 6Z" fill="#00527E" opacity="0.9"/><path d="M12 10 L12 22 M8 16 L16 16" stroke="white" strokeWidth="2" strokeLinecap="round"/><text x="46" y="17" textAnchor="middle" fill="#00527E" fontSize="15" fontWeight="900" fontFamily="Arial,sans-serif" dominantBaseline="middle">HUL</text></svg>
+);
+const MDHLogo = () => (
+  <svg viewBox="0 0 66 32" width={66} height={32}><circle cx="16" cy="16" r="13" fill="#C41230"/><path d="M9 11 L16 21 L23 11" stroke="white" strokeWidth="2.5" fill="none" strokeLinecap="round" strokeLinejoin="round"/><text x="44" y="17" textAnchor="middle" fill="#C41230" fontSize="15" fontWeight="900" fontFamily="Arial,sans-serif" dominantBaseline="middle">MDH</text></svg>
+);
+const FortuneLogo = () => (
+  <svg viewBox="0 0 84 32" width={84} height={32}><path d="M12 26 L12 10 M8 16 L16 16 M10 10 Q12 4 14 10" stroke="#EF4123" strokeWidth="2.5" fill="none" strokeLinecap="round"/><text x="52" y="17" textAnchor="middle" fill="#EF4123" fontSize="15" fontWeight="900" fontFamily="Arial,sans-serif" dominantBaseline="middle">Fortune</text></svg>
+);
+const MotherDairyLogo = () => (
+  <svg viewBox="0 0 108 32" width={108} height={32}><path d="M6 22 Q12 8 18 22" stroke="#003A96" strokeWidth="3" fill="none" strokeLinecap="round"/><circle cx="12" cy="10" r="4" fill="#003A96"/><text x="62" y="17" textAnchor="middle" fill="#003A96" fontSize="12" fontWeight="900" fontFamily="Arial,sans-serif" dominantBaseline="middle">Mother Dairy</text></svg>
+);
+const GodrejLogo = () => (
+  <svg viewBox="0 0 80 32" width={80} height={32}><path d="M18 16 Q18 6 10 6 Q2 6 2 16 Q2 26 10 26 Q16 26 18 22 L14 22 Q12 24 10 24 Q6 24 4 16 Q6 8 10 8 Q14 8 16 12 L18 12 Z" fill="#1B2D4F"/><text x="52" y="17" textAnchor="middle" fill="#1B2D4F" fontSize="14" fontWeight="900" fontFamily="Arial,sans-serif" dominantBaseline="middle">Godrej</text></svg>
+);
+const MaricoLogo = () => (
+  <svg viewBox="0 0 78 32" width={78} height={32}><path d="M4 22 L8 6 L14 18 L20 6 L24 22" stroke="#E31837" strokeWidth="2.8" fill="none" strokeLinecap="round" strokeLinejoin="round"/><text x="52" y="17" textAnchor="middle" fill="#E31837" fontSize="14" fontWeight="900" fontFamily="Arial,sans-serif" dominantBaseline="middle">Marico</text></svg>
+);
+
+const BRAND_DATA: BrandEntry[] = [
+  { name: 'Amul',        color: '#1D6FB4', logo: <AmulLogo /> },
+  { name: 'Tata',        color: '#00285E', logo: <TataLogo /> },
+  { name: 'Nestlé',      color: '#C8102E', logo: <NestleLogo /> },
+  { name: 'Britannia',   color: '#E42313', logo: <BritanniaLogo /> },
+  { name: 'ITC',         color: '#7B2335', logo: <ITCLogo /> },
+  { name: 'Haldirams',   color: '#E55126', logo: <HaldiLogo /> },
+  { name: 'Dabur',       color: '#007030', logo: <DaburLogo /> },
+  { name: 'Patanjali',   color: '#F07800', logo: <PatanjaliLogo /> },
+  { name: 'P&G',         color: '#003DA5', logo: <PGLogo /> },
+  { name: 'HUL',         color: '#00527E', logo: <HULLogo /> },
+  { name: 'MDH',         color: '#C41230', logo: <MDHLogo /> },
+  { name: 'Fortune',     color: '#EF4123', logo: <FortuneLogo /> },
+  { name: 'Mother Dairy',color: '#003A96', logo: <MotherDairyLogo /> },
+  { name: 'Godrej',      color: '#1B2D4F', logo: <GodrejLogo /> },
+  { name: 'Marico',      color: '#E31837', logo: <MaricoLogo /> },
 ];
-function BrandsMarquee() {
-  const doubled = [...BRANDS, ...BRANDS];
+
+function BrandItem({ entry }: { entry: BrandEntry }) {
+  const [hov, setHov] = useState(false);
   return (
-    <div style={{ background: W, borderTop: `1px solid ${BD}`, borderBottom: `1px solid ${BD}`, overflow: 'hidden', padding: '14px 0' }}>
-      <div style={{ display: 'flex', alignItems: 'center', gap: 0 }}>
-        <div style={{ flexShrink: 0, padding: '0 24px 0 16px', borderRight: `1px solid ${BD}`, marginRight: 0 }}>
-          <p style={{ fontSize: 10, fontWeight: 700, color: T3, letterSpacing: '.1em', textTransform: 'uppercase', whiteSpace: 'nowrap' }}>Partner Brands</p>
-        </div>
-        <div style={{ overflow: 'hidden', flex: 1, maskImage: 'linear-gradient(to right, transparent, black 80px, black calc(100% - 80px), transparent)' }}>
-          <div style={{ display: 'flex', gap: 0, animation: 'marquee 30s linear infinite', width: 'max-content' }}>
-            {doubled.map((b, i) => (
-              <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 7, padding: '5px 24px', borderRight: `1px solid ${BD}`, flexShrink: 0, whiteSpace: 'nowrap' }}>
-                <span style={{ fontSize: 16 }}>{b.em}</span>
-                <span style={{ fontSize: 13, fontWeight: 700, color: T2, letterSpacing: '-.01em' }}>{b.name}</span>
-              </div>
-            ))}
-          </div>
+    <div
+      onMouseEnter={() => setHov(true)}
+      onMouseLeave={() => setHov(false)}
+      style={{
+        filter: hov ? 'none' : 'grayscale(1) opacity(0.35)',
+        transition: 'filter 0.28s ease',
+        cursor: 'default',
+        display: 'flex', alignItems: 'center', justifyContent: 'center',
+        padding: '10px 18px',
+        borderRadius: 12,
+        background: hov ? `${entry.color}08` : 'transparent',
+        border: `1px solid ${hov ? entry.color + '22' : 'transparent'}`,
+      }}
+      title={entry.name}
+    >
+      {entry.logo}
+    </div>
+  );
+}
+
+function BrandsMarquee() {
+  return (
+    <div style={{ background: W, borderTop: `1px solid ${BD}`, borderBottom: `1px solid ${BD}`, padding: '18px 0' }}>
+      <div style={{ maxWidth: 1320, margin: '0 auto', padding: '0 24px' }}>
+        <p style={{ fontSize: 10, fontWeight: 700, color: T3, letterSpacing: '.12em', textTransform: 'uppercase', textAlign: 'center', marginBottom: 14 }}>PARTNER BRANDS</p>
+        <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center', gap: 4 }}>
+          {BRAND_DATA.map((b, i) => <BrandItem key={i} entry={b} />)}
         </div>
       </div>
     </div>

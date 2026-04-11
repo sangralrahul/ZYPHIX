@@ -16,9 +16,11 @@ const ERR = '#EF4444';
 function ZLogo({ size = 20 }: { size?: number }) {
   return (
     <svg width={size} height={size} viewBox="0 0 24 24" fill="none">
-      <path d="M5 5.5h14L6.5 18.5H19" stroke="#fff" strokeWidth="2.8" strokeLinecap="round" strokeLinejoin="round"/>
-      <circle cx="19.5" cy="5.5" r="1.6" fill="#6EE7B7"/>
-      <circle cx="4.5" cy="18.5" r="1.6" fill="#6EE7B7"/>
+      <rect x="2.5" y="3.5" width="19" height="4.2" rx="2.1" fill="white"/>
+      <polygon points="20.2,7.7 17.6,7.7 3.8,16.3 6.4,16.3" fill="white"/>
+      <rect x="2.5" y="16.3" width="19" height="4.2" rx="2.1" fill="white"/>
+      <circle cx="20.2" cy="5.6" r="1.6" fill="#6EE7B7"/>
+      <circle cx="3.8" cy="18.4" r="1.6" fill="#6EE7B7"/>
     </svg>
   );
 }
