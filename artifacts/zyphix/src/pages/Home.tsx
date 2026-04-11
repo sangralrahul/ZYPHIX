@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import {
   Search, MapPin, ChevronDown, ShoppingCart, User, LogOut,
   Plus, Minus, Star, Clock, ChevronRight, ChevronLeft,
-  Zap, Shield, Package, Truck, Check, Copy, ArrowRight,
+  Shield, Package, Truck, Zap, Check, Copy, ArrowRight,
   Phone, Instagram, Twitter, Linkedin, PlayCircle
 } from 'lucide-react';
 import { products, categories, restaurants, foodCategories, services, promoCodes, stores } from '@/data/mockData';
@@ -24,11 +24,21 @@ const SH  = '0 1px 3px rgba(0,0,0,.08), 0 4px 16px rgba(0,0,0,.06)';
 const SH2 = '0 4px 12px rgba(0,0,0,.1), 0 16px 40px rgba(0,0,0,.1)';
 
 /* ═══════════════ LOGO ═══════════════ */
+function ZIcon({ size = 20 }: { size?: number }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none">
+      <path d="M5 5.5h14L6.5 18.5H19" stroke="#fff" strokeWidth="2.8" strokeLinecap="round" strokeLinejoin="round"/>
+      <circle cx="19.5" cy="5.5" r="1.6" fill="#6EE7B7"/>
+      <circle cx="4.5" cy="18.5" r="1.6" fill="#6EE7B7"/>
+    </svg>
+  );
+}
+
 function LogoMark({ size = 32, dark = false }: { size?: number; dark?: boolean }) {
   return (
     <div style={{ display: 'flex', alignItems: 'center', gap: 9, flexShrink: 0 }}>
-      <div style={{ width: size, height: size, borderRadius: Math.round(size * 0.28), background: G, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, boxShadow: `0 2px 8px rgba(13,163,102,.35)` }}>
-        <Zap size={Math.round(size * 0.5)} color="#fff" fill="#fff" />
+      <div style={{ width: size, height: size, borderRadius: Math.round(size * 0.28), background: `linear-gradient(135deg, #0DA366, #065F46)`, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, boxShadow: `0 2px 10px rgba(13,163,102,.4)` }}>
+        <ZIcon size={Math.round(size * 0.58)} />
       </div>
       <span style={{ fontFamily: "'Outfit',sans-serif", fontWeight: 900, fontSize: size * 0.575, letterSpacing: '-.04em', color: dark ? '#fff' : T1, lineHeight: 1 }}>
         Zyp<span style={{ color: G }}>hix</span>
@@ -244,32 +254,12 @@ const HERO_DATA: Record<string, { name: string; headline: string; sub: string; c
   offers: { name: 'Exclusive Offers',headline: "Deals you won't\nfind elsewhere.",           sub: 'Promo codes · Flash sales · First-order discounts',                          cta: 'See All Offers',  color: '#D97706', dark: '#92400E', img: 'https://images.unsplash.com/photo-1607082348824-0a96f2a4b9da?w=1400&h=600&fit=crop&q=90', badge: '🏷️ New deals daily',               tags: [] },
 };
 
-function ServiceHero({ tab, setTab }: { tab: TabId; setTab: (t: TabId) => void }) {
+function ServiceHero({ tab }: { tab: TabId; setTab: (t: TabId) => void }) {
   const h = HERO_DATA[tab] ?? HERO_DATA.now;
   return (
     <div style={{ background: W }}>
-      {/* Service selector pills */}
-      <div style={{ maxWidth: 1320, margin: '0 auto', padding: '22px 24px 0' }}>
-        <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap' }}>
-          {([
-            { id: 'now'  as TabId, label: 'Zyphix Now',  em: '⚡', color: G },
-            { id: 'eats' as TabId, label: 'Zyphix Eats', em: '🍱', color: '#EA580C' },
-            { id: 'book' as TabId, label: 'Zyphix Book', em: '🔧', color: '#7C3AED' },
-          ] as const).map(s => {
-            const on = tab === s.id;
-            return (
-              <button key={s.id} onClick={() => setTab(s.id)}
-                style={{ display: 'flex', alignItems: 'center', gap: 7, padding: '9px 20px', borderRadius: 12, fontSize: 14, fontWeight: 700, cursor: 'pointer', transition: 'all .18s', border: `2px solid ${on ? s.color : BD}`, background: on ? `${s.color}12` : W, color: on ? s.color : T2, boxShadow: on ? `0 2px 12px ${s.color}22` : 'none' }}>
-                <span>{s.em}</span> {s.label}
-                {on && <span style={{ width: 7, height: 7, borderRadius: '50%', background: s.color, display: 'block' }} />}
-              </button>
-            );
-          })}
-        </div>
-      </div>
-
       {/* Focused hero banner — changes with active tab */}
-      <div style={{ maxWidth: 1320, margin: '0 auto', padding: '14px 24px 32px' }}>
+      <div style={{ maxWidth: 1320, margin: '0 auto', padding: '18px 24px 32px' }}>
         <AnimatePresence mode="wait">
           <motion.div key={tab}
             initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }}

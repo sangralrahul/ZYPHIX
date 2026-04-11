@@ -1,6 +1,16 @@
 import React, { useState } from 'react';
 import { Link } from 'wouter';
-import { ArrowLeft, Zap, Mail, Phone, MapPin, Send, Check, MessageCircle } from 'lucide-react';
+import { ArrowLeft, Mail, Phone, MapPin, Send, Check, MessageCircle } from 'lucide-react';
+
+function ZLogo({ size = 15 }: { size?: number }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none">
+      <path d="M5 5.5h14L6.5 18.5H19" stroke="#fff" strokeWidth="2.8" strokeLinecap="round" strokeLinejoin="round"/>
+      <circle cx="19.5" cy="5.5" r="1.6" fill="#6EE7B7"/>
+      <circle cx="4.5" cy="18.5" r="1.6" fill="#6EE7B7"/>
+    </svg>
+  );
+}
 import { motion } from 'framer-motion';
 
 const T1 = '#111827'; const T2 = '#6B7280'; const T3 = '#9CA3AF';
@@ -47,7 +57,7 @@ export function Contact() {
         <div style={{ maxWidth: 1100, margin: '0 auto', padding: '0 24px', height: 60, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
           <Link href="/">
             <div style={{ display: 'flex', alignItems: 'center', gap: 9 }}>
-              <div style={{ width: 30, height: 30, borderRadius: 8, background: G, display: 'flex', alignItems: 'center', justifyContent: 'center' }}><Zap size={15} color="#fff" fill="#fff" /></div>
+              <div style={{ width: 30, height: 30, borderRadius: 8, background: `linear-gradient(135deg, #0DA366, #065F46)`, display: 'flex', alignItems: 'center', justifyContent: 'center' }}><ZLogo size={15} /></div>
               <span style={{ fontFamily: "'Outfit',sans-serif", fontWeight: 900, fontSize: '1.15rem', letterSpacing: '-.04em', color: T1 }}>Zyp<span style={{ color: G }}>hix</span></span>
             </div>
           </Link>

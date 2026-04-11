@@ -1,6 +1,16 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, Mail, Lock, User, Phone, Eye, EyeOff, Check, AlertCircle, Zap } from 'lucide-react';
+import { X, Mail, Lock, User, Phone, Eye, EyeOff, Check, AlertCircle } from 'lucide-react';
+
+function ZLogo({ size = 17 }: { size?: number }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none">
+      <path d="M5 5.5h14L6.5 18.5H19" stroke="#fff" strokeWidth="2.8" strokeLinecap="round" strokeLinejoin="round"/>
+      <circle cx="19.5" cy="5.5" r="1.6" fill="#6EE7B7"/>
+      <circle cx="4.5" cy="18.5" r="1.6" fill="#6EE7B7"/>
+    </svg>
+  );
+}
 import { useAuth } from '@/context/AuthContext';
 
 const G = '#0DA366';
@@ -124,7 +134,7 @@ export function AuthModal() {
               </button>
               <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 16 }}>
                 <div style={{ width: 34, height: 34, borderRadius: 9, background: 'rgba(255,255,255,.18)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                  <Zap size={17} color="#fff" fill="#fff" />
+                  <ZLogo size={17} />
                 </div>
                 <span style={{ fontFamily: "'Outfit',sans-serif", fontWeight: 900, fontSize: '1.2rem', letterSpacing: '-.04em', color: '#fff' }}>
                   Zyp<span style={{ color: '#6EE7B7' }}>hix</span>
