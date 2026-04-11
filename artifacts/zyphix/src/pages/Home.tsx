@@ -92,7 +92,40 @@ function AnnoBar() {
 /* ═══════════════════════════════════
    NAVBAR
 ═══════════════════════════════════ */
-function Navbar() {
+const SERVICE_PILLS = [
+  {
+    id: 'now' as TabId,
+    label: 'Now',
+    sub: 'Groceries · 30 min',
+    icon: <Zap size={18} />,
+    color: '#0EA86E',
+    bg: 'rgba(14,168,110,0.08)',
+    border: 'rgba(14,168,110,0.22)',
+    img: 'https://images.unsplash.com/photo-1543168256-418811576931?w=80&h=80&fit=crop&q=80',
+  },
+  {
+    id: 'eats' as TabId,
+    label: 'Eats',
+    sub: 'Food · Restaurants',
+    icon: <span style={{ fontSize: 18 }}>🍱</span>,
+    color: '#EA580C',
+    bg: 'rgba(234,88,12,0.08)',
+    border: 'rgba(234,88,12,0.22)',
+    img: 'https://images.unsplash.com/photo-1567337710282-00832b415979?w=80&h=80&fit=crop&q=80',
+  },
+  {
+    id: 'book' as TabId,
+    label: 'Book',
+    sub: 'Services · Pros',
+    icon: <span style={{ fontSize: 18 }}>📅</span>,
+    color: '#7C3AED',
+    bg: 'rgba(124,58,237,0.08)',
+    border: 'rgba(124,58,237,0.2)',
+    img: 'https://images.unsplash.com/photo-1521791136064-7986c2920216?w=80&h=80&fit=crop&q=80',
+  },
+];
+
+function Navbar({ activeTab, setActiveTab }: { activeTab: TabId; setActiveTab: (t: TabId) => void }) {
   const [scrolled, setScrolled] = useState(false);
   const [focused, setFocused] = useState(false);
   useEffect(() => {
@@ -100,61 +133,116 @@ function Navbar() {
     window.addEventListener('scroll', h, { passive: true });
     return () => window.removeEventListener('scroll', h);
   }, []);
+
+  const active = SERVICE_PILLS.find(s => s.id === activeTab);
+
   return (
-    <div className="sticky top-0 z-50" style={{ background: SURF, borderBottom: `1px solid ${scrolled ? BORDER : 'transparent'}`, boxShadow: scrolled ? SH : 'none', transition: 'all .2s' }}>
-      <div style={{ maxWidth: 1280, margin: '0 auto', padding: '0 24px', display: 'flex', alignItems: 'center', gap: 12, height: 64 }}>
+    <div className="sticky top-0 z-50" style={{ background: SURF, borderBottom: `1px solid ${BORDER}`, boxShadow: scrolled ? SH : '0 1px 0 rgba(0,0,0,.06)', transition: 'all .2s' }}>
+
+      {/* ── Row 1: Logo / Location / Search / User / Cart ── */}
+      <div style={{ maxWidth: 1280, margin: '0 auto', padding: '0 24px', display: 'flex', alignItems: 'center', gap: 12, height: 62, borderBottom: `1px solid ${BORDER}` }}>
 
         {/* Logo */}
         <a href="/" style={{ display: 'flex', alignItems: 'center', gap: 9, flexShrink: 0 }}>
-          <div style={{ width: 32, height: 32, borderRadius: 9, background: GREEN, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-            <Zap size={16} color="#fff" fill="#fff" />
+          <div style={{ width: 30, height: 30, borderRadius: 8, background: GREEN, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            <Zap size={15} color="#fff" fill="#fff" />
           </div>
-          <span style={{ fontFamily: "'Outfit',sans-serif", fontWeight: 900, fontSize: '1.2rem', letterSpacing: '-.04em', color: T1 }}>
+          <span style={{ fontFamily: "'Outfit',sans-serif", fontWeight: 900, fontSize: '1.15rem', letterSpacing: '-.04em', color: T1 }}>
             Zyp<span style={{ color: GREEN }}>hix</span>
           </span>
         </a>
 
-        {/* Divider */}
-        <div style={{ width: 1, height: 28, background: BORDER, flexShrink: 0 }} className="hidden md:block" />
+        <div style={{ width: 1, height: 26, background: BORDER, flexShrink: 0 }} className="hidden md:block" />
 
         {/* Location */}
-        <button className="hidden md:flex items-center gap-2" style={{ flexShrink: 0, transition: 'all .15s' }}>
-          <MapPin size={15} color={GREEN} />
+        <button className="hidden md:flex items-center gap-2" style={{ flexShrink: 0 }}>
+          <MapPin size={14} color={GREEN} />
           <div style={{ textAlign: 'left' }}>
-            <p style={{ fontSize: 9, fontWeight: 600, color: T3, textTransform: 'uppercase', letterSpacing: '.07em', lineHeight: 1 }}>Deliver to</p>
+            <p style={{ fontSize: 8.5, fontWeight: 600, color: T3, textTransform: 'uppercase', letterSpacing: '.07em', lineHeight: 1 }}>Deliver to</p>
             <div style={{ display: 'flex', alignItems: 'center', gap: 3, marginTop: 2 }}>
-              <span style={{ fontWeight: 700, color: T1, fontSize: 13.5, lineHeight: 1 }}>Select Location</span>
-              <ChevronDown size={12} color={T3} />
+              <span style={{ fontWeight: 700, color: T1, fontSize: 13, lineHeight: 1 }}>Select Location</span>
+              <ChevronDown size={11} color={T3} />
             </div>
           </div>
         </button>
 
-        {/* Divider */}
-        <div style={{ width: 1, height: 28, background: BORDER, flexShrink: 0 }} className="hidden md:block" />
+        <div style={{ width: 1, height: 26, background: BORDER, flexShrink: 0 }} className="hidden md:block" />
 
         {/* Search */}
-        <div style={{ flex: 1, position: 'relative', maxWidth: 520 }}>
-          <Search size={15} style={{ position: 'absolute', left: 14, top: '50%', transform: 'translateY(-50%)', color: focused ? GREEN : T3, zIndex: 1, transition: 'color .15s' }} />
-          <input type="text" placeholder="Search groceries, food, services..."
+        <div style={{ flex: 1, position: 'relative', maxWidth: 480 }}>
+          <Search size={14} style={{ position: 'absolute', left: 13, top: '50%', transform: 'translateY(-50%)', color: focused ? active?.color ?? GREEN : T3, zIndex: 1, transition: 'color .15s' }} />
+          <input type="text"
+            placeholder={`Search ${activeTab === 'now' ? 'groceries, brands...' : activeTab === 'eats' ? 'dishes, restaurants...' : 'services, professionals...'}`}
             onFocus={() => setFocused(true)} onBlur={() => setFocused(false)}
-            style={{ width: '100%', paddingLeft: 44, paddingRight: 16, paddingTop: 11, paddingBottom: 11, borderRadius: 12, background: BG, border: `1.5px solid ${focused ? GREEN + '60' : BORDER}`, fontSize: 13.5, color: T1, fontFamily: 'inherit', fontWeight: 500, boxShadow: focused ? `0 0 0 3px ${GREEN}14` : 'none', outline: 'none', transition: 'all .18s' }}
+            style={{ width: '100%', paddingLeft: 42, paddingRight: 16, paddingTop: 10, paddingBottom: 10, borderRadius: 10, background: BG, border: `1.5px solid ${focused ? (active?.color ?? GREEN) + '55' : BORDER}`, fontSize: 13, color: T1, fontFamily: 'inherit', fontWeight: 500, boxShadow: focused ? `0 0 0 3px ${(active?.color ?? GREEN)}12` : 'none', outline: 'none', transition: 'all .18s' }}
           />
         </div>
 
-        {/* Actions */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexShrink: 0 }}>
-          <button className="hidden sm:flex items-center gap-2" style={{ padding: '10px 16px', borderRadius: 10, border: `1.5px solid ${BORDER}`, fontSize: 13, fontWeight: 600, color: T2, background: SURF, transition: 'all .15s' }}
-            onMouseEnter={e => { (e.currentTarget as HTMLElement).style.borderColor = GREEN + '60'; (e.currentTarget as HTMLElement).style.color = GREEN; }}
+        {/* Right actions */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexShrink: 0, marginLeft: 'auto' }}>
+          <button className="hidden sm:flex items-center gap-2" style={{ padding: '9px 15px', borderRadius: 9, border: `1.5px solid ${BORDER}`, fontSize: 13, fontWeight: 600, color: T2, background: SURF, transition: 'all .15s' }}
+            onMouseEnter={e => { (e.currentTarget as HTMLElement).style.borderColor = GREEN + '55'; (e.currentTarget as HTMLElement).style.color = GREEN; }}
             onMouseLeave={e => { (e.currentTarget as HTMLElement).style.borderColor = BORDER; (e.currentTarget as HTMLElement).style.color = T2; }}>
-            <User size={15} /><span className="hidden lg:inline">Sign in</span>
+            <User size={14} /><span className="hidden lg:inline">Sign in</span>
           </button>
-          <button className="relative flex items-center gap-2" style={{ padding: '10px 18px', borderRadius: 10, background: GREEN, fontSize: 13, fontWeight: 800, color: '#fff', boxShadow: `0 2px 10px rgba(14,168,110,0.3)`, transition: 'all .15s' }}
+          <button className="relative flex items-center gap-2" style={{ padding: '9px 18px', borderRadius: 9, background: GREEN, fontSize: 13, fontWeight: 800, color: '#fff', boxShadow: `0 2px 10px rgba(14,168,110,0.28)`, transition: 'all .15s' }}
             onMouseEnter={e => (e.currentTarget as HTMLElement).style.background = GREEN_DK}
             onMouseLeave={e => (e.currentTarget as HTMLElement).style.background = GREEN}>
-            <ShoppingCart size={15} /><span className="hidden sm:inline">Cart</span>
-            <span style={{ position: 'absolute', top: -7, right: -7, width: 19, height: 19, borderRadius: '50%', background: '#EF4444', color: 'white', fontSize: 10, fontWeight: 800, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>3</span>
+            <ShoppingCart size={14} /><span className="hidden sm:inline">Cart</span>
+            <span style={{ position: 'absolute', top: -7, right: -7, width: 18, height: 18, borderRadius: '50%', background: '#EF4444', color: 'white', fontSize: 9.5, fontWeight: 800, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>3</span>
           </button>
         </div>
+      </div>
+
+      {/* ── Row 2: Service selector ── */}
+      <div style={{ maxWidth: 1280, margin: '0 auto', padding: '0 24px', display: 'flex', alignItems: 'center', gap: 6, height: 58, overflowX: 'auto', scrollbarWidth: 'none' }}>
+
+        {SERVICE_PILLS.map(svc => {
+          const isActive = activeTab === svc.id;
+          return (
+            <button key={svc.id} onClick={() => setActiveTab(svc.id)}
+              style={{
+                display: 'flex', alignItems: 'center', gap: 10, padding: '8px 18px',
+                borderRadius: 12, flexShrink: 0, transition: 'all .2s', cursor: 'pointer',
+                background: isActive ? svc.bg : 'transparent',
+                border: `1.5px solid ${isActive ? svc.border : 'transparent'}`,
+                boxShadow: isActive ? `0 2px 10px ${svc.color}18` : 'none',
+              }}
+              onMouseEnter={e => { if (!isActive) (e.currentTarget as HTMLElement).style.background = BG; }}
+              onMouseLeave={e => { if (!isActive) (e.currentTarget as HTMLElement).style.background = 'transparent'; }}>
+
+              {/* Mini image */}
+              <div style={{ width: 36, height: 36, borderRadius: 10, overflow: 'hidden', flexShrink: 0, border: `1.5px solid ${isActive ? svc.border : BORDER}` }}>
+                <img src={svc.img} alt={svc.label} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+              </div>
+
+              <div style={{ textAlign: 'left' }}>
+                <p style={{ fontFamily: "'Outfit',sans-serif", fontWeight: 800, fontSize: 14.5, letterSpacing: '-.02em', color: isActive ? svc.color : T1, lineHeight: 1.1 }}>
+                  Zyphix<span style={{ color: isActive ? svc.color : T2 }}>{svc.label}</span>
+                </p>
+                <p style={{ fontSize: 10.5, color: isActive ? svc.color + 'CC' : T3, marginTop: 1.5, fontWeight: 500 }}>{svc.sub}</p>
+              </div>
+
+              {isActive && (
+                <div style={{ width: 6, height: 6, borderRadius: '50%', background: svc.color, marginLeft: 2, flexShrink: 0 }} />
+              )}
+            </button>
+          );
+        })}
+
+        {/* Separator */}
+        <div style={{ width: 1, height: 32, background: BORDER, flexShrink: 0, margin: '0 6px' }} />
+
+        {/* Secondary links */}
+        {[{ id: 'map' as TabId, label: '📍 Near Me' }, { id: 'offers' as TabId, label: '🏷️ Offers' }].map(link => {
+          const isActive = activeTab === link.id;
+          return (
+            <button key={link.id} onClick={() => setActiveTab(link.id)}
+              style={{ padding: '7px 14px', borderRadius: 9, fontSize: 12.5, fontWeight: isActive ? 700 : 500, color: isActive ? T1 : T2, background: isActive ? BG : 'transparent', border: `1.5px solid ${isActive ? BORDER : 'transparent'}`, flexShrink: 0, transition: 'all .15s', whiteSpace: 'nowrap' }}>
+              {link.label}
+            </button>
+          );
+        })}
       </div>
     </div>
   );
@@ -899,25 +987,10 @@ export function Home() {
   return (
     <div style={{ background: BG, minHeight: '100vh' }}>
       <AnnoBar />
-      <Navbar />
+      <Navbar activeTab={activeTab} setActiveTab={setActiveTab} />
       <Hero />
       <TrustBar />
       <HowItWorks />
-
-      {/* Tab bar */}
-      <div className="sticky z-40" style={{ top: 0, background: 'rgba(255,255,255,0.97)', backdropFilter: 'blur(16px)', borderBottom: `1px solid ${BORDER}`, boxShadow: SH }}>
-        <div style={{ maxWidth: 1280, margin: '0 auto', padding: '0 24px', display: 'flex', alignItems: 'center', overflowX: 'auto', scrollbarWidth: 'none', gap: 4 }}>
-          {TABS.map(t => {
-            const active = activeTab === t.id;
-            return (
-              <button key={t.id} onClick={() => setActiveTab(t.id)}
-                style={{ padding: '15px 20px', fontSize: 13.5, fontWeight: active ? 700 : 500, color: active ? GREEN : T2, borderBottom: `2px solid ${active ? GREEN : 'transparent'}`, flexShrink: 0, whiteSpace: 'nowrap', transition: 'all .15s', background: 'none' }}>
-                {t.label}
-              </button>
-            );
-          })}
-        </div>
-      </div>
 
       {/* Content */}
       <div style={{ maxWidth: 1280, margin: '0 auto', padding: '32px 24px 80px' }}>
