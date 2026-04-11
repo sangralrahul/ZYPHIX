@@ -1362,25 +1362,34 @@ function Footer() {
 }
 
 /* ═══════════════ QUICK BROWSE ═══════════════ */
+/* Convert an emoji character to its Twemoji SVG CDN URL */
+const tw = (emoji: string) => {
+  const cp = [...emoji]
+    .map(c => c.codePointAt(0)!.toString(16))
+    .filter(h => parseInt(h, 16) !== 0xfe0f)
+    .join('-');
+  return `https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/assets/svg/${cp}.svg`;
+};
+
 const GROC_CATS = [
-  { e: '🥬', n: 'Fruits & Veg',   bg: '#ECFDF5', bd: '#A7F3D0', tc: '#065F46' },
-  { e: '🥛', n: 'Dairy & Eggs',   bg: '#F0F9FF', bd: '#BAE6FD', tc: '#0C4A6E' },
-  { e: '🍿', n: 'Snacks',         bg: '#FFFBEB', bd: '#FDE68A', tc: '#78350F' },
-  { e: '💊', n: 'Pharmacy',       bg: '#FDF4FF', bd: '#E9D5FF', tc: '#581C87' },
-  { e: '🌾', n: 'Grains & Dal',   bg: '#FFFBEB', bd: '#FCD34D', tc: '#713F12' },
-  { e: '🍞', n: 'Bakery',         bg: '#FFF7ED', bd: '#FED7AA', tc: '#9A3412' },
-  { e: '🧹', n: 'Household',      bg: '#F5F3FF', bd: '#DDD6FE', tc: '#4C1D95' },
-  { e: '✨', n: 'Personal Care',  bg: '#F0FDFA', bd: '#99F6E4', tc: '#134E4A' },
+  { e: tw('🥬'), n: 'Fruits & Veg',   bg: '#ECFDF5', bd: '#A7F3D0', tc: '#065F46' },
+  { e: tw('🥛'), n: 'Dairy & Eggs',   bg: '#F0F9FF', bd: '#BAE6FD', tc: '#0C4A6E' },
+  { e: tw('🍿'), n: 'Snacks',         bg: '#FFFBEB', bd: '#FDE68A', tc: '#78350F' },
+  { e: tw('💊'), n: 'Pharmacy',       bg: '#FDF4FF', bd: '#E9D5FF', tc: '#581C87' },
+  { e: tw('🌾'), n: 'Grains & Dal',   bg: '#FFFBEB', bd: '#FCD34D', tc: '#713F12' },
+  { e: tw('🍞'), n: 'Bakery',         bg: '#FFF7ED', bd: '#FED7AA', tc: '#9A3412' },
+  { e: tw('🧹'), n: 'Household',      bg: '#F5F3FF', bd: '#DDD6FE', tc: '#4C1D95' },
+  { e: tw('✨'), n: 'Personal Care',  bg: '#F0FDFA', bd: '#99F6E4', tc: '#134E4A' },
 ];
 const FOOD_CATS = [
-  { e: '🍛', n: 'Biryani',        bg: '#FFF7ED', bd: '#FED7AA', tc: '#9A3412' },
-  { e: '🍕', n: 'Pizza',          bg: '#FFF1F2', bd: '#FECDD3', tc: '#9F1239' },
-  { e: '🍔', n: 'Burgers',        bg: '#FFFBEB', bd: '#FDE68A', tc: '#78350F' },
-  { e: '🍱', n: 'Thali',          bg: '#F0FDF4', bd: '#BBF7D0', tc: '#14532D' },
-  { e: '☕', n: 'Chai & Drinks',  bg: '#FDF4FF', bd: '#E9D5FF', tc: '#581C87' },
-  { e: '🍰', n: 'Desserts',       bg: '#FFF1F2', bd: '#FECDD3', tc: '#9F1239' },
-  { e: '🥗', n: 'Healthy',        bg: '#ECFDF5', bd: '#A7F3D0', tc: '#065F46' },
-  { e: '🌮', n: 'Street Food',    bg: '#FFFBEB', bd: '#FDE68A', tc: '#78350F' },
+  { e: tw('🍛'), n: 'Biryani',        bg: '#FFF7ED', bd: '#FED7AA', tc: '#9A3412' },
+  { e: tw('🍕'), n: 'Pizza',          bg: '#FFF1F2', bd: '#FECDD3', tc: '#9F1239' },
+  { e: tw('🍔'), n: 'Burgers',        bg: '#FFFBEB', bd: '#FDE68A', tc: '#78350F' },
+  { e: tw('🍱'), n: 'Thali',          bg: '#F0FDF4', bd: '#BBF7D0', tc: '#14532D' },
+  { e: tw('☕'), n: 'Chai & Drinks',  bg: '#FDF4FF', bd: '#E9D5FF', tc: '#581C87' },
+  { e: tw('🍰'), n: 'Desserts',       bg: '#FFF1F2', bd: '#FECDD3', tc: '#9F1239' },
+  { e: tw('🥗'), n: 'Healthy',        bg: '#ECFDF5', bd: '#A7F3D0', tc: '#065F46' },
+  { e: tw('🌮'), n: 'Street Food',    bg: '#FFFBEB', bd: '#FDE68A', tc: '#78350F' },
 ];
 
 function QuickBrowse({ setTab }: { setTab: (t: TabId) => void }) {
@@ -1393,9 +1402,9 @@ function QuickBrowse({ setTab }: { setTab: (t: TabId) => void }) {
       onClick={() => scrollToTab(tab)}
       whileHover={{ scale: 1.05, y: -3 }}
       whileTap={{ scale: 0.97 }}
-      style={{ padding: '14px 6px 12px', borderRadius: 14, background: bg, border: `1.5px solid ${bd}`, cursor: 'pointer', textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 5, boxShadow: '0 1px 5px rgba(0,0,0,.05)', transition: 'box-shadow .15s', minWidth: 0 }}
+      style={{ padding: '14px 6px 12px', borderRadius: 14, background: bg, border: `1.5px solid ${bd}`, cursor: 'pointer', textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 6, boxShadow: '0 1px 5px rgba(0,0,0,.05)', transition: 'box-shadow .15s', minWidth: 0 }}
     >
-      <span style={{ fontSize: 26, lineHeight: 1 }}>{e}</span>
+      <img src={e} alt={n} draggable={false} style={{ width: 36, height: 36, objectFit: 'contain' }} />
       <span style={{ fontSize: 10.5, fontWeight: 700, color: tc, lineHeight: 1.3, wordBreak: 'keep-all' }}>{n}</span>
     </motion.button>
   );
@@ -1486,20 +1495,25 @@ function WhyZyphixStrip() {
   return (
     <div style={{ background: 'linear-gradient(135deg, #0B1829 0%, #131D30 60%, #0D2040 100%)', borderTop: '1px solid rgba(255,255,255,.07)', borderBottom: '1px solid rgba(255,255,255,.07)', overflow: 'hidden', position: 'relative' }}>
       <div style={{ position: 'absolute', inset: 0, background: 'radial-gradient(ellipse at 50% 50%, rgba(0,201,167,.07) 0%, transparent 70%)', pointerEvents: 'none' }} />
-      <div style={{ maxWidth: 1100, margin: '0 auto', padding: '20px 24px', display: 'flex', flexWrap: 'wrap', gap: 0 }}>
+      <div style={{ maxWidth: 1100, margin: '0 auto', padding: '20px 24px', display: 'flex', flexWrap: 'wrap', gap: 0, alignItems: 'stretch' }}>
         {ITEMS.map(({ icon, title, sub }, i) => (
-          <motion.div key={title}
-            initial={{ opacity: 0, y: 12 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}
-            transition={{ delay: i * 0.1, duration: 0.4 }}
-            style={{ flex: '1 1 240px', display: 'flex', alignItems: 'center', gap: 14, padding: '8px 24px', borderRight: i < 2 ? '1px solid rgba(255,255,255,.08)' : 'none', minWidth: 0 }}>
-            <motion.div whileHover={{ rotate: [0, -8, 8, 0], scale: 1.1 }} transition={{ duration: .4 }}>
-              {icon}
+          <React.Fragment key={title}>
+            <motion.div
+              initial={{ opacity: 0, y: 12 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}
+              transition={{ delay: i * 0.1, duration: 0.4 }}
+              style={{ flex: '1 1 240px', display: 'flex', alignItems: 'center', gap: 14, padding: '10px 28px', minWidth: 0 }}>
+              <motion.div whileHover={{ rotate: [0, -8, 8, 0], scale: 1.1 }} transition={{ duration: .4 }}>
+                {icon}
+              </motion.div>
+              <div>
+                <p style={{ fontFamily: "'Outfit',sans-serif", fontWeight: 800, fontSize: 13.5, color: '#fff', letterSpacing: '-.01em', marginBottom: 2 }}>{title}</p>
+                <p style={{ fontSize: 12, color: 'rgba(0,201,167,.75)', fontWeight: 500, lineHeight: 1.4 }}>{sub}</p>
+              </div>
             </motion.div>
-            <div>
-              <p style={{ fontFamily: "'Outfit',sans-serif", fontWeight: 800, fontSize: 13.5, color: '#fff', letterSpacing: '-.01em', marginBottom: 2 }}>{title}</p>
-              <p style={{ fontSize: 12, color: 'rgba(0,201,167,.75)', fontWeight: 500, lineHeight: 1.4 }}>{sub}</p>
-            </div>
-          </motion.div>
+            {i < 2 && (
+              <div style={{ width: 2, alignSelf: 'stretch', margin: '10px 0', background: 'linear-gradient(to bottom, transparent 0%, rgba(0,201,167,.55) 30%, rgba(0,201,167,.55) 70%, transparent 100%)', borderRadius: 99, flexShrink: 0 }} />
+            )}
+          </React.Fragment>
         ))}
       </div>
     </div>

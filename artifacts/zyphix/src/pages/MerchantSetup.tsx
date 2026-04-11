@@ -8,36 +8,41 @@ const G = '#0DA366'; const T1 = '#111827'; const T2 = '#6B7280';
 const T3 = '#9CA3AF'; const BD = '#E5E7EB'; const W = '#FFFFFF'; const BG = '#F8F9FA';
 const SH = '0 2px 8px rgba(0,0,0,.07)'; const SH2 = '0 4px 24px rgba(0,0,0,.10)';
 
+const tw = (emoji: string) => {
+  const cp = [...emoji].map(c=>c.codePointAt(0)!.toString(16)).filter(h=>parseInt(h,16)!==0xfe0f).join('-');
+  return `https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/assets/svg/${cp}.svg`;
+};
+
 const CATS = [
-  { id:'fruits_veg',  e:'🥬', n:'Fruits & Vegetables', c:'#16a34a', bg:'#ECFDF5' },
-  { id:'dairy',       e:'🥛', n:'Dairy & Eggs',        c:'#2563eb', bg:'#EFF6FF' },
-  { id:'snacks',      e:'🍿', n:'Snacks',              c:'#d97706', bg:'#FFFBEB' },
-  { id:'beverages',   e:'🧃', n:'Cold Drinks',         c:'#0891b2', bg:'#ECFEFF' },
-  { id:'grains',      e:'🌾', n:'Rice, Dal & Grains',  c:'#78350f', bg:'#FFFBEB' },
-  { id:'spices',      e:'🌶️', n:'Spices & Masala',    c:'#dc2626', bg:'#FFF1F2' },
-  { id:'atta',        e:'🍞', n:'Atta, Flour & Bread', c:'#c2410c', bg:'#FFF7ED' },
-  { id:'oil',         e:'🫙', n:'Oils & Ghee',         c:'#b45309', bg:'#FFFBEB' },
-  { id:'breakfast',   e:'🥣', n:'Breakfast & Cereal',  c:'#7c3aed', bg:'#F5F3FF' },
-  { id:'biscuits',    e:'🍪', n:'Biscuits & Cakes',    c:'#d97706', bg:'#FFFBEB' },
-  { id:'noodles',     e:'🍜', n:'Noodles & Pasta',     c:'#dc2626', bg:'#FFF1F2' },
-  { id:'tea',         e:'☕', n:'Tea & Coffee',        c:'#92400e', bg:'#FFF7ED' },
-  { id:'personal',    e:'💄', n:'Personal Care',       c:'#db2777', bg:'#FDF2F8' },
-  { id:'household',   e:'🧹', n:'Household Items',     c:'#4f46e5', bg:'#EEF2FF' },
-  { id:'cleaning',    e:'🧴', n:'Cleaning & Detergents',c:'#0284c7',bg:'#F0F9FF' },
-  { id:'baby',        e:'👶', n:'Baby Products',       c:'#0891b2', bg:'#ECFEFF' },
-  { id:'pharmacy',    e:'💊', n:'Medicines & Health',  c:'#0f766e', bg:'#F0FDFA' },
-  { id:'frozen',      e:'❄️', n:'Frozen Foods',        c:'#0284c7', bg:'#F0F9FF' },
-  { id:'pet',         e:'🐾', n:'Pet Products',        c:'#78350f', bg:'#FFFBEB' },
-  { id:'stationery',  e:'✏️', n:'Stationery',          c:'#4f46e5', bg:'#EEF2FF' },
+  { id:'fruits_veg',  e:tw('🥬'), n:'Fruits & Vegetables', c:'#16a34a', bg:'#ECFDF5' },
+  { id:'dairy',       e:tw('🥛'), n:'Dairy & Eggs',        c:'#2563eb', bg:'#EFF6FF' },
+  { id:'snacks',      e:tw('🍿'), n:'Snacks',              c:'#d97706', bg:'#FFFBEB' },
+  { id:'beverages',   e:tw('🧃'), n:'Cold Drinks',         c:'#0891b2', bg:'#ECFEFF' },
+  { id:'grains',      e:tw('🌾'), n:'Rice, Dal & Grains',  c:'#78350f', bg:'#FFFBEB' },
+  { id:'spices',      e:tw('🌶'),  n:'Spices & Masala',    c:'#dc2626', bg:'#FFF1F2' },
+  { id:'atta',        e:tw('🍞'), n:'Atta, Flour & Bread', c:'#c2410c', bg:'#FFF7ED' },
+  { id:'oil',         e:tw('🫙'), n:'Oils & Ghee',         c:'#b45309', bg:'#FFFBEB' },
+  { id:'breakfast',   e:tw('🥣'), n:'Breakfast & Cereal',  c:'#7c3aed', bg:'#F5F3FF' },
+  { id:'biscuits',    e:tw('🍪'), n:'Biscuits & Cakes',    c:'#d97706', bg:'#FFFBEB' },
+  { id:'noodles',     e:tw('🍜'), n:'Noodles & Pasta',     c:'#dc2626', bg:'#FFF1F2' },
+  { id:'tea',         e:tw('☕'), n:'Tea & Coffee',        c:'#92400e', bg:'#FFF7ED' },
+  { id:'personal',    e:tw('💄'), n:'Personal Care',       c:'#db2777', bg:'#FDF2F8' },
+  { id:'household',   e:tw('🧹'), n:'Household Items',     c:'#4f46e5', bg:'#EEF2FF' },
+  { id:'cleaning',    e:tw('🧴'), n:'Cleaning & Detergents',c:'#0284c7',bg:'#F0F9FF' },
+  { id:'baby',        e:tw('👶'), n:'Baby Products',       c:'#0891b2', bg:'#ECFEFF' },
+  { id:'pharmacy',    e:tw('💊'), n:'Medicines & Health',  c:'#0f766e', bg:'#F0FDFA' },
+  { id:'frozen',      e:tw('❄'),  n:'Frozen Foods',        c:'#0284c7', bg:'#F0F9FF' },
+  { id:'pet',         e:tw('🐾'), n:'Pet Products',        c:'#78350f', bg:'#FFFBEB' },
+  { id:'stationery',  e:tw('✏'),  n:'Stationery',          c:'#4f46e5', bg:'#EEF2FF' },
 ];
 
 const STORE_TYPES = [
-  { v:'kirana',    e:'🏪', l:'Kirana / General Store' },
-  { v:'super',     e:'🛒', l:'Supermarket' },
-  { v:'medical',   e:'💊', l:'Medical Store' },
-  { v:'bakery',    e:'🍞', l:'Bakery & Confectionery' },
-  { v:'fruits',    e:'🥬', l:'Fruits & Vegetables' },
-  { v:'dairy',     e:'🥛', l:'Dairy & Milk Parlour' },
+  { v:'kirana',    e:tw('🏪'), l:'Kirana / General Store' },
+  { v:'super',     e:tw('🛒'), l:'Supermarket' },
+  { v:'medical',   e:tw('💊'), l:'Medical Store' },
+  { v:'bakery',    e:tw('🍞'), l:'Bakery & Confectionery' },
+  { v:'fruits',    e:tw('🥬'), l:'Fruits & Vegetables' },
+  { v:'dairy',     e:tw('🥛'), l:'Dairy & Milk Parlour' },
 ];
 
 const AREAS = ['Gandhinagar','Trikuta Nagar','Gandhi Nagar','Bakshi Nagar','Nawabad','Channi Himmat','Sainik Colony','Talab Tillo','Janipur','Bathindi','Sarwal','Nardni','Sidhra','Canal Road','Other'];
@@ -117,7 +122,7 @@ function StoreInfoStep({ onNext }: { onNext:(d:object)=>void }) {
               <motion.button key={v} whileHover={{scale:1.03,y:-2}} whileTap={{scale:.97}}
                 onClick={()=>f('type',v)}
                 style={{ padding:'14px 10px', borderRadius:14, background:form.type===v?`${G}0F`:W, border:`2px solid ${form.type===v?G:BD}`, cursor:'pointer', textAlign:'center', display:'flex', flexDirection:'column', alignItems:'center', gap:6, boxShadow:form.type===v?`0 0 0 3px ${G}1A`:SH, transition:'all .15s' }}>
-                <span style={{fontSize:26}}>{e}</span>
+                <img src={e} alt={l} draggable={false} style={{width:36,height:36,objectFit:'contain'}} />
                 <span style={{fontSize:10.5,fontWeight:700,color:form.type===v?'#065F46':T2,lineHeight:1.3}}>{l}</span>
               </motion.button>
             ))}
@@ -220,7 +225,7 @@ function CategoriesStep({ onNext, onBack }: { onNext:(s:Set<string>)=>void; onBa
                   <Check size={11} color="#fff" strokeWidth={3}/>
                 </motion.div>
               )}
-              <span style={{fontSize:32,lineHeight:1}}>{e}</span>
+              <img src={e} alt={n} draggable={false} style={{width:38,height:38,objectFit:'contain'}} />
               <span style={{fontSize:11,fontWeight:700,color:on?c:T2,lineHeight:1.35}}>{n}</span>
             </motion.button>
           );
