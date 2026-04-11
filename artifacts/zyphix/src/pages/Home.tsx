@@ -374,6 +374,103 @@ function PCard({ p, cart, add, rm }: { p: typeof products[0]; cart: Record<strin
   );
 }
 
+/* ═══════════════ BRAND CHIP STRIP ═══════════════ */
+interface BC { name: string; abbr: string; textColor: string; bg: string; }
+
+const NOW_BRANDS: BC[] = [
+  { name: 'Amul',        abbr: 'AM',  textColor: '#fff', bg: '#1D6FB4' },
+  { name: 'Nestlé',      abbr: 'NE',  textColor: '#fff', bg: '#C8102E' },
+  { name: 'Britannia',   abbr: 'BR',  textColor: '#fff', bg: '#E42313' },
+  { name: 'Tata',        abbr: 'TA',  textColor: '#fff', bg: '#00285E' },
+  { name: 'Haldirams',   abbr: 'HD',  textColor: '#fff', bg: '#E55126' },
+  { name: 'ITC',         abbr: 'ITC', textColor: '#fff', bg: '#7B2335' },
+  { name: 'Dabur',       abbr: 'DA',  textColor: '#fff', bg: '#007030' },
+  { name: 'Patanjali',   abbr: 'PA',  textColor: '#fff', bg: '#F07800' },
+  { name: 'Fortune',     abbr: 'FO',  textColor: '#fff', bg: '#EF4123' },
+  { name: 'Mother Dairy',abbr: 'MD',  textColor: '#fff', bg: '#003A96' },
+  { name: 'MDH',         abbr: 'MDH', textColor: '#fff', bg: '#C41230' },
+  { name: 'Marico',      abbr: 'MA',  textColor: '#fff', bg: '#E31837' },
+  { name: 'Colgate',     abbr: 'CO',  textColor: '#fff', bg: '#D01F3C' },
+  { name: 'Maggi',       abbr: 'MG',  textColor: '#fff', bg: '#B62400' },
+  { name: 'Parle',       abbr: 'PR',  textColor: '#fff', bg: '#DD4C00' },
+  { name: 'Lifebuoy',    abbr: 'LB',  textColor: '#fff', bg: '#D2000D' },
+];
+
+const EATS_BRANDS: BC[] = [
+  { name: "Domino's",      abbr: 'DO',  textColor: '#fff', bg: '#006DB7' },
+  { name: "McDonald's",    abbr: 'MC',  textColor: '#DA291C', bg: '#FFC72C' },
+  { name: 'KFC',           abbr: 'KFC', textColor: '#fff', bg: '#E8002D' },
+  { name: 'Subway',        abbr: 'SU',  textColor: '#fff', bg: '#009B77' },
+  { name: 'Pizza Hut',     abbr: 'PH',  textColor: '#fff', bg: '#EE3124' },
+  { name: 'Burger King',   abbr: 'BK',  textColor: '#fff', bg: '#FF8732' },
+  { name: 'Wow Momo',      abbr: 'WM',  textColor: '#fff', bg: '#E94B4B' },
+  { name: 'Haldirams',     abbr: 'HD',  textColor: '#fff', bg: '#E55126' },
+  { name: 'Starbucks',     abbr: 'SB',  textColor: '#fff', bg: '#00704A' },
+  { name: 'CCD',           abbr: 'CCD', textColor: '#fff', bg: '#6F3D22' },
+  { name: 'Behrouz',       abbr: 'BB',  textColor: '#fff', bg: '#8B1A2B' },
+  { name: 'Box8',          abbr: 'B8',  textColor: '#fff', bg: '#F05A22' },
+  { name: 'Chai Point',    abbr: 'CP',  textColor: '#fff', bg: '#C2412D' },
+  { name: 'Biryani Blues', abbr: 'BI',  textColor: '#fff', bg: '#2E4A86' },
+  { name: 'Barbeque Nation',abbr:'BN',  textColor: '#fff', bg: '#8B0000' },
+];
+
+const BOOK_BRANDS: BC[] = [
+  { name: 'Urban Company',  abbr: 'UC',  textColor: '#fff', bg: '#7C3AED' },
+  { name: 'Apollo',         abbr: 'AP',  textColor: '#fff', bg: '#00427A' },
+  { name: 'Dr. Lal PathLabs',abbr:'LP',  textColor: '#fff', bg: '#E31837' },
+  { name: 'Housejoy',       abbr: 'HJ',  textColor: '#fff', bg: '#FF6B35' },
+  { name: 'Sulekha',        abbr: 'SL',  textColor: '#fff', bg: '#0066CC' },
+  { name: 'HomeTriangle',   abbr: 'HT',  textColor: '#fff', bg: '#2E86AB' },
+  { name: 'Quikr Services', abbr: 'QS',  textColor: '#fff', bg: '#9C27B0' },
+  { name: 'TaskBob',        abbr: 'TB',  textColor: '#fff', bg: '#FF6B00' },
+  { name: 'JustDial',       abbr: 'JD',  textColor: '#fff', bg: '#1A73E8' },
+  { name: 'Mr. Right',      abbr: 'MR',  textColor: '#fff', bg: '#0F9D58' },
+];
+
+function BrandRow({ title, brands, accent }: { title: string; brands: BC[]; accent: string }) {
+  const [active, setActive] = useState<string | null>(null);
+  return (
+    <div>
+      <Row title={title} action="All brands" />
+      <Scroller>
+        {brands.map((b, i) => {
+          const on = active === b.name;
+          return (
+            <button
+              key={i}
+              onClick={() => setActive(on ? null : b.name)}
+              className="snap-start shrink-0 flex flex-col items-center gap-2 group"
+            >
+              <div style={{
+                width: 72, height: 72, borderRadius: '50%',
+                background: b.bg,
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                border: `2.5px solid ${on ? accent : 'transparent'}`,
+                boxShadow: on ? `0 0 0 4px ${accent}22, ${SH}` : SH,
+                transition: 'all .2s',
+              }}
+                onMouseEnter={e => { (e.currentTarget as HTMLElement).style.transform = 'scale(1.07)'; }}
+                onMouseLeave={e => { (e.currentTarget as HTMLElement).style.transform = 'scale(1)'; }}
+              >
+                <span style={{
+                  color: b.textColor, fontWeight: 900,
+                  fontSize: b.abbr.length > 2 ? 14 : 20,
+                  fontFamily: "'Outfit',sans-serif", letterSpacing: '-0.02em',
+                }}>{b.abbr}</span>
+              </div>
+              <span style={{
+                fontSize: 11, fontWeight: 600,
+                color: on ? T1 : T2,
+                textAlign: 'center', width: 80, lineHeight: 1.3,
+              }}>{b.name}</span>
+            </button>
+          );
+        })}
+      </Scroller>
+    </div>
+  );
+}
+
 /* ═══════════════ NOW TAB ═══════════════ */
 function NowTab() {
   const [cart, setCart] = useState<Record<string, number>>({});
@@ -425,6 +522,9 @@ function NowTab() {
           ))}
         </Scroller>
       </div>
+
+      {/* Shop by Brand */}
+      <BrandRow title="Shop by Brand" brands={NOW_BRANDS} accent={G} />
 
       {/* Flash deals */}
       <div style={{ background: W, border: `1px solid ${BD}`, borderRadius: 20, overflow: 'hidden', boxShadow: SH }}>
@@ -556,6 +656,9 @@ function EatsTab() {
           ))}
         </Scroller>
       </div>
+      {/* Top restaurant chains */}
+      <BrandRow title="Order from Top Chains" brands={EATS_BRANDS} accent="#EA580C" />
+
       <div>
         <Row title="Restaurants Near You" sub="Open now · Delivering to your area" action="See all" />
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill,minmax(290px,1fr))', gap: 16 }}>
@@ -604,6 +707,9 @@ function BookTab() {
           <p style={{ fontSize: 13, color: 'rgba(255,255,255,.58)' }}>Background-verified · Rated 4.8★ · Zero cancellation fee</p>
         </div>
       </div>
+      {/* Service partners */}
+      <BrandRow title="Our Service Partners" brands={BOOK_BRANDS} accent="#7C3AED" />
+
       <div>
         <Row title="Available Services" action="View all" />
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill,minmax(210px,1fr))', gap: 14 }}>
