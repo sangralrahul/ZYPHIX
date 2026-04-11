@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { useLocation } from 'wouter';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   Search, MapPin, ChevronDown, ShoppingCart, User, LogOut,
@@ -525,56 +526,37 @@ function NowTab() {
         ))}
       </Scroller>
 
-      {/* Categories */}
-      <div>
-        <Row title="Shop by Category" action="All categories" />
-        <Scroller>
-          {categories.map(c => (
-            <button key={c.id} className="snap-start shrink-0 flex flex-col items-center gap-2 group">
-              <div style={{ width: 76, height: 76, borderRadius: '50%', overflow: 'hidden', border: `2px solid ${BD}`, boxShadow: SH, transition: 'all .2s' }}
-                onMouseEnter={e => { (e.currentTarget as HTMLElement).style.borderColor = G; (e.currentTarget as HTMLElement).style.boxShadow = `0 0 0 3px rgba(13,163,102,.15), ${SH}`; }}
-                onMouseLeave={e => { (e.currentTarget as HTMLElement).style.borderColor = BD; (e.currentTarget as HTMLElement).style.boxShadow = SH; }}>
-                <img src={c.image} alt={c.name} className="w-full h-full img-cover group-hover:scale-110 transition-transform duration-300" />
-              </div>
-              <span style={{ fontSize: 11.5, fontWeight: 600, color: T2, textAlign: 'center', width: 80, lineHeight: 1.3 }}>{c.name}</span>
-            </button>
-          ))}
-        </Scroller>
-      </div>
-
-      {/* Shop by Brand */}
-      <BrandRow title="Shop by Brand" brands={NOW_BRANDS} accent={G} />
-
-      {/* Products by Category */}
-      {([
-        { cat: 'Fruits & Veg',  emoji: '🥬', color: '#16a34a' },
-        { cat: 'Dairy',         emoji: '🥛', color: '#2563eb' },
-        { cat: 'Snacks',        emoji: '🍪', color: '#9333ea' },
-        { cat: 'Grains & Dal',  emoji: '🌾', color: '#d97706' },
-        { cat: 'Bakery',        emoji: '🍞', color: '#c2410c' },
-        { cat: 'Personal Care', emoji: '✨', color: '#db2777' },
-      ] as { cat: string; emoji: string; color: string }[]).map(({ cat, emoji, color }, ci) => {
-        const catProds = products.filter(p => p.category === cat);
-        if (!catProds.length) return null;
-        return (
-          <motion.div key={cat} initial={{ opacity: 0, y: 22 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, margin: '-60px' }} transition={{ delay: ci * .06, duration: .5, ease: [.22,1,.36,1] }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 18 }}>
-              <motion.div whileInView={{ scale: [0.7, 1.12, 1] }} viewport={{ once: true }} transition={{ delay: ci * .06 + .1, duration: .4 }}
-                style={{ width: 40, height: 40, borderRadius: 12, background: color + '14', border: `1.5px solid ${color}30`, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 20, flexShrink: 0 }}>{emoji}</motion.div>
-              <div style={{ flex: 1 }}>
-                <h3 style={{ fontWeight: 800, color: T1, fontSize: '1rem', lineHeight: 1 }}>{cat}</h3>
-                <p style={{ fontSize: 11, color: T3, marginTop: 3 }}>{catProds.length} items available</p>
-              </div>
-              <button style={{ fontSize: 12, fontWeight: 700, color, display: 'flex', alignItems: 'center', gap: 2 }}>
-                See all <ChevronRight size={13} />
-              </button>
+      {/* Launching Soon Panel */}
+      <motion.div initial={{ opacity:0, y:20 }} animate={{ opacity:1, y:0 }} transition={{ delay:.1, type:'spring', stiffness:120 }}
+        style={{ background:'linear-gradient(135deg,#0B1829 0%,#0F2540 100%)', borderRadius:22, overflow:'hidden', position:'relative', padding:'44px 40px' }}>
+        <div style={{ position:'absolute', inset:0, background:'radial-gradient(ellipse at 30% 50%,rgba(13,163,102,.18) 0%,transparent 65%)', pointerEvents:'none' }} />
+        <div style={{ position:'absolute', top:-40, right:-40, width:220, height:220, borderRadius:'50%', background:'rgba(13,163,102,.06)', pointerEvents:'none' }} />
+        <div style={{ position:'relative', display:'flex', flexWrap:'wrap', gap:36, alignItems:'center' }}>
+          <div style={{ flex:'1 1 280px' }}>
+            <motion.div animate={{ scale:[1,1.1,1] }} transition={{ repeat:Infinity, duration:2 }}
+              style={{ display:'inline-flex', alignItems:'center', gap:7, background:'rgba(13,163,102,.15)', border:'1px solid rgba(13,163,102,.35)', color:G, fontSize:12, fontWeight:700, padding:'6px 16px', borderRadius:99, marginBottom:18 }}>
+              <span>🚀</span> Launching in Jammu — Be first to shop
+            </motion.div>
+            <h2 style={{ fontFamily:"'Outfit',sans-serif", fontWeight:900, fontSize:'clamp(1.5rem,3vw,2.1rem)', color:'#fff', letterSpacing:'-.04em', lineHeight:1.15, marginBottom:12 }}>
+              Groceries from your<br /><span style={{ color:G }}>local kirana stores</span>
+            </h2>
+            <p style={{ fontSize:14, color:'rgba(255,255,255,.55)', lineHeight:1.7, marginBottom:24 }}>
+              We're onboarding stores in Jammu right now. Join the waitlist to shop 200+ categories — fresh produce, dairy, snacks, pharmacy and more — delivered in 30 minutes.
+            </p>
+            <div style={{ display:'flex', flexWrap:'wrap', gap:10 }}>
+              {['🥬 Fruits & Veg','🥛 Dairy','💊 Pharmacy','🍿 Snacks','🌾 Grains & Dal','🧹 Household'].map(c => (
+                <span key={c} style={{ display:'inline-flex', alignItems:'center', gap:5, background:'rgba(255,255,255,.07)', border:'1px solid rgba(255,255,255,.12)', color:'rgba(255,255,255,.75)', fontSize:12.5, fontWeight:600, padding:'6px 14px', borderRadius:99 }}>{c}</span>
+              ))}
+              <span style={{ color:'rgba(255,255,255,.35)', fontSize:12.5, fontWeight:600, padding:'6px 4px' }}>+ more</span>
             </div>
-            <Scroller>
-              {catProds.map(p => <PCard key={p.id} p={p} cart={cart} add={add} rm={rm} />)}
-            </Scroller>
-          </motion.div>
-        );
-      })}
+          </div>
+          <div style={{ flex:'0 0 auto', textAlign:'center' }}>
+            <motion.div animate={{ y:[0,-8,0] }} transition={{ repeat:Infinity, duration:2.4, ease:'easeInOut' }}
+              style={{ fontSize:80, lineHeight:1, marginBottom:12 }}>🛒</motion.div>
+            <p style={{ fontSize:12, color:'rgba(255,255,255,.35)', fontWeight:600 }}>COMING SOON</p>
+          </div>
+        </div>
+      </motion.div>
 
       {/* Cart toast */}
       <AnimatePresence>
@@ -1524,6 +1506,7 @@ const WLIST_ROLES = [
 ];
 
 function WaitlistSection() {
+  const [, setLoc] = useLocation();
   const [form, setForm]   = useState({ name: '', phone: '', city: '', role: '' });
   const [errors, setErrors] = useState<Record<string,string>>({});
   const [submitted, setSubmitted] = useState(false);
@@ -1564,6 +1547,8 @@ function WaitlistSection() {
       const newCount = 500 + stored.length;
       setCount(newCount); setDispCount(newCount);
     } catch {}
+    if (form.role === 'merchant') { setTimeout(() => setLoc('/merchant-setup'), 300); return; }
+    if (form.role === 'delivery') { setTimeout(() => setLoc('/delivery-setup'), 300); return; }
     setSubmitted(true);
   };
 
