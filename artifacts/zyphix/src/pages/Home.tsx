@@ -241,8 +241,12 @@ function DualHeroBanners({ setTab }: { setTab: (t: TabId) => void }) {
           onMouseEnter={() => setHovNow(true)} onMouseLeave={() => setHovNow(false)}
           onClick={() => setTab('now')}
         >
-          <img src="https://images.unsplash.com/photo-1542838132-92c53300491e?w=1400&h=960&fit=crop&q=90" alt="Zyphix Now"
-            style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover', transform: hovNow ? 'scale(1.05)' : 'scale(1)', transition: 'transform .45s ease' }} />
+          <video autoPlay muted loop playsInline
+            poster="https://images.unsplash.com/photo-1542838132-92c53300491e?w=1400&h=960&fit=crop&q=80"
+            style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover', transform: hovNow ? 'scale(1.05)' : 'scale(1)', transition: 'transform .45s ease' }}>
+            <source src="https://assets.mixkit.co/videos/preview/mixkit-workers-in-a-grocery-store-40011-large.mp4" type="video/mp4" />
+            <source src="https://assets.mixkit.co/videos/preview/mixkit-fresh-vegetables-on-a-wooden-table-27617-large.mp4" type="video/mp4" />
+          </video>
           <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(175deg, rgba(3,32,18,.2) 0%, rgba(4,58,34,.68) 45%, rgba(2,26,14,.98) 100%)' }} />
           <div style={{ position: 'absolute', top: -60, right: -40, width: 220, height: 220, borderRadius: '50%', background: 'rgba(16,214,120,.12)', filter: 'blur(40px)', pointerEvents: 'none' }} />
           <div style={{ position: 'absolute', inset: 0, padding: '32px 36px', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
@@ -284,8 +288,12 @@ function DualHeroBanners({ setTab }: { setTab: (t: TabId) => void }) {
           onMouseEnter={() => setHovEats(true)} onMouseLeave={() => setHovEats(false)}
           onClick={() => setTab('eats')}
         >
-          <img src="https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=1400&h=960&fit=crop&q=90" alt="Zyphix Eats"
-            style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover', transform: hovEats ? 'scale(1.05)' : 'scale(1)', transition: 'transform .45s ease' }} />
+          <video autoPlay muted loop playsInline
+            poster="https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=1400&h=960&fit=crop&q=80"
+            style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover', transform: hovEats ? 'scale(1.05)' : 'scale(1)', transition: 'transform .45s ease' }}>
+            <source src="https://assets.mixkit.co/videos/preview/mixkit-top-view-of-indian-food-on-a-table-40248-large.mp4" type="video/mp4" />
+            <source src="https://assets.mixkit.co/videos/preview/mixkit-chef-cooking-food-in-a-pan-1058-large.mp4" type="video/mp4" />
+          </video>
           <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(175deg, rgba(50,10,5,.15) 0%, rgba(100,22,5,.65) 45%, rgba(40,4,0,.98) 100%)' }} />
           <div style={{ position: 'absolute', top: -60, right: -40, width: 220, height: 220, borderRadius: '50%', background: 'rgba(249,115,22,.12)', filter: 'blur(40px)', pointerEvents: 'none' }} />
           <div style={{ position: 'absolute', inset: 0, padding: '32px 36px', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
