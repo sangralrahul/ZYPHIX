@@ -891,17 +891,26 @@ function AppDownload() {
             </h2>
             <p style={{ color: 'rgba(255,255,255,.55)', fontSize: 15, marginBottom: 30, lineHeight: 1.65 }}>App-only deals · Live order tracking · Offline mode</p>
             <div style={{ display: 'flex', flexWrap: 'wrap', gap: 12, marginBottom: 32 }}>
-              {[{ ic: '🍎', top: 'Download on the', bot: 'App Store' }, { ic: '▶', top: 'Get it on', bot: 'Google Play' }].map((a, i) => (
-                <button key={i} style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '12px 22px', borderRadius: 13, background: 'rgba(255,255,255,.1)', border: '1px solid rgba(255,255,255,.15)', transition: 'background .2s' }}
-                  onMouseEnter={e => (e.currentTarget as HTMLElement).style.background = 'rgba(255,255,255,.18)'}
-                  onMouseLeave={e => (e.currentTarget as HTMLElement).style.background = 'rgba(255,255,255,.1)'}>
-                  <span style={{ fontSize: 26 }}>{a.ic}</span>
-                  <div>
-                    <p style={{ fontSize: 9.5, color: 'rgba(255,255,255,.45)', fontWeight: 500 }}>{a.top}</p>
-                    <p style={{ fontSize: 16, fontWeight: 800, color: '#fff' }}>{a.bot}</p>
-                  </div>
-                </button>
-              ))}
+              {/* App Store Badge */}
+              <button style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '11px 20px', borderRadius: 13, background: 'rgba(255,255,255,.1)', border: '1px solid rgba(255,255,255,.15)', transition: 'background .2s', cursor: 'pointer' }}
+                onMouseEnter={e => (e.currentTarget as HTMLElement).style.background = 'rgba(255,255,255,.18)'}
+                onMouseLeave={e => (e.currentTarget as HTMLElement).style.background = 'rgba(255,255,255,.1)'}>
+                <svg width="26" height="26" viewBox="0 0 814 1000" fill="white"><path d="M788.1 340.9c-5.8 4.5-108.2 62.2-108.2 190.5 0 148.4 130.3 200.9 134.2 202.2-.6 3.2-20.7 71.9-68.7 141.9-42.8 61.6-87.5 123.1-155.5 123.1s-85.5-39.5-164-39.5c-76 0-103.7 40.8-165.9 40.8s-105.2-57.8-155.5-127.4C46 790.7 0 663 0 541.8c0-207.2 135.4-316.8 268.9-316.8 71 0 130.1 46.3 173.4 46.3 41.7 0 107.7-50.4 185.3-50.4 30.9 0 108.2 2.6 168.2 81.4zm-90.5-185.3c33.5-39.8 57-94.8 57-150.8 0-7.7-.7-15.4-2-22.5-53.7 2-117.3 35.7-157.4 80.7-34.5 39.2-64.4 94.8-64.4 153.6 0 8.4 1.3 16.7 1.9 19.2 3.5.6 9 1.3 14.5 1.3 47.7 0 105.4-31.9 150.4-81.5z"/></svg>
+                <div style={{ textAlign: 'left' }}>
+                  <p style={{ fontSize: 9.5, color: 'rgba(255,255,255,.5)', fontWeight: 500, lineHeight: 1 }}>Download on the</p>
+                  <p style={{ fontSize: 16, fontWeight: 800, color: '#fff', lineHeight: 1.3 }}>App Store</p>
+                </div>
+              </button>
+              {/* Google Play Badge */}
+              <button style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '11px 20px', borderRadius: 13, background: 'rgba(255,255,255,.1)', border: '1px solid rgba(255,255,255,.15)', transition: 'background .2s', cursor: 'pointer' }}
+                onMouseEnter={e => (e.currentTarget as HTMLElement).style.background = 'rgba(255,255,255,.18)'}
+                onMouseLeave={e => (e.currentTarget as HTMLElement).style.background = 'rgba(255,255,255,.1)'}>
+                <svg width="26" height="26" viewBox="0 0 512 512" fill="none"><path d="M48 432c0 17.7 19.3 28 34.3 18.9L416 272v-32L82.3 61.1C67.3 52 48 62.3 48 80v352z" fill="#4285F4"/><path d="M48 80c0-17.7 19.3-28 34.3-18.9L282 181l-52 52L48 80z" fill="#34A853"/><path d="M230 181l52-52 100.4 60.6-52 52L230 181z" fill="#FBBC05"/><path d="M282 331 82.3 449.9C67.3 459 48 448.7 48 431l182-153 52 53z" fill="#EA4335"/><path d="M330.4 271.6 416 272l-85.6.4-100.4-60.4 52-52 48 51.6z" fill="#FBBC05" opacity=".5"/></svg>
+                <div style={{ textAlign: 'left' }}>
+                  <p style={{ fontSize: 9.5, color: 'rgba(255,255,255,.5)', fontWeight: 500, lineHeight: 1 }}>Get it on</p>
+                  <p style={{ fontSize: 16, fontWeight: 800, color: '#fff', lineHeight: 1.3 }}>Google Play</p>
+                </div>
+              </button>
             </div>
             <div style={{ display: 'flex', gap: 20, flexWrap: 'wrap' }}>
               {[['4.8 ★', 'App Store rating'], ['4.7 ★', 'Play Store rating'], ['5L+', 'Downloads']].map(([v, l]) => (
