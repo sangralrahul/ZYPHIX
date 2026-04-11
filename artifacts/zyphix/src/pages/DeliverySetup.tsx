@@ -1,6 +1,6 @@
 import { useState, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ArrowLeft, ArrowRight, Check, Upload, User, Bike, Calendar, CreditCard } from 'lucide-react';
+import { ArrowLeft, ArrowRight, Check, Upload, User, Bike, Calendar, CreditCard, FileDown } from 'lucide-react';
 import { useLocation } from 'wouter';
 import { ZyphixLogo } from '@/components/ZyphixLogo';
 
@@ -459,6 +459,79 @@ function AvailabilityStep({ onNext, onBack }: { onNext:(d:object)=>void; onBack:
   );
 }
 
+/* ─── PDF export helper ─── */
+function exportDeliveryPDF(personal: Record<string,string>) {
+  const ref = 'ZYX-D-' + Date.now().toString(36).toUpperCase();
+  const date = new Date().toLocaleDateString('en-IN', { day:'2-digit', month:'long', year:'numeric' });
+  const html = `<!DOCTYPE html><html><head><meta charset="utf-8"/>
+  <title>Delivery Partner Application – ZYPHIX</title>
+  <style>
+    *{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',Arial,sans-serif;}
+    body{background:#fff;color:#111827;padding:40px;max-width:800px;margin:0 auto;}
+    .header{display:flex;align-items:center;justify-content:space-between;border-bottom:3px solid #0DA366;padding-bottom:18px;margin-bottom:28px;}
+    .logo{font-size:26px;font-weight:900;letter-spacing:-.04em;color:#111827;}
+    .logo span{color:#0DA366;}
+    .badge{background:#FFF7ED;border:1.5px solid #FED7AA;color:#9A3412;font-size:12px;font-weight:700;padding:5px 14px;border-radius:99px;}
+    h1{font-size:22px;font-weight:900;color:#111827;margin-bottom:6px;}
+    .meta{font-size:13px;color:#6B7280;margin-bottom:28px;}
+    .ref{font-size:12px;font-weight:700;color:#0DA366;background:#ECFDF5;border:1px solid #A7F3D0;padding:8px 16px;border-radius:8px;display:inline-block;margin-bottom:28px;}
+    .section{margin-bottom:26px;}
+    .section-title{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:#9CA3AF;margin-bottom:12px;}
+    table{width:100%;border-collapse:collapse;border:1px solid #E5E7EB;border-radius:10px;overflow:hidden;}
+    th{background:#F9FAFB;text-align:left;padding:10px 14px;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:#6B7280;border-bottom:1px solid #E5E7EB;}
+    td{padding:10px 14px;border-bottom:1px solid #E5E7EB;}
+    tr:last-child td{border-bottom:none;}
+    .steps{list-style:none;padding:0;margin:0;}
+    .steps li{display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid #F3F4F6;font-size:13px;color:#374151;}
+    .steps li:last-child{border-bottom:none;}
+    .step-num{width:22px;height:22px;border-radius:50%;background:#0DA366;color:#fff;font-size:11px;font-weight:900;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+    .earn{background:#FFFBEB;border:1.5px solid #FDE68A;border-radius:12px;padding:14px 18px;font-size:13px;color:#78350F;font-weight:600;margin-top:24px;}
+    .footer{margin-top:40px;border-top:1px solid #E5E7EB;padding-top:16px;font-size:11px;color:#9CA3AF;text-align:center;line-height:1.6;}
+    @media print{body{padding:20px;}@page{margin:15mm;}}
+  </style></head><body>
+  <div class="header">
+    <div class="logo">ZYPH<span>IX</span></div>
+    <span class="badge">Delivery Partner Application</span>
+  </div>
+  <h1>Application Submitted</h1>
+  <p class="meta">Submitted on ${date} &nbsp;·&nbsp; Clavix Technologies Pvt. Ltd., Jammu, J&K</p>
+  <div class="ref">Reference: ${ref}</div>
+
+  <div class="section">
+    <div class="section-title">Applicant Details</div>
+    <table>
+      <tr><th>Field</th><th>Details</th></tr>
+      <tr><td style="font-weight:600;">Full Name</td><td>${personal.name || '—'}</td></tr>
+      <tr><td style="font-weight:600;">Mobile Number</td><td>${personal.phone || '—'}</td></tr>
+      <tr><td style="font-weight:600;">Age</td><td>${personal.age || '—'} years</td></tr>
+      <tr><td style="font-weight:600;">Area / Colony</td><td>${personal.area || '—'}</td></tr>
+      <tr><td style="font-weight:600;">Emergency Contact</td><td>${personal.emergency || '—'}</td></tr>
+    </table>
+  </div>
+
+  <div class="section">
+    <div class="section-title">What Happens Next</div>
+    <ul class="steps">
+      <li><span class="step-num">1</span>Document verification by our team</li>
+      <li><span class="step-num">2</span>Background check (24–48 hours)</li>
+      <li><span class="step-num">3</span>App onboarding &amp; training session</li>
+      <li><span class="step-num">4</span>Start delivering and earn!</li>
+    </ul>
+  </div>
+
+  <div class="earn">💰 Earn ₹18–₹25 per delivery + daily bonuses + fuel allowance (EV gets extra incentive!)</div>
+
+  <div class="footer">
+    This is an auto-generated application confirmation. Keep it for your records.<br/>
+    Zyphix is a product of Clavix Technologies Pvt. Ltd. · Jammu, J&K · wa.me/919682394363
+  </div>
+  <script>window.onload=()=>{window.print();}</script>
+  </body></html>`;
+
+  const win = window.open('', '_blank');
+  if (win) { win.document.write(html); win.document.close(); }
+}
+
 /* ─── Step 5: Success ─── */
 function SuccessStep({ personal }: { personal: Record<string,string> }) {
   const [, setLoc] = useLocation();
@@ -470,15 +543,10 @@ function SuccessStep({ personal }: { personal: Record<string,string> }) {
       <p style={{ color:T2,fontSize:14.5,lineHeight:1.7,marginBottom:28 }}>
         Hey <strong>{personal.name}</strong>! We've received your delivery partner application. Our team will verify your documents and call you on <strong>{personal.phone}</strong> within 48 hours.
       </p>
-      <div style={{ background:`${G}0C`,border:`1.5px solid ${G}30`,borderRadius:14,padding:'18px 20px',marginBottom:24,textAlign:'left' }}>
+      <div style={{ background:`${G}0C`,border:`1.5px solid ${G}30`,borderRadius:14,padding:'18px 20px',marginBottom:20,textAlign:'left' }}>
         <p style={{ fontSize:13,fontWeight:700,color:G,marginBottom:12 }}>⏱ What happens next?</p>
         <ul style={{ listStyle:'none',padding:0,margin:0,display:'flex',flexDirection:'column',gap:8 }}>
-          {[
-            'Document verification by our team',
-            'Background check (24–48 hours)',
-            'App onboarding & training session',
-            'Start delivering and earn!',
-          ].map((s,i)=>(
+          {['Document verification by our team','Background check (24–48 hours)','App onboarding & training session','Start delivering and earn!'].map((s,i)=>(
             <li key={i} style={{ fontSize:13,color:T2,display:'flex',alignItems:'center',gap:10 }}>
               <span style={{ width:20,height:20,borderRadius:'50%',background:G,color:'#fff',fontSize:10,fontWeight:900,display:'inline-flex',alignItems:'center',justifyContent:'center',flexShrink:0 }}>{i+1}</span>
               {s}
@@ -486,13 +554,19 @@ function SuccessStep({ personal }: { personal: Record<string,string> }) {
           ))}
         </ul>
       </div>
-      <div style={{ background:'#FFFBEB',border:'1.5px solid #FDE68A',borderRadius:14,padding:'14px 18px',marginBottom:24 }}>
+      <div style={{ background:'#FFFBEB',border:'1.5px solid #FDE68A',borderRadius:14,padding:'14px 18px',marginBottom:28 }}>
         <p style={{ fontSize:13,color:'#78350F',fontWeight:600 }}>💰 Earn ₹18–₹25 per delivery + daily bonuses + fuel allowance (EV gets extra incentive!)</p>
       </div>
-      <motion.button onClick={()=>setLoc('/')} whileHover={{scale:1.02}} whileTap={{scale:.97}}
-        style={{ padding:'14px 32px',borderRadius:12,background:G,color:'#fff',fontSize:14.5,fontWeight:800,border:'none',cursor:'pointer',boxShadow:`0 4px 20px ${G}40` }}>
-        Back to Home
-      </motion.button>
+      <div style={{ display:'flex', gap:12, justifyContent:'center' }}>
+        <motion.button onClick={()=>exportDeliveryPDF(personal)} whileHover={{scale:1.03}} whileTap={{scale:.97}}
+          style={{ padding:'13px 24px',borderRadius:12,background:W,border:`2px solid ${G}`,color:G,fontSize:14,fontWeight:800,cursor:'pointer',display:'flex',alignItems:'center',gap:8,boxShadow:'0 2px 8px rgba(0,0,0,.07)' }}>
+          <FileDown size={17}/> Export to PDF
+        </motion.button>
+        <motion.button onClick={()=>setLoc('/')} whileHover={{scale:1.02}} whileTap={{scale:.97}}
+          style={{ padding:'13px 24px',borderRadius:12,background:G,color:'#fff',fontSize:14,fontWeight:800,border:'none',cursor:'pointer',boxShadow:`0 4px 20px ${G}40` }}>
+          Back to Home
+        </motion.button>
+      </div>
     </motion.div>
   );
 }

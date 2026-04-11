@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ArrowLeft, ArrowRight, Check, Store, Clock, FileText, Sparkles } from 'lucide-react';
+import { ArrowLeft, ArrowRight, Check, Store, Clock, FileText, Sparkles, FileDown } from 'lucide-react';
 import { useLocation } from 'wouter';
 import { ZyphixLogo } from '@/components/ZyphixLogo';
 
@@ -344,7 +344,7 @@ function StoreInfoStep({ onNext }: { onNext:(d:object)=>void }) {
 }
 
 /* ─── Step 2: Categories ─── */
-function CategoriesStep({ onNext, onBack }: { onNext:(s:Set<string>)=>void; onBack:()=>void }) {
+function CategoriesStep({ onNext, onBack }: { onNext:(s:Set<string>, subs:Record<string,Set<string>>)=>void; onBack:()=>void }) {
   const [selectedCats, setSelectedCats] = useState<Set<string>>(new Set());
   const [expandedCat, setExpandedCat] = useState<string|null>(null);
   const [selectedSubs, setSelectedSubs] = useState<Record<string,Set<string>>>({});
@@ -482,7 +482,7 @@ function CategoriesStep({ onNext, onBack }: { onNext:(s:Set<string>)=>void; onBa
           style={{ padding:'14px 22px', borderRadius:12, background:W, border:`1.5px solid ${BD}`, color:T2, fontSize:14, fontWeight:700, cursor:'pointer', display:'flex', alignItems:'center', gap:6 }}>
           <ArrowLeft size={15}/> Back
         </button>
-        <motion.button onClick={()=>onNext(selectedCats)} whileHover={{scale:1.02}} whileTap={{scale:.97}}
+        <motion.button onClick={()=>onNext(selectedCats, selectedSubs)} whileHover={{scale:1.02}} whileTap={{scale:.97}}
           style={{ flex:1, padding:'15px', borderRadius:13, background: selectedCats.size>0?G:'#9CA3AF', color:'#fff', fontSize:15, fontWeight:800, border:'none', cursor: selectedCats.size>0?'pointer':'not-allowed', display:'flex', alignItems:'center', justifyContent:'center', gap:8, transition:'background .2s', boxShadow: selectedCats.size>0?`0 6px 24px ${G}45`:'none' }}>
           Continue {totalItems>0?`(${totalItems} items)`:''} <ArrowRight size={16}/>
         </motion.button>
@@ -583,8 +583,84 @@ function BusinessStep({ onNext, onBack }: { onNext:()=>void; onBack:()=>void }) 
   );
 }
 
+/* ─── PDF export helper ─── */
+function exportMerchantPDF(storeData: Record<string,string>, categories: Set<string>, selectedSubs: Record<string,Set<string>>) {
+  const ref = 'ZYX-M-' + Date.now().toString(36).toUpperCase();
+  const date = new Date().toLocaleDateString('en-IN', { day:'2-digit', month:'long', year:'numeric' });
+
+  const catRows = [...categories].map(id => {
+    const cat = CATS.find(c => c.id === id);
+    if (!cat) return '';
+    const items = [...(selectedSubs[id] ?? [])];
+    return `
+      <tr>
+        <td style="padding:10px 14px;border-bottom:1px solid #E5E7EB;font-weight:700;color:#111827;vertical-align:top;">${cat.n}</td>
+        <td style="padding:10px 14px;border-bottom:1px solid #E5E7EB;color:#6B7280;font-size:12px;">${items.length > 0 ? items.join(', ') : '<em>All items</em>'}</td>
+      </tr>`;
+  }).join('');
+
+  const html = `<!DOCTYPE html><html><head><meta charset="utf-8"/>
+  <title>Store Registration – ZYPHIX</title>
+  <style>
+    *{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',Arial,sans-serif;}
+    body{background:#fff;color:#111827;padding:40px;max-width:800px;margin:0 auto;}
+    .header{display:flex;align-items:center;justify-content:space-between;border-bottom:3px solid #0DA366;padding-bottom:18px;margin-bottom:28px;}
+    .logo{font-size:26px;font-weight:900;letter-spacing:-.04em;color:#111827;}
+    .logo span{color:#0DA366;}
+    .badge{background:#ECFDF5;border:1.5px solid #6EE7B7;color:#065F46;font-size:12px;font-weight:700;padding:5px 14px;border-radius:99px;}
+    h1{font-size:22px;font-weight:900;color:#111827;margin-bottom:6px;}
+    .meta{font-size:13px;color:#6B7280;margin-bottom:28px;}
+    .ref{font-size:12px;font-weight:700;color:#0DA366;background:#ECFDF5;border:1px solid #A7F3D0;padding:8px 16px;border-radius:8px;display:inline-block;margin-bottom:28px;}
+    .section{margin-bottom:26px;}
+    .section-title{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:#9CA3AF;margin-bottom:12px;}
+    table{width:100%;border-collapse:collapse;border:1px solid #E5E7EB;border-radius:10px;overflow:hidden;}
+    th{background:#F9FAFB;text-align:left;padding:10px 14px;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:#6B7280;border-bottom:1px solid #E5E7EB;}
+    .footer{margin-top:40px;border-top:1px solid #E5E7EB;padding-top:16px;font-size:11px;color:#9CA3AF;text-align:center;line-height:1.6;}
+    @media print{body{padding:20px;}@page{margin:15mm;}}
+  </style></head><body>
+  <div class="header">
+    <div class="logo">ZYPH<span>IX</span></div>
+    <span class="badge">Store Registration Confirmation</span>
+  </div>
+  <h1>Store Registration</h1>
+  <p class="meta">Submitted on ${date} &nbsp;·&nbsp; Clavix Technologies Pvt. Ltd., Jammu, J&K</p>
+  <div class="ref">Reference: ${ref}</div>
+
+  <div class="section">
+    <div class="section-title">Store Details</div>
+    <table>
+      <tr><th>Field</th><th>Details</th></tr>
+      <tr><td style="padding:10px 14px;border-bottom:1px solid #E5E7EB;font-weight:600;">Store Name</td><td style="padding:10px 14px;border-bottom:1px solid #E5E7EB;">${storeData.name || '—'}</td></tr>
+      <tr><td style="padding:10px 14px;border-bottom:1px solid #E5E7EB;font-weight:600;">Owner Name</td><td style="padding:10px 14px;border-bottom:1px solid #E5E7EB;">${storeData.owner || '—'}</td></tr>
+      <tr><td style="padding:10px 14px;border-bottom:1px solid #E5E7EB;font-weight:600;">Mobile</td><td style="padding:10px 14px;border-bottom:1px solid #E5E7EB;">${storeData.phone || '—'}</td></tr>
+      <tr><td style="padding:10px 14px;border-bottom:1px solid #E5E7EB;font-weight:600;">Area / Colony</td><td style="padding:10px 14px;border-bottom:1px solid #E5E7EB;">${storeData.area || '—'}</td></tr>
+      <tr><td style="padding:10px 14px;border-bottom:1px solid #E5E7EB;font-weight:600;">Full Address</td><td style="padding:10px 14px;border-bottom:1px solid #E5E7EB;">${storeData.address || '—'}</td></tr>
+      <tr><td style="padding:10px 14px;font-weight:600;">Store Type</td><td style="padding:10px 14px;">${storeData.type || '—'}</td></tr>
+    </table>
+  </div>
+
+  ${categories.size > 0 ? `
+  <div class="section">
+    <div class="section-title">Categories &amp; Items (${categories.size} categories)</div>
+    <table>
+      <tr><th>Category</th><th>Selected Items</th></tr>
+      ${catRows}
+    </table>
+  </div>` : ''}
+
+  <div class="footer">
+    This is an auto-generated registration confirmation. Keep it for your records.<br/>
+    Zyphix is a product of Clavix Technologies Pvt. Ltd. · Jammu, J&K · wa.me/919682394363
+  </div>
+  <script>window.onload=()=>{window.print();}</script>
+  </body></html>`;
+
+  const win = window.open('', '_blank');
+  if (win) { win.document.write(html); win.document.close(); }
+}
+
 /* ─── Step 4: Success ─── */
-function SuccessStep({ storeData, categories }: { storeData: Record<string,string>; categories: Set<string> }) {
+function SuccessStep({ storeData, categories, selectedSubs }: { storeData: Record<string,string>; categories: Set<string>; selectedSubs: Record<string,Set<string>> }) {
   const [, setLoc] = useLocation();
   return (
     <motion.div initial={{opacity:0,scale:.9}} animate={{opacity:1,scale:1}} transition={{type:'spring',stiffness:180}}
@@ -608,7 +684,7 @@ function SuccessStep({ storeData, categories }: { storeData: Record<string,strin
               if (!cat) return null;
               return (
                 <span key={id} style={{ display:'inline-flex', alignItems:'center', gap:5, background:cat.bg, border:`1px solid ${cat.c}30`, color:cat.c, fontSize:12, fontWeight:700, padding:'5px 11px', borderRadius:99 }}>
-                  {cat.e} {cat.n}
+                  {cat.n}
                 </span>
               );
             })}
@@ -617,7 +693,7 @@ function SuccessStep({ storeData, categories }: { storeData: Record<string,strin
       )}
 
       <div style={{ background:`${G}0C`, border:`1.5px solid ${G}30`, borderRadius:14, padding:'16px 20px', marginBottom:24 }}>
-        <p style={{ fontSize:13, color:G, fontWeight:700, marginBottom:4 }}>⏱ What happens next?</p>
+        <p style={{ fontSize:13, color:G, fontWeight:700, marginBottom:8 }}>⏱ What happens next?</p>
         <ul style={{ listStyle:'none', padding:0, margin:0, display:'flex', flexDirection:'column', gap:6 }}>
           {['Our team verifies your store (24-48 hrs)','We help you set up your product catalogue','Your store goes live on Zyphix!'].map((s,i)=>(
             <li key={i} style={{ fontSize:13, color:T2, display:'flex', alignItems:'center', gap:8 }}>
@@ -628,10 +704,17 @@ function SuccessStep({ storeData, categories }: { storeData: Record<string,strin
         </ul>
       </div>
 
-      <motion.button onClick={()=>setLoc('/')} whileHover={{scale:1.02}} whileTap={{scale:.97}}
-        style={{ padding:'14px 32px', borderRadius:12, background:G, color:'#fff', fontSize:14.5, fontWeight:800, border:'none', cursor:'pointer', boxShadow:`0 4px 20px ${G}40` }}>
-        Back to Home
-      </motion.button>
+      {/* Action buttons */}
+      <div style={{ display:'flex', gap:12, justifyContent:'center' }}>
+        <motion.button onClick={()=>exportMerchantPDF(storeData, categories, selectedSubs)} whileHover={{scale:1.03}} whileTap={{scale:.97}}
+          style={{ padding:'13px 24px', borderRadius:12, background:W, border:`2px solid ${G}`, color:G, fontSize:14, fontWeight:800, cursor:'pointer', display:'flex', alignItems:'center', gap:8, boxShadow:SH }}>
+          <FileDown size={17}/> Export to PDF
+        </motion.button>
+        <motion.button onClick={()=>setLoc('/')} whileHover={{scale:1.02}} whileTap={{scale:.97}}
+          style={{ padding:'13px 24px', borderRadius:12, background:G, color:'#fff', fontSize:14, fontWeight:800, border:'none', cursor:'pointer', boxShadow:`0 4px 20px ${G}40` }}>
+          Back to Home
+        </motion.button>
+      </div>
     </motion.div>
   );
 }
@@ -641,10 +724,11 @@ export function MerchantSetup() {
   const [step, setStep] = useState(0);
   const [storeData, setStoreData] = useState<Record<string,string>>({});
   const [categories, setCategories] = useState<Set<string>>(new Set());
+  const [selectedSubs, setSelectedSubs] = useState<Record<string,Set<string>>>({});
   const [, setLoc] = useLocation();
 
   const handleStoreNext = (d: object) => { setStoreData(d as Record<string,string>); setStep(1); window.scrollTo(0,0); };
-  const handleCatsNext  = (s: Set<string>) => { setCategories(s); setStep(2); window.scrollTo(0,0); };
+  const handleCatsNext  = (s: Set<string>, subs: Record<string,Set<string>>) => { setCategories(s); setSelectedSubs(subs); setStep(2); window.scrollTo(0,0); };
   const handleBizNext   = () => { setStep(3); window.scrollTo(0,0); };
 
   return (
@@ -672,7 +756,7 @@ export function MerchantSetup() {
           {step===0 && <StoreInfoStep key="s0" onNext={handleStoreNext} />}
           {step===1 && <CategoriesStep key="s1" onNext={handleCatsNext} onBack={()=>{setStep(0);window.scrollTo(0,0);}} />}
           {step===2 && <BusinessStep key="s2" onNext={handleBizNext} onBack={()=>{setStep(1);window.scrollTo(0,0);}} />}
-          {step===3 && <SuccessStep key="s3" storeData={storeData} categories={categories} />}
+          {step===3 && <SuccessStep key="s3" storeData={storeData} categories={categories} selectedSubs={selectedSubs} />}
         </AnimatePresence>
       </div>
     </div>
