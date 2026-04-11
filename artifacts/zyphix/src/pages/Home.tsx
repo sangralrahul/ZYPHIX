@@ -1536,8 +1536,8 @@ function WhyZyphixStrip() {
 
 /* ═══════════════ WAITLIST SECTION ═══════════════ */
 const WLIST_BENEFITS = [
-  { e: '🎁', title: 'FREE DELIVERY', sub: 'For 6 whole months', grad: 'linear-gradient(140deg,#ECFDF5 0%,#D1FAE5 100%)', bd: '#6EE7B7', tc: '#065F46', glow: '#059669' },
-  { e: '₹200', title: 'LAUNCH CREDIT', sub: 'Yours when we go live', grad: 'linear-gradient(140deg,#FFFBEB 0%,#FEF3C7 100%)', bd: '#FCD34D', tc: '#92400E', glow: '#D97706', big: true },
+  { e: '🎁', title: 'FREE DELIVERY', sub: 'Upto 10 orders free', grad: 'linear-gradient(140deg,#ECFDF5 0%,#D1FAE5 100%)', bd: '#6EE7B7', tc: '#065F46', glow: '#059669' },
+  { e: '₹125', title: 'LAUNCH CREDIT', sub: 'Code: ZYPHIX125', grad: 'linear-gradient(140deg,#FFFBEB 0%,#FEF3C7 100%)', bd: '#FCD34D', tc: '#92400E', glow: '#D97706', big: true },
   { e: '🥇', title: 'PRIORITY ACCESS', sub: 'First in line, always', grad: 'linear-gradient(140deg,#EFF6FF 0%,#DBEAFE 100%)', bd: '#93C5FD', tc: '#1E40AF', glow: '#3B82F6' },
   { e: '⚡', title: 'FIRST TO ORDER', sub: 'In Jammu & beyond', grad: 'linear-gradient(140deg,#FFF7ED 0%,#FFEDD5 100%)', bd: '#FDBA74', tc: '#9A3412', glow: '#EA580C' },
 ];
@@ -1686,7 +1686,7 @@ function WaitlistSection() {
                   <motion.div animate={{ rotate:[0,14,-14,10,-8,0], scale:[1,1.25,1] }} transition={{ duration:.7 }}
                     style={{ fontSize:56, marginBottom:14 }}>🎉</motion.div>
                   <h3 style={{ fontFamily:"'Outfit',sans-serif", fontWeight:900, color:T1, fontSize:'1.4rem', marginBottom:8 }}>You're on the list!</h3>
-                  <p style={{ color:T2, fontSize:14, lineHeight:1.65, marginBottom:22 }}>We'll reach out before launch.<br />Your ₹200 credit is reserved.</p>
+                  <p style={{ color:T2, fontSize:14, lineHeight:1.65, marginBottom:22 }}>We'll reach out before launch.<br />Your ₹125 credit is reserved — use code <strong style={{color:G}}>ZYPHIX125</strong></p>
                   <motion.div animate={{ scale:[1,1.02,1] }} transition={{ repeat:Infinity, duration:2 }}
                     style={{ background:`${G}10`, border:`1.5px solid ${G}35`, borderRadius:12, padding:'14px 20px' }}>
                     <p style={{ fontSize:13.5, color:G, fontWeight:800 }}>🌟 You're #{count} on the waitlist</p>
