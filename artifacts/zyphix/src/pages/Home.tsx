@@ -22,6 +22,39 @@ const BD  = '#E5E7EB';
 const SH  = '0 1px 3px rgba(0,0,0,.08), 0 4px 16px rgba(0,0,0,.06)';
 const SH2 = '0 4px 12px rgba(0,0,0,.1), 0 16px 40px rgba(0,0,0,.1)';
 
+/* ═══════════════ LOGO ═══════════════ */
+let _logoId = 0;
+function ZIcon({ size = 34 }: { size?: number }) {
+  const id = React.useRef(`zg-${++_logoId}`).current;
+  return (
+    <svg width={size} height={size} viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ flexShrink: 0 }}>
+      <defs>
+        <linearGradient id={id} x1="0" y1="0" x2="40" y2="40" gradientUnits="userSpaceOnUse">
+          <stop stopColor="#14B87A" />
+          <stop offset="1" stopColor="#046B50" />
+        </linearGradient>
+      </defs>
+      {/* Background pill */}
+      <rect width="40" height="40" rx="11" fill={`url(#${id})`} />
+      {/* Subtle top-highlight */}
+      <rect x="0" y="0" width="40" height="20" rx="11" fill="rgba(255,255,255,0.07)" />
+      {/* Bold "Z" letterform */}
+      <path d="M9 11 L31 11 L31 17 L19.5 17 L31 24 L31 29 L9 29 L9 23 L20.5 23 L9 16 Z" fill="white" />
+    </svg>
+  );
+}
+
+function ZWordmark({ size = 34, dark = false }: { size?: number; dark?: boolean }) {
+  return (
+    <div style={{ display: 'flex', alignItems: 'center', gap: 10, flexShrink: 0 }}>
+      <ZIcon size={size} />
+      <span style={{ fontFamily: "'Outfit',sans-serif", fontWeight: 900, fontSize: size * 0.56, letterSpacing: '-.045em', color: dark ? 'rgba(255,255,255,.92)' : T1, lineHeight: 1 }}>
+        Z<span style={{ color: G }}>yphix</span>
+      </span>
+    </div>
+  );
+}
+
 /* ─── Helpers ─── */
 function useCountdown(n: number) {
   const [s, setS] = useState(n);
@@ -107,13 +140,8 @@ function Navbar({ tab, setTab }: { tab: TabId; setTab: (t: TabId) => void }) {
     <div className="sticky top-0 z-50" style={{ background: W, borderBottom: `1px solid ${BD}`, boxShadow: scrolled ? SH : 'none', transition: 'box-shadow .2s' }}>
       {/* Top row */}
       <div style={{ maxWidth: 1320, margin: '0 auto', padding: '0 24px', height: 64, display: 'flex', alignItems: 'center', gap: 14, borderBottom: `1px solid ${BD}` }}>
-        <a href="/" style={{ display: 'flex', alignItems: 'center', gap: 9, flexShrink: 0, textDecoration: 'none' }}>
-          <div style={{ width: 32, height: 32, borderRadius: 9, background: G, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-            <Zap size={16} color="#fff" fill="#fff" />
-          </div>
-          <span style={{ fontFamily: "'Outfit',sans-serif", fontWeight: 900, fontSize: '1.2rem', letterSpacing: '-.04em', color: T1 }}>
-            Zyp<span style={{ color: G }}>hix</span>
-          </span>
+        <a href="/" style={{ textDecoration: 'none' }}>
+          <ZWordmark size={33} />
         </a>
         <div style={{ width: 1, height: 28, background: BD }} />
         <button style={{ display: 'flex', alignItems: 'center', gap: 7, flexShrink: 0 }}>
@@ -798,13 +826,8 @@ function Footer() {
       <div style={{ maxWidth: 1320, margin: '0 auto', padding: '52px 24px 32px' }}>
         <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr 1fr 1fr', gap: 48, marginBottom: 44 }}>
           <div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 9, marginBottom: 16 }}>
-              <div style={{ width: 30, height: 30, borderRadius: 8, background: G, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                <Zap size={15} color="#fff" fill="#fff" />
-              </div>
-              <span style={{ fontFamily: "'Outfit',sans-serif", fontWeight: 900, fontSize: '1.2rem', letterSpacing: '-.04em', color: '#fff' }}>
-                Zyp<span style={{ color: G }}>hix</span>
-              </span>
+            <div style={{ marginBottom: 16 }}>
+              <ZWordmark size={30} dark />
             </div>
             <p style={{ fontSize: 13.5, color: 'rgba(255,255,255,.4)', lineHeight: 1.7, marginBottom: 22, maxWidth: 260 }}>India's SuperLocal App — groceries, food & services delivered in 30 minutes. 100+ cities, 10,000+ partners.</p>
             <div style={{ display: 'flex', gap: 8, marginBottom: 24 }}>
