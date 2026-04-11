@@ -15,9 +15,9 @@ import { Offers } from "@/pages/Offers";
 
 const queryClient = new QueryClient();
 
-function Layout({ children }: { children: React.ReactNode }) {
+function SubLayout({ children }: { children: React.ReactNode }) {
   return (
-    <div className="min-h-[100dvh] flex flex-col pb-16 md:pb-0" style={{ background: '#0A0E1A', color: 'white' }}>
+    <div className="min-h-[100dvh] flex flex-col pb-16 md:pb-0" style={{ background: 'var(--z-bg)', color: 'white' }}>
       <Navbar />
       <main className="flex-1 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
         {children}
@@ -31,11 +31,21 @@ function Router() {
   return (
     <Switch>
       <Route path="/" component={Home} />
-      <Route path="/now" component={ZyphixNow} />
-      <Route path="/eats" component={ZyphixEats} />
-      <Route path="/book" component={ZyphixBook} />
-      <Route path="/map" component={KiranaMap} />
-      <Route path="/offers" component={Offers} />
+      <Route path="/now">
+        <SubLayout><ZyphixNow /></SubLayout>
+      </Route>
+      <Route path="/eats">
+        <SubLayout><ZyphixEats /></SubLayout>
+      </Route>
+      <Route path="/book">
+        <SubLayout><ZyphixBook /></SubLayout>
+      </Route>
+      <Route path="/map">
+        <SubLayout><KiranaMap /></SubLayout>
+      </Route>
+      <Route path="/offers">
+        <SubLayout><Offers /></SubLayout>
+      </Route>
       <Route component={NotFound} />
     </Switch>
   );
@@ -46,9 +56,7 @@ function App() {
     <QueryClientProvider client={queryClient}>
       <TooltipProvider>
         <WouterRouter base={import.meta.env.BASE_URL.replace(/\/$/, "")}>
-          <Layout>
-            <Router />
-          </Layout>
+          <Router />
         </WouterRouter>
         <Toaster />
       </TooltipProvider>
