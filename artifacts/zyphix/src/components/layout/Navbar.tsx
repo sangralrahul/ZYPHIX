@@ -1,119 +1,129 @@
 import React, { useState, useEffect } from 'react';
-import { Link, useLocation } from 'wouter';
-import { Search, MapPin, ShoppingCart, User, ChevronDown, Menu, X, Zap } from 'lucide-react';
+import { Link } from 'wouter';
+import { Search, MapPin, ShoppingCart, User, ChevronDown, Bell, Zap, Menu, X } from 'lucide-react';
 
 export function Navbar() {
-  const [location] = useLocation();
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
-  const [cartCount] = useState(3);
-  const [searchFocused, setSearchFocused] = useState(false);
+  const [mobileOpen, setMobileOpen] = useState(false);
+  const [focused, setFocused] = useState(false);
+  const cartCount = 3;
 
   useEffect(() => {
-    const handler = () => setScrolled(window.scrollY > 4);
-    window.addEventListener('scroll', handler);
-    return () => window.removeEventListener('scroll', handler);
+    const h = () => setScrolled(window.scrollY > 8);
+    window.addEventListener('scroll', h);
+    return () => window.removeEventListener('scroll', h);
   }, []);
 
   return (
-    <div
-      className="sticky top-0 z-50 w-full transition-all duration-200"
+    <div className="sticky top-0 z-50 w-full transition-all duration-300"
       style={{
-        background: scrolled ? 'rgba(10,14,26,0.97)' : '#0A0E1A',
-        borderBottom: '1px solid rgba(30,58,110,0.6)',
-        backdropFilter: scrolled ? 'blur(20px)' : 'none',
-        boxShadow: scrolled ? '0 2px 20px rgba(0,0,0,0.5)' : 'none',
-      }}
-    >
-      <div className="max-w-screen-xl mx-auto px-4 sm:px-6">
-        <div className="flex items-center gap-4 h-14">
+        background: scrolled ? 'rgba(5,6,15,0.95)' : 'rgba(5,6,15,0.85)',
+        backdropFilter: 'blur(24px)',
+        WebkitBackdropFilter: 'blur(24px)',
+        borderBottom: scrolled ? '1px solid rgba(255,255,255,0.07)' : '1px solid transparent',
+        boxShadow: scrolled ? '0 8px 40px rgba(0,0,0,0.6)' : 'none',
+      }}>
+      <div className="max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex items-center gap-3 h-16">
 
           {/* Logo */}
-          <Link href="/" className="flex items-center gap-2 shrink-0 group">
-            <div className="w-8 h-8 rounded-lg flex items-center justify-center"
-              style={{ background: 'linear-gradient(135deg, #00C9A7, #1E4FC2)' }}>
-              <Zap className="h-4 w-4 text-white fill-white" />
+          <Link href="/" className="flex items-center gap-2.5 shrink-0 group">
+            <div className="relative w-9 h-9 rounded-xl flex items-center justify-center overflow-hidden"
+              style={{ background: 'linear-gradient(135deg, #00FFD1, #8B5CF6)' }}>
+              <Zap className="h-4.5 w-4.5 text-white fill-white relative z-10" style={{ height: 18, width: 18 }} />
             </div>
-            <span className="font-black text-xl tracking-tight text-white hidden sm:block">ZYPHIX</span>
+            <div className="hidden sm:block">
+              <span className="font-black text-xl tracking-tight"
+                style={{ background: 'linear-gradient(90deg,#00FFD1,#8B5CF6)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
+                ZYPHIX
+              </span>
+            </div>
           </Link>
 
-          {/* Location */}
-          <button className="flex items-center gap-1 text-sm shrink-0 hover:opacity-80 transition-opacity">
-            <MapPin className="h-3.5 w-3.5 shrink-0" style={{ color: '#00C9A7' }} />
-            <div className="hidden md:block text-left">
-              <p className="text-[10px] leading-none" style={{ color: '#5A7A9A' }}>Deliver to</p>
-              <div className="flex items-center gap-0.5">
-                <span className="font-bold text-white text-sm">Jammu, J&K</span>
-                <ChevronDown className="h-3.5 w-3.5" style={{ color: '#5A7A9A' }} />
+          {/* Location pill */}
+          <button className="hidden md:flex items-center gap-1.5 px-3 py-2 rounded-xl transition-all hover:bg-white/5 shrink-0"
+            style={{ border: '1px solid rgba(255,255,255,0.07)' }}>
+            <MapPin className="h-3.5 w-3.5" style={{ color: '#00FFD1' }} />
+            <div className="text-left">
+              <p className="text-[9px] font-medium leading-none" style={{ color: '#4A5080' }}>DELIVER TO</p>
+              <div className="flex items-center gap-0.5 mt-0.5">
+                <span className="font-bold text-white text-sm leading-none">Jammu, J&K</span>
+                <ChevronDown className="h-3 w-3" style={{ color: '#4A5080' }} />
               </div>
             </div>
-            <ChevronDown className="h-3.5 w-3.5 md:hidden" style={{ color: '#5A7A9A' }} />
           </button>
 
           {/* Search */}
-          <div className="flex-1 relative">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 z-10 transition-colors"
-              style={{ color: searchFocused ? '#00C9A7' : '#5A7A9A' }} />
+          <div className="flex-1 relative max-w-2xl">
+            <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 z-10 transition-colors"
+              style={{ color: focused ? '#00FFD1' : '#4A5080' }} />
             <input
-              type="search"
-              placeholder='Search for "dal makhni", "amul butter"...'
-              onFocus={() => setSearchFocused(true)}
-              onBlur={() => setSearchFocused(false)}
-              className="w-full pl-9 pr-4 py-2.5 rounded-xl text-sm outline-none transition-all duration-200"
+              type="text"
+              placeholder='Search groceries, food, services...'
+              onFocus={() => setFocused(true)}
+              onBlur={() => setFocused(false)}
+              className="w-full pl-10 pr-4 py-2.5 rounded-xl text-sm text-white outline-none transition-all duration-200"
               style={{
-                background: searchFocused ? '#0F1B35' : 'rgba(15,27,53,0.8)',
-                border: searchFocused ? '1.5px solid rgba(0,201,167,0.6)' : '1.5px solid #1E3A6E',
-                color: 'white',
-                boxShadow: searchFocused ? '0 0 0 3px rgba(0,201,167,0.08)' : 'none',
+                background: focused ? 'rgba(17,20,38,0.9)' : 'rgba(17,20,38,0.6)',
+                border: focused ? '1px solid rgba(0,255,209,0.4)' : '1px solid rgba(255,255,255,0.07)',
+                boxShadow: focused ? '0 0 0 4px rgba(0,255,209,0.06)' : 'none',
               }}
             />
           </div>
 
-          {/* Actions */}
+          {/* Right actions */}
           <div className="flex items-center gap-2 shrink-0">
-            <button className="hidden sm:flex items-center gap-1.5 px-3 py-2 rounded-xl text-sm font-medium text-white transition-colors hover:bg-white/5"
-              style={{ border: '1px solid #1E3A6E' }}>
+            <button className="hidden sm:flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-sm font-semibold text-white/80 transition-all hover:bg-white/5"
+              style={{ border: '1px solid rgba(255,255,255,0.07)' }}>
               <User className="h-4 w-4" />
-              <span className="hidden md:inline">Profile</span>
+              <span className="hidden lg:inline">Login</span>
             </button>
-            <Link href="/now">
-              <button className="flex items-center gap-1.5 px-3 py-2 rounded-xl text-sm font-bold relative transition-all hover:scale-105"
-                style={{ background: '#00C9A7', color: '#0A0E1A', boxShadow: '0 4px 16px rgba(0,201,167,0.3)' }}>
+
+            <Link href="/">
+              <button className="relative flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-black transition-all"
+                style={{
+                  background: 'linear-gradient(135deg, #00FFD1, #0EA5E9)',
+                  color: '#050F0A',
+                  boxShadow: '0 4px 20px rgba(0,255,209,0.25)',
+                }}>
                 <ShoppingCart className="h-4 w-4" />
-                <span className="hidden sm:inline font-black">Cart</span>
+                <span className="hidden sm:inline">Cart</span>
                 {cartCount > 0 && (
-                  <span className="absolute -top-1.5 -right-1.5 w-4 h-4 rounded-full text-[10px] font-black flex items-center justify-center"
-                    style={{ background: '#FF6B35', color: 'white' }}>
+                  <span className="absolute -top-1.5 -right-1.5 w-4 h-4 rounded-full text-[10px] font-black flex items-center justify-center text-white"
+                    style={{ background: '#F97316' }}>
                     {cartCount}
                   </span>
                 )}
               </button>
             </Link>
-            <button className="md:hidden p-2" onClick={() => setMobileMenuOpen(!mobileMenuOpen)}>
-              {mobileMenuOpen ? <X className="h-5 w-5 text-white" /> : <Menu className="h-5 w-5 text-[#5A7A9A]" />}
+
+            <button className="md:hidden p-2 text-white/60 hover:text-white transition-colors"
+              onClick={() => setMobileOpen(!mobileOpen)}>
+              {mobileOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
             </button>
           </div>
         </div>
       </div>
 
-      {/* Mobile menu */}
-      {mobileMenuOpen && (
-        <div className="md:hidden border-t" style={{ borderColor: '#1E3A6E', background: 'rgba(10,14,26,0.99)' }}>
-          <div className="px-4 py-3 space-y-1">
-            {[
-              { label: 'Home', path: '/' },
-              { label: '⚡ ZyphixNow', path: '/now' },
-              { label: '🍱 ZyphixEats', path: '/eats' },
-              { label: '📅 ZyphixBook', path: '/book' },
-              { label: '🗺️ Kirana Near Me', path: '/map' },
-              { label: '🏷️ Offers', path: '/offers' },
-            ].map(item => (
-              <Link key={item.path} href={item.path} onClick={() => setMobileMenuOpen(false)}>
-                <div className="py-3 px-3 rounded-xl font-medium text-white hover:bg-white/5 transition-colors cursor-pointer">
-                  {item.label}
-                </div>
-              </Link>
+      {/* Mobile dropdown */}
+      {mobileOpen && (
+        <div className="md:hidden border-t" style={{ borderColor: 'rgba(255,255,255,0.06)', background: 'rgba(5,6,15,0.98)' }}>
+          <div className="px-4 py-4 space-y-1">
+            <div className="relative mb-3">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4" style={{ color: '#4A5080' }} />
+              <input placeholder="Search..." className="w-full pl-9 pr-4 py-2.5 rounded-xl text-white text-sm outline-none"
+                style={{ background: 'rgba(17,20,38,0.8)', border: '1px solid rgba(255,255,255,0.07)' }} />
+            </div>
+            {['🏠 Home', '⚡ ZyphixNow', '🍱 ZyphixEats', '📅 ZyphixBook', '🗺️ Kirana Near Me', '🏷️ Offers'].map((item, i) => (
+              <div key={i} onClick={() => setMobileOpen(false)}
+                className="py-3 px-3 rounded-xl text-white/80 hover:text-white hover:bg-white/5 transition-colors cursor-pointer font-medium">
+                {item}
+              </div>
             ))}
+            <button className="w-full mt-2 py-3 rounded-xl font-black text-sm"
+              style={{ background: 'linear-gradient(135deg,#00FFD1,#8B5CF6)', color: '#050F0A' }}>
+              Sign Up Free — It's Quick!
+            </button>
           </div>
         </div>
       )}
