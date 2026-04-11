@@ -67,23 +67,12 @@ export function ZyphixLogo({
             backgroundClip: 'text',
           }}>ZYPH</span>
           <span style={{
-            fontStyle: 'italic',
-            fontWeight: 200,
-            fontSize: fs * 1.05,
-            background: 'linear-gradient(180deg, #6DFFC0 0%, #0DC268 100%)',
-            WebkitBackgroundClip: 'text',
-            WebkitTextFillColor: 'transparent',
-            backgroundClip: 'text',
-            letterSpacing: '0.01em',
-            lineHeight: 1,
-          }}>/</span>
-          <span style={{
             color: '#0A0F1A',
             fontStyle: 'normal',
             fontWeight: 900,
             fontSize: fs * 1.08,
             letterSpacing: '-0.04em',
-          }}>X</span>
+          }}>IX</span>
         </span>
       )}
     </div>
