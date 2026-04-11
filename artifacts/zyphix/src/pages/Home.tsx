@@ -225,9 +225,21 @@ function DualHeroBanners({ setTab }: { setTab: (t: TabId) => void }) {
   const scrollToWaitlist = () => document.getElementById('waitlist')?.scrollIntoView({ behavior: 'smooth' });
 
   useEffect(() => {
-    [nowVidRef, eatsVidRef].forEach(ref => {
-      if (ref.current) { ref.current.muted = true; ref.current.play().catch(() => {}); }
-    });
+    const tryPlay = (vid: HTMLVideoElement | null) => {
+      if (!vid) return;
+      vid.muted = true;
+      vid.volume = 0;
+      const p = vid.play();
+      if (p !== undefined) p.catch(() => {});
+    };
+    const refs = [nowVidRef, eatsVidRef];
+    refs.forEach(r => tryPlay(r.current));
+    // IntersectionObserver as backup — plays when banner enters viewport
+    const obs = new IntersectionObserver(entries => {
+      entries.forEach(e => { if (e.isIntersecting) tryPlay(e.target as HTMLVideoElement); });
+    }, { threshold: 0.1 });
+    refs.forEach(r => { if (r.current) obs.observe(r.current); });
+    return () => obs.disconnect();
   }, []);
   return (
     <div style={{ background: W }}>
@@ -249,8 +261,9 @@ function DualHeroBanners({ setTab }: { setTab: (t: TabId) => void }) {
           onMouseEnter={() => setHovNow(true)} onMouseLeave={() => setHovNow(false)}
           onClick={() => setTab('now')}
         >
-          <video ref={nowVidRef} autoPlay muted loop playsInline
+          <video ref={nowVidRef} autoPlay muted loop playsInline preload="auto"
             poster="https://images.unsplash.com/photo-1542838132-92c53300491e?w=1400&h=960&fit=crop&q=80"
+            onCanPlay={e => { (e.target as HTMLVideoElement).muted = true; (e.target as HTMLVideoElement).play().catch(() => {}); }}
             style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover', transform: hovNow ? 'scale(1.05)' : 'scale(1)', transition: 'transform .45s ease' }}>
             <source src="/videos/grocery.mp4" type="video/mp4" />
           </video>
@@ -295,8 +308,9 @@ function DualHeroBanners({ setTab }: { setTab: (t: TabId) => void }) {
           onMouseEnter={() => setHovEats(true)} onMouseLeave={() => setHovEats(false)}
           onClick={() => setTab('eats')}
         >
-          <video ref={eatsVidRef} autoPlay muted loop playsInline
+          <video ref={eatsVidRef} autoPlay muted loop playsInline preload="auto"
             poster="https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=1400&h=960&fit=crop&q=80"
+            onCanPlay={e => { (e.target as HTMLVideoElement).muted = true; (e.target as HTMLVideoElement).play().catch(() => {}); }}
             style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover', transform: hovEats ? 'scale(1.05)' : 'scale(1)', transition: 'transform .45s ease' }}>
             <source src="/videos/food.mp4" type="video/mp4" />
           </video>
