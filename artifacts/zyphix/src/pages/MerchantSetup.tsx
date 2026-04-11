@@ -36,27 +36,155 @@ const CATS = [
   { id:'stationery',  e:tw('✏'),  n:'Stationery',          c:'#4f46e5', bg:'#EEF2FF' },
 ];
 
-const SUB_CATS: Record<string, string[]> = {
-  fruits_veg: ['Tomatoes','Potatoes','Onions','Garlic','Ginger','Capsicum','Cauliflower','Cabbage','Brinjal','Ladyfinger','Spinach','Methi','Peas','Carrot','Beetroot','Radish','Apples','Bananas','Mangoes','Oranges','Grapes','Guava','Papaya','Watermelon','Pomegranate','Lemon','Pears','Kiwi','Pineapple','Coconut'],
-  dairy:      ['Full Cream Milk','Toned Milk','Double Toned Milk','Curd / Dahi','Paneer','Butter','Ghee','Cream','Cheese','Condensed Milk','Lassi','Buttermilk (Chaas)','Eggs (6 pack)','Eggs (12 pack)','Flavoured Milk','Tofu'],
-  snacks:     ['Potato Chips','Bhujia','Namkeen','Popcorn','Peanuts','Roasted Chana','Mukhwas','Trail Mix','Papad','Khakhra','Mathri','Bikaneri Bhujia','Aloo Bhujia','Ribbon Pakoda','Corn Puffs','Rice Crackers','Prawn Crackers','Banana Chips','Chakli','Dry Fruits Mix'],
-  beverages:  ['Cola (Pepsi/Coke)','Sprite/7UP','Limca','Thums Up','Maaza / Slice','Real Juice','Paper Boat','Tropicana','Coconut Water','Packaged Drinking Water','Sparkling Water','Energy Drinks (Red Bull)','Iced Tea','Nimbu Pani Mix','Rooh Afza','Aam Panna','Jaljeera'],
-  grains:     ['Basmati Rice (1kg)','Basmati Rice (5kg)','Non-Basmati Rice','Brown Rice','Toor Dal','Moong Dal','Chana Dal','Urad Dal','Masoor Dal','Rajma','Kala Chana','White Peas','Lobia','Soya Chunks','Wheat','Jowar','Bajra','Maize','Oats','Barley'],
-  spices:     ['Turmeric Powder','Red Chilli Powder','Coriander Powder','Cumin Seeds','Cumin Powder','Garam Masala','Black Pepper','Green Cardamom','Cloves','Cinnamon','Bay Leaves','Hing (Asafoetida)','Mustard Seeds','Fenugreek Seeds','Fennel Seeds','Amchur Powder','Chaat Masala','Biryani Masala','Chicken Masala','Pav Bhaji Masala','Sambar Powder','Meat Masala','Kitchen King'],
-  atta:       ['Wheat Atta (5kg)','Wheat Atta (10kg)','Multigrain Atta','Besan (Gram Flour)','Maida (All Purpose)','Sooji / Rava','Rice Flour','Ragi Flour','Corn Flour','Jowar Flour','Bajra Flour','White Bread','Brown Bread','Multigrain Bread','Sandwich Bread','Pav (Dinner Rolls)','Burger Buns','Bread Sticks','Rusk'],
-  oil:        ['Sunflower Oil (1L)','Sunflower Oil (5L)','Mustard Oil','Soyabean Oil','Groundnut Oil','Rice Bran Oil','Coconut Oil','Refined Vegetable Oil','Olive Oil','Palm Oil','Desi Ghee (Cow)','Desi Ghee (Buffalo)','Vanaspati','Butter (Cooking)'],
-  breakfast:  ['Cornflakes','Muesli','Granola','Poha (Flattened Rice)','Upma Mix','Idli Batter','Dosa Batter','Instant Oats','Rolled Oats','Semiya (Vermicelli)','Suji Halwa Mix','Sabudana (Sago)','Beaten Rice','Sattu','Quinoa','Protein Oats'],
-  biscuits:   ['Marie Biscuits','Glucose Biscuits','Cream Biscuits (Bourbon)','Cream Biscuits (Hide & Seek)','Digestive Biscuits','Khari Biscuit','Good Day','Oreo','Parle-G','Monaco','Jim Jam','Rusk','Milk Rusk','Wafers','Cookies','Butter Cookies','Almond Cookies','Chocolate Chip Cookies','Cake Slice','Muffins'],
-  noodles:    ['Maggi Noodles','Yippee Noodles','Top Ramen','Knorr Noodles','Wai Wai','Cup Noodles','Wheat Noodles','Rice Noodles','Spaghetti Pasta','Penne Pasta','Fusilli Pasta','Macaroni','Hakka Noodles','Glass Noodles','Biryani Kit','Pasta Sauce (Arrabiata)','Pasta Sauce (White)'],
-  tea:        ['Tata Tea Gold','Tata Tea Agni','Red Label','Taj Mahal','Green Tea','Tulsi Tea','Ginger Tea','Chamomile Tea','Peppermint Tea','Darjeeling Tea','Masala Chai Mix','Filter Coffee','Bru Instant Coffee','Nescafe Classic','Nescafe Gold','Cold Coffee Mix','Chai Premix','Kadak Chai Mix'],
-  personal:   ['Shampoo (Regular)','Shampoo (Anti-Dandruff)','Conditioner','Body Wash','Soap Bar','Face Wash','Moisturizer','Sunscreen SPF 50','Deodorant','Perfume','Toothpaste','Toothbrush','Mouthwash','Face Scrub','Toner','Serum','Hair Oil','Hair Gel','Razors','Shaving Cream','Sanitary Pads','Panty Liners','Tampons','Intimate Wash'],
-  household:  ['Brooms','Mops','Dustpan','Floor Cleaning Brush','Scrubber Pads','Dish Cloth','Duster','Mop Refill','Dustbin Bags','Candles','Matchboxes','AA Batteries','AAA Batteries','LED Bulbs','Extension Cord','Mosquito Repellent','Rat Poison','Fly Swatter','Air Freshener','Room Freshener Spray','Incense Sticks (Agarbatti)','Dhoop','Camphor (Kapoor)'],
-  cleaning:   ['Washing Powder (1kg)','Washing Powder (5kg)','Liquid Detergent','Fabric Softener','Dishwash Bar','Dishwash Liquid','Floor Cleaner (Phenyl)','Floor Cleaner (Lizol)','Toilet Cleaner (Harpic)','Bathroom Cleaner','Glass Cleaner','Surface Disinfectant','Multi-Purpose Spray','Scrubber (Steel)','Scrubber (Sponge)','Drain Cleaner','Shoe Cleaner','Dry Cleaning Sheets'],
-  baby:       ['Baby Formula (Stage 1)','Baby Formula (Stage 2)','Baby Cereal','Baby Food Puree','Baby Biscuits','Diapers (S)','Diapers (M)','Diapers (L)','Baby Wipes','Baby Shampoo','Baby Soap','Baby Oil','Baby Powder','Baby Lotion','Baby Cream','Diaper Rash Cream','Baby Toothbrush','Baby Toothpaste','Baby Bottle','Pacifier','Baby Clothes (Onesie)'],
-  pharmacy:   ['Paracetamol (Crocin/Dolo)','Ibuprofen','Antacid (Gelusil/Pudin Hara)','ORS Sachet','Vitamin C','Vitamin D3','Multivitamin','Calcium Tablets','Iron Supplement','Cough Syrup','Cold & Flu Tablets','Antihistamine','Eye Drops','Nasal Drops','Bandages','Cotton Wool','Dettol Antiseptic','Betadine','Hand Sanitizer','Face Masks','Glucometer Strips','BP Monitor','Thermometer','Pulse Oximeter'],
-  frozen:     ['Frozen Green Peas','Frozen Sweet Corn','Frozen Mixed Vegetables','Frozen Spinach','Frozen Paneer','Frozen Parathas','Frozen Samosas','Frozen Spring Rolls','Frozen French Fries','Frozen Pizza','Frozen Burger Patty','Frozen Chicken Nuggets','Frozen Fish','Ice Cream (Vanilla)','Ice Cream (Chocolate)','Ice Cream (Strawberry)','Kulfi','Frozen Desserts'],
-  pet:        ['Dog Dry Food','Dog Wet Food','Cat Dry Food','Cat Wet Food','Fish Food','Bird Seeds','Dog Treats','Cat Treats','Pet Shampoo (Dog)','Pet Shampoo (Cat)','Dog Leash','Dog Collar','Cat Litter','Litter Tray','Pet Bed','Pet Toys (Ball)','Pet Toys (Rope)','Flea & Tick Spray','Deworming Tablets','Pet Vitamin Drops'],
-  stationery: ['Ball Pens (Blue)','Ball Pens (Black)','Gel Pens','Pencils (HB)','Pencils (2B)','Eraser','Sharpener','Ruler','Notebooks (Single Line)','Notebooks (Square)','Register (200 Pages)','Register (400 Pages)','Drawing Book','Sketch Pens','Crayons','Stapler','Staple Pins','Paper Clips','Glue Stick','Scissors','Sticky Notes','Highlighters','Files & Folders','Envelopes','Tape (Clear)','Double Tape'],
+type SubItem = { n: string; e: string };
+const SUB_CATS: Record<string, SubItem[]> = {
+  fruits_veg: [
+    {n:'Tomatoes',e:tw('🍅')},{n:'Potatoes',e:tw('🥔')},{n:'Onions',e:tw('🧅')},{n:'Garlic',e:tw('🧄')},{n:'Ginger',e:tw('🫚')},
+    {n:'Capsicum',e:tw('🫑')},{n:'Cauliflower',e:tw('🥦')},{n:'Cabbage',e:tw('🥬')},{n:'Brinjal',e:tw('🍆')},{n:'Ladyfinger',e:tw('🌿')},
+    {n:'Spinach',e:tw('🥬')},{n:'Methi',e:tw('🌿')},{n:'Peas',e:tw('🫛')},{n:'Carrot',e:tw('🥕')},{n:'Beetroot',e:tw('🫚')},
+    {n:'Radish',e:tw('🌶')},{n:'Apples',e:tw('🍎')},{n:'Bananas',e:tw('🍌')},{n:'Mangoes',e:tw('🥭')},{n:'Oranges',e:tw('🍊')},
+    {n:'Grapes',e:tw('🍇')},{n:'Guava',e:tw('🍈')},{n:'Papaya',e:tw('🍈')},{n:'Watermelon',e:tw('🍉')},{n:'Pomegranate',e:tw('🍎')},
+    {n:'Lemon',e:tw('🍋')},{n:'Pears',e:tw('🍐')},{n:'Kiwi',e:tw('🥝')},{n:'Pineapple',e:tw('🍍')},{n:'Coconut',e:tw('🥥')},
+  ],
+  dairy: [
+    {n:'Full Cream Milk',e:tw('🥛')},{n:'Toned Milk',e:tw('🥛')},{n:'Double Toned Milk',e:tw('🥛')},{n:'Curd / Dahi',e:tw('🥣')},
+    {n:'Paneer',e:tw('🧀')},{n:'Butter',e:tw('🧈')},{n:'Ghee',e:tw('🫙')},{n:'Cream',e:tw('🥛')},{n:'Cheese',e:tw('🧀')},
+    {n:'Condensed Milk',e:tw('🥛')},{n:'Lassi',e:tw('🥤')},{n:'Buttermilk',e:tw('🥤')},{n:'Eggs (6 pack)',e:tw('🥚')},
+    {n:'Eggs (12 pack)',e:tw('🥚')},{n:'Flavoured Milk',e:tw('🥛')},{n:'Tofu',e:tw('🧊')},
+  ],
+  snacks: [
+    {n:'Potato Chips',e:tw('🥔')},{n:'Bhujia',e:tw('🍿')},{n:'Namkeen',e:tw('🌾')},{n:'Popcorn',e:tw('🍿')},{n:'Peanuts',e:tw('🥜')},
+    {n:'Roasted Chana',e:tw('🫘')},{n:'Mukhwas',e:tw('🌿')},{n:'Trail Mix',e:tw('🥜')},{n:'Papad',e:tw('🫓')},{n:'Khakhra',e:tw('🫓')},
+    {n:'Mathri',e:tw('🫓')},{n:'Bikaneri Bhujia',e:tw('🌾')},{n:'Aloo Bhujia',e:tw('🥔')},{n:'Corn Puffs',e:tw('🌽')},
+    {n:'Rice Crackers',e:tw('🍚')},{n:'Banana Chips',e:tw('🍌')},{n:'Chakli',e:tw('🌀')},{n:'Dry Fruits Mix',e:tw('🫘')},
+    {n:'Prawn Crackers',e:tw('🦐')},{n:'Chivda',e:tw('🌾')},
+  ],
+  beverages: [
+    {n:'Cola (Pepsi/Coke)',e:tw('🥤')},{n:'Sprite / 7UP',e:tw('🥤')},{n:'Thums Up',e:tw('🥤')},{n:'Limca',e:tw('🥤')},
+    {n:'Maaza / Slice',e:tw('🥭')},{n:'Real Juice',e:tw('🧃')},{n:'Paper Boat',e:tw('🧃')},{n:'Tropicana',e:tw('🍊')},
+    {n:'Coconut Water',e:tw('🥥')},{n:'Drinking Water',e:tw('💧')},{n:'Sparkling Water',e:tw('💧')},{n:'Energy Drink',e:tw('⚡')},
+    {n:'Iced Tea',e:tw('🧊')},{n:'Nimbu Pani Mix',e:tw('🍋')},{n:'Rooh Afza',e:tw('🌹')},{n:'Aam Panna',e:tw('🥭')},{n:'Jaljeera',e:tw('🌿')},
+  ],
+  grains: [
+    {n:'Basmati Rice 1kg',e:tw('🌾')},{n:'Basmati Rice 5kg',e:tw('🌾')},{n:'Non-Basmati Rice',e:tw('🍚')},{n:'Brown Rice',e:tw('🍚')},
+    {n:'Toor Dal',e:tw('🫘')},{n:'Moong Dal',e:tw('🫘')},{n:'Chana Dal',e:tw('🫘')},{n:'Urad Dal',e:tw('🫘')},
+    {n:'Masoor Dal',e:tw('🫘')},{n:'Rajma',e:tw('🫘')},{n:'Kala Chana',e:tw('🫘')},{n:'White Peas',e:tw('🫛')},
+    {n:'Lobia',e:tw('🫘')},{n:'Soya Chunks',e:tw('🌿')},{n:'Wheat',e:tw('🌾')},{n:'Jowar',e:tw('🌾')},
+    {n:'Bajra',e:tw('🌾')},{n:'Maize',e:tw('🌽')},{n:'Oats',e:tw('🌾')},{n:'Barley',e:tw('🌾')},
+  ],
+  spices: [
+    {n:'Turmeric Powder',e:tw('🌿')},{n:'Red Chilli Powder',e:tw('🌶')},{n:'Coriander Powder',e:tw('🌿')},{n:'Cumin Seeds',e:tw('🌿')},
+    {n:'Garam Masala',e:tw('🫙')},{n:'Black Pepper',e:tw('🫙')},{n:'Green Cardamom',e:tw('🌿')},{n:'Cloves',e:tw('🌿')},
+    {n:'Cinnamon',e:tw('🌿')},{n:'Bay Leaves',e:tw('🌿')},{n:'Hing (Asafoetida)',e:tw('🧄')},{n:'Mustard Seeds',e:tw('🌿')},
+    {n:'Fenugreek Seeds',e:tw('🌿')},{n:'Fennel Seeds',e:tw('🌿')},{n:'Amchur Powder',e:tw('🫙')},{n:'Chaat Masala',e:tw('🫙')},
+    {n:'Biryani Masala',e:tw('🫙')},{n:'Chicken Masala',e:tw('🍗')},{n:'Pav Bhaji Masala',e:tw('🫙')},{n:'Sambar Powder',e:tw('🌶')},
+    {n:'Meat Masala',e:tw('🥩')},{n:'Kitchen King',e:tw('🫙')},{n:'Kasuri Methi',e:tw('🌿')},
+  ],
+  atta: [
+    {n:'Wheat Atta 5kg',e:tw('🌾')},{n:'Wheat Atta 10kg',e:tw('🌾')},{n:'Multigrain Atta',e:tw('🌾')},{n:'Besan',e:tw('🫘')},
+    {n:'Maida',e:tw('🫙')},{n:'Sooji / Rava',e:tw('🫙')},{n:'Rice Flour',e:tw('🍚')},{n:'Ragi Flour',e:tw('🌾')},
+    {n:'Corn Flour',e:tw('🌽')},{n:'Jowar Flour',e:tw('🌾')},{n:'Bajra Flour',e:tw('🌾')},{n:'White Bread',e:tw('🍞')},
+    {n:'Brown Bread',e:tw('🍞')},{n:'Multigrain Bread',e:tw('🍞')},{n:'Sandwich Bread',e:tw('🥪')},{n:'Pav / Dinner Rolls',e:tw('🍞')},
+    {n:'Burger Buns',e:tw('🍔')},{n:'Bread Sticks',e:tw('🥖')},{n:'Rusk',e:tw('🍪')},
+  ],
+  oil: [
+    {n:'Sunflower Oil 1L',e:tw('🌻')},{n:'Sunflower Oil 5L',e:tw('🌻')},{n:'Mustard Oil',e:tw('🌿')},{n:'Soyabean Oil',e:tw('🫘')},
+    {n:'Groundnut Oil',e:tw('🥜')},{n:'Rice Bran Oil',e:tw('🌾')},{n:'Coconut Oil',e:tw('🥥')},{n:'Refined Oil',e:tw('🫙')},
+    {n:'Olive Oil',e:tw('🫒')},{n:'Palm Oil',e:tw('🌴')},{n:'Desi Ghee (Cow)',e:tw('🐄')},{n:'Desi Ghee (Buffalo)',e:tw('🐃')},
+    {n:'Vanaspati',e:tw('🫙')},{n:'Butter (Cooking)',e:tw('🧈')},
+  ],
+  breakfast: [
+    {n:'Cornflakes',e:tw('🌽')},{n:'Muesli',e:tw('🌾')},{n:'Granola',e:tw('🌾')},{n:'Poha',e:tw('🍚')},{n:'Upma Mix',e:tw('🫙')},
+    {n:'Idli Batter',e:tw('🫙')},{n:'Dosa Batter',e:tw('🫙')},{n:'Instant Oats',e:tw('🌾')},{n:'Rolled Oats',e:tw('🌾')},
+    {n:'Semiya / Vermicelli',e:tw('🍝')},{n:'Suji Halwa Mix',e:tw('🍯')},{n:'Sabudana',e:tw('⚪')},{n:'Beaten Rice',e:tw('🍚')},
+    {n:'Sattu',e:tw('🫙')},{n:'Quinoa',e:tw('🌾')},{n:'Protein Oats',e:tw('💪')},
+  ],
+  biscuits: [
+    {n:'Marie Biscuits',e:tw('🍪')},{n:'Glucose Biscuits',e:tw('🍪')},{n:'Bourbon',e:tw('🍪')},{n:'Hide & Seek',e:tw('🍪')},
+    {n:'Digestive',e:tw('🍪')},{n:'Khari Biscuit',e:tw('🥐')},{n:'Good Day',e:tw('🍪')},{n:'Oreo',e:tw('🍪')},
+    {n:'Parle-G',e:tw('🍪')},{n:'Monaco',e:tw('🍪')},{n:'Jim Jam',e:tw('🍪')},{n:'Rusk',e:tw('🍪')},
+    {n:'Milk Rusk',e:tw('🍪')},{n:'Wafers',e:tw('🍫')},{n:'Cookies',e:tw('🍪')},{n:'Butter Cookies',e:tw('🍪')},
+    {n:'Choco Chip Cookies',e:tw('🍪')},{n:'Cake Slice',e:tw('🎂')},{n:'Muffins',e:tw('🧁')},{n:'Almond Cookies',e:tw('🍪')},
+  ],
+  noodles: [
+    {n:'Maggi Noodles',e:tw('🍜')},{n:'Yippee Noodles',e:tw('🍜')},{n:'Top Ramen',e:tw('🍜')},{n:'Knorr Noodles',e:tw('🍜')},
+    {n:'Wai Wai',e:tw('🍜')},{n:'Cup Noodles',e:tw('☕')},{n:'Wheat Noodles',e:tw('🍜')},{n:'Rice Noodles',e:tw('🍜')},
+    {n:'Spaghetti',e:tw('🍝')},{n:'Penne Pasta',e:tw('🍝')},{n:'Fusilli Pasta',e:tw('🍝')},{n:'Macaroni',e:tw('🍝')},
+    {n:'Hakka Noodles',e:tw('🍜')},{n:'Glass Noodles',e:tw('🍜')},{n:'Biryani Kit',e:tw('🍲')},
+    {n:'Arrabiata Sauce',e:tw('🍅')},{n:'White Pasta Sauce',e:tw('🥛')},
+  ],
+  tea: [
+    {n:'Tata Tea Gold',e:tw('☕')},{n:'Tata Tea Agni',e:tw('☕')},{n:'Red Label',e:tw('☕')},{n:'Taj Mahal',e:tw('☕')},
+    {n:'Green Tea',e:tw('🍵')},{n:'Tulsi Tea',e:tw('🌿')},{n:'Ginger Tea',e:tw('☕')},{n:'Chamomile Tea',e:tw('🌼')},
+    {n:'Peppermint Tea',e:tw('🌿')},{n:'Darjeeling Tea',e:tw('☕')},{n:'Masala Chai Mix',e:tw('☕')},{n:'Filter Coffee',e:tw('☕')},
+    {n:'Bru Instant Coffee',e:tw('☕')},{n:'Nescafe Classic',e:tw('☕')},{n:'Nescafe Gold',e:tw('☕')},
+    {n:'Cold Coffee Mix',e:tw('🧊')},{n:'Chai Premix',e:tw('☕')},{n:'Kadak Chai Mix',e:tw('☕')},
+  ],
+  personal: [
+    {n:'Shampoo',e:tw('🧴')},{n:'Anti-Dandruff Shampoo',e:tw('🧴')},{n:'Conditioner',e:tw('🧴')},{n:'Body Wash',e:tw('🚿')},
+    {n:'Soap Bar',e:tw('🧼')},{n:'Face Wash',e:tw('🧼')},{n:'Moisturizer',e:tw('🧴')},{n:'Sunscreen SPF50',e:tw('☀')},
+    {n:'Deodorant',e:tw('🌸')},{n:'Perfume',e:tw('🌹')},{n:'Toothpaste',e:tw('🦷')},{n:'Toothbrush',e:tw('🪥')},
+    {n:'Mouthwash',e:tw('💧')},{n:'Face Scrub',e:tw('🧴')},{n:'Toner',e:tw('💧')},{n:'Serum',e:tw('✨')},
+    {n:'Hair Oil',e:tw('💆')},{n:'Hair Gel',e:tw('💇')},{n:'Razors',e:tw('🪒')},{n:'Shaving Cream',e:tw('🧼')},
+    {n:'Sanitary Pads',e:tw('🌸')},{n:'Panty Liners',e:tw('🌸')},{n:'Intimate Wash',e:tw('🧼')},
+  ],
+  household: [
+    {n:'Brooms',e:tw('🧹')},{n:'Mops',e:tw('🧹')},{n:'Dustpan',e:tw('🪣')},{n:'Floor Brush',e:tw('🪣')},
+    {n:'Scrubber Pads',e:tw('🧽')},{n:'Dish Cloth',e:tw('🧺')},{n:'Duster',e:tw('🧹')},{n:'Mop Refill',e:tw('🧹')},
+    {n:'Dustbin Bags',e:tw('🗑')},{n:'Candles',e:tw('🕯')},{n:'Matchboxes',e:tw('🔥')},{n:'AA Batteries',e:tw('🔋')},
+    {n:'AAA Batteries',e:tw('🔋')},{n:'LED Bulbs',e:tw('💡')},{n:'Extension Cord',e:tw('🔌')},
+    {n:'Mosquito Repellent',e:tw('🦟')},{n:'Fly Swatter',e:tw('🪰')},{n:'Air Freshener',e:tw('🌸')},
+    {n:'Incense Sticks',e:tw('🪔')},{n:'Dhoop',e:tw('🪔')},{n:'Camphor',e:tw('🕯')},
+  ],
+  cleaning: [
+    {n:'Washing Powder 1kg',e:tw('🧺')},{n:'Washing Powder 5kg',e:tw('🧺')},{n:'Liquid Detergent',e:tw('🧴')},
+    {n:'Fabric Softener',e:tw('🌸')},{n:'Dishwash Bar',e:tw('🧼')},{n:'Dishwash Liquid',e:tw('🧴')},
+    {n:'Floor Cleaner',e:tw('🧴')},{n:'Phenyl',e:tw('🧴')},{n:'Harpic',e:tw('🚽')},{n:'Bathroom Cleaner',e:tw('🛁')},
+    {n:'Glass Cleaner',e:tw('🪟')},{n:'Disinfectant Spray',e:tw('🧴')},{n:'Multi-Purpose Cleaner',e:tw('🧴')},
+    {n:'Steel Scrubber',e:tw('🧽')},{n:'Sponge Scrubber',e:tw('🧽')},{n:'Drain Cleaner',e:tw('🚰')},
+    {n:'Shoe Cleaner',e:tw('👟')},{n:'Dry Clean Sheets',e:tw('🧺')},
+  ],
+  baby: [
+    {n:'Baby Formula Stage 1',e:tw('🍼')},{n:'Baby Formula Stage 2',e:tw('🍼')},{n:'Baby Cereal',e:tw('🥣')},
+    {n:'Baby Food Puree',e:tw('🥄')},{n:'Baby Biscuits',e:tw('🍪')},{n:'Diapers (S)',e:tw('👶')},
+    {n:'Diapers (M)',e:tw('👶')},{n:'Diapers (L)',e:tw('👶')},{n:'Baby Wipes',e:tw('🧻')},{n:'Baby Shampoo',e:tw('🧴')},
+    {n:'Baby Soap',e:tw('🧼')},{n:'Baby Oil',e:tw('🧴')},{n:'Baby Powder',e:tw('🌸')},{n:'Baby Lotion',e:tw('🧴')},
+    {n:'Diaper Rash Cream',e:tw('🧴')},{n:'Baby Toothbrush',e:tw('🪥')},{n:'Baby Bottle',e:tw('🍼')},
+    {n:'Pacifier',e:tw('🍼')},{n:'Baby Clothes',e:tw('👕')},
+  ],
+  pharmacy: [
+    {n:'Paracetamol',e:tw('💊')},{n:'Ibuprofen',e:tw('💊')},{n:'Antacid',e:tw('💊')},{n:'ORS Sachet',e:tw('🧃')},
+    {n:'Vitamin C',e:tw('💊')},{n:'Vitamin D3',e:tw('💊')},{n:'Multivitamin',e:tw('💊')},{n:'Calcium Tablets',e:tw('💊')},
+    {n:'Iron Supplement',e:tw('💊')},{n:'Cough Syrup',e:tw('🧴')},{n:'Cold & Flu Tablets',e:tw('💊')},
+    {n:'Antihistamine',e:tw('💊')},{n:'Eye Drops',e:tw('👁')},{n:'Nasal Drops',e:tw('💧')},{n:'Bandages',e:tw('🩹')},
+    {n:'Cotton Wool',e:tw('🌿')},{n:'Dettol Antiseptic',e:tw('🧴')},{n:'Betadine',e:tw('🧴')},
+    {n:'Hand Sanitizer',e:tw('🤲')},{n:'Face Masks',e:tw('😷')},{n:'BP Monitor',e:tw('💗')},
+    {n:'Thermometer',e:tw('🌡')},{n:'Pulse Oximeter',e:tw('💗')},{n:'Glucometer Strips',e:tw('🩸')},
+  ],
+  frozen: [
+    {n:'Frozen Green Peas',e:tw('🫛')},{n:'Frozen Sweet Corn',e:tw('🌽')},{n:'Frozen Mixed Veg',e:tw('🥦')},
+    {n:'Frozen Spinach',e:tw('🥬')},{n:'Frozen Paneer',e:tw('🧀')},{n:'Frozen Parathas',e:tw('🫓')},
+    {n:'Frozen Samosas',e:tw('🥟')},{n:'Frozen Spring Rolls',e:tw('🥟')},{n:'Frozen French Fries',e:tw('🍟')},
+    {n:'Frozen Pizza',e:tw('🍕')},{n:'Frozen Burger Patty',e:tw('🍔')},{n:'Frozen Nuggets',e:tw('🍗')},
+    {n:'Frozen Fish',e:tw('🐟')},{n:'Ice Cream (Vanilla)',e:tw('🍦')},{n:'Ice Cream (Choco)',e:tw('🍫')},
+    {n:'Ice Cream (Strawberry)',e:tw('🍓')},{n:'Kulfi',e:tw('🍦')},{n:'Frozen Desserts',e:tw('🍮')},
+  ],
+  pet: [
+    {n:'Dog Dry Food',e:tw('🐕')},{n:'Dog Wet Food',e:tw('🐕')},{n:'Cat Dry Food',e:tw('🐈')},{n:'Cat Wet Food',e:tw('🐈')},
+    {n:'Fish Food',e:tw('🐠')},{n:'Bird Seeds',e:tw('🐦')},{n:'Dog Treats',e:tw('🦴')},{n:'Cat Treats',e:tw('🐟')},
+    {n:'Pet Shampoo (Dog)',e:tw('🛁')},{n:'Pet Shampoo (Cat)',e:tw('🛁')},{n:'Dog Leash',e:tw('🔗')},
+    {n:'Dog Collar',e:tw('🔗')},{n:'Cat Litter',e:tw('🪣')},{n:'Litter Tray',e:tw('🪣')},{n:'Pet Bed',e:tw('🛏')},
+    {n:'Pet Toys (Ball)',e:tw('⚽')},{n:'Pet Toys (Rope)',e:tw('🪢')},{n:'Flea & Tick Spray',e:tw('🧴')},
+    {n:'Deworming Tablets',e:tw('💊')},{n:'Pet Vitamins',e:tw('💧')},
+  ],
+  stationery: [
+    {n:'Ball Pens (Blue)',e:tw('🖊')},{n:'Ball Pens (Black)',e:tw('🖊')},{n:'Gel Pens',e:tw('✒')},{n:'Pencils HB',e:tw('✏')},
+    {n:'Pencils 2B',e:tw('✏')},{n:'Eraser',e:tw('🧹')},{n:'Sharpener',e:tw('✏')},{n:'Ruler',e:tw('📏')},
+    {n:'Notebooks',e:tw('📓')},{n:'Register 200pg',e:tw('📔')},{n:'Register 400pg',e:tw('📔')},{n:'Drawing Book',e:tw('🎨')},
+    {n:'Sketch Pens',e:tw('🖌')},{n:'Crayons',e:tw('🖍')},{n:'Stapler',e:tw('📎')},{n:'Staple Pins',e:tw('📎')},
+    {n:'Paper Clips',e:tw('📎')},{n:'Glue Stick',e:tw('🖊')},{n:'Scissors',e:tw('✂')},{n:'Sticky Notes',e:tw('📝')},
+    {n:'Highlighters',e:tw('🖊')},{n:'Files & Folders',e:tw('📁')},{n:'Envelopes',e:tw('✉')},{n:'Clear Tape',e:tw('📦')},
+  ],
 };
 
 const STORE_TYPES = [
@@ -240,7 +368,7 @@ function CategoriesStep({ onNext, onBack }: { onNext:(s:Set<string>)=>void; onBa
   };
 
   const addAll = (catId:string) => {
-    const all = new Set(SUB_CATS[catId] ?? []);
+    const all = new Set((SUB_CATS[catId] ?? []).map(s=>s.n));
     setSelectedSubs(prev => ({...prev, [catId]: all}));
     setSelectedCats(prev => { const n=new Set(prev); n.add(catId); return n; });
   };
@@ -326,16 +454,21 @@ function CategoriesStep({ onNext, onBack }: { onNext:(s:Set<string>)=>void; onBa
               </div>
             </div>
 
-            {/* Item chips */}
-            <div style={{ display:'flex', flexWrap:'wrap', gap:8 }}>
-              {expandedSubs.map(item => {
+            {/* Item tiles */}
+            <div style={{ display:'grid', gridTemplateColumns:'repeat(auto-fill,minmax(88px,1fr))', gap:8 }}>
+              {expandedSubs.map(({n:item, e:icon}) => {
                 const on = expandedSelSet.has(item);
                 return (
-                  <motion.button key={item} whileHover={{scale:1.04}} whileTap={{scale:.96}}
+                  <motion.button key={item} whileHover={{scale:1.05,y:-2}} whileTap={{scale:.96}}
                     onClick={()=>toggleSub(expandedCat, item)}
-                    style={{ padding:'6px 14px', borderRadius:99, background:on?expandedCatData.c:'rgba(255,255,255,.85)', border:`1.5px solid ${on?expandedCatData.c:BD}`, color:on?'#fff':T1, fontSize:12.5, fontWeight:on?700:500, cursor:'pointer', transition:'all .12s', boxShadow:on?`0 2px 8px ${expandedCatData.c}35`:'none', display:'flex', alignItems:'center', gap:5 }}>
-                    {on && <Check size={11} strokeWidth={3}/>}
-                    {item}
+                    style={{ padding:'12px 6px 10px', borderRadius:12, background:on?expandedCatData.c:'rgba(255,255,255,.9)', border:`2px solid ${on?expandedCatData.c:BD}`, cursor:'pointer', textAlign:'center', display:'flex', flexDirection:'column', alignItems:'center', gap:6, boxShadow:on?`0 4px 14px ${expandedCatData.c}40`:SH, transition:'all .12s', position:'relative' }}>
+                    {on && (
+                      <div style={{ position:'absolute', top:5, right:5, width:16, height:16, borderRadius:'50%', background:'rgba(255,255,255,.35)', display:'flex', alignItems:'center', justifyContent:'center' }}>
+                        <Check size={10} color="#fff" strokeWidth={3.5}/>
+                      </div>
+                    )}
+                    <img src={icon} alt={item} draggable={false} style={{width:30,height:30,objectFit:'contain'}} />
+                    <span style={{fontSize:10,fontWeight:700,color:on?'#fff':T2,lineHeight:1.25,wordBreak:'break-word'}}>{item}</span>
                   </motion.button>
                 );
               })}
