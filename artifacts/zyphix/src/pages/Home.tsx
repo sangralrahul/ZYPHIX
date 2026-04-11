@@ -1740,9 +1740,8 @@ export function Home() {
     <div style={{ background: BG, minHeight: '100vh' }}>
       <AnnoBar />
       <Navbar tab={tab} setTab={setTab} />
-      <DualHeroBanners setTab={setTab} />
-      <QuickBrowse setTab={setTab} />
       <WaitlistSection />
+      <QuickBrowse setTab={setTab} />
       <WhyZyphixStrip />
       <Trust />
       <BrandsMarquee />
