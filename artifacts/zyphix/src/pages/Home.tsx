@@ -1460,22 +1460,46 @@ function WhyZyphixStrip() {
 }
 
 /* ═══════════════ WAITLIST SECTION ═══════════════ */
+const WLIST_BENEFITS = [
+  { e: '🎁', n: 'Free Delivery\n6 months',  bg: '#ECFDF5', bd: '#A7F3D0', tc: '#065F46' },
+  { e: '₹200', n: 'Launch\nCredit',          bg: '#FFFBEB', bd: '#FDE68A', tc: '#78350F', big: true },
+  { e: '🥇', n: 'Priority\nAccess',          bg: '#F0F9FF', bd: '#BAE6FD', tc: '#0C4A6E' },
+  { e: '⚡', n: 'First to\nOrder',           bg: '#FFF7ED', bd: '#FED7AA', tc: '#9A3412' },
+];
+const WLIST_ROLES = [
+  { v: 'customer', e: '🛒', l: 'Customer',        bg: '#ECFDF5', bd: '#A7F3D0', ac: G,        tc: '#065F46' },
+  { v: 'merchant', e: '🏪', l: 'Merchant',        bg: '#FFF7ED', bd: '#FED7AA', ac: '#EA580C', tc: '#9A3412' },
+  { v: 'delivery', e: '🛵', l: 'Delivery\nPartner',bg: '#F0F9FF', bd: '#BAE6FD', ac: '#2563EB', tc: '#1E40AF' },
+];
+
 function WaitlistSection() {
-  const [form, setForm] = useState({ name: '', phone: '', city: '', role: '' });
-  const [errors, setErrors] = useState<Record<string, string>>({});
+  const [form, setForm]   = useState({ name: '', phone: '', city: '', role: '' });
+  const [errors, setErrors] = useState<Record<string,string>>({});
   const [submitted, setSubmitted] = useState(false);
-  const [count, setCount] = useState(() => {
-    try { return 500 + (JSON.parse(localStorage.getItem('zyphix_waitlist') || '[]') as unknown[]).length; }
-    catch { return 500; }
-  });
-  const teal = '#00C9A7';
+  const [count, setCount] = useState(500);
+  const [dispCount, setDispCount] = useState(500);
+
+  useEffect(() => {
+    try {
+      const real = 500 + (JSON.parse(localStorage.getItem('zyphix_waitlist') || '[]') as unknown[]).length;
+      setCount(real);
+      let cur = 500;
+      const step = Math.max(1, Math.ceil((real - 500) / 25));
+      const t = setInterval(() => {
+        cur = Math.min(cur + step, real);
+        setDispCount(cur);
+        if (cur >= real) clearInterval(t);
+      }, 40);
+      return () => clearInterval(t);
+    } catch {}
+  }, []);
 
   const validate = () => {
-    const e: Record<string, string> = {};
-    if (!form.name.trim()) e.name = 'Name is required';
+    const e: Record<string,string> = {};
+    if (!form.name.trim())             e.name  = 'Name is required';
     if (!/^[0-9]{10}$/.test(form.phone)) e.phone = 'Enter a valid 10-digit number';
-    if (!form.city) e.city = 'Please select a city';
-    if (!form.role) e.role = 'Please select a role';
+    if (!form.city)                    e.city  = 'Please select a city';
+    if (!form.role)                    e.role  = 'Please select your role';
     return e;
   };
 
@@ -1486,76 +1510,172 @@ function WaitlistSection() {
       const stored = JSON.parse(localStorage.getItem('zyphix_waitlist') || '[]') as object[];
       stored.push({ ...form, ts: Date.now() });
       localStorage.setItem('zyphix_waitlist', JSON.stringify(stored));
-      setCount(500 + stored.length);
+      const newCount = 500 + stored.length;
+      setCount(newCount); setDispCount(newCount);
     } catch {}
     setSubmitted(true);
   };
 
-  return (
-    <div id="waitlist" style={{ background: '#0B1829', padding: '60px 20px' }}>
-      <div style={{ maxWidth: 520, margin: '0 auto' }}>
-        <div style={{ textAlign: 'center', marginBottom: 32 }}>
-          <span style={{ display: 'inline-block', background: 'rgba(0,201,167,.12)', border: '1px solid rgba(0,201,167,.3)', color: teal, fontSize: 12, fontWeight: 700, padding: '6px 16px', borderRadius: 99, marginBottom: 18 }}>🚀 Now accepting early access</span>
-          <h2 style={{ fontFamily: "'Outfit',sans-serif", fontWeight: 900, color: '#fff', fontSize: 'clamp(1.6rem,4vw,2.1rem)', letterSpacing: '-.035em', lineHeight: 1.12, marginBottom: 12 }}>Zyphix is launching in<br />Jammu, J&K</h2>
-          <p style={{ fontSize: 14, color: 'rgba(255,255,255,.5)', lineHeight: 1.7 }}>Join 500+ people already on the waitlist. Get ₹200 launch credit when we go live.</p>
-        </div>
+  const inp = (err?: string) => ({
+    width: '100%', padding: '12px 14px', borderRadius: 10,
+    border: `1.5px solid ${err ? '#EF4444' : BD}`, background: W,
+    fontSize: 14, color: T1, outline: 'none', boxSizing: 'border-box' as const,
+    transition: 'border-color .15s, box-shadow .15s',
+  });
 
-        {submitted ? (
-          <motion.div initial={{ scale: .9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} style={{ background: 'rgba(0,201,167,.1)', border: `1.5px solid ${teal}66`, borderRadius: 18, padding: '36px 28px', textAlign: 'center' }}>
-            <div style={{ fontSize: 48, marginBottom: 12 }}>🎉</div>
-            <h3 style={{ fontWeight: 800, color: '#fff', fontSize: '1.2rem', marginBottom: 8 }}>You're on the list!</h3>
-            <p style={{ color: 'rgba(255,255,255,.55)', fontSize: 14, lineHeight: 1.6 }}>We'll reach out before launch. Get ₹200 credit when we go live.</p>
-          </motion.div>
-        ) : (
-          <div style={{ background: 'rgba(255,255,255,.04)', border: '1px solid rgba(255,255,255,.08)', borderRadius: 20, padding: '30px 28px', display: 'flex', flexDirection: 'column', gap: 16 }}>
-            {/* Name */}
-            <div>
-              <label style={{ fontSize: 12.5, fontWeight: 700, color: 'rgba(255,255,255,.55)', marginBottom: 6, display: 'block' }}>Full Name</label>
-              <input value={form.name} onChange={e => { setForm(f => ({ ...f, name: e.target.value })); setErrors(x => ({ ...x, name: '' })); }}
-                placeholder="Your full name" style={{ width: '100%', padding: '12px 14px', borderRadius: 10, background: 'rgba(255,255,255,.07)', border: `1.5px solid ${errors.name ? '#EF4444' : 'rgba(255,255,255,.12)'}`, color: '#fff', fontSize: 14, outline: 'none', boxSizing: 'border-box' }} />
-              {errors.name && <p style={{ fontSize: 11.5, color: '#EF4444', marginTop: 4 }}>{errors.name}</p>}
+  return (
+    <div id="waitlist" style={{ background: BG, padding: '52px 24px 64px', borderBottom: `1px solid ${BD}` }}>
+      <div style={{ maxWidth: 1100, margin: '0 auto' }}>
+        <div style={{ display: 'flex', flexWrap: 'wrap', gap: 48, alignItems: 'flex-start' }}>
+
+          {/* ── LEFT: value prop ── */}
+          <div style={{ flex: '1 1 340px', minWidth: 0 }}>
+
+            {/* Badge */}
+            <motion.div initial={{ opacity:0, y:-12 }} whileInView={{ opacity:1, y:0 }} viewport={{ once:true }}>
+              <span style={{ display:'inline-flex', alignItems:'center', gap:7, background:`${G}12`, border:`1px solid ${G}35`, color:G, fontSize:12, fontWeight:700, padding:'6px 16px', borderRadius:99, marginBottom:20 }}>
+                <motion.span animate={{ scale:[1,1.35,1] }} transition={{ repeat:Infinity, duration:1.6 }}>🚀</motion.span>
+                Now accepting early access
+              </span>
+            </motion.div>
+
+            {/* Headline */}
+            <motion.h2 initial={{ opacity:0, y:22 }} whileInView={{ opacity:1, y:0 }} viewport={{ once:true }} transition={{ delay:.08 }}
+              style={{ fontFamily:"'Outfit',sans-serif", fontWeight:900, fontSize:'clamp(1.75rem,4vw,2.55rem)', color:T1, letterSpacing:'-.04em', lineHeight:1.1, marginBottom:13 }}>
+              Zyphix is launching<br /><span style={{ color:G }}>in Jammu, J&K</span>
+            </motion.h2>
+
+            <motion.p initial={{ opacity:0 }} whileInView={{ opacity:1 }} viewport={{ once:true }} transition={{ delay:.16 }}
+              style={{ fontSize:14.5, color:T2, lineHeight:1.72, marginBottom:26 }}>
+              Be among the first to experience hyperlocal delivery from your own kirana stores. Claim your perks before we launch.
+            </motion.p>
+
+            {/* Benefit tiles */}
+            <div style={{ display:'grid', gridTemplateColumns:'repeat(2,1fr)', gap:10, marginBottom:28 }}>
+              {WLIST_BENEFITS.map(({ e, n, bg, bd, tc, big }, i) => (
+                <motion.div key={n}
+                  initial={{ opacity:0, scale:.82 }} whileInView={{ opacity:1, scale:1 }} viewport={{ once:true }}
+                  transition={{ delay:.18 + i*.09, type:'spring', stiffness:210 }}
+                  whileHover={{ scale:1.05, y:-4 }}
+                  style={{ padding:'16px 12px 13px', borderRadius:14, background:bg, border:`1.5px solid ${bd}`, textAlign:'center', boxShadow:'0 2px 8px rgba(0,0,0,.06)', cursor:'default' }}>
+                  <div style={{ fontSize: big ? 19 : 26, fontWeight: big ? 900 : 400, color: big ? tc : undefined, lineHeight:1, marginBottom:5 }}>{e}</div>
+                  <div style={{ fontSize:11, fontWeight:700, color:tc, lineHeight:1.35, whiteSpace:'pre-line' }}>{n}</div>
+                </motion.div>
+              ))}
             </div>
-            {/* Phone */}
-            <div>
-              <label style={{ fontSize: 12.5, fontWeight: 700, color: 'rgba(255,255,255,.55)', marginBottom: 6, display: 'block' }}>Phone Number</label>
-              <input value={form.phone} onChange={e => { setForm(f => ({ ...f, phone: e.target.value })); setErrors(x => ({ ...x, phone: '' })); }} type="tel" inputMode="numeric" maxLength={10}
-                placeholder="10-digit mobile number" style={{ width: '100%', padding: '12px 14px', borderRadius: 10, background: 'rgba(255,255,255,.07)', border: `1.5px solid ${errors.phone ? '#EF4444' : 'rgba(255,255,255,.12)'}`, color: '#fff', fontSize: 14, outline: 'none', boxSizing: 'border-box' }} />
-              {errors.phone && <p style={{ fontSize: 11.5, color: '#EF4444', marginTop: 4 }}>{errors.phone}</p>}
-            </div>
-            {/* City */}
-            <div>
-              <label style={{ fontSize: 12.5, fontWeight: 700, color: 'rgba(255,255,255,.55)', marginBottom: 6, display: 'block' }}>City</label>
-              <select value={form.city} onChange={e => { setForm(f => ({ ...f, city: e.target.value })); setErrors(x => ({ ...x, city: '' })); }}
-                style={{ width: '100%', padding: '12px 14px', borderRadius: 10, background: '#0B1829', border: `1.5px solid ${errors.city ? '#EF4444' : 'rgba(255,255,255,.12)'}`, color: form.city ? '#fff' : 'rgba(255,255,255,.35)', fontSize: 14, outline: 'none', boxSizing: 'border-box', appearance: 'none' }}>
-                <option value="">Select your city</option>
-                {['Jammu', 'Srinagar', 'Chandigarh', 'Delhi', 'Other'].map(c => <option key={c} value={c} style={{ color: '#111', background: '#fff' }}>{c}</option>)}
-              </select>
-              {errors.city && <p style={{ fontSize: 11.5, color: '#EF4444', marginTop: 4 }}>{errors.city}</p>}
-            </div>
-            {/* Role */}
-            <div>
-              <label style={{ fontSize: 12.5, fontWeight: 700, color: 'rgba(255,255,255,.55)', marginBottom: 8, display: 'block' }}>I am a:</label>
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: 10 }}>
-                {[{ v: 'customer', e: '🛒', l: 'Customer' }, { v: 'merchant', e: '🏪', l: 'Merchant' }, { v: 'delivery', e: '🛵', l: 'Delivery Partner' }].map(({ v, e, l }) => (
-                  <button key={v} onClick={() => { setForm(f => ({ ...f, role: v })); setErrors(x => ({ ...x, role: '' })); }}
-                    style={{ padding: '12px 8px', borderRadius: 11, background: form.role === v ? 'rgba(0,201,167,.12)' : 'rgba(255,255,255,.04)', border: `1.5px solid ${form.role === v ? teal : 'rgba(255,255,255,.1)'}`, color: form.role === v ? teal : 'rgba(255,255,255,.55)', fontWeight: 700, fontSize: 12, textAlign: 'center', cursor: 'pointer', transition: 'all .15s', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 5 }}>
-                    <span style={{ fontSize: 22 }}>{e}</span>{l}
-                  </button>
+
+            {/* Social proof counter */}
+            <motion.div initial={{ opacity:0, y:10 }} whileInView={{ opacity:1, y:0 }} viewport={{ once:true }} transition={{ delay:.52 }}
+              style={{ display:'flex', alignItems:'center', gap:12, padding:'14px 18px', background:W, borderRadius:14, border:`1px solid ${BD}`, boxShadow:'0 1px 4px rgba(0,0,0,.06)' }}>
+              <div style={{ display:'flex' }}>
+                {['🤩','😄','😃','🙂','😊'].map((em, i) => (
+                  <motion.span key={i} initial={{ x:-10, opacity:0 }} whileInView={{ x:0, opacity:1 }} viewport={{ once:true }}
+                    transition={{ delay:.55 + i*.06 }}
+                    style={{ fontSize:22, marginLeft: i ? -7 : 0, filter:'drop-shadow(0 1px 2px rgba(0,0,0,.12))' }}>{em}</motion.span>
                 ))}
               </div>
-              {errors.role && <p style={{ fontSize: 11.5, color: '#EF4444', marginTop: 4 }}>{errors.role}</p>}
-            </div>
-            {/* Submit */}
-            <button onClick={submit} style={{ width: '100%', padding: '14px', borderRadius: 12, background: teal, color: '#0B1829', fontSize: 15, fontWeight: 800, border: 'none', cursor: 'pointer', marginTop: 4, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 7, boxShadow: '0 4px 24px rgba(0,201,167,.35)', transition: 'filter .15s' }}
-              onMouseEnter={e => (e.currentTarget as HTMLElement).style.filter = 'brightness(1.08)'}
-              onMouseLeave={e => (e.currentTarget as HTMLElement).style.filter = 'brightness(1)'}>
-              Join the Waitlist <ArrowRight size={16} />
-            </button>
-            <p style={{ textAlign: 'center', fontSize: 12.5, color: 'rgba(255,255,255,.3)', marginTop: -4 }}>
-              Join <span style={{ color: teal, fontWeight: 700 }}>{count}</span> others already waiting
-            </p>
+              <div>
+                <motion.p style={{ fontSize:14, fontWeight:800, color:T1, lineHeight:1.2 }}>
+                  <motion.span animate={{ color:[G, '#059669', G] }} transition={{ repeat:Infinity, duration:2.5 }}>{dispCount}+</motion.span> people waiting
+                </motion.p>
+                <p style={{ fontSize:11.5, color:T3, marginTop:2 }}>Jammu · Srinagar · Chandigarh</p>
+              </div>
+            </motion.div>
           </div>
-        )}
+
+          {/* ── RIGHT: form card ── */}
+          <motion.div initial={{ opacity:0, x:32 }} whileInView={{ opacity:1, x:0 }} viewport={{ once:true }}
+            transition={{ delay:.22, type:'spring', stiffness:90, damping:18 }}
+            style={{ flex:'1 1 390px', minWidth:0 }}>
+            <div style={{ background:W, borderRadius:22, padding:'32px 28px', boxShadow:SH2, border:`1px solid ${BD}` }}>
+
+              {submitted ? (
+                <motion.div initial={{ scale:.8, opacity:0 }} animate={{ scale:1, opacity:1 }} transition={{ type:'spring', stiffness:200 }}
+                  style={{ textAlign:'center', padding:'12px 0 8px' }}>
+                  <motion.div animate={{ rotate:[0,14,-14,10,-8,0], scale:[1,1.25,1] }} transition={{ duration:.7 }}
+                    style={{ fontSize:56, marginBottom:14 }}>🎉</motion.div>
+                  <h3 style={{ fontFamily:"'Outfit',sans-serif", fontWeight:900, color:T1, fontSize:'1.4rem', marginBottom:8 }}>You're on the list!</h3>
+                  <p style={{ color:T2, fontSize:14, lineHeight:1.65, marginBottom:22 }}>We'll reach out before launch.<br />Your ₹200 credit is reserved.</p>
+                  <motion.div animate={{ scale:[1,1.02,1] }} transition={{ repeat:Infinity, duration:2 }}
+                    style={{ background:`${G}10`, border:`1.5px solid ${G}35`, borderRadius:12, padding:'14px 20px' }}>
+                    <p style={{ fontSize:13.5, color:G, fontWeight:800 }}>🌟 You're #{count} on the waitlist</p>
+                  </motion.div>
+                </motion.div>
+              ) : (
+                <div style={{ display:'flex', flexDirection:'column', gap:15 }}>
+                  <div style={{ marginBottom:2 }}>
+                    <h3 style={{ fontFamily:"'Outfit',sans-serif", fontWeight:900, fontSize:'1.2rem', color:T1, marginBottom:3 }}>Reserve your spot</h3>
+                    <p style={{ fontSize:12.5, color:T3 }}>⏱ Takes 30 seconds · Free forever</p>
+                  </div>
+
+                  {/* Name */}
+                  <div>
+                    <label style={{ fontSize:11.5, fontWeight:700, color:T2, marginBottom:5, display:'block', textTransform:'uppercase' as const, letterSpacing:'.04em' }}>Full Name</label>
+                    <motion.input whileFocus={{ scale:1.005 }} value={form.name}
+                      onChange={e => { setForm(f=>({...f,name:e.target.value})); setErrors(x=>({...x,name:''})); }}
+                      placeholder="Your full name" style={inp(errors.name)}
+                      onFocus={e=>{e.target.style.borderColor=G;e.target.style.boxShadow=`0 0 0 3px ${G}1A`;}}
+                      onBlur={e=>{e.target.style.borderColor=errors.name?'#EF4444':BD;e.target.style.boxShadow='none';}} />
+                    {errors.name && <motion.p initial={{opacity:0,y:-4}} animate={{opacity:1,y:0}} style={{fontSize:11.5,color:'#EF4444',marginTop:4}}>{errors.name}</motion.p>}
+                  </div>
+
+                  {/* Phone */}
+                  <div>
+                    <label style={{ fontSize:11.5, fontWeight:700, color:T2, marginBottom:5, display:'block', textTransform:'uppercase' as const, letterSpacing:'.04em' }}>Phone Number</label>
+                    <input value={form.phone} type="tel" inputMode="numeric" maxLength={10}
+                      onChange={e=>{setForm(f=>({...f,phone:e.target.value}));setErrors(x=>({...x,phone:''}));}}
+                      placeholder="10-digit mobile number" style={inp(errors.phone)}
+                      onFocus={e=>{e.target.style.borderColor=G;e.target.style.boxShadow=`0 0 0 3px ${G}1A`;}}
+                      onBlur={e=>{e.target.style.borderColor=errors.phone?'#EF4444':BD;e.target.style.boxShadow='none';}} />
+                    {errors.phone && <motion.p initial={{opacity:0,y:-4}} animate={{opacity:1,y:0}} style={{fontSize:11.5,color:'#EF4444',marginTop:4}}>{errors.phone}</motion.p>}
+                  </div>
+
+                  {/* City */}
+                  <div>
+                    <label style={{ fontSize:11.5, fontWeight:700, color:T2, marginBottom:5, display:'block', textTransform:'uppercase' as const, letterSpacing:'.04em' }}>City</label>
+                    <select value={form.city} onChange={e=>{setForm(f=>({...f,city:e.target.value}));setErrors(x=>({...x,city:''}));}}
+                      style={{ ...inp(errors.city), color:form.city?T1:T3, appearance:'none' as const, cursor:'pointer' }}>
+                      <option value="">Select your city</option>
+                      {['Jammu','Srinagar','Chandigarh','Delhi','Other'].map(c=><option key={c} value={c}>{c}</option>)}
+                    </select>
+                    {errors.city && <motion.p initial={{opacity:0,y:-4}} animate={{opacity:1,y:0}} style={{fontSize:11.5,color:'#EF4444',marginTop:4}}>{errors.city}</motion.p>}
+                  </div>
+
+                  {/* Role selector */}
+                  <div>
+                    <label style={{ fontSize:11.5, fontWeight:700, color:T2, marginBottom:8, display:'block', textTransform:'uppercase' as const, letterSpacing:'.04em' }}>I am a:</label>
+                    <div style={{ display:'grid', gridTemplateColumns:'repeat(3,1fr)', gap:8 }}>
+                      {WLIST_ROLES.map(({ v, e, l, bg, bd, ac, tc }) => (
+                        <motion.button key={v} onClick={()=>{setForm(f=>({...f,role:v}));setErrors(x=>({...x,role:''}));}}
+                          whileHover={{ scale:1.06, y:-3 }} whileTap={{ scale:.95 }}
+                          style={{ padding:'13px 6px 11px', borderRadius:12, background:form.role===v?bg:W, border:`1.5px solid ${form.role===v?ac:BD}`, cursor:'pointer', textAlign:'center', display:'flex', flexDirection:'column', alignItems:'center', gap:4, boxShadow:form.role===v?`0 0 0 3px ${ac}20`:'0 1px 3px rgba(0,0,0,.05)', transition:'all .15s' }}>
+                          <span style={{ fontSize:22 }}>{e}</span>
+                          <span style={{ fontSize:10.5, fontWeight:700, color:form.role===v?tc:T2, lineHeight:1.3, whiteSpace:'pre-line' as const }}>{l}</span>
+                        </motion.button>
+                      ))}
+                    </div>
+                    {errors.role && <motion.p initial={{opacity:0,y:-4}} animate={{opacity:1,y:0}} style={{fontSize:11.5,color:'#EF4444',marginTop:4}}>{errors.role}</motion.p>}
+                  </div>
+
+                  {/* CTA */}
+                  <motion.button onClick={submit}
+                    whileHover={{ scale:1.025 }} whileTap={{ scale:.97 }}
+                    animate={{ boxShadow:[`0 4px 18px ${G}45`,`0 8px 34px ${G}70`,`0 4px 18px ${G}45`] }}
+                    transition={{ boxShadow:{ repeat:Infinity, duration:2, ease:'easeInOut' } }}
+                    style={{ width:'100%', padding:'15px', borderRadius:13, background:G, color:'#fff', fontSize:15.5, fontWeight:800, border:'none', cursor:'pointer', display:'flex', alignItems:'center', justifyContent:'center', gap:8, marginTop:2, letterSpacing:'-.01em' }}>
+                    Join the Waitlist <ArrowRight size={16} />
+                  </motion.button>
+
+                  <p style={{ textAlign:'center', fontSize:12.5, color:T3 }}>
+                    <span style={{ color:G, fontWeight:700 }}>{dispCount}+</span> people already joined · Free to join
+                  </p>
+                </div>
+              )}
+
+            </div>
+          </motion.div>
+
+        </div>
       </div>
     </div>
   );
