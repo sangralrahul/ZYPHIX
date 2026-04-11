@@ -83,7 +83,7 @@ function AnnoBar() {
   return (
     <div style={{ background: GREEN, padding: '9px 16px', textAlign: 'center' }}>
       <p style={{ fontSize: 12.5, fontWeight: 700, color: '#fff', letterSpacing: '.01em' }}>
-        🎉 Free delivery on your first order · Code <strong style={{ letterSpacing: '.06em', background: 'rgba(255,255,255,0.18)', padding: '1px 6px', borderRadius: 4 }}>ZYPHIX50</strong> · Live in Jammu & Kashmir
+        🎉 Free delivery on your first order · Code <strong style={{ letterSpacing: '.06em', background: 'rgba(255,255,255,0.18)', padding: '1px 6px', borderRadius: 4 }}>ZYPHIX50</strong> · Now live across India
       </p>
     </div>
   );
@@ -123,7 +123,7 @@ function Navbar() {
           <div style={{ textAlign: 'left' }}>
             <p style={{ fontSize: 9, fontWeight: 600, color: T3, textTransform: 'uppercase', letterSpacing: '.07em', lineHeight: 1 }}>Deliver to</p>
             <div style={{ display: 'flex', alignItems: 'center', gap: 3, marginTop: 2 }}>
-              <span style={{ fontWeight: 700, color: T1, fontSize: 13.5, lineHeight: 1 }}>Jammu, J&K</span>
+              <span style={{ fontWeight: 700, color: T1, fontSize: 13.5, lineHeight: 1 }}>Select Location</span>
               <ChevronDown size={12} color={T3} />
             </div>
           </div>
@@ -178,7 +178,7 @@ function Hero() {
 
           <div style={{ display: 'inline-flex', alignItems: 'center', gap: 7, background: GREEN_BG, border: `1px solid ${GREEN_BD}`, borderRadius: 999, padding: '5px 14px', marginBottom: 24 }}>
             <span style={{ width: 7, height: 7, borderRadius: '50%', background: GREEN, display: 'block', animation: 'pulse-dot 2s ease-in-out infinite' }} />
-            <span style={{ fontSize: 11, fontWeight: 700, color: GREEN, letterSpacing: '.07em' }}>LIVE IN JAMMU & KASHMIR</span>
+            <span style={{ fontSize: 11, fontWeight: 700, color: GREEN, letterSpacing: '.07em' }}>NOW LIVE ACROSS INDIA</span>
           </div>
 
           <h1 style={{ fontFamily: "'Outfit',sans-serif", fontWeight: 900, lineHeight: 1.04, letterSpacing: '-.045em', marginBottom: 18 }}>
@@ -188,7 +188,7 @@ function Hero() {
           </h1>
 
           <p style={{ fontSize: 15, color: T2, lineHeight: 1.7, marginBottom: 28, maxWidth: 430, fontWeight: 400 }}>
-            Groceries, food & services — from your nearest kirana, dhaba & professional across Jammu & Kashmir.
+            Groceries, food & services — from your nearest kirana, dhaba & professional. Available in 100+ cities across India.
           </p>
 
           {/* Search */}
@@ -222,9 +222,10 @@ function Hero() {
           </div>
 
           {/* Stats */}
-          <div style={{ display: 'flex', flexWrap: 'wrap', gap: 28, paddingTop: 24, borderTop: `1px solid ${BORDER}` }}>
-            {[['50K+', 'Happy customers'], ['1,200+', 'Kirana stores'], ['30 min', 'Avg. delivery'], ['₹0', 'Surge pricing']].map(([v, l], i) => (
-              <motion.div key={i} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: .4 + i * .1 }}>
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: 0, paddingTop: 24, borderTop: `1px solid ${BORDER}` }}>
+            {[['5L+', 'Happy customers'], ['10K+', 'Partner stores'], ['30 min', 'Avg. delivery'], ['₹0', 'Surge pricing']].map(([v, l], i) => (
+              <motion.div key={i} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: .4 + i * .1 }}
+                style={{ paddingRight: i < 3 ? 24 : 0, paddingLeft: i > 0 ? 24 : 0, borderRight: i < 3 ? `1px solid ${BORDER}` : 'none' }}>
                 <p style={{ fontFamily: "'Outfit',sans-serif", fontWeight: 900, fontSize: 'clamp(1.15rem,2.2vw,1.6rem)', color: T1, lineHeight: 1 }}>{v}</p>
                 <p style={{ fontSize: 11, color: T3, marginTop: 3 }}>{l}</p>
               </motion.div>
@@ -265,7 +266,7 @@ function Hero() {
           <motion.div style={{ marginTop: 22 }} initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: .9 }}>
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, padding: '11px 20px', background: GREEN_BG, border: `1px solid ${GREEN_BD}`, borderRadius: 12 }}>
               <Truck size={14} color={GREEN} />
-              <span style={{ fontSize: 12.5, fontWeight: 700, color: GREEN }}>Free delivery · 30 min · Jammu</span>
+              <span style={{ fontSize: 12.5, fontWeight: 700, color: GREEN }}>Free delivery · 30 min · 100+ cities</span>
             </div>
           </motion.div>
         </motion.div>
@@ -280,7 +281,7 @@ function Hero() {
 function TrustBar() {
   const items = [
     { icon: <Zap size={18} color={GREEN} />, v: '30 Min', l: 'Delivery Guaranteed' },
-    { icon: <Package size={18} color={T2} />, v: '1,200+', l: 'Verified Kirana Stores' },
+    { icon: <Package size={18} color={T2} />, v: '10,000+', l: 'Verified Partner Stores' },
     { icon: <Shield size={18} color={T2} />, v: '100%', l: 'Secure & Verified' },
     { icon: <Truck size={18} color={T2} />, v: '₹0', l: 'Surge Pricing Ever' },
   ];
@@ -306,9 +307,9 @@ function TrustBar() {
 ═══════════════════════════════════ */
 function HowItWorks() {
   const steps = [
-    { icon: <MapPin size={22} color={GREEN} />, n: '01', title: 'Choose Location', desc: 'Set your Jammu/J&K address. We find the nearest verified kirana stores instantly.' },
-    { icon: <ShoppingCart size={22} color={GREEN} />, n: '02', title: 'Pick What You Need', desc: 'Browse 1,000+ items — groceries, food, medicines, services — available 24/7.' },
-    { icon: <Truck size={22} color={GREEN} />, n: '03', title: 'Delivered in 30 Min', desc: 'Live tracking. Your local kirana packs and delivers your order. Zero surge pricing.' },
+    { icon: <MapPin size={22} color={GREEN} />, n: '01', title: 'Set Your Location', desc: 'Enter your address. We instantly find verified kirana stores, restaurants & service pros near you.' },
+    { icon: <ShoppingCart size={22} color={GREEN} />, n: '02', title: 'Pick What You Need', desc: 'Browse 1,000+ items — groceries, food, medicines & services. Available 24/7, pan India.' },
+    { icon: <Truck size={22} color={GREEN} />, n: '03', title: 'Delivered in 30 Min', desc: 'Live order tracking. Your local partner packs and delivers to your door. Zero surge pricing.' },
   ];
   return (
     <div style={{ background: BG, padding: '60px 0' }}>
@@ -318,7 +319,7 @@ function HowItWorks() {
           <h2 style={{ fontFamily: "'Outfit',sans-serif", fontWeight: 900, fontSize: 'clamp(1.9rem,4vw,2.8rem)', letterSpacing: '-.04em', color: T1, lineHeight: 1.08 }}>
             Order in under <span style={{ color: GREEN }}>60 seconds</span>
           </h2>
-          <p style={{ fontSize: 14, color: T2, marginTop: 12 }}>Simple, fast, designed for Jammu & Kashmir.</p>
+          <p style={{ fontSize: 14, color: T2, marginTop: 12 }}>Simple, fast, and built for every city in India.</p>
         </div>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: 20 }} className="grid-cols-1 md:grid-cols-3">
           {steps.map((s, i) => (
@@ -415,7 +416,7 @@ function NowTab() {
       <Carousel>
         {[
           { tag: 'New User Offer', h: '50% off your first order', sub: 'Code ZYPHIX50 · Max ₹100 discount', code: 'ZYPHIX50', img: 'https://images.unsplash.com/photo-1543168256-418811576931?w=800&h=320&fit=crop&q=80', bg: '#F0FBF6' },
-          { tag: 'Partner Stores', h: 'Real kirana. Real fast.', sub: '1,200+ local stores · Zero surge pricing', code: '', img: 'https://images.unsplash.com/photo-1604719312566-8912e9227c6a?w=800&h=320&fit=crop&q=80', bg: '#FFF7ED' },
+          { tag: 'Partner Stores', h: 'Real kirana. Real fast.', sub: '10,000+ local stores across India · Zero surge pricing', code: '', img: 'https://images.unsplash.com/photo-1604719312566-8912e9227c6a?w=800&h=320&fit=crop&q=80', bg: '#FFF7ED' },
           { tag: 'Pharmacy', h: 'Medicines in 30 minutes', sub: 'Prescription & OTC · All brands available', code: '', img: 'https://images.unsplash.com/photo-1585435557343-3b092031a831?w=800&h=320&fit=crop&q=80', bg: '#EFF6FF' },
         ].map((b, i) => (
           <div key={i} className="snap-start shrink-0 cursor-pointer" style={{ width: 'min(600px,85vw)', height: 200, borderRadius: 20, overflow: 'hidden', position: 'relative', background: b.bg, border: `1px solid ${BORDER}`, flexShrink: 0, boxShadow: SH }}>
@@ -480,7 +481,7 @@ function NowTab() {
 
       {/* Trending */}
       <div>
-        <SH_ title="Trending Near You" sub="Most ordered in Jammu today" action="See all" />
+        <SH_ title="Trending Near You" sub="Most ordered across India today" action="See all" />
         <Carousel>
           {products.map(p => <ProdCard key={p.id} p={p} cart={cart} add={add} remove={rem} />)}
         </Carousel>
@@ -561,7 +562,7 @@ function EatsTab() {
           <h2 style={{ fontFamily: "'Outfit',sans-serif", fontWeight: 900, color: '#fff', lineHeight: 1.08, marginBottom: 8, fontSize: 'clamp(1.5rem,3vw,2.3rem)', letterSpacing: '-.04em' }}>
             Local food,<br />delivered fast.
           </h2>
-          <p style={{ fontSize: 13, color: 'rgba(255,255,255,0.65)', marginBottom: 20 }}>Restaurants · Dhabas · Home kitchens · Tiffin services</p>
+          <p style={{ fontSize: 13, color: 'rgba(255,255,255,0.65)', marginBottom: 20 }}>Restaurants · Dhabas · Home kitchens · Cloud kitchens · Available across India</p>
           <button style={{ background: GREEN, color: '#fff', fontSize: 13, fontWeight: 800, padding: '11px 24px', borderRadius: 10, width: 'fit-content' }}>Explore Restaurants →</button>
         </div>
       </div>
@@ -583,7 +584,7 @@ function EatsTab() {
       </div>
 
       <div>
-        <SH_ title="Restaurants Near You" sub="Open now · Jammu, J&K" action="See all" />
+        <SH_ title="Restaurants Near You" sub="Open now · Delivering to your area" action="See all" />
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill,minmax(280px,1fr))', gap: 16 }}>
           {restaurants.map((r, i) => (
             <motion.div key={r.id} initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * .06 }}>
@@ -698,8 +699,8 @@ function MapTab() {
         <div style={{ width: 60, height: 60, borderRadius: 18, background: GREEN_BG, border: `1px solid ${GREEN_BD}`, display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 16 }}>
           <MapPin size={26} color={GREEN} />
         </div>
-        <p style={{ fontFamily: "'Outfit',sans-serif", fontWeight: 900, color: T1, fontSize: '1.5rem', letterSpacing: '-.03em', marginBottom: 6 }}>Jammu, J&K</p>
-        <p style={{ fontSize: 13, color: T2, marginBottom: 20 }}>8 verified stores within 1 km · All open now</p>
+        <p style={{ fontFamily: "'Outfit',sans-serif", fontWeight: 900, color: T1, fontSize: '1.5rem', letterSpacing: '-.03em', marginBottom: 6 }}>Your Location</p>
+        <p style={{ fontSize: 13, color: T2, marginBottom: 20 }}>Find verified stores, restaurants & pros near you</p>
         <button style={{ background: GREEN, color: '#fff', fontSize: 13, fontWeight: 800, padding: '11px 24px', borderRadius: 10, boxShadow: `0 4px 16px rgba(14,168,110,0.25)` }}>Open Full Map →</button>
       </div>
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill,minmax(280px,1fr))', gap: 12 }}>
@@ -842,7 +843,7 @@ function Footer() {
                 Zyp<span style={{ color: GREEN }}>hix</span>
               </span>
             </div>
-            <p style={{ fontSize: 13, color: T2, lineHeight: 1.7, marginBottom: 20, maxWidth: 260 }}>India's SuperLocal App — groceries, food & services delivered in 30 minutes across Jammu & Kashmir.</p>
+            <p style={{ fontSize: 13, color: T2, lineHeight: 1.7, marginBottom: 20, maxWidth: 260 }}>India's SuperLocal App — groceries, food & services delivered in 30 minutes. Now serving 100+ cities pan India.</p>
             <div style={{ display: 'flex', gap: 8 }}>
               {[<Twitter size={14} />, <Instagram size={14} />, <Linkedin size={14} />, <Phone size={14} />].map((ic, i) => (
                 <a key={i} href="#" style={{ width: 34, height: 34, borderRadius: 8, background: BG, border: `1px solid ${BORDER}`, display: 'flex', alignItems: 'center', justifyContent: 'center', color: T2, transition: 'all .15s' }}
@@ -867,7 +868,7 @@ function Footer() {
           ))}
         </div>
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 10, paddingTop: 24, borderTop: `1px solid ${BORDER}` }}>
-          <p style={{ fontSize: 12, color: T3 }}>© 2025 Zyphix Technologies Pvt. Ltd. · Jammu, J&K, India</p>
+          <p style={{ fontSize: 12, color: T3 }}>© 2025 Zyphix Technologies Pvt. Ltd. · Bengaluru, India</p>
           <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
             <span style={{ width: 7, height: 7, borderRadius: '50%', background: GREEN, display: 'block' }} />
             <p style={{ fontSize: 12, fontWeight: 600, color: GREEN }}>All systems operational</p>
