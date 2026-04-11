@@ -222,17 +222,6 @@ function Navbar({ tab, setTab }: { tab: TabId; setTab: (t: TabId) => void }) {
           </button>
         </div>
       </div>
-      {/* Service strip */}
-      <div style={{ maxWidth: 1320, margin: '0 auto', padding: '0 24px', height: 48, display: 'flex', alignItems: 'center', gap: 4 }}>
-        {[{ id: 'map' as TabId, l: '📍 Stores Near Me' }, { id: 'offers' as TabId, l: '🏷️ Offers' }].map(x => (
-          <button key={x.id} onClick={() => setTab(x.id)}
-            style={{ padding: '8px 14px', borderRadius: 9, fontSize: 13, fontWeight: tab === x.id ? 700 : 500, color: tab === x.id ? T1 : T2, background: tab === x.id ? BG : 'transparent', border: `1.5px solid ${tab === x.id ? BD : 'transparent'}`, flexShrink: 0, transition: 'all .15s', whiteSpace: 'nowrap', cursor: 'pointer' }}
-            onMouseEnter={e => { if (tab !== x.id) (e.currentTarget as HTMLElement).style.background = BG; }}
-            onMouseLeave={e => { if (tab !== x.id) (e.currentTarget as HTMLElement).style.background = 'transparent'; }}>
-            {x.l}
-          </button>
-        ))}
-      </div>
     </div>
   );
 }
