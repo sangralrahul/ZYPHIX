@@ -78,6 +78,12 @@
     50% { opacity: .6; transform: scale(.8); }
   }
 
+  /* Marquee scroll */
+  @keyframes marquee {
+    from { transform: translateX(0); }
+    to   { transform: translateX(-50%); }
+  }
+
   /* Smooth fade-in */
   @keyframes fadein {
     from { opacity: 0; transform: translateY(8px); }

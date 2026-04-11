@@ -23,33 +23,14 @@ const SH  = '0 1px 3px rgba(0,0,0,.08), 0 4px 16px rgba(0,0,0,.06)';
 const SH2 = '0 4px 12px rgba(0,0,0,.1), 0 16px 40px rgba(0,0,0,.1)';
 
 /* ═══════════════ LOGO ═══════════════ */
-let _logoId = 0;
-function ZIcon({ size = 34 }: { size?: number }) {
-  const id = React.useRef(`zg-${++_logoId}`).current;
+function LogoMark({ size = 32, dark = false }: { size?: number; dark?: boolean }) {
   return (
-    <svg width={size} height={size} viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ flexShrink: 0 }}>
-      <defs>
-        <linearGradient id={id} x1="0" y1="0" x2="40" y2="40" gradientUnits="userSpaceOnUse">
-          <stop stopColor="#14B87A" />
-          <stop offset="1" stopColor="#046B50" />
-        </linearGradient>
-      </defs>
-      {/* Background pill */}
-      <rect width="40" height="40" rx="11" fill={`url(#${id})`} />
-      {/* Subtle top-highlight */}
-      <rect x="0" y="0" width="40" height="20" rx="11" fill="rgba(255,255,255,0.07)" />
-      {/* Bold "Z" letterform */}
-      <path d="M9 11 L31 11 L31 17 L19.5 17 L31 24 L31 29 L9 29 L9 23 L20.5 23 L9 16 Z" fill="white" />
-    </svg>
-  );
-}
-
-function ZWordmark({ size = 34, dark = false }: { size?: number; dark?: boolean }) {
-  return (
-    <div style={{ display: 'flex', alignItems: 'center', gap: 10, flexShrink: 0 }}>
-      <ZIcon size={size} />
-      <span style={{ fontFamily: "'Outfit',sans-serif", fontWeight: 900, fontSize: size * 0.56, letterSpacing: '-.045em', color: dark ? 'rgba(255,255,255,.92)' : T1, lineHeight: 1 }}>
-        Z<span style={{ color: G }}>yphix</span>
+    <div style={{ display: 'flex', alignItems: 'center', gap: 9, flexShrink: 0 }}>
+      <div style={{ width: size, height: size, borderRadius: Math.round(size * 0.28), background: G, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, boxShadow: `0 2px 8px rgba(13,163,102,.35)` }}>
+        <Zap size={Math.round(size * 0.5)} color="#fff" fill="#fff" />
+      </div>
+      <span style={{ fontFamily: "'Outfit',sans-serif", fontWeight: 900, fontSize: size * 0.575, letterSpacing: '-.04em', color: dark ? '#fff' : T1, lineHeight: 1 }}>
+        Zyp<span style={{ color: G }}>hix</span>
       </span>
     </div>
   );
@@ -141,7 +122,7 @@ function Navbar({ tab, setTab }: { tab: TabId; setTab: (t: TabId) => void }) {
       {/* Top row */}
       <div style={{ maxWidth: 1320, margin: '0 auto', padding: '0 24px', height: 64, display: 'flex', alignItems: 'center', gap: 14, borderBottom: `1px solid ${BD}` }}>
         <a href="/" style={{ textDecoration: 'none' }}>
-          <ZWordmark size={33} />
+          <LogoMark size={32} />
         </a>
         <div style={{ width: 1, height: 28, background: BD }} />
         <button style={{ display: 'flex', alignItems: 'center', gap: 7, flexShrink: 0 }}>
@@ -723,6 +704,100 @@ function OffersTab() {
   );
 }
 
+/* ═══════════════ BRANDS MARQUEE ═══════════════ */
+const BRANDS = [
+  { name: 'Amul', em: '🥛' }, { name: 'Tata', em: '🏷️' }, { name: 'Nestlé', em: '☕' },
+  { name: 'Britannia', em: '🍞' }, { name: 'ITC', em: '🌿' }, { name: 'Haldirams', em: '🍿' },
+  { name: 'Dabur', em: '🌱' }, { name: 'Patanjali', em: '🪷' }, { name: 'P&G', em: '🧴' },
+  { name: 'HUL', em: '🫧' }, { name: 'MDH', em: '🌶️' }, { name: 'Fortune', em: '🌾' },
+  { name: 'Mother Dairy', em: '🥛' }, { name: 'Godrej', em: '🛍️' }, { name: 'Marico', em: '🌻' },
+];
+function BrandsMarquee() {
+  const doubled = [...BRANDS, ...BRANDS];
+  return (
+    <div style={{ background: W, borderTop: `1px solid ${BD}`, borderBottom: `1px solid ${BD}`, overflow: 'hidden', padding: '14px 0' }}>
+      <div style={{ display: 'flex', alignItems: 'center', gap: 0 }}>
+        <div style={{ flexShrink: 0, padding: '0 24px 0 16px', borderRight: `1px solid ${BD}`, marginRight: 0 }}>
+          <p style={{ fontSize: 10, fontWeight: 700, color: T3, letterSpacing: '.1em', textTransform: 'uppercase', whiteSpace: 'nowrap' }}>Partner Brands</p>
+        </div>
+        <div style={{ overflow: 'hidden', flex: 1, maskImage: 'linear-gradient(to right, transparent, black 80px, black calc(100% - 80px), transparent)' }}>
+          <div style={{ display: 'flex', gap: 0, animation: 'marquee 30s linear infinite', width: 'max-content' }}>
+            {doubled.map((b, i) => (
+              <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 7, padding: '5px 24px', borderRight: `1px solid ${BD}`, flexShrink: 0, whiteSpace: 'nowrap' }}>
+                <span style={{ fontSize: 16 }}>{b.em}</span>
+                <span style={{ fontSize: 13, fontWeight: 700, color: T2, letterSpacing: '-.01em' }}>{b.name}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/* ═══════════════ HOW IT WORKS ═══════════════ */
+function HowItWorks() {
+  const steps = [
+    { n: '01', title: 'Set your location', desc: 'Enter your address or allow GPS. We find verified stores, restaurants, and service pros near you instantly.', icon: <MapPin size={22} color={G} />, img: 'https://images.unsplash.com/photo-1512291313931-d4291048e7b6?w=400&h=280&fit=crop&q=80' },
+    { n: '02', title: 'Browse & order', desc: 'Pick from 1,000+ grocery items, local restaurants, or book a certified professional — all in one app.', icon: <ShoppingCart size={22} color={G} />, img: 'https://images.unsplash.com/photo-1608198093002-ad4e005484ec?w=400&h=280&fit=crop&q=80' },
+    { n: '03', title: 'Delivered in 30 min', desc: 'Track live on a map. Our delivery partners reach you in under 30 minutes — no surge pricing, ever.', icon: <Truck size={22} color={G} />, img: 'https://images.unsplash.com/photo-1526367790999-0150786686a2?w=400&h=280&fit=crop&q=80' },
+  ];
+  return (
+    <div style={{ background: BG, borderTop: `1px solid ${BD}`, padding: '64px 0' }}>
+      <div style={{ maxWidth: 1320, margin: '0 auto', padding: '0 24px' }}>
+        <div style={{ textAlign: 'center', marginBottom: 48 }}>
+          <div style={{ display: 'inline-flex', alignItems: 'center', gap: 7, background: 'rgba(13,163,102,.07)', border: '1px solid rgba(13,163,102,.18)', borderRadius: 999, padding: '4px 14px', marginBottom: 14 }}>
+            <span style={{ fontSize: 11, fontWeight: 700, color: G, letterSpacing: '.07em', textTransform: 'uppercase' }}>Simple as 1-2-3</span>
+          </div>
+          <h2 style={{ fontFamily: "'Outfit',sans-serif", fontWeight: 900, fontSize: 'clamp(1.8rem,3.5vw,2.7rem)', color: T1, letterSpacing: '-.04em', lineHeight: 1.08, marginBottom: 10 }}>
+            How Zyphix works
+          </h2>
+          <p style={{ fontSize: 15, color: T2, maxWidth: 420, margin: '0 auto' }}>From order to doorstep in three simple steps</p>
+        </div>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 20 }}>
+          {steps.map((s, i) => (
+            <motion.div key={i} initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.12 }}>
+              <div style={{ background: W, border: `1px solid ${BD}`, borderRadius: 22, overflow: 'hidden', boxShadow: SH, transition: 'all .22s' }}
+                onMouseEnter={e => { (e.currentTarget as HTMLElement).style.boxShadow = SH2; (e.currentTarget as HTMLElement).style.transform = 'translateY(-4px)'; }}
+                onMouseLeave={e => { (e.currentTarget as HTMLElement).style.boxShadow = SH; (e.currentTarget as HTMLElement).style.transform = 'none'; }}>
+                <div style={{ height: 180, overflow: 'hidden', position: 'relative', background: BG }}>
+                  <img src={s.img} alt={s.title} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                  <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to top, rgba(255,255,255,.6) 0%, transparent 60%)' }} />
+                  <div style={{ position: 'absolute', top: 16, left: 16, width: 42, height: 42, borderRadius: 13, background: 'rgba(255,255,255,.92)', backdropFilter: 'blur(8px)', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: SH }}>
+                    {s.icon}
+                  </div>
+                  <div style={{ position: 'absolute', top: 16, right: 16, fontFamily: "'Outfit',sans-serif", fontWeight: 900, fontSize: '1.5rem', color: 'rgba(255,255,255,.85)', letterSpacing: '-.03em', lineHeight: 1, textShadow: '0 2px 8px rgba(0,0,0,.3)' }}>{s.n}</div>
+                </div>
+                <div style={{ padding: '20px 22px 24px' }}>
+                  <h3 style={{ fontWeight: 800, color: T1, fontSize: 16, marginBottom: 8, letterSpacing: '-.02em' }}>{s.title}</h3>
+                  <p style={{ fontSize: 13.5, color: T2, lineHeight: 1.65 }}>{s.desc}</p>
+                </div>
+              </div>
+            </motion.div>
+          ))}
+        </div>
+
+        {/* Stats row */}
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 16, marginTop: 40 }}>
+          {[
+            { v: '5,00,000+', l: 'Orders delivered', color: G },
+            { v: '100+', l: 'Cities across India', color: '#EA580C' },
+            { v: '4.8 ★', l: 'Average app rating', color: '#7C3AED' },
+            { v: '< 30 min', l: 'Average delivery time', color: G },
+          ].map(({ v, l, color }, i) => (
+            <motion.div key={i} initial={{ opacity: 0, y: 12 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: i * .08 }}>
+              <div style={{ background: W, border: `1px solid ${BD}`, borderRadius: 18, padding: '24px 22px', textAlign: 'center', boxShadow: SH }}>
+                <p style={{ fontFamily: "'Outfit',sans-serif", fontWeight: 900, fontSize: 'clamp(1.5rem,2.8vw,2rem)', color, letterSpacing: '-.04em', lineHeight: 1, marginBottom: 6 }}>{v}</p>
+                <p style={{ fontSize: 12.5, color: T3, fontWeight: 500 }}>{l}</p>
+              </div>
+            </motion.div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
 /* ═══════════════ SOCIAL PROOF ═══════════════ */
 function SocialProof() {
   return (
@@ -827,7 +902,7 @@ function Footer() {
         <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr 1fr 1fr', gap: 48, marginBottom: 44 }}>
           <div>
             <div style={{ marginBottom: 16 }}>
-              <ZWordmark size={30} dark />
+              <LogoMark size={30} dark />
             </div>
             <p style={{ fontSize: 13.5, color: 'rgba(255,255,255,.4)', lineHeight: 1.7, marginBottom: 22, maxWidth: 260 }}>India's SuperLocal App — groceries, food & services delivered in 30 minutes. 100+ cities, 10,000+ partners.</p>
             <div style={{ display: 'flex', gap: 8, marginBottom: 24 }}>
@@ -877,6 +952,7 @@ export function Home() {
       <Navbar tab={tab} setTab={setTab} />
       <Hero tab={tab} setTab={setTab} />
       <Trust />
+      <BrandsMarquee />
 
       <div style={{ maxWidth: 1320, margin: '0 auto', padding: '44px 24px 80px' }}>
         <AnimatePresence mode="wait">
@@ -886,6 +962,7 @@ export function Home() {
         </AnimatePresence>
       </div>
 
+      <HowItWorks />
       <SocialProof />
       <AppDownload />
       <Footer />
