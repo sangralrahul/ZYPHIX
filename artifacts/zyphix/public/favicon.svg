@@ -1,18 +1,16 @@
 <svg width="180" height="180" viewBox="0 0 180 180" fill="none" xmlns="http://www.w3.org/2000/svg">
   <defs>
     <linearGradient id="bg" x1="0" y1="0" x2="180" y2="180" gradientUnits="userSpaceOnUse">
-      <stop offset="0%" stop-color="#0EA563"/>
-      <stop offset="55%" stop-color="#059652"/>
+      <stop offset="0%" stop-color="#10D678"/>
+      <stop offset="50%" stop-color="#059E5C"/>
       <stop offset="100%" stop-color="#046B42"/>
     </linearGradient>
   </defs>
-  <!-- Rounded-square container -->
   <rect width="180" height="180" rx="42" fill="url(#bg)"/>
-  <!-- Z mark scaled 7.5× from 24×24 viewBox -->
-  <!-- Top bar: x=15 y=19 w=150 h=41 rx=11 -->
-  <rect x="15" y="19" width="150" height="41" rx="11" fill="white"/>
-  <!-- Diagonal: points scaled from 21,8 15,8 3,16 9,16 -->
-  <polygon points="157.5,60 112.5,60 22.5,120 67.5,120" fill="white"/>
-  <!-- Bottom bar: x=15 y=120 w=150 h=41 rx=11 -->
-  <rect x="15" y="120" width="150" height="41" rx="11" fill="white"/>
+  <!-- Inner top highlight for depth -->
+  <rect width="180" height="90" rx="42" fill="rgba(255,255,255,0.07)"/>
+  <!-- Z mark: single path scaled 7.5× from 24×24 viewBox
+       Original: M3,3 H21 V8 L9,16 H21 V21 H3 V16 L15,8 H3 Z
+       Scaled:   M22.5,22.5 H157.5 V60 L67.5,120 H157.5 V157.5 H22.5 V120 L112.5,60 H22.5 Z -->
+  <path d="M22.5,22.5 H157.5 V60 L67.5,120 H157.5 V157.5 H22.5 V120 L112.5,60 H22.5 Z" fill="white"/>
 </svg>

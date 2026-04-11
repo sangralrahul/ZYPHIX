@@ -16,9 +16,7 @@ const ERR = '#EF4444';
 function ZLogo({ size = 20 }: { size?: number }) {
   return (
     <svg width={size} height={size} viewBox="0 0 24 24" fill="none">
-      <rect x="2" y="2.5" width="20" height="5.5" rx="1.5" fill="white"/>
-      <polygon points="21,8 15,8 3,16 9,16" fill="white"/>
-      <rect x="2" y="16" width="20" height="5.5" rx="1.5" fill="white"/>
+      <path d="M3,3 H21 V8 L9,16 H21 V21 H3 V16 L15,8 H3 Z" fill="white"/>
     </svg>
   );
 }
@@ -253,7 +251,7 @@ export function AuthModal() {
                   <ZLogo size={20} />
                 </div>
                 <span style={{ fontFamily: "'Outfit',sans-serif", fontWeight: 900, fontSize: '1.35rem', letterSpacing: '-.05em', color: '#fff' }}>
-                  Zyp<span style={{ color: '#6EE7B7' }}>hix</span>
+                  <span style={{ color: '#34D399' }}>Z</span>yphix
                 </span>
               </div>
 

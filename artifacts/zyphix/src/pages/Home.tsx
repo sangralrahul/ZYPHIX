@@ -27,28 +27,27 @@ const SH2 = '0 4px 12px rgba(0,0,0,.1), 0 16px 40px rgba(0,0,0,.1)';
 function ZIcon({ size = 20 }: { size?: number }) {
   return (
     <svg width={size} height={size} viewBox="0 0 24 24" fill="none">
-      <rect x="2" y="2.5" width="20" height="5.5" rx="1.5" fill="white"/>
-      <polygon points="21,8 15,8 3,16 9,16" fill="white"/>
-      <rect x="2" y="16" width="20" height="5.5" rx="1.5" fill="white"/>
+      <path d="M3,3 H21 V8 L9,16 H21 V21 H3 V16 L15,8 H3 Z" fill="white"/>
     </svg>
   );
 }
 
 function LogoMark({ size = 32, dark = false }: { size?: number; dark?: boolean }) {
+  const r = Math.round(size * 0.24);
   return (
     <div style={{ display: 'flex', alignItems: 'center', gap: 9, flexShrink: 0 }}>
       <div style={{
         width: size, height: size,
-        borderRadius: Math.round(size * 0.24),
-        background: 'linear-gradient(135deg, #0EA563 0%, #059652 55%, #046B42 100%)',
+        borderRadius: r,
+        background: 'linear-gradient(145deg, #10D678 0%, #059E5C 50%, #046B42 100%)',
         display: 'flex', alignItems: 'center', justifyContent: 'center',
         flexShrink: 0,
-        boxShadow: `0 3px 14px rgba(5,150,82,.45), 0 0 0 1.5px rgba(5,150,82,.14)`,
+        boxShadow: `0 4px 16px rgba(5,158,92,.5), inset 0 1px 0 rgba(255,255,255,.22)`,
       }}>
-        <ZIcon size={Math.round(size * 0.6)} />
+        <ZIcon size={Math.round(size * 0.62)} />
       </div>
       <span style={{ fontFamily: "'Outfit',sans-serif", fontWeight: 900, fontSize: size * 0.575, letterSpacing: '-.04em', color: dark ? '#fff' : T1, lineHeight: 1 }}>
-        <span style={{ color: G }}>Z</span>yphix
+        <span style={{ color: dark ? '#34D399' : G }}>Z</span>yphix
       </span>
     </div>
   );

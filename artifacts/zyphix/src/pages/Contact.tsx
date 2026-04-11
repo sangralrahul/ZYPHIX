@@ -5,9 +5,7 @@ import { ArrowLeft, Mail, Phone, MapPin, Send, Check, MessageCircle } from 'luci
 function ZLogo({ size = 15 }: { size?: number }) {
   return (
     <svg width={size} height={size} viewBox="0 0 24 24" fill="none">
-      <rect x="2" y="2.5" width="20" height="5.5" rx="1.5" fill="white"/>
-      <polygon points="21,8 15,8 3,16 9,16" fill="white"/>
-      <rect x="2" y="16" width="20" height="5.5" rx="1.5" fill="white"/>
+      <path d="M3,3 H21 V8 L9,16 H21 V21 H3 V16 L15,8 H3 Z" fill="white"/>
     </svg>
   );
 }
@@ -57,8 +55,8 @@ export function Contact() {
         <div style={{ maxWidth: 1100, margin: '0 auto', padding: '0 24px', height: 60, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
           <Link href="/">
             <div style={{ display: 'flex', alignItems: 'center', gap: 9 }}>
-              <div style={{ width: 30, height: 30, borderRadius: '50%', background: `linear-gradient(145deg, #0DA366, #047857, #065F46)`, display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 2px 8px rgba(13,163,102,.35)' }}><ZLogo size={15} /></div>
-              <span style={{ fontFamily: "'Outfit',sans-serif", fontWeight: 900, fontSize: '1.15rem', letterSpacing: '-.04em', color: T1 }}>Zyp<span style={{ color: G }}>hix</span></span>
+              <div style={{ width: 30, height: 30, borderRadius: 7, background: `linear-gradient(145deg, #10D678 0%, #059E5C 50%, #046B42 100%)`, display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 3px 10px rgba(5,158,92,.45), inset 0 1px 0 rgba(255,255,255,.2)' }}><ZLogo size={17} /></div>
+              <span style={{ fontFamily: "'Outfit',sans-serif", fontWeight: 900, fontSize: '1.15rem', letterSpacing: '-.04em', color: T1 }}><span style={{ color: G }}>Z</span>yphix</span>
             </div>
           </Link>
           <Link href="/"><button style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 13, fontWeight: 600, color: T2, padding: '7px 14px', borderRadius: 8, border: `1px solid ${BD}`, background: W }}><ArrowLeft size={13} /> Back</button></Link>
