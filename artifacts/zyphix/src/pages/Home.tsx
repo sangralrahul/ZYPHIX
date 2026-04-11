@@ -3,303 +3,198 @@ import { motion, AnimatePresence } from 'framer-motion';
 import {
   Star, Clock, Plus, Minus, ArrowRight, Check, Copy,
   MapPin, Truck, Shield, Zap, ChevronRight, ChevronLeft,
-  Package, Users, TrendingUp, Smartphone, ChevronDown, Search
+  Package, Users, Search, ChevronDown, TrendingUp, Sparkles
 } from 'lucide-react';
 import { products, categories, restaurants, foodCategories, services, promoCodes, stores } from '@/data/mockData';
 
 type TabId = 'now' | 'eats' | 'book' | 'map' | 'offers';
 
-const TABS: { id: TabId; label: string; icon: string; accent: string }[] = [
-  { id: 'now',    label: 'ZyphixNow',      icon: '⚡', accent: 'var(--z-green)'  },
-  { id: 'eats',   label: 'ZyphixEats',     icon: '🍱', accent: 'var(--z-orange)' },
-  { id: 'book',   label: 'ZyphixBook',     icon: '📅', accent: 'var(--z-purple)' },
-  { id: 'map',    label: 'Kirana Near Me', icon: '🗺️', accent: 'var(--z-blue)'   },
-  { id: 'offers', label: 'Offers',         icon: '🏷️', accent: 'var(--z-pink)'   },
+const TABS: { id: TabId; label: string; icon: string; accent: string; textColor: string }[] = [
+  { id: 'now',    label: 'ZyphixNow',      icon: '⚡', accent: '#00E676', textColor: '#021a0e' },
+  { id: 'eats',   label: 'ZyphixEats',     icon: '🍱', accent: '#FF6B00', textColor: 'white'   },
+  { id: 'book',   label: 'ZyphixBook',     icon: '📅', accent: '#8B6FFF', textColor: 'white'   },
+  { id: 'map',    label: 'Kirana Near Me', icon: '🗺️', accent: '#4488FF', textColor: 'white'   },
+  { id: 'offers', label: 'Offers',         icon: '🏷️', accent: '#FF4D8B', textColor: 'white'   },
 ];
 
-/* ── countdown hook ── */
 function useCountdown(init: number) {
   const [s, setS] = useState(init);
   useEffect(() => { const t = setInterval(() => setS(x => x > 0 ? x - 1 : 0), 1000); return () => clearInterval(t); }, []);
-  const pad = (n: number) => String(n).padStart(2, '0');
-  return { h: pad(Math.floor(s / 3600)), m: pad(Math.floor((s % 3600) / 60)), s: pad(s % 60) };
+  const p = (n: number) => String(n).padStart(2, '0');
+  return { h: p(Math.floor(s / 3600)), m: p(Math.floor((s % 3600) / 60)), s: p(s % 60) };
 }
 
-/* ── carousel with nav arrows ── */
 function Carousel({ children, className = '' }: { children: React.ReactNode; className?: string }) {
   const ref = useRef<HTMLDivElement>(null);
   const sc = (d: 1 | -1) => ref.current?.scrollBy({ left: d * 340, behavior: 'smooth' });
   return (
     <div className="relative group/c">
-      <button onClick={() => sc(-1)} className="hidden lg:flex absolute -left-4 top-1/2 -translate-y-1/2 z-10 w-9 h-9 rounded-full items-center justify-center opacity-0 group-hover/c:opacity-100 transition-all duration-200" style={{ background: 'var(--z-card2)', border: '1px solid var(--z-border2)', boxShadow: '0 8px 24px rgba(0,0,0,.6)' }}>
+      <button onClick={() => sc(-1)} className="hidden lg:flex absolute -left-4 top-1/2 -translate-y-1/2 z-10 w-9 h-9 rounded-full items-center justify-center opacity-0 group-hover/c:opacity-100 transition-all" style={{ background: '#1A1E2E', border: '1px solid rgba(255,255,255,0.15)', boxShadow: '0 8px 24px rgba(0,0,0,.7)' }}>
         <ChevronLeft className="h-4 w-4 text-white" />
       </button>
       <div ref={ref} className={`carousel ${className}`}>{children}</div>
-      <button onClick={() => sc(1)} className="hidden lg:flex absolute -right-4 top-1/2 -translate-y-1/2 z-10 w-9 h-9 rounded-full items-center justify-center opacity-0 group-hover/c:opacity-100 transition-all duration-200" style={{ background: 'var(--z-card2)', border: '1px solid var(--z-border2)', boxShadow: '0 8px 24px rgba(0,0,0,.6)' }}>
+      <button onClick={() => sc(1)} className="hidden lg:flex absolute -right-4 top-1/2 -translate-y-1/2 z-10 w-9 h-9 rounded-full items-center justify-center opacity-0 group-hover/c:opacity-100 transition-all" style={{ background: '#1A1E2E', border: '1px solid rgba(255,255,255,0.15)', boxShadow: '0 8px 24px rgba(0,0,0,.7)' }}>
         <ChevronRight className="h-4 w-4 text-white" />
       </button>
     </div>
   );
 }
 
-/* ── section header ── */
-function SH({ title, sub, action, accent = 'var(--z-green)' }: { title: string; sub?: string; action?: string; accent?: string }) {
+function SH({ title, sub, action, accent = '#00E676' }: { title: string; sub?: string; action?: string; accent?: string }) {
   return (
     <div className="flex items-end justify-between mb-5">
       <div>
-        <h2 className="section-title">{title}</h2>
-        {sub && <p className="text-xs mt-0.5" style={{ color: 'var(--z-muted)' }}>{sub}</p>}
+        <h2 style={{ fontSize: '1.1rem', fontWeight: 900, color: 'white', letterSpacing: '-.03em' }}>{title}</h2>
+        {sub && <p style={{ fontSize: 11, color: 'rgba(255,255,255,0.4)', marginTop: 2 }}>{sub}</p>}
       </div>
       {action && (
-        <button className="text-xs font-bold flex items-center gap-0.5 px-3 py-1.5 rounded-full transition-all hover:gap-1" style={{ color: accent, background: `${accent}12`, border: `1px solid ${accent}20` }}>
-          {action} <ChevronRight className="h-3 w-3" />
+        <button style={{ fontSize: 11, fontWeight: 700, color: accent, background: `${accent}12`, border: `1px solid ${accent}22`, padding: '5px 12px', borderRadius: 999, display: 'flex', alignItems: 'center', gap: 3 }}>
+          {action} <ChevronRight style={{ height: 12, width: 12 }} />
         </button>
       )}
     </div>
   );
 }
 
-/* ── star rating ── */
 function Stars({ r }: { r: number }) {
-  return <span className="inline-flex items-center gap-0.5 text-xs font-bold" style={{ color: '#FFB800' }}><Star className="h-3 w-3 fill-current" />{r}</span>;
+  return <span style={{ display: 'inline-flex', alignItems: 'center', gap: 2, fontSize: 11, fontWeight: 700, color: '#FFB800' }}><Star style={{ height: 11, width: 11, fill: 'currentColor' }} />{r}</span>;
 }
 
-/* ═══════════════════════════
-   ANNOUNCEMENT BAR
-═══════════════════════════ */
-function AnnoBar() {
-  return (
-    <div className="w-full py-2 text-center text-xs font-bold tracking-wide overflow-hidden relative" style={{ background: 'linear-gradient(90deg, var(--z-green2), #006635, var(--z-green2))', backgroundSize: '200% 100%', animation: 'gradient-move 4s linear infinite' }}>
-      <span style={{ color: '#021a0e' }}>
-        ⚡ FREE delivery on first order — Use code <span className="px-1.5 py-0.5 rounded bg-black/20">ZYPHIX50</span> &nbsp;·&nbsp; Now live in Jammu, J&K &nbsp;·&nbsp; ₹0 surge pricing, ever
-      </span>
-    </div>
-  );
-}
-
-/* ═══════════════════════════
-   NAVBAR (ENHANCED)
-═══════════════════════════ */
-function Navbar() {
-  const [scrolled, setScrolled] = useState(false);
-  const [focused, setFocused] = useState(false);
-  useEffect(() => {
-    const h = () => setScrolled(window.scrollY > 8);
-    window.addEventListener('scroll', h, { passive: true });
-    return () => window.removeEventListener('scroll', h);
-  }, []);
-  return (
-    <div className="sticky top-0 z-50 w-full transition-all duration-300 glass" style={{ boxShadow: scrolled ? '0 4px 40px rgba(0,0,0,.6)' : 'none' }}>
-      <div className="max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center gap-3 h-[60px]">
-          {/* Logo */}
-          <a href="/" className="flex items-center gap-2.5 shrink-0 group">
-            <div className="w-8 h-8 rounded-xl flex items-center justify-center shrink-0 transition-all group-hover:scale-105 animate-glow" style={{ background: 'linear-gradient(135deg,var(--z-green),var(--z-blue))' }}>
-              <Zap style={{ height: 16, width: 16, color: 'white', fill: 'white' }} />
-            </div>
-            <span className="font-black text-xl tracking-tight hidden sm:block shimmer-brand" style={{ fontFamily: "'Outfit', sans-serif", letterSpacing: '-.04em' }}>ZYPHIX</span>
-          </a>
-          {/* Location */}
-          <button className="hidden md:flex items-center gap-1.5 px-3 py-2 rounded-xl transition-all hover:bg-white/5 shrink-0" style={{ border: '1px solid rgba(255,255,255,0.07)' }}>
-            <div className="w-5 h-5 rounded-full flex items-center justify-center shrink-0" style={{ background: 'rgba(0,230,118,0.15)' }}>
-              <MapPin style={{ height: 11, width: 11, color: 'var(--z-green)' }} />
-            </div>
-            <div className="text-left">
-              <p className="text-[9px] font-semibold uppercase tracking-widest leading-none" style={{ color: 'var(--z-muted)' }}>Deliver to</p>
-              <div className="flex items-center gap-0.5 mt-0.5">
-                <span className="font-black text-white text-sm leading-none">Jammu, J&K</span>
-                <ChevronDown style={{ height: 11, width: 11, color: 'var(--z-muted)' }} />
-              </div>
-            </div>
-          </button>
-          {/* Search */}
-          <div className="flex-1 relative max-w-lg">
-            <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 z-10 transition-colors" style={{ height: 15, width: 15, color: focused ? 'var(--z-green)' : 'var(--z-muted)' }} />
-            <input type="text" placeholder="Search groceries, food, services..." onFocus={() => setFocused(true)} onBlur={() => setFocused(false)}
-              className="w-full pl-10 pr-4 py-2.5 rounded-2xl text-sm text-white outline-none transition-all placeholder:text-[var(--z-muted)]"
-              style={{ background: focused ? 'rgba(26,30,46,0.98)' : 'rgba(26,30,46,0.7)', border: focused ? '1px solid rgba(0,230,118,.35)' : '1px solid rgba(255,255,255,0.07)', boxShadow: focused ? '0 0 0 3px rgba(0,230,118,.07)' : 'none' }} />
-          </div>
-          {/* Actions */}
-          <div className="flex items-center gap-2 shrink-0">
-            <button className="hidden sm:flex items-center gap-1.5 btn-ghost rounded-xl px-3.5 py-2 text-sm">
-              <Users style={{ height: 15, width: 15 }} /><span className="hidden lg:inline">Login</span>
-            </button>
-            <button className="relative flex items-center gap-2 btn-green rounded-xl px-4 py-2.5 text-sm">
-              <Package style={{ height: 16, width: 16 }} />
-              <span className="hidden sm:inline font-black">Cart</span>
-              <span className="absolute -top-1.5 -right-1.5 w-[18px] h-[18px] rounded-full text-[10px] font-black flex items-center justify-center text-white" style={{ background: 'var(--z-orange)' }}>3</span>
-            </button>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-}
-
-/* ═══════════════════════════
-   HERO
-═══════════════════════════ */
+/* ════════════════════════════════════════
+   HERO — full visual redesign
+════════════════════════════════════════ */
 function Hero() {
+  const heroProds = products.slice(0, 6);
+
   return (
-    <div className="relative overflow-hidden" style={{ minHeight: 520 }}>
-      {/* Background image */}
+    <div className="relative overflow-hidden" style={{ background: 'linear-gradient(165deg, #060A14 0%, #08101E 40%, #060D16 100%)', minHeight: 560 }}>
+
+      {/* Background food photo — brighter, more visible */}
       <img
         src="https://images.unsplash.com/photo-1542838132-92c53300491e?w=1600&h=700&fit=crop&q=80"
-        alt="" className="absolute inset-0 w-full h-full img-cover" style={{ filter: 'brightness(0.22) saturate(1.4)' }}
+        alt=""
+        className="absolute inset-0 w-full h-full img-cover"
+        style={{ filter: 'brightness(0.4) saturate(1.3)', mixBlendMode: 'screen', opacity: 0.5 }}
       />
-      {/* Gradient overlays */}
-      <div className="absolute inset-0" style={{ background: 'linear-gradient(100deg, rgba(7,10,18,0.98) 45%, rgba(7,10,18,0.6) 100%)' }} />
-      <div className="absolute inset-0 pointer-events-none">
-        <div className="absolute top-0 left-0 w-[700px] h-[700px]" style={{ background: 'radial-gradient(circle, rgba(0,230,118,0.07) 0%, transparent 65%)', transform: 'translate(-30%, -30%)' }} />
-        <div className="absolute bottom-0 right-1/3 w-[500px] h-[500px]" style={{ background: 'radial-gradient(circle, rgba(68,136,255,0.05) 0%, transparent 65%)', transform: 'translate(20%, 30%)' }} />
-      </div>
 
-      <div className="relative max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8 py-14 lg:py-20">
-        <div className="flex items-center gap-16">
-          {/* LEFT */}
-          <motion.div className="flex-1" initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7, ease: [.22,1,.36,1] }}>
-            {/* Live badge */}
-            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full mb-6" style={{ background: 'rgba(0,230,118,0.1)', border: '1px solid rgba(0,230,118,0.2)' }}>
-              <span className="w-2 h-2 rounded-full animate-pulse-dot" style={{ background: 'var(--z-green)' }} />
-              <span className="text-xs font-black tracking-wide" style={{ color: 'var(--z-green)', letterSpacing: '.06em' }}>LIVE NOW · JAMMU, J&K</span>
+      {/* Gradient mask */}
+      <div className="absolute inset-0" style={{ background: 'linear-gradient(110deg, rgba(6,10,20,0.97) 40%, rgba(6,10,20,0.55) 75%, rgba(6,10,20,0.3) 100%)' }} />
+
+      {/* Green radial glow */}
+      <div className="absolute pointer-events-none" style={{ left: '-10%', bottom: '-20%', width: 700, height: 700, background: 'radial-gradient(circle, rgba(0,230,118,0.10) 0%, transparent 65%)', filter: 'blur(10px)' }} />
+      <div className="absolute pointer-events-none" style={{ right: '5%', top: '-10%', width: 500, height: 500, background: 'radial-gradient(circle, rgba(68,136,255,0.08) 0%, transparent 65%)', filter: 'blur(10px)' }} />
+
+      <div className="relative max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8 py-12 lg:py-16">
+        <div className="flex items-center gap-8 xl:gap-14">
+
+          {/* ── LEFT: copy ── */}
+          <motion.div className="flex-1 min-w-0" initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: .65, ease: [.22,1,.36,1] }}>
+
+            <div className="inline-flex items-center gap-2 mb-5 px-3.5 py-1.5 rounded-full" style={{ background: 'rgba(0,230,118,0.1)', border: '1px solid rgba(0,230,118,0.22)' }}>
+              <span className="w-2 h-2 rounded-full" style={{ background: '#00E676', animation: 'pulse-dot 2s ease-in-out infinite' }} />
+              <span style={{ fontSize: 11, fontWeight: 800, color: '#00E676', letterSpacing: '.08em' }}>LIVE NOW · JAMMU, J&K</span>
             </div>
 
-            {/* Main headline */}
-            <div className="mb-6">
-              <h1 style={{ fontFamily: "'Outfit', sans-serif", fontWeight: 900, lineHeight: 1.0, letterSpacing: '-.04em' }}>
-                <span className="block text-white" style={{ fontSize: 'clamp(2.2rem, 5vw, 3.4rem)' }}>Groceries. Food.</span>
-                <span className="block text-white" style={{ fontSize: 'clamp(2.2rem, 5vw, 3.4rem)' }}>Services. All in</span>
-                <span className="block shimmer-brand" style={{ fontSize: 'clamp(3.6rem, 8vw, 6rem)' }}>30 Min.</span>
-              </h1>
-              <p className="mt-4 text-base leading-relaxed max-w-md" style={{ color: 'rgba(255,255,255,0.45)', fontWeight: 500 }}>
-                India's first SuperLocal app — built for Tier-2 cities. Your nearest kirana, restaurant & professional, at your door.
-              </p>
+            <h1 style={{ fontFamily: "'Outfit',sans-serif", fontWeight: 900, lineHeight: 1.01, letterSpacing: '-.045em', marginBottom: 20 }}>
+              <span style={{ display: 'block', color: 'white', fontSize: 'clamp(2rem,4.5vw,3.2rem)' }}>India's #1</span>
+              <span style={{ display: 'block', color: 'white', fontSize: 'clamp(2rem,4.5vw,3.2rem)' }}>SuperLocal App.</span>
+              <span style={{ display: 'block', fontSize: 'clamp(3rem,7vw,5.5rem)', background: 'linear-gradient(130deg,#00E676 0%,#00BF63 40%,#4488FF 80%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>
+                30 Minutes.
+              </span>
+            </h1>
+
+            <p style={{ color: 'rgba(255,255,255,0.45)', fontSize: '0.95rem', lineHeight: 1.65, marginBottom: 24, maxWidth: 400, fontWeight: 500 }}>
+              Groceries · Food · Services — delivered from your nearest kirana, dhaba & professional in Jammu & Kashmir.
+            </p>
+
+            {/* Search */}
+            <div className="relative mb-5 max-w-sm">
+              <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 z-10" style={{ height: 16, width: 16, color: '#00E676' }} />
+              <input placeholder="Tomatoes, Amul Milk, Barber..." className="w-full pl-10 pr-4 py-3.5 rounded-2xl text-white outline-none placeholder:font-medium"
+                style={{ background: 'rgba(255,255,255,0.07)', border: '1.5px solid rgba(0,230,118,0.3)', fontSize: 13, fontWeight: 500 }}
+              />
+              <button className="absolute right-2 top-1/2 -translate-y-1/2 px-3.5 py-1.5 rounded-xl text-xs font-black" style={{ background: '#00E676', color: '#021a0e' }}>Search</button>
             </div>
 
-            {/* Location pill */}
-            <div className="flex items-center gap-2 mb-6 max-w-xs p-3 rounded-2xl" style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.09)' }}>
-              <div className="w-8 h-8 rounded-xl flex items-center justify-center shrink-0" style={{ background: 'rgba(0,230,118,0.15)' }}>
-                <MapPin style={{ height: 16, width: 16, color: 'var(--z-green)' }} />
-              </div>
-              <div className="flex-1 min-w-0">
-                <p className="text-xs font-medium" style={{ color: 'rgba(255,255,255,0.35)' }}>Delivering to</p>
-                <p className="font-black text-white text-sm">Jammu, Jammu & Kashmir</p>
-              </div>
-              <button className="text-xs font-bold px-2.5 py-1 rounded-lg" style={{ background: 'rgba(0,230,118,0.1)', color: 'var(--z-green)', border: '1px solid rgba(0,230,118,0.2)' }}>Change</button>
-            </div>
-
-            {/* CTAs */}
-            <div className="flex flex-wrap gap-3 mb-8">
-              <button className="btn-green rounded-2xl px-7 py-3.5 text-sm flex items-center gap-2">
-                <Zap style={{ height: 16, width: 16 }} /> Order Now — It's Free
+            {/* CTA row */}
+            <div className="flex flex-wrap gap-3 mb-6">
+              <button className="flex items-center gap-2 px-6 py-3 rounded-2xl font-black text-sm" style={{ background: '#00E676', color: '#021a0e', boxShadow: '0 8px 28px rgba(0,230,118,0.35)' }}>
+                <Zap style={{ height: 16, width: 16 }} /> Order Now — Free
               </button>
-              <button className="btn-ghost rounded-2xl px-7 py-3.5 text-sm flex items-center gap-2">
-                <span>Watch how it works</span> <ArrowRight style={{ height: 15, width: 15 }} />
+              <button className="flex items-center gap-2 px-6 py-3 rounded-2xl font-bold text-sm" style={{ background: 'rgba(255,255,255,0.07)', color: 'rgba(255,255,255,0.7)', border: '1px solid rgba(255,255,255,0.12)' }}>
+                <span>See How it Works</span> <ArrowRight style={{ height: 14, width: 14 }} />
               </button>
             </div>
 
             {/* App badges */}
-            <div className="flex items-center gap-3 mb-10">
-              {[
-                { icon: '🍎', top: 'Download on the', bot: 'App Store' },
-                { icon: '▶', top: 'Get it on', bot: 'Google Play' },
-              ].map((a, i) => (
-                <button key={i} className="flex items-center gap-2.5 px-4 py-2.5 rounded-2xl transition-all hover:opacity-90 hover:scale-105"
-                  style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.1)' }}>
-                  <span style={{ fontSize: 20 }}>{a.icon}</span>
-                  <div className="text-left">
-                    <p style={{ fontSize: 9, fontWeight: 600, color: 'rgba(255,255,255,0.4)', lineHeight: 1.2 }}>{a.top}</p>
-                    <p style={{ fontSize: 13, fontWeight: 900, color: 'white', lineHeight: 1.2 }}>{a.bot}</p>
+            <div className="flex flex-wrap gap-2.5 mb-8">
+              {[{ic:'🍎',top:'Download on the',bot:'App Store'},{ic:'▶',top:'Get it on',bot:'Google Play'}].map((a,i)=>(
+                <button key={i} className="flex items-center gap-2 px-3.5 py-2.5 rounded-xl transition-all hover:scale-105"
+                  style={{ background: 'rgba(255,255,255,0.07)', border: '1px solid rgba(255,255,255,0.11)' }}>
+                  <span style={{ fontSize: 18 }}>{a.ic}</span>
+                  <div>
+                    <p style={{ fontSize: 8.5, color: 'rgba(255,255,255,0.38)', fontWeight: 600, lineHeight: 1.2 }}>{a.top}</p>
+                    <p style={{ fontSize: 13, color: 'white', fontWeight: 900, lineHeight: 1.2 }}>{a.bot}</p>
                   </div>
                 </button>
               ))}
-              <span className="text-xs font-semibold ml-1" style={{ color: 'rgba(255,255,255,0.3)' }}>4.8 ★ · 50K+ downloads</span>
             </div>
 
             {/* Stats */}
-            <div className="grid grid-cols-4 gap-4 pt-6 max-w-md" style={{ borderTop: '1px solid rgba(255,255,255,0.07)' }}>
-              {[['50K+','Customers'],['1,200+','Stores'],['30min','Avg Delivery'],['₹0','Surge Fee']].map(([v,l],i)=>(
-                <motion.div key={i} initial={{opacity:0,y:10}} animate={{opacity:1,y:0}} transition={{delay:.5+i*.1}}>
-                  <p className="font-black text-white leading-none" style={{ fontSize: 'clamp(1rem,2.5vw,1.4rem)' }}>{v}</p>
-                  <p className="text-[10px] mt-0.5 font-medium" style={{ color: 'rgba(255,255,255,0.4)' }}>{l}</p>
+            <div className="flex flex-wrap gap-6" style={{ paddingTop: 16, borderTop: '1px solid rgba(255,255,255,0.07)' }}>
+              {[['50K+','Happy customers'],['1,200+','Kirana stores'],['30 min','Avg delivery'],['₹0','Surge ever']].map(([v,l],i)=>(
+                <motion.div key={i} initial={{opacity:0,y:8}} animate={{opacity:1,y:0}} transition={{delay:.45+i*.08}}>
+                  <p style={{ fontWeight: 900, color: 'white', fontSize: 'clamp(1.1rem,2.2vw,1.5rem)', lineHeight: 1, fontFamily: "'Outfit',sans-serif" }}>{v}</p>
+                  <p style={{ fontSize: 10, color: 'rgba(255,255,255,0.38)', marginTop: 2, fontWeight: 500 }}>{l}</p>
                 </motion.div>
               ))}
             </div>
           </motion.div>
 
-          {/* RIGHT — premium app mockup */}
-          <motion.div className="shrink-0 hidden xl:block" initial={{ opacity: 0, x: 40, y: 10 }} animate={{ opacity: 1, x: 0, y: 0 }} transition={{ duration: .8, delay: .2 }}>
+          {/* ── RIGHT: floating product grid ── */}
+          <motion.div className="hidden lg:block shrink-0" style={{ width: 340 }} initial={{ opacity: 0, x: 30 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: .7, delay: .15 }}>
             <div className="relative">
-              {/* Glow behind */}
-              <div className="absolute -inset-8 rounded-full" style={{ background: 'radial-gradient(ellipse, rgba(0,230,118,0.08) 0%, transparent 70%)', filter: 'blur(20px)' }} />
-              {/* Phone frame */}
-              <div className="relative animate-float rounded-[40px] overflow-hidden"
-                style={{ width: 280, height: 560, background: 'var(--z-card)', border: '1.5px solid rgba(255,255,255,0.12)', boxShadow: '0 50px 120px rgba(0,0,0,.7), 0 0 0 0.5px rgba(255,255,255,0.05), inset 0 0 0 10px var(--z-bg)' }}>
-                {/* Notch */}
-                <div className="mx-auto mt-3 w-20 h-5 rounded-full" style={{ background: 'var(--z-bg)' }} />
-                {/* App header */}
-                <div className="px-4 py-3 flex items-center justify-between" style={{ borderBottom: '1px solid rgba(255,255,255,0.06)' }}>
-                  <span className="shimmer-brand font-black text-sm" style={{ fontFamily: "'Outfit',sans-serif" }}>ZYPHIX</span>
-                  <div className="flex items-center gap-1.5 px-2 py-1 rounded-lg" style={{ background: 'rgba(0,230,118,0.1)', border: '1px solid rgba(0,230,118,0.2)' }}>
-                    <span className="w-1.5 h-1.5 rounded-full animate-pulse-dot" style={{ background: 'var(--z-green)' }} />
-                    <span style={{ fontSize: 9, fontWeight: 800, color: 'var(--z-green)' }}>ON THE WAY</span>
-                  </div>
-                </div>
-                {/* Order tracking */}
-                <div className="px-4 py-3">
-                  <p className="font-black text-white text-sm mb-0.5">Your order is near!</p>
-                  <p style={{ fontSize: 10, color: 'var(--z-muted)' }}>Sharma General Store · Jammu</p>
-                  {/* Progress */}
-                  <div className="mt-3 mb-3 h-1.5 rounded-full overflow-hidden" style={{ background: 'rgba(255,255,255,0.07)' }}>
-                    <motion.div className="h-full rounded-full" style={{ background: 'linear-gradient(90deg,var(--z-green),var(--z-blue))' }} initial={{width:0}} animate={{width:'75%'}} transition={{duration:1.8,delay:.6,ease:'easeOut'}} />
-                  </div>
-                  <div className="flex justify-between" style={{ fontSize: 9, color: 'var(--z-muted)' }}>
-                    <span style={{ color: 'var(--z-green)', fontWeight: 700 }}>Order Placed</span>
-                    <span>Packed</span>
-                    <span>On the way</span>
-                    <span>Delivered</span>
-                  </div>
-                </div>
-                {/* Products */}
-                <div className="px-3 space-y-2 mt-1">
-                  {products.slice(0,4).map(p=>(
-                    <div key={p.id} className="flex items-center gap-2.5 px-3 py-2 rounded-xl" style={{ background: 'rgba(255,255,255,0.04)' }}>
-                      <div className="w-10 h-10 rounded-xl overflow-hidden shrink-0" style={{ background: 'var(--z-card2)' }}>
-                        <img src={p.image} alt={p.name} className="w-full h-full img-cover" />
-                      </div>
-                      <div className="flex-1 min-w-0">
-                        <p className="text-white font-semibold truncate" style={{ fontSize: 11 }}>{p.name}</p>
-                        <p style={{ fontSize: 9, color: 'var(--z-muted)' }}>{p.weight}</p>
-                      </div>
-                      <p className="font-black text-white shrink-0" style={{ fontSize: 11 }}>₹{p.price}</p>
+
+              {/* Glow behind grid */}
+              <div className="absolute inset-0" style={{ background: 'radial-gradient(ellipse at center, rgba(0,230,118,0.08) 0%, transparent 70%)', filter: 'blur(24px)', transform: 'scale(1.3)' }} />
+
+              {/* 2×3 product grid */}
+              <div className="relative grid grid-cols-2 gap-3">
+                {heroProds.map((p, i) => (
+                  <motion.div key={p.id} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: .3 + i * .08 }}
+                    className="rounded-2xl overflow-hidden cursor-pointer group"
+                    style={{ background: 'rgba(18,22,38,0.9)', border: '1px solid rgba(255,255,255,0.1)', backdropFilter: 'blur(12px)', boxShadow: '0 12px 40px rgba(0,0,0,0.5)', transform: i % 2 === 1 ? 'translateY(14px)' : undefined }}>
+                    <div className="relative overflow-hidden" style={{ height: 90, background: 'rgba(255,255,255,0.03)' }}>
+                      <img src={p.image} alt={p.name} className="w-full h-full img-cover group-hover:scale-110 transition-transform duration-300" />
+                      {p.origPrice && (
+                        <div className="absolute top-1.5 left-1.5">
+                          <span style={{ background: '#FF3B3B', color: 'white', fontSize: 9, fontWeight: 800, padding: '1px 5px', borderRadius: 999 }}>
+                            -{Math.round((1-p.price/p.origPrice)*100)}%
+                          </span>
+                        </div>
+                      )}
                     </div>
-                  ))}
-                </div>
-                {/* Bottom action */}
-                <div className="absolute bottom-6 left-4 right-4">
-                  <button className="w-full btn-green rounded-2xl py-3 text-xs font-black">Track Live on Map →</button>
-                </div>
+                    <div className="p-2.5">
+                      <p style={{ fontSize: 9, color: 'rgba(255,255,255,0.4)', marginBottom: 1 }}>{p.brand}</p>
+                      <p style={{ fontSize: 11, fontWeight: 700, color: 'white', lineHeight: 1.3, marginBottom: 4, overflow: 'hidden', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical' }}>{p.name}</p>
+                      <div className="flex items-center justify-between">
+                        <span style={{ fontSize: 13, fontWeight: 900, color: 'white' }}>₹{p.price}</span>
+                        <button style={{ width: 24, height: 24, borderRadius: 8, background: 'rgba(0,230,118,0.15)', border: '1px solid rgba(0,230,118,0.3)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                          <Plus style={{ height: 11, width: 11, color: '#00E676' }} />
+                        </button>
+                      </div>
+                    </div>
+                  </motion.div>
+                ))}
               </div>
 
-              {/* Floating badges */}
-              <div className="absolute -left-12 top-20 px-3 py-2 rounded-2xl flex items-center gap-2 animate-float2"
-                style={{ background: 'var(--z-card)', border: '1px solid rgba(255,255,255,0.1)', boxShadow: '0 16px 48px rgba(0,0,0,.6)', animationDelay: '1.5s' }}>
-                <div className="w-8 h-8 rounded-xl flex items-center justify-center" style={{ background: 'rgba(0,230,118,0.15)' }}>
-                  <Truck style={{ height: 16, width: 16, color: 'var(--z-green)' }} />
+              {/* Delivery time badge */}
+              <motion.div className="absolute -bottom-4 left-1/2 -translate-x-1/2" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 1 }}>
+                <div className="flex items-center gap-2 px-4 py-2.5 rounded-2xl whitespace-nowrap" style={{ background: '#00E676', boxShadow: '0 8px 28px rgba(0,230,118,0.45)' }}>
+                  <Truck style={{ height: 15, width: 15, color: '#021a0e' }} />
+                  <span style={{ fontSize: 12, fontWeight: 900, color: '#021a0e' }}>Delivering in 30 min · Jammu</span>
                 </div>
-                <div>
-                  <p className="font-black text-white" style={{ fontSize: 11 }}>Arriving in</p>
-                  <p className="font-black" style={{ fontSize: 13, color: 'var(--z-green)' }}>12 minutes</p>
-                </div>
-              </div>
-              <div className="absolute -right-10 bottom-32 px-3 py-2 rounded-2xl flex items-center gap-2 animate-float"
-                style={{ background: 'var(--z-card)', border: '1px solid rgba(255,255,255,0.1)', boxShadow: '0 16px 48px rgba(0,0,0,.6)', animationDelay: '3s' }}>
-                <Shield style={{ height: 16, width: 16, color: 'var(--z-amber)', flexShrink: 0 }} />
-                <div>
-                  <p className="font-black text-white" style={{ fontSize: 11 }}>100% Verified</p>
-                  <p style={{ fontSize: 9, color: 'var(--z-muted)' }}>All stores checked</p>
-                </div>
-              </div>
+              </motion.div>
             </div>
           </motion.div>
         </div>
@@ -308,28 +203,26 @@ function Hero() {
   );
 }
 
-/* ═══════════════════════════
-   TRUST STRIP
-═══════════════════════════ */
-function TrustStrip() {
+/* ════════════════════════════════════════
+   TRUST BAR
+════════════════════════════════════════ */
+function TrustBar() {
   const items = [
-    { icon: Zap,      label: '30 Min Delivery',     sub: 'Guaranteed or refund', c: 'var(--z-green)'  },
-    { icon: Package,  label: '1,200+ Kirana Stores', sub: 'Background-verified',  c: 'var(--z-amber)'  },
-    { icon: Shield,   label: '100% Secure',           sub: 'Inspected by ZYPHIX',  c: 'var(--z-blue)'   },
-    { icon: Users,    label: '50,000+ Families',      sub: 'Trust ZYPHIX daily',   c: 'var(--z-purple)' },
+    { icon: '⚡', v: '30 Min', l: 'Delivery Guaranteed', c: '#00E676' },
+    { icon: '🏪', v: '1,200+', l: 'Verified Kirana Stores', c: '#FFB800' },
+    { icon: '🛡️', v: '100%',   l: 'Secure & Inspected', c: '#4488FF' },
+    { icon: '👨‍👩‍👧', v: '50K+',   l: 'Families Served', c: '#8B6FFF' },
   ];
   return (
-    <div style={{ background: 'var(--z-surf)', borderTop: '1px solid rgba(255,255,255,0.05)', borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
-      <div className="max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8 py-5">
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-5">
-          {items.map(({ icon: Icon, label, sub, c }, i) => (
-            <div key={i} className="flex items-center gap-3 group">
-              <div className="w-10 h-10 rounded-2xl flex items-center justify-center shrink-0 transition-transform group-hover:scale-110" style={{ background: `${c}14`, border: `1px solid ${c}1E` }}>
-                <Icon style={{ height: 18, width: 18, color: c }} />
-              </div>
+    <div style={{ background: '#0A0F1A', borderBottom: '1px solid rgba(255,255,255,0.06)' }}>
+      <div className="max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="grid grid-cols-2 lg:grid-cols-4" style={{ borderLeft: '1px solid rgba(255,255,255,0.06)' }}>
+          {items.map(({ icon, v, l, c }, i) => (
+            <div key={i} className="flex items-center gap-3 py-4 px-5" style={{ borderRight: '1px solid rgba(255,255,255,0.06)' }}>
+              <div className="text-2xl">{icon}</div>
               <div>
-                <p className="font-black text-white text-sm leading-none">{label}</p>
-                <p className="text-[10px] mt-0.5 font-medium" style={{ color: 'var(--z-muted)' }}>{sub}</p>
+                <p style={{ fontWeight: 900, color: c, fontSize: '1.1rem', lineHeight: 1 }}>{v}</p>
+                <p style={{ fontSize: 11, color: 'rgba(255,255,255,0.38)', fontWeight: 500, marginTop: 2 }}>{l}</p>
               </div>
             </div>
           ))}
@@ -339,42 +232,39 @@ function TrustStrip() {
   );
 }
 
-/* ═══════════════════════════
+/* ════════════════════════════════════════
    HOW IT WORKS
-═══════════════════════════ */
+════════════════════════════════════════ */
 function HowItWorks() {
   const steps = [
-    { n: '01', icon: '📍', title: 'Choose Your Location', desc: 'Enter your Jammu/J&K address and we find the nearest verified kirana & restaurants instantly.', c: 'var(--z-green)' },
-    { n: '02', icon: '🛒', title: 'Pick What You Need', desc: 'Browse groceries, fresh produce, cooked food or book a service. 1,000+ items available 24/7.', c: 'var(--z-blue)' },
-    { n: '03', icon: '⚡', title: 'Delivered in 30 Min', desc: 'Your local kirana partner packs & delivers your order. Real-time tracking, zero surge pricing.', c: 'var(--z-orange)' },
+    { icon: '📍', n: '01', title: 'Choose Location', desc: 'Set your Jammu/J&K address — we find the nearest verified stores instantly.', c: '#00E676' },
+    { icon: '🛒', n: '02', title: 'Pick What You Need', desc: 'Browse 1,000+ items: groceries, food, medicines, services — 24/7.', c: '#4488FF' },
+    { icon: '⚡', n: '03', title: 'Delivered in 30 Min', desc: 'Live tracking. Real kirana partner packs & brings it. ₹0 surge pricing.', c: '#FF6B00' },
   ];
   return (
-    <div className="relative overflow-hidden py-16" style={{ background: 'var(--z-surf)' }}>
-      <div className="absolute inset-0 pointer-events-none">
-        <div className="absolute inset-0" style={{ background: 'radial-gradient(ellipse at 50% 100%, rgba(0,230,118,0.04), transparent 70%)' }} />
-      </div>
-      <div className="max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8 relative">
-        <div className="text-center mb-12">
-          <span className="badge badge-green mb-3">HOW IT WORKS</span>
-          <h2 className="font-black text-white leading-tight" style={{ fontSize: 'clamp(1.8rem,4vw,2.8rem)', letterSpacing: '-.04em' }}>
-            Order in <span className="text-grad-green">60 seconds</span>
+    <div className="relative py-14" style={{ background: '#0A0F1A' }}>
+      <div className="absolute inset-0 pointer-events-none" style={{ background: 'radial-gradient(ellipse at 50% 120%, rgba(0,230,118,0.05), transparent 60%)' }} />
+      <div className="max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="text-center mb-10">
+          <div style={{ display: 'inline-flex', alignItems: 'center', gap: 6, background: 'rgba(0,230,118,0.08)', border: '1px solid rgba(0,230,118,0.18)', padding: '4px 14px', borderRadius: 999, marginBottom: 12 }}>
+            <span style={{ fontSize: 10, fontWeight: 800, color: '#00E676', letterSpacing: '.08em' }}>HOW IT WORKS</span>
+          </div>
+          <h2 style={{ fontFamily: "'Outfit',sans-serif", fontWeight: 900, fontSize: 'clamp(1.8rem,4vw,2.8rem)', letterSpacing: '-.04em', color: 'white', lineHeight: 1.1 }}>
+            Order in <span style={{ background: 'linear-gradient(120deg,#00E676,#4488FF)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>60 seconds</span>
           </h2>
-          <p className="text-sm mt-2 max-w-xs mx-auto" style={{ color: 'var(--z-muted)' }}>Simple. Fast. No-fuss ordering from your local stores.</p>
+          <p style={{ fontSize: 13, color: 'rgba(255,255,255,0.38)', marginTop: 8 }}>Simple. Fast. Designed for Jammu & Kashmir.</p>
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 relative">
-          {/* connector line */}
-          <div className="hidden md:block absolute top-10 left-1/6 right-1/6 h-px" style={{ background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.07) 20%, rgba(255,255,255,0.07) 80%, transparent)' }} />
-          {steps.map((step, i) => (
-            <motion.div key={i} initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: i * .15 }}>
-              <div className="glow-card p-6 h-full" style={{ '--glow-c': step.c } as React.CSSProperties}>
-                <div className="flex items-center gap-3 mb-4">
-                  <div className="w-12 h-12 rounded-2xl flex items-center justify-center text-2xl shrink-0" style={{ background: `${step.c}14`, border: `1px solid ${step.c}20` }}>
-                    {step.icon}
-                  </div>
-                  <span className="font-black text-4xl" style={{ color: `${step.c}30`, fontFamily: "'Outfit',sans-serif", letterSpacing: '-.06em' }}>{step.n}</span>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+          {steps.map((s, i) => (
+            <motion.div key={i} initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: i * .12 }}>
+              <div className="h-full rounded-3xl p-6" style={{ background: 'linear-gradient(145deg, #131726, #0F1320)', border: `1px solid ${s.c}18` }}>
+                <div className="flex items-center gap-3 mb-5">
+                  <div style={{ width: 52, height: 52, borderRadius: 16, background: `${s.c}14`, border: `1px solid ${s.c}22`, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 24 }}>{s.icon}</div>
+                  <span style={{ fontFamily: "'Outfit',sans-serif", fontWeight: 900, fontSize: '2.5rem', color: `${s.c}22`, letterSpacing: '-.06em' }}>{s.n}</span>
                 </div>
-                <h3 className="font-black text-white text-base mb-2">{step.title}</h3>
-                <p className="text-sm leading-relaxed" style={{ color: 'var(--z-muted)' }}>{step.desc}</p>
+                <h3 style={{ fontWeight: 900, color: 'white', fontSize: '1rem', marginBottom: 6 }}>{s.title}</h3>
+                <p style={{ fontSize: 13, color: 'rgba(255,255,255,0.4)', lineHeight: 1.65 }}>{s.desc}</p>
+                <div style={{ marginTop: 16, height: 2, borderRadius: 999, background: `linear-gradient(90deg, ${s.c}60, transparent)` }} />
               </div>
             </motion.div>
           ))}
@@ -384,15 +274,15 @@ function HowItWorks() {
   );
 }
 
-/* ═══════════════════════════
+/* ════════════════════════════════════════
    NOW TAB
-═══════════════════════════ */
+════════════════════════════════════════ */
 const DEALS = products.filter(p => p.origPrice).slice(0, 8);
 
 function NowTab() {
   const [cart, setCart] = useState<Record<string, number>>({});
   const [activeCat, setActiveCat] = useState('All');
-  const cd = useCountdown(3 * 3600 + 47 * 60 + 22);
+  const cd = useCountdown(4 * 3600 + 12 * 60 + 47);
   const cats = ['All', 'Fruits & Veg', 'Dairy', 'Snacks', 'Grains & Dal', 'Bakery', 'Spices', 'Personal Care', 'Medicine'];
   const filtered = activeCat === 'All' ? products : products.filter(p => p.category === activeCat);
   const add = (id: string) => setCart(c => ({ ...c, [id]: (c[id] || 0) + 1 }));
@@ -401,105 +291,103 @@ function NowTab() {
   const totalPrice = Object.entries(cart).reduce((s, [id, q]) => s + (products.find(x => x.id === id)?.price ?? 0) * q, 0);
 
   const AddBtn = ({ id }: { id: string }) => cart[id] ? (
-    <div className="flex items-center rounded-2xl overflow-hidden" style={{ background: 'var(--z-green)' }}>
-      <button onClick={e => { e.stopPropagation(); rem(id); }} className="w-8 h-8 flex items-center justify-center hover:bg-black/15 transition-colors"><Minus style={{ height: 12, width: 12, color: '#021a0e' }} /></button>
-      <span className="text-xs font-black text-center w-5" style={{ color: '#021a0e' }}>{cart[id]}</span>
-      <button onClick={e => { e.stopPropagation(); add(id); }} className="w-8 h-8 flex items-center justify-center hover:bg-black/15 transition-colors"><Plus style={{ height: 12, width: 12, color: '#021a0e' }} /></button>
+    <div style={{ display: 'flex', alignItems: 'center', background: '#00E676', borderRadius: 12, overflow: 'hidden' }}>
+      <button onClick={e => { e.stopPropagation(); rem(id); }} style={{ width: 28, height: 28, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+        <Minus style={{ height: 11, width: 11, color: '#021a0e' }} />
+      </button>
+      <span style={{ fontSize: 11, fontWeight: 900, color: '#021a0e', minWidth: 14, textAlign: 'center' }}>{cart[id]}</span>
+      <button onClick={e => { e.stopPropagation(); add(id); }} style={{ width: 28, height: 28, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+        <Plus style={{ height: 11, width: 11, color: '#021a0e' }} />
+      </button>
     </div>
   ) : (
-    <button onClick={e => { e.stopPropagation(); add(id); }} className="w-8 h-8 rounded-2xl flex items-center justify-center transition-all hover:scale-110" style={{ background: 'rgba(0,230,118,0.1)', border: '1.5px solid rgba(0,230,118,0.3)' }}>
-      <Plus style={{ height: 13, width: 13, color: 'var(--z-green)' }} />
+    <button onClick={e => { e.stopPropagation(); add(id); }}
+      style={{ width: 28, height: 28, borderRadius: 10, background: 'rgba(0,230,118,0.1)', border: '1.5px solid rgba(0,230,118,0.3)', display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'all .15s' }}>
+      <Plus style={{ height: 12, width: 12, color: '#00E676' }} />
     </button>
   );
 
   return (
-    <div className="space-y-10">
-      {/* Hero banners */}
+    <div style={{ display: 'flex', flexDirection: 'column', gap: 32 }}>
+
+      {/* Promo Banners */}
       <Carousel>
         {[
-          { tag: '⚡ FREE DELIVERY', tagC: 'badge-green', h: '50% OFF\nFirst Order', sub: 'Use ZYPHIX50 · Max ₹100 · New users', img: 'https://images.unsplash.com/photo-1543168256-418811576931?w=600&h=280&fit=crop&q=80', bg: 'linear-gradient(135deg,#020f08,#001408)', code: 'ZYPHIX50', ac: 'var(--z-green)' },
-          { tag: '🏪 1,200+ STORES',  tagC: 'badge-orange', h: 'Real Kirana,\nReal Fast',  sub: 'Local inventory · Zero surge pricing',   img: 'https://images.unsplash.com/photo-1604719312566-8912e9227c6a?w=600&h=280&fit=crop&q=80', bg: 'linear-gradient(135deg,#120400,#080200)', code: '', ac: 'var(--z-orange)' },
-          { tag: '💊 FASTEST',        tagC: 'badge-blue',   h: 'Medicines in\n30 Minutes',  sub: 'All medical & pharmacy orders',           img: 'https://images.unsplash.com/photo-1585435557343-3b092031a831?w=600&h=280&fit=crop&q=80', bg: 'linear-gradient(135deg,#001020,#000810)', code: '', ac: 'var(--z-blue)' },
+          { tag:'⚡ FREE DELIVERY', tagBg:'rgba(0,230,118,0.12)', tagColor:'#00E676', h:'50% OFF First Order', sub:'Use code ZYPHIX50 · Max ₹100', code:'ZYPHIX50', img:'https://images.unsplash.com/photo-1543168256-418811576931?w=700&h=320&fit=crop&q=80', grad:'linear-gradient(120deg,#010f06,#010a04)' },
+          { tag:'🏪 1,200+ STORES',  tagBg:'rgba(255,107,0,0.12)',  tagColor:'#FF8040', h:'Real Kirana, Real Fast',  sub:'Local inventory · Zero surge pricing',  code:'',  img:'https://images.unsplash.com/photo-1604719312566-8912e9227c6a?w=700&h=320&fit=crop&q=80', grad:'linear-gradient(120deg,#120400,#080200)' },
+          { tag:'💊 MEDICINES',      tagBg:'rgba(68,136,255,0.12)', tagColor:'#6AA0FF', h:'Medicines in 30 Min',   sub:'All pharmacy & medical orders',        code:'',  img:'https://images.unsplash.com/photo-1585435557343-3b092031a831?w=700&h=320&fit=crop&q=80', grad:'linear-gradient(120deg,#001020,#000810)' },
         ].map((b, i) => (
-          <div key={i} className="snap-start shrink-0 relative overflow-hidden rounded-3xl lift cursor-pointer"
-            style={{ width: 'min(560px, 85vw)', height: 190, background: b.bg, border: '1px solid rgba(255,255,255,0.07)' }}>
-            <img src={b.img} alt="" className="absolute inset-0 w-full h-full img-cover opacity-20" />
-            <div className="absolute inset-0" style={{ background: 'linear-gradient(90deg, rgba(0,0,0,0.7) 55%, transparent)' }} />
+          <div key={i} className="snap-start shrink-0 relative overflow-hidden cursor-pointer lift rounded-3xl"
+            style={{ width: 'min(560px,82vw)', height: 196, background: b.grad, border: '1px solid rgba(255,255,255,0.07)' }}>
+            <img src={b.img} alt="" className="absolute inset-0 w-full h-full img-cover" style={{ opacity: 0.22 }} />
+            <div className="absolute inset-0" style={{ background: 'linear-gradient(90deg,rgba(0,0,0,0.75) 50%,transparent)' }} />
             <div className="absolute inset-0 p-6 flex flex-col justify-between">
-              <span className={`badge ${b.tagC} self-start`}>{b.tag}</span>
+              <span style={{ display: 'inline-flex', alignItems: 'center', background: b.tagBg, color: b.tagColor, fontSize: 9, fontWeight: 800, letterSpacing: '.07em', padding: '3px 10px', borderRadius: 999, border: `1px solid ${b.tagColor}25`, width: 'fit-content' }}>{b.tag}</span>
               <div>
-                <p className="font-black text-white leading-[1.15] mb-1.5 whitespace-pre-line" style={{ fontSize: 'clamp(1.3rem,3vw,1.7rem)', letterSpacing: '-.03em' }}>{b.h}</p>
-                <p className="text-xs mb-3 font-medium" style={{ color: 'rgba(255,255,255,0.45)' }}>{b.sub}</p>
-                {b.code && (
-                  <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-black tracking-widest"
-                    style={{ background: 'rgba(0,0,0,0.5)', color: b.ac, border: `2px dashed ${b.ac}50` }}>{b.code}</span>
-                )}
+                <p style={{ fontWeight: 900, color: 'white', fontSize: 'clamp(1.2rem,2.5vw,1.7rem)', lineHeight: 1.18, letterSpacing: '-.03em', marginBottom: 6 }}>{b.h}</p>
+                <p style={{ fontSize: 11, color: 'rgba(255,255,255,0.42)', marginBottom: 12 }}>{b.sub}</p>
+                {b.code && <span style={{ display: 'inline-block', fontWeight: 900, fontSize: 12, letterSpacing: '.09em', color: b.tagColor, background: 'rgba(0,0,0,0.5)', border: `2px dashed ${b.tagColor}55`, padding: '5px 12px', borderRadius: 10 }}>{b.code}</span>}
               </div>
             </div>
           </div>
         ))}
       </Carousel>
 
-      {/* Category circles */}
+      {/* Categories */}
       <div>
-        <SH title="Shop by Category" action="All" />
+        <SH title="Shop by Category" action="All categories" />
         <Carousel className="pb-3">
           {categories.map(cat => (
             <button key={cat.id} onClick={() => setActiveCat(activeCat === cat.name ? 'All' : cat.name)} className="snap-start shrink-0 flex flex-col items-center gap-2.5 group">
-              <div className="overflow-hidden rounded-full transition-all duration-200"
-                style={{ width: 76, height: 76, border: activeCat === cat.name ? `2.5px solid ${cat.color}` : '2.5px solid rgba(255,255,255,0.08)', boxShadow: activeCat === cat.name ? `0 0 0 4px ${cat.color}20, 0 8px 24px rgba(0,0,0,.4)` : '0 4px 12px rgba(0,0,0,.3)' }}>
+              <div style={{ width: 74, height: 74, borderRadius: '50%', overflow: 'hidden', border: activeCat === cat.name ? `2.5px solid ${cat.color}` : '2.5px solid rgba(255,255,255,0.08)', boxShadow: activeCat === cat.name ? `0 0 0 4px ${cat.color}22, 0 8px 28px rgba(0,0,0,.5)` : '0 4px 16px rgba(0,0,0,.4)', transition: 'all .2s' }}>
                 <img src={cat.image} alt={cat.name} className="w-full h-full img-cover group-hover:scale-110 transition-transform duration-300" />
               </div>
-              <span className="text-[11px] font-bold text-center w-20 leading-tight" style={{ color: activeCat === cat.name ? 'white' : 'var(--z-muted)' }}>{cat.name}</span>
+              <span style={{ fontSize: 11, fontWeight: 700, textAlign: 'center', width: 76, lineHeight: 1.3, color: activeCat === cat.name ? 'white' : 'rgba(255,255,255,0.45)' }}>{cat.name}</span>
             </button>
           ))}
         </Carousel>
       </div>
 
       {/* Flash Deals */}
-      <div className="rounded-3xl overflow-hidden" style={{ background: 'linear-gradient(135deg,#180800,#0D0300)', border: '1px solid rgba(255,107,0,0.2)' }}>
-        <div className="px-5 py-4 flex items-center gap-4 flex-wrap" style={{ borderBottom: '1px solid rgba(255,255,255,0.06)' }}>
-          <div className="flex items-center gap-2.5">
-            <div className="w-9 h-9 rounded-xl flex items-center justify-center" style={{ background: 'rgba(255,107,0,0.2)', border: '1px solid rgba(255,107,0,0.3)' }}>
-              <span className="text-lg">⚡</span>
-            </div>
+      <div style={{ background: 'linear-gradient(135deg,#160700,#0C0300)', border: '1px solid rgba(255,107,0,0.2)', borderRadius: 24, overflow: 'hidden' }}>
+        <div style={{ padding: '14px 20px', display: 'flex', alignItems: 'center', gap: 16, flexWrap: 'wrap', borderBottom: '1px solid rgba(255,255,255,0.06)' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+            <div style={{ width: 38, height: 38, borderRadius: 12, background: 'rgba(255,107,0,0.18)', border: '1px solid rgba(255,107,0,0.28)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 18 }}>⚡</div>
             <div>
-              <p className="font-black text-white text-base leading-none">Flash Deals</p>
-              <p className="text-xs font-medium mt-0.5" style={{ color: 'rgba(255,255,255,0.4)' }}>Best prices, limited time</p>
+              <p style={{ fontWeight: 900, color: 'white', fontSize: '0.95rem', lineHeight: 1.1 }}>Flash Deals</p>
+              <p style={{ fontSize: 10, color: 'rgba(255,255,255,0.38)', marginTop: 1 }}>Best prices · Today only</p>
             </div>
           </div>
-          <div className="ml-auto flex items-center gap-2">
-            <p className="text-xs font-bold mr-1" style={{ color: 'var(--z-orange)' }}>Ends in</p>
+          <div style={{ marginLeft: 'auto', display: 'flex', alignItems: 'center', gap: 8 }}>
+            <p style={{ fontSize: 11, fontWeight: 700, color: '#FF8040', marginRight: 4 }}>Ends in</p>
             {[cd.h, cd.m, cd.s].map((v, i) => (
               <React.Fragment key={i}>
-                <div className="countdown-digit">
-                  <span className="font-black text-white text-lg leading-none">{v}</span>
-                  <span className="text-[8px] font-bold mt-0.5" style={{ color: 'var(--z-muted)' }}>{['H','M','S'][i]}</span>
+                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', background: 'rgba(255,255,255,0.07)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: 10, padding: '5px 11px', minWidth: 44 }}>
+                  <span style={{ fontWeight: 900, color: 'white', fontSize: '1.2rem', lineHeight: 1 }}>{v}</span>
+                  <span style={{ fontSize: 7.5, fontWeight: 700, color: 'rgba(255,255,255,0.35)', marginTop: 2 }}>{['HRS','MIN','SEC'][i]}</span>
                 </div>
-                {i < 2 && <span className="font-black text-white">:</span>}
+                {i < 2 && <span style={{ fontWeight: 900, color: '#FF8040' }}>:</span>}
               </React.Fragment>
             ))}
           </div>
         </div>
-        <div className="p-4">
+        <div style={{ padding: 16 }}>
           <Carousel>
             {DEALS.map(p => {
-              const disc = Math.round((1 - p.price / (p.origPrice ?? p.price)) * 100);
+              const disc = Math.round((1-p.price/(p.origPrice??p.price))*100);
               return (
-                <div key={p.id} className="snap-start prod-card group" style={{ width: 154 }}>
-                  <div className="relative h-[115px] overflow-hidden" style={{ background: 'var(--z-card2)' }}>
-                    <img src={p.image} alt={p.name} className="w-full h-full img-cover group-hover:scale-108 transition-transform duration-300" />
-                    <div className="absolute top-2 left-2">
-                      <span className="badge badge-red" style={{ fontSize: 9 }}>-{disc}%</span>
-                    </div>
-                    <div className="absolute inset-0" style={{ background: 'linear-gradient(to top, rgba(0,0,0,0.35), transparent 55%)' }} />
+                <div key={p.id} className="snap-start group cursor-pointer" style={{ width: 154, background: '#131726', border: '1px solid rgba(255,255,255,0.07)', borderRadius: 16, overflow: 'hidden', flexShrink: 0, transition: 'all .2s' }}>
+                  <div style={{ position: 'relative', height: 115, background: '#1A1E2E', overflow: 'hidden' }}>
+                    <img src={p.image} alt={p.name} className="w-full h-full img-cover group-hover:scale-110 transition-transform duration-300" />
+                    <div style={{ position: 'absolute', top: 7, left: 7, background: '#FF3B3B', color: 'white', fontSize: 9, fontWeight: 800, padding: '2px 6px', borderRadius: 999 }}>-{disc}%</div>
+                    <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to top, rgba(0,0,0,0.4), transparent 55%)' }} />
                   </div>
-                  <div className="p-3">
-                    <p className="text-[10px] font-semibold truncate mb-0.5" style={{ color: 'var(--z-muted)' }}>{p.brand}</p>
-                    <p className="font-bold text-white leading-tight line-clamp-2 mb-1" style={{ fontSize: 12 }}>{p.name}</p>
-                    <p className="text-[10px] mb-2.5 font-medium" style={{ color: 'var(--z-muted)' }}>{p.weight}</p>
-                    <div className="flex items-center justify-between gap-1">
-                      <div><span className="font-black text-white text-sm">₹{p.price}</span><span className="text-[10px] line-through ml-1" style={{ color: 'var(--z-muted)' }}>₹{p.origPrice}</span></div>
+                  <div style={{ padding: 10 }}>
+                    <p style={{ fontSize: 9.5, color: 'rgba(255,255,255,0.38)', marginBottom: 2 }}>{p.brand}</p>
+                    <p style={{ fontSize: 11.5, fontWeight: 700, color: 'white', lineHeight: 1.3, marginBottom: 4, overflow: 'hidden', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical' }}>{p.name}</p>
+                    <p style={{ fontSize: 9.5, color: 'rgba(255,255,255,0.35)', marginBottom: 8 }}>{p.weight}</p>
+                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 4 }}>
+                      <div><span style={{ fontWeight: 900, color: 'white', fontSize: 13 }}>₹{p.price}</span><span style={{ fontSize: 9.5, color: 'rgba(255,255,255,0.35)', textDecoration: 'line-through', marginLeft: 4 }}>₹{p.origPrice}</span></div>
                       <AddBtn id={p.id} />
                     </div>
                   </div>
@@ -510,26 +398,25 @@ function NowTab() {
         </div>
       </div>
 
-      {/* Brand Logos */}
+      {/* Brands */}
       <div>
         <SH title="Top Brands" sub="Sold by verified kirana partners" action="Browse all" />
         <Carousel>
           {[
-            { n:'Amul',     img:'https://images.unsplash.com/photo-1550583724-b2692b85b150?w=120&h=120&fit=crop&q=80', bg:'#003087' },
-            { n:'Parle',    img:'https://images.unsplash.com/photo-1558961363-fa8fdf82db35?w=120&h=120&fit=crop&q=80', bg:'#C00' },
-            { n:'Nestle',   img:'https://images.unsplash.com/photo-1569718212165-3a8278d5f624?w=120&h=120&fit=crop&q=80', bg:'#1a1a2e' },
-            { n:'MDH',      img:'https://images.unsplash.com/photo-1532336414038-cf19250c5757?w=120&h=120&fit=crop&q=80', bg:'#7b1fa2' },
-            { n:'ITC',      img:'https://images.unsplash.com/photo-1574323347407-f5e1ad6d020b?w=120&h=120&fit=crop&q=80', bg:'#1b5e20' },
-            { n:'Dabur',    img:'https://images.unsplash.com/photo-1571875257727-256c39da42af?w=120&h=120&fit=crop&q=80', bg:'#e65100' },
-            { n:'Colgate',  img:'https://images.unsplash.com/photo-1559591935-c7c7cb7de30c?w=120&h=120&fit=crop&q=80', bg:'#b71c1c' },
-            { n:"Lay's",    img:'https://images.unsplash.com/photo-1566478989037-eec170784d0b?w=120&h=120&fit=crop&q=80', bg:'#f9a825' },
-          ].map((b, i) => (
+            {n:'Amul',  img:'https://images.unsplash.com/photo-1550583724-b2692b85b150?w=120&h=120&fit=crop&q=80',bg:'#003087'},
+            {n:'Parle', img:'https://images.unsplash.com/photo-1558961363-fa8fdf82db35?w=120&h=120&fit=crop&q=80',bg:'#C00'},
+            {n:'Nestle',img:'https://images.unsplash.com/photo-1569718212165-3a8278d5f624?w=120&h=120&fit=crop&q=80',bg:'#1a1a2e'},
+            {n:'MDH',   img:'https://images.unsplash.com/photo-1532336414038-cf19250c5757?w=120&h=120&fit=crop&q=80',bg:'#7b1fa2'},
+            {n:'ITC',   img:'https://images.unsplash.com/photo-1574323347407-f5e1ad6d020b?w=120&h=120&fit=crop&q=80',bg:'#1b5e20'},
+            {n:'Dabur', img:'https://images.unsplash.com/photo-1571875257727-256c39da42af?w=120&h=120&fit=crop&q=80',bg:'#e65100'},
+            {n:'Colgate',img:'https://images.unsplash.com/photo-1559591935-c7c7cb7de30c?w=120&h=120&fit=crop&q=80',bg:'#b71c1c'},
+            {n:"Lay's", img:'https://images.unsplash.com/photo-1566478989037-eec170784d0b?w=120&h=120&fit=crop&q=80',bg:'#f9a825'},
+          ].map((b,i)=>(
             <button key={i} className="snap-start shrink-0 flex flex-col items-center gap-2 group">
-              <div className="rounded-2xl overflow-hidden transition-all duration-200 group-hover:scale-105 group-hover:shadow-xl"
-                style={{ width: 72, height: 72, background: b.bg, border: '1px solid rgba(255,255,255,0.08)', boxShadow: '0 4px 16px rgba(0,0,0,.4)' }}>
+              <div style={{ width: 68, height: 68, borderRadius: 18, background: b.bg, border: '1px solid rgba(255,255,255,0.09)', overflow: 'hidden', boxShadow: '0 6px 20px rgba(0,0,0,.5)', transition: 'all .2s' }} className="group-hover:scale-105 group-hover:shadow-2xl">
                 <img src={b.img} alt={b.n} className="w-full h-full img-cover" />
               </div>
-              <span className="text-[11px] font-bold" style={{ color: 'var(--z-muted)' }}>{b.n}</span>
+              <span style={{ fontSize: 11, fontWeight: 600, color: 'rgba(255,255,255,0.42)' }}>{b.n}</span>
             </button>
           ))}
         </Carousel>
@@ -540,22 +427,20 @@ function NowTab() {
         <SH title="Trending Near You" sub="Most ordered in Jammu today" action="See all" />
         <Carousel>
           {products.map(p => (
-            <div key={p.id} className="snap-start prod-card group">
-              <div className="relative overflow-hidden" style={{ height: 140, background: 'var(--z-card2)' }}>
-                <img src={p.image} alt={p.name} className="w-full h-full img-cover group-hover:scale-108 transition-transform duration-300" />
-                <div className="absolute inset-0" style={{ background: 'linear-gradient(to top, rgba(0,0,0,0.4), transparent 55%)' }} />
+            <div key={p.id} className="snap-start group cursor-pointer" style={{ width: 168, background: '#131726', border: '1px solid rgba(255,255,255,0.07)', borderRadius: 16, overflow: 'hidden', flexShrink: 0, transition: 'all .2s' }}>
+              <div style={{ position: 'relative', height: 140, background: '#1A1E2E', overflow: 'hidden' }}>
+                <img src={p.image} alt={p.name} className="w-full h-full img-cover group-hover:scale-110 transition-transform duration-300" />
+                <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to top, rgba(0,0,0,0.45), transparent 55%)' }} />
                 {p.tag && (
-                  <div className="absolute top-2 left-2">
-                    <span className={`badge ${p.tag==='Fresh'?'badge-green':p.tag==='Bestseller'?'badge-amber':'badge-red'}`} style={{ fontSize: 9 }}>{p.tag}</span>
-                  </div>
+                  <div style={{ position: 'absolute', top: 7, left: 7, background: p.tag==='Fresh'?'rgba(0,230,118,.15)':p.tag==='Bestseller'?'rgba(255,184,0,.15)':'rgba(255,59,59,.15)', color: p.tag==='Fresh'?'#00E676':p.tag==='Bestseller'?'#FFB800':'#FF6B6B', fontSize: 9, fontWeight: 800, letterSpacing: '.06em', padding: '2px 7px', borderRadius: 999, border: `1px solid ${p.tag==='Fresh'?'rgba(0,230,118,.25)':p.tag==='Bestseller'?'rgba(255,184,0,.25)':'rgba(255,59,59,.25)'}` }}>{p.tag}</div>
                 )}
               </div>
-              <div className="p-3">
-                <p className="text-[10px] font-semibold truncate mb-0.5" style={{ color: 'var(--z-muted)' }}>{p.brand}</p>
-                <p className="font-bold text-white leading-tight line-clamp-2 mb-1" style={{ fontSize: 12 }}>{p.name}</p>
-                <p className="text-[10px] mb-2.5 font-medium" style={{ color: 'var(--z-muted)' }}>{p.weight}</p>
-                <div className="flex items-center justify-between gap-1">
-                  <div><span className="font-black text-white text-sm">₹{p.price}</span>{p.origPrice&&<span className="text-[10px] line-through ml-1" style={{color:'var(--z-muted)'}}>₹{p.origPrice}</span>}</div>
+              <div style={{ padding: 11 }}>
+                <p style={{ fontSize: 9.5, color: 'rgba(255,255,255,0.38)', marginBottom: 2 }}>{p.brand}</p>
+                <p style={{ fontSize: 12, fontWeight: 700, color: 'white', lineHeight: 1.3, marginBottom: 3, overflow: 'hidden', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical' }}>{p.name}</p>
+                <p style={{ fontSize: 10, color: 'rgba(255,255,255,0.35)', marginBottom: 9 }}>{p.weight}</p>
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 4 }}>
+                  <div><span style={{ fontWeight: 900, color: 'white', fontSize: 13 }}>₹{p.price}</span>{p.origPrice&&<span style={{fontSize:9.5,color:'rgba(255,255,255,0.35)',textDecoration:'line-through',marginLeft:4}}>₹{p.origPrice}</span>}</div>
                   <AddBtn id={p.id} />
                 </div>
               </div>
@@ -566,31 +451,27 @@ function NowTab() {
 
       {/* Product grid */}
       <div>
-        <SH title="All Products" sub={`${filtered.length} items`} />
-        <div className="flex gap-2 overflow-x-auto no-scrollbar mb-5 -mx-4 px-4">
-          {cats.map(c=>(
-            <button key={c} onClick={()=>setActiveCat(c)} className={`pill shrink-0 ${activeCat===c?'pill-on':'pill-off'}`}>{c}</button>
+        <SH title="All Products" sub={`${filtered.length} items available`} />
+        <div style={{ display: 'flex', gap: 8, overflowX: 'auto', scrollbarWidth: 'none', marginBottom: 20 }}>
+          {cats.map(c => (
+            <button key={c} onClick={() => setActiveCat(c)} style={{ padding: '7px 17px', borderRadius: 999, fontSize: 11.5, fontWeight: 700, transition: 'all .15s', whiteSpace: 'nowrap', flexShrink: 0, cursor: 'pointer', background: activeCat===c?'#00E676':' rgba(255,255,255,0.05)', color: activeCat===c?'#021a0e':'rgba(255,255,255,0.45)', border: activeCat===c?'none':'1px solid rgba(255,255,255,0.08)', boxShadow: activeCat===c?'0 4px 16px rgba(0,230,118,0.3)':'none' }}>{c}</button>
           ))}
         </div>
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3">
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(148px, 1fr))', gap: 12 }}>
           <AnimatePresence mode="popLayout">
             {filtered.map((p, i) => (
-              <motion.div key={p.id} layout initial={{ opacity: 0, scale: .92 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: .92 }} transition={{ delay: i * 0.025 }}>
-                <div className="rounded-2xl overflow-hidden z-card group cursor-pointer flex flex-col h-full">
-                  <div className="relative overflow-hidden" style={{ height: 130, background: 'var(--z-card2)' }}>
+              <motion.div key={p.id} layout initial={{opacity:0,scale:.92}} animate={{opacity:1,scale:1}} exit={{opacity:0,scale:.92}} transition={{delay:i*.025}}>
+                <div className="group cursor-pointer" style={{ background: '#131726', border: '1px solid rgba(255,255,255,0.07)', borderRadius: 16, overflow: 'hidden', transition: 'all .2s', height: '100%', display: 'flex', flexDirection: 'column' }}>
+                  <div style={{ position: 'relative', height: 130, background: '#1A1E2E', overflow: 'hidden' }}>
                     <img src={p.image} alt={p.name} className="w-full h-full img-cover group-hover:scale-108 transition-transform duration-300" />
-                    {p.tag && (
-                      <div className="absolute top-2 left-2">
-                        <span className={`badge ${p.tag==='Fresh'?'badge-green':p.tag==='Bestseller'?'badge-amber':'badge-red'}`} style={{fontSize:9}}>{p.tag}</span>
-                      </div>
-                    )}
+                    {p.tag && <div style={{ position: 'absolute', top: 7, left: 7, background: p.tag==='Fresh'?'rgba(0,230,118,.15)':p.tag==='Bestseller'?'rgba(255,184,0,.15)':'rgba(255,59,59,.15)', color: p.tag==='Fresh'?'#00E676':p.tag==='Bestseller'?'#FFB800':'#FF6B6B', fontSize: 9, fontWeight: 800, letterSpacing: '.06em', padding: '2px 7px', borderRadius: 999, border: `1px solid ${p.tag==='Fresh'?'rgba(0,230,118,.25)':p.tag==='Bestseller'?'rgba(255,184,0,.25)':'rgba(255,59,59,.25)'}` }}>{p.tag}</div>}
                   </div>
-                  <div className="p-3 flex-1 flex flex-col">
-                    <p className="text-[10px] font-semibold mb-0.5" style={{ color: 'var(--z-muted)' }}>{p.brand}</p>
-                    <p className="font-bold text-white leading-tight line-clamp-2 mb-1" style={{ fontSize: 12 }}>{p.name}</p>
-                    <p className="text-[10px] mb-2.5 font-medium" style={{ color: 'var(--z-muted)' }}>{p.weight}</p>
-                    <div className="flex items-center justify-between mt-auto gap-1">
-                      <div><span className="font-black text-white text-sm">₹{p.price}</span>{p.origPrice&&<span className="text-[10px] line-through ml-1" style={{color:'var(--z-muted)'}}>₹{p.origPrice}</span>}</div>
+                  <div style={{ padding: 11, flex: 1, display: 'flex', flexDirection: 'column' }}>
+                    <p style={{ fontSize: 9.5, color: 'rgba(255,255,255,0.38)', marginBottom: 2 }}>{p.brand}</p>
+                    <p style={{ fontSize: 12, fontWeight: 700, color: 'white', lineHeight: 1.3, marginBottom: 3, overflow: 'hidden', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical' }}>{p.name}</p>
+                    <p style={{ fontSize: 10, color: 'rgba(255,255,255,0.35)', marginBottom: 8 }}>{p.weight}</p>
+                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 4, marginTop: 'auto' }}>
+                      <div><span style={{ fontWeight: 900, color: 'white', fontSize: 13 }}>₹{p.price}</span>{p.origPrice&&<span style={{fontSize:9.5,color:'rgba(255,255,255,0.35)',textDecoration:'line-through',marginLeft:4}}>₹{p.origPrice}</span>}</div>
                       <AddBtn id={p.id} />
                     </div>
                   </div>
@@ -601,17 +482,17 @@ function NowTab() {
         </div>
       </div>
 
-      {/* Float cart */}
+      {/* Cart toast */}
       <AnimatePresence>
         {totalItems > 0 && (
-          <motion.div initial={{y:80,opacity:0}} animate={{y:0,opacity:1}} exit={{y:80,opacity:0}} className="fixed bottom-6 left-4 right-4 md:left-1/2 md:-translate-x-1/2 md:w-[440px] z-50 cursor-pointer">
-            <div className="rounded-3xl px-5 py-4 flex items-center justify-between btn-green" style={{ boxShadow: '0 20px 60px rgba(0,230,118,.5)' }}>
-              <div className="flex items-center gap-3">
-                <div className="w-8 h-8 rounded-xl flex items-center justify-center font-black text-sm" style={{ background: 'rgba(0,0,0,0.18)', color: '#021a0e' }}>{totalItems}</div>
-                <span className="font-black text-sm" style={{ color: '#021a0e' }}>{totalItems} item{totalItems>1?'s':''} · View Cart</span>
+          <motion.div initial={{y:80,opacity:0}} animate={{y:0,opacity:1}} exit={{y:80,opacity:0}} style={{ position: 'fixed', bottom: 24, left: 16, right: 16, zIndex: 50 }} className="md:left-1/2 md:-translate-x-1/2 md:w-[440px]">
+            <div style={{ background: '#00E676', borderRadius: 24, padding: '14px 20px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', boxShadow: '0 20px 60px rgba(0,230,118,.5)' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+                <div style={{ width: 32, height: 32, borderRadius: 10, background: 'rgba(0,0,0,0.18)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 900, fontSize: 13, color: '#021a0e' }}>{totalItems}</div>
+                <span style={{ fontWeight: 900, color: '#021a0e', fontSize: 13 }}>{totalItems} item{totalItems>1?'s':''} · View Cart</span>
               </div>
-              <div className="flex items-center gap-2">
-                <span className="font-black" style={{ color: '#021a0e' }}>₹{totalPrice}</span>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                <span style={{ fontWeight: 900, color: '#021a0e' }}>₹{totalPrice}</span>
                 <ArrowRight style={{ height: 18, width: 18, color: '#021a0e' }} />
               </div>
             </div>
@@ -622,64 +503,54 @@ function NowTab() {
   );
 }
 
-/* ═══════════════════════════
+/* ════════════════════════════════════════
    EATS TAB
-═══════════════════════════ */
+════════════════════════════════════════ */
 function EatsTab() {
   return (
-    <div className="space-y-8">
-      {/* Hero banner */}
+    <div style={{ display: 'flex', flexDirection: 'column', gap: 28 }}>
       <div className="relative overflow-hidden rounded-3xl lift cursor-pointer" style={{ height: 220 }}>
-        <img src="https://images.unsplash.com/photo-1567337710282-00832b415979?w=1000&h=350&fit=crop&q=80" alt="" className="absolute inset-0 w-full h-full img-cover" />
-        <div className="absolute inset-0" style={{ background: 'linear-gradient(90deg, rgba(0,0,0,.9) 45%, rgba(0,0,0,.2))' }} />
-        <div className="absolute inset-0 p-7 flex flex-col justify-center max-w-sm">
-          <span className="badge badge-orange mb-3 self-start">🍱 ZYPHIXEATS</span>
-          <h2 className="font-black text-white leading-tight mb-2" style={{ fontSize: 'clamp(1.6rem,4vw,2.4rem)', letterSpacing: '-.04em' }}>Local food.<br /><span className="text-grad-orange">Delivered fast.</span></h2>
-          <p className="text-sm mb-4" style={{ color: 'rgba(255,255,255,0.45)' }}>Restaurants · Dhabas · Tiffin services · Home kitchens</p>
-          <button className="btn-orange rounded-2xl px-5 py-2.5 text-sm self-start">Explore Restaurants →</button>
+        <img src="https://images.unsplash.com/photo-1567337710282-00832b415979?w=1100&h=400&fit=crop&q=80" alt="" className="absolute inset-0 w-full h-full img-cover" />
+        <div className="absolute inset-0" style={{ background: 'linear-gradient(90deg,rgba(0,0,0,.92) 45%,rgba(0,0,0,.2))' }} />
+        <div className="absolute inset-0 p-7 flex flex-col justify-center" style={{ maxWidth: 360 }}>
+          <span style={{ display: 'inline-block', background: 'rgba(255,107,0,0.14)', color: '#FF8040', fontSize: 9, fontWeight: 800, letterSpacing: '.07em', padding: '3px 10px', borderRadius: 999, border: '1px solid rgba(255,107,0,0.25)', width: 'fit-content', marginBottom: 12 }}>🍱 ZYPHIXEATS</span>
+          <h2 style={{ fontFamily: "'Outfit',sans-serif", fontWeight: 900, color: 'white', lineHeight: 1.1, marginBottom: 8, fontSize: 'clamp(1.5rem,3.5vw,2.3rem)', letterSpacing: '-.04em' }}>Local food.<br /><span style={{ background: 'linear-gradient(120deg,#FF6B00,#FFB800)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>Delivered fast.</span></h2>
+          <p style={{ fontSize: 12, color: 'rgba(255,255,255,0.42)', marginBottom: 16 }}>Restaurants · Dhabas · Home kitchens · Tiffin services</p>
+          <button style={{ background: 'linear-gradient(135deg,#FF6B00,#E55E00)', color: 'white', fontSize: 12, fontWeight: 900, padding: '10px 20px', borderRadius: 14, width: 'fit-content', boxShadow: '0 8px 24px rgba(255,107,0,0.35)' }}>Explore Restaurants →</button>
         </div>
       </div>
-
-      {/* Cravings */}
       <div>
-        <SH title="What's your craving?" action="All cuisines" accent="var(--z-orange)" />
+        <SH title="What's your craving?" action="All cuisines" accent="#FF6B00" />
         <Carousel>
-          {foodCategories.map((fc, i) => (
+          {foodCategories.map((fc,i)=>(
             <button key={i} className="snap-start shrink-0 flex flex-col items-center gap-2 group">
-              <div className="rounded-full overflow-hidden" style={{ width: 72, height: 72, border: '2px solid rgba(255,255,255,0.08)', boxShadow: '0 4px 16px rgba(0,0,0,.4)' }}>
+              <div style={{ width: 70, height: 70, borderRadius: '50%', overflow: 'hidden', border: '2px solid rgba(255,255,255,0.09)', boxShadow: '0 4px 16px rgba(0,0,0,.4)' }}>
                 <img src={fc.image} alt={fc.name} className="w-full h-full img-cover group-hover:scale-110 transition-transform duration-300" />
               </div>
-              <span className="text-[11px] font-bold text-center w-20 leading-tight" style={{ color: 'var(--z-muted)' }}>{fc.name}</span>
+              <span style={{ fontSize: 11, fontWeight: 600, textAlign: 'center', width: 76, lineHeight: 1.3, color: 'rgba(255,255,255,0.45)' }}>{fc.name}</span>
             </button>
           ))}
         </Carousel>
       </div>
-
-      {/* Restaurant grid */}
       <div>
-        <SH title="Restaurants Near You" sub="Open now · All in Jammu" action="See all" accent="var(--z-orange)" />
+        <SH title="Restaurants Near You" sub="Open now · Jammu, J&K" action="See all" accent="#FF6B00" />
         <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4">
-          {restaurants.map((r, i) => (
-            <motion.div key={r.id} initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * .07 }}>
-              <div className="rounded-3xl overflow-hidden z-card cursor-pointer group flex flex-col h-full">
-                <div className="relative overflow-hidden" style={{ height: 165, background: 'var(--z-card2)' }}>
+          {restaurants.map((r,i)=>(
+            <motion.div key={r.id} initial={{opacity:0,y:16}} animate={{opacity:1,y:0}} transition={{delay:i*.07}}>
+              <div className="rounded-3xl overflow-hidden cursor-pointer group" style={{ background: '#131726', border: '1px solid rgba(255,255,255,0.07)', transition: 'all .2s' }}>
+                <div style={{ position: 'relative', height: 160, background: '#1A1E2E', overflow: 'hidden' }}>
                   <img src={r.image} alt={r.name} className="w-full h-full img-cover group-hover:scale-105 transition-transform duration-400" />
-                  <div className="absolute inset-0" style={{ background: 'linear-gradient(to top, rgba(0,0,0,.65) 30%, transparent)' }} />
-                  {r.deliveryFee === 0 && <div className="absolute top-3 right-3"><span className="badge badge-green">FREE DELIVERY</span></div>}
-                  <div className="absolute bottom-3 left-3 flex gap-1.5">
-                    {r.tags.filter((t: string) => t !== 'Free Delivery').slice(0, 2).map((tag: string) => (
-                      <span key={tag} className="badge badge-white">{tag}</span>
-                    ))}
-                  </div>
+                  <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to top,rgba(0,0,0,.65) 30%,transparent)' }} />
+                  {r.deliveryFee===0&&<div style={{ position: 'absolute', top: 10, right: 10, background: 'rgba(0,230,118,0.14)', color: '#00E676', fontSize: 9, fontWeight: 800, letterSpacing: '.06em', padding: '2px 8px', borderRadius: 999, border: '1px solid rgba(0,230,118,0.25)' }}>FREE DELIVERY</div>}
                 </div>
-                <div className="p-4 flex items-center justify-between flex-1">
-                  <div className="min-w-0">
-                    <p className="font-black text-white text-base truncate">{r.name}</p>
-                    <p className="text-xs mt-0.5 truncate" style={{ color: 'var(--z-muted)' }}>{r.cuisine}</p>
+                <div style={{ padding: '12px 14px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                  <div style={{ minWidth: 0 }}>
+                    <p style={{ fontWeight: 900, color: 'white', fontSize: '0.95rem', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{r.name}</p>
+                    <p style={{ fontSize: 11, color: 'rgba(255,255,255,0.42)', marginTop: 2, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{r.cuisine}</p>
                   </div>
-                  <div className="shrink-0 ml-3 text-right space-y-1.5">
+                  <div style={{ flexShrink: 0, marginLeft: 12, textAlign: 'right' }}>
                     <Stars r={r.rating} />
-                    <p className="text-[10px] flex items-center gap-1 justify-end font-medium" style={{ color: 'var(--z-muted)' }}>
+                    <p style={{ fontSize: 10, color: 'rgba(255,255,255,0.38)', marginTop: 3, display: 'flex', alignItems: 'center', gap: 3, justifyContent: 'flex-end' }}>
                       <Clock style={{ height: 10, width: 10 }} />{r.eta}
                     </p>
                   </div>
@@ -693,70 +564,61 @@ function EatsTab() {
   );
 }
 
-/* ═══════════════════════════
+/* ════════════════════════════════════════
    BOOK TAB
-═══════════════════════════ */
+════════════════════════════════════════ */
 function BookTab() {
-  const [sel, setSel] = useState<string | null>(null);
-  const [slot, setSlot] = useState<string | null>(null);
+  const [sel, setSel] = useState<string|null>(null);
+  const [slot, setSlot] = useState<string|null>(null);
   const [booked, setBooked] = useState(false);
-  const SLOTS = ['9:00 AM', '10:30 AM', '12:00 PM', '2:00 PM', '3:30 PM', '5:00 PM', '6:30 PM', '8:00 PM'];
+  const SLOTS=['9:00 AM','10:30 AM','12:00 PM','2:00 PM','3:30 PM','5:00 PM','6:30 PM','8:00 PM'];
   return (
-    <div className="space-y-8">
-      <div className="relative overflow-hidden rounded-3xl" style={{ height: 200 }}>
+    <div style={{ display: 'flex', flexDirection: 'column', gap: 24 }}>
+      <div className="relative overflow-hidden rounded-3xl" style={{ height: 196 }}>
         <img src="https://images.unsplash.com/photo-1521791136064-7986c2920216?w=1200&h=400&fit=crop&q=80" alt="" className="absolute inset-0 w-full h-full img-cover" style={{ filter: 'brightness(0.25)' }} />
-        <div className="absolute inset-0" style={{ background: 'linear-gradient(120deg, rgba(139,111,255,0.3), rgba(7,10,18,0.8))' }} />
+        <div className="absolute inset-0" style={{ background: 'linear-gradient(120deg,rgba(139,111,255,0.4),rgba(6,10,18,0.85))' }} />
         <div className="absolute inset-0 p-8 flex flex-col justify-center">
-          <span className="badge badge-purple mb-3 self-start">📅 BOOK IN 60 SECONDS</span>
-          <h2 className="font-black text-white leading-tight" style={{ fontSize: 'clamp(1.5rem,3.5vw,2.2rem)', letterSpacing: '-.04em' }}>
-            Trusted Professionals,<br /><span className="text-grad-purple">At Your Doorstep</span>
-          </h2>
-          <p className="text-sm mt-2" style={{ color: 'rgba(255,255,255,0.45)' }}>Verified · Rated 4.8★ · Zero cancellation fee</p>
+          <span style={{ display: 'inline-block', background: 'rgba(139,111,255,0.14)', color: '#9D86FF', fontSize: 9, fontWeight: 800, letterSpacing: '.07em', padding: '3px 10px', borderRadius: 999, border: '1px solid rgba(139,111,255,0.25)', width: 'fit-content', marginBottom: 12 }}>📅 BOOK IN 60 SECONDS</span>
+          <h2 style={{ fontFamily: "'Outfit',sans-serif", fontWeight: 900, color: 'white', lineHeight: 1.1, fontSize: 'clamp(1.5rem,3.5vw,2.2rem)', letterSpacing: '-.04em', marginBottom: 8 }}>Trusted Professionals,<br /><span style={{ background: 'linear-gradient(120deg,#8B6FFF,#FF4D8B)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>At Your Doorstep</span></h2>
+          <p style={{ fontSize: 12, color: 'rgba(255,255,255,0.42)' }}>Verified · Rated 4.8★ · Zero cancellation fee</p>
         </div>
       </div>
       <div>
-        <SH title="Available Services" action="View all" accent="var(--z-purple)" />
+        <SH title="Available Services" action="View all" accent="#8B6FFF" />
         <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-          {services.map(s => {
-            const active = sel === s.id;
+          {services.map(s=>{
+            const active=sel===s.id;
             return (
-              <div key={s.id} onClick={() => { setSel(active ? null : s.id); setSlot(null); setBooked(false); }}
-                className="rounded-3xl p-5 cursor-pointer transition-all duration-200"
-                style={{ background: active ? 'rgba(139,111,255,.12)' : 'var(--z-card)', border: active ? '1px solid rgba(139,111,255,.4)' : '1px solid var(--z-border)', transform: active ? 'scale(1.02)' : undefined }}>
-                <div className="flex items-start justify-between mb-3">
-                  <div className="text-3xl">{s.emoji}</div>
-                  {active && <div className="w-5 h-5 rounded-full flex items-center justify-center shrink-0" style={{ background: 'var(--z-purple)' }}><Check style={{ height: 10, width: 10, color: 'white' }} /></div>}
+              <div key={s.id} onClick={()=>{setSel(active?null:s.id);setSlot(null);setBooked(false);}} className="cursor-pointer" style={{ background: active?'rgba(139,111,255,.1)':'#131726', border: active?'1px solid rgba(139,111,255,.38)':'1px solid rgba(255,255,255,0.07)', borderRadius: 20, padding: 18, transition: 'all .2s', transform: active?'scale(1.02)':undefined }}>
+                <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', marginBottom: 12 }}>
+                  <span style={{ fontSize: 28 }}>{s.emoji}</span>
+                  {active&&<div style={{ width: 18, height: 18, borderRadius: '50%', background: '#8B6FFF', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><Check style={{ height: 10, width: 10, color: 'white' }} /></div>}
                 </div>
-                <p className="font-black text-white text-sm leading-tight mb-0.5">{s.title}</p>
-                <p className="text-[10px] mb-2.5 font-medium" style={{ color: 'var(--z-muted)' }}>{s.category}</p>
-                <div className="flex items-center justify-between mb-1">
-                  <span className="font-black text-white text-sm">₹{s.price}</span>
+                <p style={{ fontWeight: 900, color: 'white', fontSize: 13, lineHeight: 1.3, marginBottom: 2 }}>{s.title}</p>
+                <p style={{ fontSize: 10, color: 'rgba(255,255,255,0.38)', marginBottom: 8 }}>{s.category}</p>
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 4 }}>
+                  <span style={{ fontWeight: 900, color: 'white', fontSize: 13 }}>₹{s.price}</span>
                   <Stars r={s.rating} />
                 </div>
-                <p className="text-[10px] font-bold" style={{ color: 'var(--z-green)' }}>{s.available} pros · {s.nextSlot}</p>
+                <p style={{ fontSize: 9.5, fontWeight: 700, color: '#00E676' }}>{s.available} pros · {s.nextSlot}</p>
               </div>
             );
           })}
         </div>
       </div>
       <AnimatePresence>
-        {sel && (
-          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }}>
-            <div className="rounded-3xl p-6 z-card">
-              <p className="font-black text-white text-lg mb-0.5">Pick a time slot — Today</p>
-              <p className="text-xs mb-5" style={{ color: 'var(--z-muted)' }}>{services.find(x=>x.id===sel)?.title} · ₹{services.find(x=>x.id===sel)?.price}</p>
+        {sel&&(
+          <motion.div initial={{opacity:0,y:16}} animate={{opacity:1,y:0}} exit={{opacity:0}}>
+            <div style={{ background: '#131726', border: '1px solid rgba(255,255,255,0.08)', borderRadius: 20, padding: 22 }}>
+              <p style={{ fontWeight: 900, color: 'white', fontSize: '1rem', marginBottom: 4 }}>Pick a time slot — Today</p>
+              <p style={{ fontSize: 11, color: 'rgba(255,255,255,0.4)', marginBottom: 20 }}>{services.find(x=>x.id===sel)?.title} · ₹{services.find(x=>x.id===sel)?.price}</p>
               <div className="grid grid-cols-4 gap-2.5 mb-5">
-                {SLOTS.map(sl => (
-                  <button key={sl} onClick={() => setSlot(sl)} className="py-3 rounded-2xl text-xs font-bold transition-all"
-                    style={{ background: slot===sl?'var(--z-purple)':'rgba(255,255,255,.05)', color: slot===sl?'white':'var(--z-muted)', border: slot===sl?'none':'1px solid rgba(255,255,255,.07)', transform: slot===sl?'scale(1.06)':undefined, boxShadow: slot===sl?'0 8px 24px rgba(139,111,255,.3)':'none' }}>
-                    {sl}
-                  </button>
+                {SLOTS.map(sl=>(
+                  <button key={sl} onClick={()=>setSlot(sl)} style={{ padding: '10px 4px', borderRadius: 14, fontSize: 11.5, fontWeight: 700, transition: 'all .15s', background: slot===sl?'#8B6FFF':'rgba(255,255,255,0.05)', color: slot===sl?'white':'rgba(255,255,255,0.45)', border: slot===sl?'none':'1px solid rgba(255,255,255,0.08)', transform: slot===sl?'scale(1.06)':undefined, boxShadow: slot===sl?'0 8px 24px rgba(139,111,255,.3)':'none' }}>{sl}</button>
                 ))}
               </div>
-              <button onClick={() => slot && setBooked(true)} disabled={!slot}
-                className="w-full py-4 rounded-2xl font-black text-sm transition-all disabled:opacity-30"
-                style={{ background: booked?'rgba(0,230,118,.12)':slot?'var(--z-purple)':'rgba(139,111,255,.12)', color: booked?'var(--z-green)':'white', boxShadow: slot&&!booked?'0 8px 28px rgba(139,111,255,.3)':'none' }}>
-                {booked ? '✓ Booking Confirmed! See you soon.' : slot ? 'Confirm Booking →' : 'Select a time slot above'}
+              <button onClick={()=>slot&&setBooked(true)} disabled={!slot} style={{ width: '100%', padding: '14px', borderRadius: 16, fontWeight: 900, fontSize: 13, transition: 'all .2s', background: booked?'rgba(0,230,118,.1)':slot?'#8B6FFF':'rgba(139,111,255,.1)', color: booked?'#00E676':'white', boxShadow: slot&&!booked?'0 8px 28px rgba(139,111,255,.3)':'none', opacity: !slot?0.4:1, cursor: slot?'pointer':'not-allowed' }}>
+                {booked?'✓ Booking Confirmed! See you soon.':slot?'Confirm Booking →':'Select a time slot above'}
               </button>
             </div>
           </motion.div>
@@ -766,44 +628,39 @@ function BookTab() {
   );
 }
 
-/* ═══════════════════════════
+/* ════════════════════════════════════════
    MAP TAB
-═══════════════════════════ */
+════════════════════════════════════════ */
 function MapTab() {
-  const T: Record<string, {e:string;c:string}> = { kirana:{e:'🏪',c:'var(--z-green)'}, medical:{e:'💊',c:'var(--z-blue)'}, restaurant:{e:'🍲',c:'var(--z-orange)'}, electronics:{e:'💡',c:'#f59e0b'}, garage:{e:'🔧',c:'#6366f1'}, salon:{e:'✂️',c:'#ec4899'} };
+  const T: Record<string,{e:string;c:string}> = { kirana:{e:'🏪',c:'#00E676'}, medical:{e:'💊',c:'#4488FF'}, restaurant:{e:'🍲',c:'#FF6B00'}, electronics:{e:'💡',c:'#FFB800'}, garage:{e:'🔧',c:'#6366f1'}, salon:{e:'✂️',c:'#FF4D8B'} };
   return (
-    <div className="space-y-5">
-      <div className="relative overflow-hidden rounded-3xl lift cursor-pointer" style={{ height: 240 }}>
-        <img src="https://images.unsplash.com/photo-1524661135-423995f22d0b?w=1200&h=450&fit=crop&q=80" alt="Map" className="w-full h-full img-cover opacity-20 absolute inset-0" />
-        <div className="absolute inset-0" style={{ background: 'radial-gradient(ellipse at center, rgba(0,0,0,.1), rgba(7,10,18,.9))' }} />
+    <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+      <div className="relative overflow-hidden rounded-3xl lift cursor-pointer" style={{ height: 230 }}>
+        <img src="https://images.unsplash.com/photo-1524661135-423995f22d0b?w=1200&h=450&fit=crop&q=80" alt="Map" className="absolute inset-0 w-full h-full img-cover" style={{ opacity: 0.18 }} />
+        <div className="absolute inset-0" style={{ background: 'radial-gradient(ellipse at center,rgba(0,0,0,.05),rgba(6,10,18,.92))' }} />
         <div className="absolute inset-0 flex flex-col items-center justify-center text-center p-6">
-          <div className="text-5xl mb-4">📍</div>
-          <p className="font-black text-white text-2xl mb-1" style={{ letterSpacing: '-.04em' }}>Jammu, J&K</p>
-          <p className="text-sm font-medium mb-5" style={{ color: 'rgba(255,255,255,0.45)' }}>8 verified stores within 1 km radius · All open now</p>
-          <button className="btn-green rounded-2xl px-6 py-3 text-sm">Open Full Map →</button>
-        </div>
-        <div className="absolute top-4 right-4 flex gap-2">
-          {['var(--z-green)','var(--z-orange)','var(--z-blue)','var(--z-purple)'].map((c,i)=>(
-            <div key={i} className="w-2.5 h-2.5 rounded-full" style={{ background: c, animation: `pulse-dot 2s ${i*.4}s ease-in-out infinite` }} />
-          ))}
+          <div style={{ fontSize: 44, marginBottom: 12 }}>📍</div>
+          <p style={{ fontFamily: "'Outfit',sans-serif", fontWeight: 900, color: 'white', fontSize: '1.5rem', letterSpacing: '-.04em', marginBottom: 4 }}>Jammu, J&K</p>
+          <p style={{ fontSize: 12, color: 'rgba(255,255,255,0.42)', marginBottom: 18 }}>8 verified stores within 1 km radius · All open now</p>
+          <button style={{ background: '#00E676', color: '#021a0e', fontSize: 13, fontWeight: 900, padding: '10px 22px', borderRadius: 14, boxShadow: '0 8px 24px rgba(0,230,118,.35)' }}>Open Full Map →</button>
         </div>
       </div>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-        {stores.map((st: any) => {
-          const t = T[st.type] || T.kirana;
+        {stores.map((st:any)=>{
+          const t=T[st.type]||T.kirana;
           return (
-            <div key={st.id} className="rounded-2xl p-4 flex items-center gap-3.5 z-card cursor-pointer lift">
-              <div className="w-12 h-12 rounded-2xl flex items-center justify-center text-2xl shrink-0" style={{ background: `${t.c}12`, border: `1px solid ${t.c}1E` }}>{t.e}</div>
-              <div className="flex-1 min-w-0">
-                <p className="font-black text-white text-sm truncate">{st.name}</p>
-                <div className="flex items-center gap-2 text-[10px] mt-0.5" style={{ color: 'var(--z-muted)' }}>
-                  <span className="flex items-center gap-0.5"><MapPin style={{ height: 10, width: 10 }} />{st.distance}</span>
+            <div key={st.id} className="lift cursor-pointer" style={{ background: '#131726', border: '1px solid rgba(255,255,255,0.07)', borderRadius: 18, padding: '14px 16px', display: 'flex', alignItems: 'center', gap: 12 }}>
+              <div style={{ width: 44, height: 44, borderRadius: 14, background: `${t.c}12`, border: `1px solid ${t.c}20`, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 20, flexShrink: 0 }}>{t.e}</div>
+              <div style={{ flex: 1, minWidth: 0 }}>
+                <p style={{ fontWeight: 800, color: 'white', fontSize: 13, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{st.name}</p>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 10, color: 'rgba(255,255,255,0.42)', marginTop: 2 }}>
+                  <span style={{ display: 'flex', alignItems: 'center', gap: 2 }}><MapPin style={{ height: 9, width: 9 }} />{st.distance}</span>
                   <span>·</span><span>{st.openHours}</span>
                 </div>
               </div>
-              <div className="shrink-0 text-right">
+              <div style={{ flexShrink: 0, textAlign: 'right' }}>
                 <Stars r={st.rating} />
-                <span className={`badge mt-1.5 block ${st.open?'badge-green':'badge-red'}`} style={{fontSize:9}}>{st.open?'Open':'Closed'}</span>
+                <span style={{ display: 'block', marginTop: 5, background: st.open?'rgba(0,230,118,.1)':'rgba(255,59,59,.1)', color: st.open?'#00E676':'#FF6B6B', border: `1px solid ${st.open?'rgba(0,230,118,.22)':'rgba(255,59,59,.22)'}`, fontSize: 9, fontWeight: 800, padding: '2px 7px', borderRadius: 999 }}>{st.open?'Open':'Closed'}</span>
               </div>
             </div>
           );
@@ -813,110 +670,103 @@ function MapTab() {
   );
 }
 
-/* ═══════════════════════════
+/* ════════════════════════════════════════
    OFFERS TAB
-═══════════════════════════ */
+════════════════════════════════════════ */
 function OffersTab() {
-  const [copied, setCopied] = useState<string | null>(null);
-  const copy = (code: string) => { navigator.clipboard.writeText(code); setCopied(code); setTimeout(() => setCopied(null), 2500); };
-  const TS: Record<string, {c:string;bc:string}> = { discount:{c:'var(--z-green)',bc:'badge-green'}, delivery:{c:'var(--z-orange)',bc:'badge-orange'}, referral:{c:'var(--z-blue)',bc:'badge-blue'} };
+  const [copied, setCopied] = useState<string|null>(null);
+  const copy = (c: string) => { navigator.clipboard.writeText(c); setCopied(c); setTimeout(()=>setCopied(null),2500); };
+  const TS: Record<string,{c:string}> = { discount:{c:'#00E676'}, delivery:{c:'#FF8040'}, referral:{c:'#6AA0FF'} };
   return (
-    <div className="space-y-6">
+    <div style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
       <div className="relative overflow-hidden rounded-3xl" style={{ minHeight: 220 }}>
-        <img src="https://images.unsplash.com/photo-1607082348824-0a96f2a4b9da?w=900&h=350&fit=crop&q=80" alt="" className="absolute inset-0 w-full h-full img-cover" style={{ filter: 'brightness(.2) saturate(1.5)' }} />
-        <div className="absolute inset-0" style={{ background: 'linear-gradient(120deg, rgba(0,100,40,.9), rgba(7,10,18,.7))' }} />
-        <div className="absolute inset-0 p-8 flex flex-col justify-center">
-          <span className="badge badge-green mb-3 self-start">🔥 LIMITED TIME OFFER</span>
-          <h2 className="font-black text-white leading-tight mb-2" style={{ fontSize: 'clamp(1.8rem,4vw,2.8rem)', letterSpacing: '-.04em' }}>
-            Flat <span className="text-grad-green">50% Off</span><br />Your First Order
+        <img src="https://images.unsplash.com/photo-1607082348824-0a96f2a4b9da?w=1000&h=380&fit=crop&q=80" alt="" className="absolute inset-0 w-full h-full img-cover" style={{ filter: 'brightness(.2) saturate(1.4)' }} />
+        <div className="absolute inset-0" style={{ background: 'linear-gradient(120deg,rgba(0,90,35,.95),rgba(6,10,18,.75))' }} />
+        <div className="absolute inset-0 p-7 flex flex-col justify-center">
+          <span style={{ display: 'inline-block', background: 'rgba(0,230,118,0.12)', color: '#00E676', fontSize: 9, fontWeight: 800, letterSpacing: '.07em', padding: '3px 10px', borderRadius: 999, border: '1px solid rgba(0,230,118,0.22)', width: 'fit-content', marginBottom: 12 }}>🔥 LIMITED TIME OFFER</span>
+          <h2 style={{ fontFamily: "'Outfit',sans-serif", fontWeight: 900, color: 'white', lineHeight: 1.1, fontSize: 'clamp(1.6rem,3.5vw,2.5rem)', letterSpacing: '-.04em', marginBottom: 8 }}>
+            Flat <span style={{ background: 'linear-gradient(120deg,#00E676,#4488FF)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>50% Off</span><br />Your First Order
           </h2>
-          <p className="text-sm mb-4" style={{ color: 'rgba(255,255,255,0.45)' }}>Min ₹199 · Max ₹100 off · New users only</p>
-          <div className="flex items-center gap-3 flex-wrap">
-            <span className="font-black text-sm px-5 py-2.5 rounded-2xl" style={{ background: 'rgba(0,0,0,.5)', color: 'var(--z-green)', border: '2px dashed rgba(0,230,118,.45)', letterSpacing: '.1em' }}>ZYPHIX50</span>
-            <button onClick={() => copy('ZYPHIX50')} className="btn-green rounded-2xl px-5 py-2.5 text-sm flex items-center gap-2">
-              {copied === 'ZYPHIX50' ? <><Check style={{height:14,width:14}}/>Copied!</> : <><Copy style={{height:14,width:14}}/>Copy Code</>}
+          <p style={{ fontSize: 12, color: 'rgba(255,255,255,0.42)', marginBottom: 18 }}>Min ₹199 · Max ₹100 off · New users only</p>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 12, flexWrap: 'wrap' }}>
+            <span style={{ fontWeight: 900, fontSize: 13, color: '#00E676', background: 'rgba(0,0,0,.5)', border: '2px dashed rgba(0,230,118,.45)', padding: '6px 14px', borderRadius: 12, letterSpacing: '.09em' }}>ZYPHIX50</span>
+            <button onClick={()=>copy('ZYPHIX50')} style={{ background: '#00E676', color: '#021a0e', fontSize: 12, fontWeight: 900, padding: '8px 18px', borderRadius: 12, display: 'flex', alignItems: 'center', gap: 6 }}>
+              {copied==='ZYPHIX50'?<><Check style={{height:13,width:13}}/>Copied!</>:<><Copy style={{height:13,width:13}}/>Copy Code</>}
             </button>
           </div>
         </div>
       </div>
-      <SH title="All Active Coupons" sub={`${promoCodes.length} coupons available`} />
+      <SH title="All Active Coupons" sub={`${promoCodes.length} offers`} />
       <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-        {promoCodes.map(offer => {
-          const ts = TS[offer.type] || TS.discount;
-          const isCopied = copied === offer.code;
+        {promoCodes.map(offer=>{
+          const tc=TS[offer.type]||TS.discount;
+          const isCopied=copied===offer.code;
           return (
-            <div key={offer.code} onClick={() => copy(offer.code)} className="rounded-3xl p-5 cursor-pointer z-card transition-all duration-200 relative overflow-hidden">
-              {isCopied && <div className="absolute inset-0 rounded-3xl" style={{ background: `${ts.c}08` }} />}
-              <div className="relative flex items-start justify-between gap-3">
-                <div className="flex-1 min-w-0">
-                  <div className="flex items-center gap-2 mb-1.5">
-                    <span className="font-black text-base tracking-wider" style={{ color: ts.c }}>{offer.code}</span>
-                    <span className={`badge ${ts.bc}`}>{offer.type}</span>
-                  </div>
-                  <p className="text-sm font-medium text-white mb-0.5">{offer.description}</p>
-                  <p className="text-[10px]" style={{ color: 'var(--z-muted)' }}>Valid till 31 Dec 2025</p>
+            <div key={offer.code} onClick={()=>copy(offer.code)} className="cursor-pointer" style={{ background: isCopied?`${tc.c}06`:'#131726', border: `1px solid ${isCopied?`${tc.c}22`:'rgba(255,255,255,0.07)'}`, borderRadius: 18, padding: 18, transition: 'all .2s', display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: 12 }}>
+              <div style={{ flex: 1, minWidth: 0 }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 6 }}>
+                  <span style={{ fontWeight: 900, fontSize: '1rem', letterSpacing: '.04em', color: tc.c }}>{offer.code}</span>
+                  <span style={{ fontSize: 9, fontWeight: 800, background: `${tc.c}12`, color: tc.c, border: `1px solid ${tc.c}22`, padding: '2px 7px', borderRadius: 999 }}>{offer.type}</span>
                 </div>
-                <button className="shrink-0 flex items-center gap-1.5 text-xs font-bold px-3 py-2 rounded-xl transition-all"
-                  style={{ background: isCopied?`${ts.c}18`:'rgba(255,255,255,.06)', color: isCopied?ts.c:'var(--z-muted)', border: isCopied?`1px solid ${ts.c}30`:'1px solid rgba(255,255,255,.07)' }}>
-                  {isCopied?<Check style={{height:13,width:13}}/>:<Copy style={{height:13,width:13}}/>}
-                  {isCopied?'Done':'Copy'}
-                </button>
+                <p style={{ fontSize: 13, fontWeight: 600, color: 'white', marginBottom: 3 }}>{offer.description}</p>
+                <p style={{ fontSize: 10, color: 'rgba(255,255,255,0.38)' }}>Valid till 31 Dec 2025</p>
               </div>
+              <button style={{ flexShrink: 0, display: 'flex', alignItems: 'center', gap: 5, fontSize: 11, fontWeight: 700, padding: '6px 12px', borderRadius: 10, background: isCopied?`${tc.c}14`:'rgba(255,255,255,.06)', color: isCopied?tc.c:'rgba(255,255,255,0.45)', border: isCopied?`1px solid ${tc.c}28`:'1px solid rgba(255,255,255,.09)', transition: 'all .15s' }}>
+                {isCopied?<Check style={{height:12,width:12}}/>:<Copy style={{height:12,width:12}}/>}
+                {isCopied?'Done':'Copy'}
+              </button>
             </div>
           );
         })}
       </div>
-      <div className="rounded-3xl overflow-hidden relative p-6 flex items-center gap-5 justify-between flex-wrap" style={{ background: 'linear-gradient(120deg,#040c24,#070516)', border: '1px solid rgba(68,136,255,0.2)' }}>
-        <div className="flex items-center gap-4">
-          <div className="w-14 h-14 rounded-2xl flex items-center justify-center text-3xl shrink-0" style={{ background: 'rgba(68,136,255,0.12)', border: '1px solid rgba(68,136,255,0.2)' }}>🎁</div>
+      <div style={{ background: 'linear-gradient(120deg,#040c24,#070516)', border: '1px solid rgba(68,136,255,0.2)', borderRadius: 20, padding: '20px 24px', display: 'flex', alignItems: 'center', gap: 20, flexWrap: 'wrap', justifyContent: 'space-between' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
+          <div style={{ width: 52, height: 52, borderRadius: 16, background: 'rgba(68,136,255,0.12)', border: '1px solid rgba(68,136,255,0.2)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 26, flexShrink: 0 }}>🎁</div>
           <div>
-            <p className="font-black text-white text-base">Refer & Earn ₹100</p>
-            <p className="text-sm" style={{ color: 'var(--z-muted)' }}>You & your friend both get ₹100 wallet credits</p>
+            <p style={{ fontWeight: 900, color: 'white', fontSize: '0.95rem' }}>Refer & Earn ₹100</p>
+            <p style={{ fontSize: 12, color: 'rgba(255,255,255,0.42)', marginTop: 2 }}>You & your friend both get ₹100 wallet credits</p>
           </div>
         </div>
-        <button className="btn-green rounded-2xl px-6 py-3 text-sm shrink-0">Share Now →</button>
+        <button style={{ background: '#00E676', color: '#021a0e', fontSize: 13, fontWeight: 900, padding: '10px 22px', borderRadius: 14, flexShrink: 0, boxShadow: '0 8px 24px rgba(0,230,118,.3)' }}>Share Now →</button>
       </div>
     </div>
   );
 }
 
-/* ═══════════════════════════
+/* ════════════════════════════════════════
    APP DOWNLOAD SECTION
-═══════════════════════════ */
+════════════════════════════════════════ */
 function AppDownload() {
   return (
-    <div className="relative overflow-hidden py-16" style={{ background: 'var(--z-surf)' }}>
-      <div className="absolute inset-0 pointer-events-none">
-        <div className="absolute top-0 left-0 w-full h-full" style={{ background: 'radial-gradient(ellipse at 20% 50%, rgba(0,230,118,0.06), transparent 60%)' }} />
-        <div className="absolute top-0 right-0 w-full h-full" style={{ background: 'radial-gradient(ellipse at 80% 50%, rgba(68,136,255,0.05), transparent 60%)' }} />
-      </div>
-      <div className="max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8 relative">
-        <div className="rounded-3xl overflow-hidden relative" style={{ background: 'linear-gradient(120deg, var(--z-card), var(--z-card2))', border: '1px solid rgba(255,255,255,0.08)' }}>
-          <div className="flex flex-col md:flex-row items-center gap-8 p-8 lg:p-12">
-            <div className="flex-1">
-              <span className="badge badge-green mb-4 inline-block">📱 DOWNLOAD FREE</span>
-              <h2 className="font-black text-white leading-tight mb-3" style={{ fontSize: 'clamp(1.8rem,4vw,3rem)', letterSpacing: '-.04em' }}>
-                Get the <span className="shimmer-brand">ZYPHIX</span> app.<br />Order in 30 seconds.
+    <div style={{ background: '#0A0F1A', padding: '60px 0' }}>
+      <div className="max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="rounded-3xl overflow-hidden relative" style={{ background: 'linear-gradient(135deg,#101826,#0E1522)', border: '1px solid rgba(255,255,255,0.08)' }}>
+          <div className="absolute inset-0 pointer-events-none" style={{ background: 'radial-gradient(ellipse at 80% 50%, rgba(0,230,118,0.06), transparent 60%)' }} />
+          <div className="flex flex-col md:flex-row items-center gap-8 p-8 lg:p-12 relative">
+            <div style={{ flex: 1 }}>
+              <div style={{ display: 'inline-flex', alignItems: 'center', gap: 6, background: 'rgba(0,230,118,0.08)', border: '1px solid rgba(0,230,118,0.18)', padding: '4px 14px', borderRadius: 999, marginBottom: 16 }}>
+                <span style={{ fontSize: 10, fontWeight: 800, color: '#00E676', letterSpacing: '.08em' }}>📱 DOWNLOAD FREE</span>
+              </div>
+              <h2 style={{ fontFamily: "'Outfit',sans-serif", fontWeight: 900, color: 'white', lineHeight: 1.08, fontSize: 'clamp(1.8rem,3.5vw,2.8rem)', letterSpacing: '-.04em', marginBottom: 12 }}>
+                Get the <span style={{ background: 'linear-gradient(120deg,#00E676,#4488FF)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>ZYPHIX</span> app.<br />Order in 30 seconds.
               </h2>
-              <p className="text-base mb-6" style={{ color: 'rgba(255,255,255,0.45)' }}>Exclusive app-only deals · Live order tracking · Offline mode for slow connections</p>
-              <div className="flex flex-wrap gap-3">
-                {[{icon:'🍎',top:'Download on the',bot:'App Store',sub:'iOS 13+'},{icon:'▶',top:'Get it on',bot:'Google Play',sub:'Android 8+'}].map((a,i)=>(
-                  <button key={i} className="flex items-center gap-3 px-5 py-3.5 rounded-2xl transition-all hover:scale-105 hover:shadow-xl"
-                    style={{ background: 'rgba(255,255,255,0.07)', border: '1px solid rgba(255,255,255,0.1)' }}>
-                    <span style={{ fontSize: 28 }}>{a.icon}</span>
-                    <div className="text-left">
-                      <p style={{ fontSize: 9, color: 'rgba(255,255,255,0.4)', fontWeight: 600 }}>{a.top}</p>
-                      <p style={{ fontSize: 16, fontWeight: 900, color: 'white', lineHeight: 1.1 }}>{a.bot}</p>
-                      <p style={{ fontSize: 9, color: 'rgba(255,255,255,0.3)' }}>{a.sub}</p>
+              <p style={{ color: 'rgba(255,255,255,0.42)', fontSize: 13, marginBottom: 24, lineHeight: 1.6 }}>Exclusive app-only deals · Live order tracking · Offline mode</p>
+              <div style={{ display: 'flex', flexWrap: 'wrap', gap: 12 }}>
+                {[{ic:'🍎',top:'Download on the',bot:'App Store'},{ic:'▶',top:'Get it on',bot:'Google Play'}].map((a,i)=>(
+                  <button key={i} style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '12px 18px', borderRadius: 18, background: 'rgba(255,255,255,0.07)', border: '1px solid rgba(255,255,255,0.11)', transition: 'all .2s' }} className="hover:scale-105">
+                    <span style={{ fontSize: 28 }}>{a.ic}</span>
+                    <div>
+                      <p style={{ fontSize: 9, color: 'rgba(255,255,255,0.38)', fontWeight: 600, lineHeight: 1.2 }}>{a.top}</p>
+                      <p style={{ fontSize: 17, fontWeight: 900, color: 'white', lineHeight: 1.1 }}>{a.bot}</p>
                     </div>
                   </button>
                 ))}
               </div>
             </div>
-            <div className="shrink-0 text-center">
-              <div className="text-8xl mb-3">📲</div>
-              <p className="font-black text-white text-xl">4.8 ★</p>
-              <p className="text-xs" style={{ color: 'var(--z-muted)' }}>50,000+ ratings</p>
+            <div style={{ flexShrink: 0, textAlign: 'center' }}>
+              <div style={{ fontSize: 80, marginBottom: 8 }}>📲</div>
+              <p style={{ fontWeight: 900, color: 'white', fontSize: '1.3rem' }}>4.8 ★</p>
+              <p style={{ fontSize: 11, color: 'rgba(255,255,255,0.38)' }}>50,000+ ratings</p>
             </div>
           </div>
         </div>
@@ -925,25 +775,25 @@ function AppDownload() {
   );
 }
 
-/* ═══════════════════════════
+/* ════════════════════════════════════════
    FOOTER
-═══════════════════════════ */
+════════════════════════════════════════ */
 function Footer() {
   return (
-    <footer style={{ background: 'var(--z-surf)', borderTop: '1px solid rgba(255,255,255,0.05)' }}>
+    <footer style={{ background: '#060A12', borderTop: '1px solid rgba(255,255,255,0.05)' }}>
       <div className="max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div className="grid grid-cols-2 md:grid-cols-5 gap-8 mb-10">
-          <div className="col-span-2 md:col-span-2">
-            <div className="flex items-center gap-2.5 mb-4">
-              <div className="w-8 h-8 rounded-xl flex items-center justify-center animate-glow" style={{ background: 'linear-gradient(135deg,var(--z-green),var(--z-blue))' }}>
+          <div className="col-span-2">
+            <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 14 }}>
+              <div style={{ width: 32, height: 32, borderRadius: 10, background: 'linear-gradient(135deg,#00E676,#4488FF)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                 <Zap style={{ height: 15, width: 15, color: 'white', fill: 'white' }} />
               </div>
-              <span className="shimmer-brand font-black text-xl" style={{ fontFamily: "'Outfit',sans-serif", letterSpacing: '-.04em' }}>ZYPHIX</span>
+              <span style={{ fontFamily: "'Outfit',sans-serif", fontWeight: 900, fontSize: '1.3rem', letterSpacing: '-.04em', background: 'linear-gradient(90deg,#00E676,#4488FF)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>ZYPHIX</span>
             </div>
-            <p className="text-sm leading-relaxed mb-5" style={{ color: 'rgba(255,255,255,0.35)' }}>India's SuperLocal App — groceries, food & services delivered in 30 minutes across Jammu & Kashmir.</p>
-            <div className="flex gap-3">
+            <p style={{ fontSize: 12, lineHeight: 1.7, color: 'rgba(255,255,255,0.32)', marginBottom: 18, maxWidth: 240 }}>India's SuperLocal App — groceries, food & services delivered in 30 minutes across Jammu & Kashmir.</p>
+            <div style={{ display: 'flex', gap: 8 }}>
               {['Twitter','Instagram','LinkedIn','WhatsApp'].map(s=>(
-                <a key={s} href="#" className="text-xs px-2.5 py-1.5 rounded-lg hover:text-white transition-all" style={{ color: 'var(--z-muted)', background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.07)' }}>{s}</a>
+                <a key={s} href="#" style={{ fontSize: 11, padding: '5px 10px', borderRadius: 8, color: 'rgba(255,255,255,0.38)', background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.07)', transition: 'all .15s' }}>{s}</a>
               ))}
             </div>
           </div>
@@ -951,22 +801,20 @@ function Footer() {
             { title:'Services', links:['ZyphixNow','ZyphixEats','ZyphixBook','Kirana Near Me','Offers'] },
             { title:'Company',  links:['About Us','Careers','Press Kit','Blog','Investors'] },
             { title:'Support',  links:['Help Center','Contact Us','Refund Policy','Privacy Policy','Terms'] },
-          ].map(({ title, links })=>(
+          ].map(({title,links})=>(
             <div key={title}>
-              <p className="font-black text-white text-sm mb-4">{title}</p>
-              <ul className="space-y-2.5">
-                {links.map(l=>(
-                  <li key={l}><a href="#" className="text-xs hover:text-white transition-colors" style={{ color: 'rgba(255,255,255,0.35)' }}>{l}</a></li>
-                ))}
+              <p style={{ fontWeight: 900, color: 'white', fontSize: 13, marginBottom: 16 }}>{title}</p>
+              <ul style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+                {links.map(l=><li key={l}><a href="#" style={{ fontSize: 12, color: 'rgba(255,255,255,0.32)' }}>{l}</a></li>)}
               </ul>
             </div>
           ))}
         </div>
-        <div className="flex flex-col sm:flex-row items-center justify-between gap-3 pt-6" style={{ borderTop: '1px solid rgba(255,255,255,0.06)' }}>
-          <p className="text-xs" style={{ color: 'rgba(255,255,255,0.2)' }}>© 2025 ZYPHIX Technologies Pvt. Ltd. · Jammu, Jammu & Kashmir, India</p>
-          <div className="flex items-center gap-2">
-            <span className="w-1.5 h-1.5 rounded-full" style={{ background: 'var(--z-green)' }} />
-            <p className="text-xs font-semibold" style={{ color: 'var(--z-green)' }}>All systems operational</p>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 10, paddingTop: 20, borderTop: '1px solid rgba(255,255,255,0.06)' }}>
+          <p style={{ fontSize: 11, color: 'rgba(255,255,255,0.22)' }}>© 2025 ZYPHIX Technologies Pvt. Ltd. · Jammu, J&K, India</p>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+            <span style={{ width: 6, height: 6, borderRadius: '50%', background: '#00E676', display: 'block' }} />
+            <p style={{ fontSize: 11, fontWeight: 600, color: '#00E676' }}>All systems operational</p>
           </div>
         </div>
       </div>
@@ -974,45 +822,115 @@ function Footer() {
   );
 }
 
-/* ═══════════════════════════
+/* ════════════════════════════════════════
+   ANNOUNCEMENT BAR
+════════════════════════════════════════ */
+function AnnoBar() {
+  return (
+    <div style={{ background: 'linear-gradient(90deg,#00B85C,#007A3D,#00B85C)', backgroundSize: '200% 100%', animation: 'gradient-move 4s linear infinite', padding: '7px 0', textAlign: 'center' }}>
+      <p style={{ fontSize: 11.5, fontWeight: 800, color: '#021a0e', letterSpacing: '.01em' }}>
+        ⚡ FREE delivery on first order — Use code{' '}
+        <span style={{ background: 'rgba(0,0,0,0.2)', padding: '1px 6px', borderRadius: 4, letterSpacing: '.06em' }}>ZYPHIX50</span>
+        {' '}· Now live in Jammu, J&K · ₹0 surge pricing, ever
+      </p>
+    </div>
+  );
+}
+
+/* ════════════════════════════════════════
+   NAVBAR
+════════════════════════════════════════ */
+function Navbar() {
+  const [scrolled, setScrolled] = useState(false);
+  const [focused, setFocused] = useState(false);
+  useEffect(() => {
+    const h = () => setScrolled(window.scrollY > 8);
+    window.addEventListener('scroll', h, { passive: true });
+    return () => window.removeEventListener('scroll', h);
+  }, []);
+  return (
+    <div className="sticky top-0 z-50 w-full" style={{ background: scrolled ? 'rgba(6,10,18,0.97)' : 'rgba(8,13,22,0.92)', backdropFilter: 'blur(28px)', WebkitBackdropFilter: 'blur(28px)', borderBottom: '1px solid rgba(255,255,255,0.07)', boxShadow: scrolled ? '0 4px 40px rgba(0,0,0,0.7)' : 'none', transition: 'all .3s' }}>
+      <div className="max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div style={{ display: 'flex', alignItems: 'center', gap: 12, height: 60 }}>
+          {/* Logo */}
+          <a href="/" style={{ display: 'flex', alignItems: 'center', gap: 9, flexShrink: 0, textDecoration: 'none' }}>
+            <div style={{ width: 32, height: 32, borderRadius: 10, background: 'linear-gradient(135deg,#00E676,#4488FF)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <Zap style={{ height: 15, width: 15, color: 'white', fill: 'white' }} />
+            </div>
+            <span className="hidden sm:block" style={{ fontFamily: "'Outfit',sans-serif", fontWeight: 900, fontSize: '1.2rem', letterSpacing: '-.04em', background: 'linear-gradient(90deg,#00E676 0%,#4488FF 60%,#8B6FFF 100%)', backgroundSize: '200% auto', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text', animation: 'shimmer 5s linear infinite' }}>ZYPHIX</span>
+          </a>
+          {/* Location */}
+          <button className="hidden md:flex items-center gap-1.5 transition-all hover:bg-white/5" style={{ padding: '6px 12px', borderRadius: 12, border: '1px solid rgba(255,255,255,0.08)', flexShrink: 0 }}>
+            <div style={{ width: 20, height: 20, borderRadius: 6, background: 'rgba(0,230,118,0.12)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+              <MapPin style={{ height: 11, width: 11, color: '#00E676' }} />
+            </div>
+            <div style={{ textAlign: 'left' }}>
+              <p style={{ fontSize: 8.5, fontWeight: 600, color: 'rgba(255,255,255,0.38)', lineHeight: 1.2, textTransform: 'uppercase', letterSpacing: '.07em' }}>Deliver to</p>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+                <span style={{ fontWeight: 900, color: 'white', fontSize: 13, lineHeight: 1.2 }}>Jammu, J&K</span>
+                <ChevronDown style={{ height: 11, width: 11, color: 'rgba(255,255,255,0.38)' }} />
+              </div>
+            </div>
+          </button>
+          {/* Search */}
+          <div style={{ flex: 1, position: 'relative', maxWidth: 480 }}>
+            <Search style={{ position: 'absolute', left: 13, top: '50%', transform: 'translateY(-50%)', height: 15, width: 15, color: focused ? '#00E676' : 'rgba(255,255,255,0.35)', zIndex: 1, transition: 'color .15s' }} />
+            <input type="text" placeholder="Search groceries, food, services..." onFocus={() => setFocused(true)} onBlur={() => setFocused(false)}
+              style={{ width: '100%', paddingLeft: 40, paddingRight: 16, paddingTop: 9, paddingBottom: 9, borderRadius: 16, background: focused ? 'rgba(22,28,46,0.98)' : 'rgba(20,25,40,0.7)', border: focused ? '1px solid rgba(0,230,118,0.3)' : '1px solid rgba(255,255,255,0.08)', fontSize: 13, color: 'white', outline: 'none', fontWeight: 500, boxShadow: focused ? '0 0 0 3px rgba(0,230,118,0.07)' : 'none', transition: 'all .18s', fontFamily: "'Outfit',sans-serif" }}
+            />
+          </div>
+          {/* Actions */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexShrink: 0 }}>
+            <button className="hidden sm:flex items-center gap-1.5 hover:bg-white/5 transition-all" style={{ padding: '8px 14px', borderRadius: 12, background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.09)', fontSize: 13, fontWeight: 700, color: 'rgba(255,255,255,0.7)' }}>
+              <Users style={{ height: 14, width: 14 }} /><span className="hidden lg:inline">Login</span>
+            </button>
+            <button className="relative flex items-center gap-2" style={{ padding: '8px 16px', borderRadius: 12, background: 'linear-gradient(135deg,#00E676,#00BF63)', fontSize: 13, fontWeight: 900, color: '#021a0e', boxShadow: '0 4px 18px rgba(0,230,118,0.3)' }}>
+              <Package style={{ height: 15, width: 15 }} /><span className="hidden sm:inline">Cart</span>
+              <span style={{ position: 'absolute', top: -6, right: -6, width: 18, height: 18, borderRadius: '50%', background: '#FF6B00', color: 'white', fontSize: 9.5, fontWeight: 900, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>3</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/* ════════════════════════════════════════
    ROOT
-═══════════════════════════ */
+════════════════════════════════════════ */
 export function Home() {
   const [activeTab, setActiveTab] = useState<TabId>('now');
-  const CONTENT: Record<TabId, React.ReactNode> = { now:<NowTab/>, eats:<EatsTab/>, book:<BookTab/>, map:<MapTab/>, offers:<OffersTab/> };
+  const CONTENT: Record<TabId, React.ReactNode> = { now: <NowTab />, eats: <EatsTab />, book: <BookTab />, map: <MapTab />, offers: <OffersTab /> };
 
   return (
-    <div style={{ background: 'var(--z-bg)', minHeight: '100vh' }}>
+    <div style={{ background: '#060A12', minHeight: '100vh' }}>
       <AnnoBar />
       <Navbar />
       <Hero />
-      <TrustStrip />
+      <TrustBar />
       <HowItWorks />
 
-      {/* Sticky tabs */}
-      <div className="sticky z-40" style={{ top: 0 }}>
-        <div className="glass">
-          <div className="max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="flex items-center overflow-x-auto no-scrollbar gap-1 py-3">
-              {TABS.map(t => {
-                const active = activeTab === t.id;
-                return (
-                  <button key={t.id} onClick={() => setActiveTab(t.id)}
-                    className="flex items-center gap-2 px-5 py-2.5 rounded-2xl text-sm font-bold shrink-0 transition-all duration-200 whitespace-nowrap"
-                    style={{ background: active ? t.accent : 'transparent', color: active ? (t.id==='now'?'#021a0e':'white') : 'rgba(255,255,255,0.4)', boxShadow: active ? `0 4px 20px ${t.accent}40` : 'none', transform: active ? 'scale(1.04)' : undefined }}>
-                    <span>{t.icon}</span><span>{t.label}</span>
-                  </button>
-                );
-              })}
-            </div>
+      {/* Sticky service tabs */}
+      <div className="sticky z-40" style={{ top: 0, background: 'rgba(6,10,18,0.94)', backdropFilter: 'blur(28px)', WebkitBackdropFilter: 'blur(28px)', borderBottom: '1px solid rgba(255,255,255,0.07)' }}>
+        <div className="max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div style={{ display: 'flex', alignItems: 'center', overflowX: 'auto', scrollbarWidth: 'none', gap: 4, padding: '10px 0' }}>
+            {TABS.map(t => {
+              const active = activeTab === t.id;
+              return (
+                <button key={t.id} onClick={() => setActiveTab(t.id)}
+                  style={{ display: 'flex', alignItems: 'center', gap: 7, padding: '9px 18px', borderRadius: 14, fontSize: 13, fontWeight: 800, flexShrink: 0, whiteSpace: 'nowrap', transition: 'all .2s', background: active ? t.accent : 'transparent', color: active ? t.textColor : 'rgba(255,255,255,0.42)', boxShadow: active ? `0 4px 18px ${t.accent}45` : 'none', transform: active ? 'scale(1.04)' : undefined }}>
+                  <span style={{ fontSize: 15 }}>{t.icon}</span>{t.label}
+                </button>
+              );
+            })}
           </div>
         </div>
       </div>
 
       {/* Tab content */}
-      <div className="max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8 py-8 pb-28">
+      <div className="max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8 py-7 pb-28">
         <AnimatePresence mode="wait">
-          <motion.div key={activeTab} initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -8 }} transition={{ duration: 0.22 }}>
+          <motion.div key={activeTab} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -6 }} transition={{ duration: 0.2 }}>
             {CONTENT[activeTab]}
           </motion.div>
         </AnimatePresence>
