@@ -1,3 +1,18 @@
 <svg width="180" height="180" viewBox="0 0 180 180" fill="none" xmlns="http://www.w3.org/2000/svg">
-<rect width="180" height="180" rx="36" fill="#FF3C00"/>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="180" y2="180" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#0EA563"/>
+      <stop offset="55%" stop-color="#059652"/>
+      <stop offset="100%" stop-color="#046B42"/>
+    </linearGradient>
+  </defs>
+  <!-- Rounded-square container -->
+  <rect width="180" height="180" rx="42" fill="url(#bg)"/>
+  <!-- Z mark scaled 7.5× from 24×24 viewBox -->
+  <!-- Top bar: x=15 y=19 w=150 h=41 rx=11 -->
+  <rect x="15" y="19" width="150" height="41" rx="11" fill="white"/>
+  <!-- Diagonal: points scaled from 21,8 15,8 3,16 9,16 -->
+  <polygon points="157.5,60 112.5,60 22.5,120 67.5,120" fill="white"/>
+  <!-- Bottom bar: x=15 y=120 w=150 h=41 rx=11 -->
+  <rect x="15" y="120" width="150" height="41" rx="11" fill="white"/>
 </svg>

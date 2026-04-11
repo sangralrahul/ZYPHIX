@@ -25,18 +25,11 @@ const SH2 = '0 4px 12px rgba(0,0,0,.1), 0 16px 40px rgba(0,0,0,.1)';
 
 /* ═══════════════ LOGO ═══════════════ */
 function ZIcon({ size = 20 }: { size?: number }) {
-  const s = size;
   return (
-    <svg width={s} height={s} viewBox="0 0 24 24" fill="none">
-      {/* Top bar */}
-      <rect x="2.5" y="3.5" width="19" height="4.2" rx="2.1" fill="white"/>
-      {/* Diagonal connector */}
-      <polygon points="20.2,7.7 17.6,7.7 3.8,16.3 6.4,16.3" fill="white"/>
-      {/* Bottom bar */}
-      <rect x="2.5" y="16.3" width="19" height="4.2" rx="2.1" fill="white"/>
-      {/* Accent dots */}
-      <circle cx="20.2" cy="5.6" r="1.6" fill="#6EE7B7"/>
-      <circle cx="3.8" cy="18.4" r="1.6" fill="#6EE7B7"/>
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none">
+      <rect x="2" y="2.5" width="20" height="5.5" rx="1.5" fill="white"/>
+      <polygon points="21,8 15,8 3,16 9,16" fill="white"/>
+      <rect x="2" y="16" width="20" height="5.5" rx="1.5" fill="white"/>
     </svg>
   );
 }
@@ -44,11 +37,18 @@ function ZIcon({ size = 20 }: { size?: number }) {
 function LogoMark({ size = 32, dark = false }: { size?: number; dark?: boolean }) {
   return (
     <div style={{ display: 'flex', alignItems: 'center', gap: 9, flexShrink: 0 }}>
-      <div style={{ width: size, height: size, borderRadius: '50%', background: `linear-gradient(145deg, #0DA366 0%, #047857 60%, #065F46 100%)`, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, boxShadow: `0 2px 12px rgba(13,163,102,.45), 0 0 0 2px rgba(13,163,102,.15)` }}>
-        <ZIcon size={Math.round(size * 0.56)} />
+      <div style={{
+        width: size, height: size,
+        borderRadius: Math.round(size * 0.24),
+        background: 'linear-gradient(135deg, #0EA563 0%, #059652 55%, #046B42 100%)',
+        display: 'flex', alignItems: 'center', justifyContent: 'center',
+        flexShrink: 0,
+        boxShadow: `0 3px 14px rgba(5,150,82,.45), 0 0 0 1.5px rgba(5,150,82,.14)`,
+      }}>
+        <ZIcon size={Math.round(size * 0.6)} />
       </div>
       <span style={{ fontFamily: "'Outfit',sans-serif", fontWeight: 900, fontSize: size * 0.575, letterSpacing: '-.04em', color: dark ? '#fff' : T1, lineHeight: 1 }}>
-        Zyp<span style={{ color: G }}>hix</span>
+        <span style={{ color: G }}>Z</span>yphix
       </span>
     </div>
   );

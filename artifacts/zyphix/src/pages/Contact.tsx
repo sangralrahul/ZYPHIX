@@ -5,11 +5,9 @@ import { ArrowLeft, Mail, Phone, MapPin, Send, Check, MessageCircle } from 'luci
 function ZLogo({ size = 15 }: { size?: number }) {
   return (
     <svg width={size} height={size} viewBox="0 0 24 24" fill="none">
-      <rect x="2.5" y="3.5" width="19" height="4.2" rx="2.1" fill="white"/>
-      <polygon points="20.2,7.7 17.6,7.7 3.8,16.3 6.4,16.3" fill="white"/>
-      <rect x="2.5" y="16.3" width="19" height="4.2" rx="2.1" fill="white"/>
-      <circle cx="20.2" cy="5.6" r="1.6" fill="#6EE7B7"/>
-      <circle cx="3.8" cy="18.4" r="1.6" fill="#6EE7B7"/>
+      <rect x="2" y="2.5" width="20" height="5.5" rx="1.5" fill="white"/>
+      <polygon points="21,8 15,8 3,16 9,16" fill="white"/>
+      <rect x="2" y="16" width="20" height="5.5" rx="1.5" fill="white"/>
     </svg>
   );
 }
