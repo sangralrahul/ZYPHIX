@@ -113,7 +113,7 @@ function AnnoBar() {
 
 /* ═══════════════ NAVBAR ═══════════════ */
 const SVCS = [
-  { id: 'now' as TabId, name: 'Zyphix Now', tag: 'Grocery · 30 min', color: G, img: 'https://images.unsplash.com/photo-1542838132-92c53300491e?w=64&h=64&fit=crop&q=80' },
+  { id: 'now' as TabId, name: 'Zyphix Now', tag: 'Grocery · 10 min', color: G, img: 'https://images.unsplash.com/photo-1542838132-92c53300491e?w=64&h=64&fit=crop&q=80' },
   { id: 'eats' as TabId, name: 'Zyphix Eats', tag: 'Food delivery', color: '#EA580C', img: 'https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=64&h=64&fit=crop&q=80' },
   { id: 'book' as TabId, name: 'Zyphix Book', tag: 'Home services', color: '#7C3AED', img: 'https://images.unsplash.com/photo-1521791136064-7986c2920216?w=64&h=64&fit=crop&q=80' },
 ];
@@ -247,7 +247,7 @@ function Navbar({ tab, setTab }: { tab: TabId; setTab: (t: TabId) => void }) {
 /* ═══════════════ HERO ═══════════════ */
 
 const HERO_DATA: Record<string, { name: string; headline: string; sub: string; cta: string; color: string; dark: string; img: string; badge: string; tags: string[] }> = {
-  now:    { name: 'Zyphix Now',      headline: 'Groceries delivered\nin 30 minutes.',        sub: 'Kirana stores · Pharmacy · Supermarket · 1,000+ products at kirana prices', cta: 'Order Groceries', color: G,         dark: '#065F46', img: 'https://images.unsplash.com/photo-1542838132-92c53300491e?w=1400&h=600&fit=crop&q=90', badge: '⚡ Fastest delivery in India',   tags: ['Vegetables','Dairy','Snacks','Pharmacy','Beverages','Household'] },
+  now:    { name: 'Zyphix Now',      headline: 'Groceries delivered\nin 10 minutes.',        sub: 'Kirana stores · Pharmacy · Supermarket · 1,000+ products at kirana prices', cta: 'Order Groceries', color: G,         dark: '#065F46', img: 'https://images.unsplash.com/photo-1542838132-92c53300491e?w=1400&h=600&fit=crop&q=90', badge: '⚡ Fastest delivery in India',   tags: ['Vegetables','Dairy','Snacks','Pharmacy','Beverages','Household'] },
   eats:   { name: 'Zyphix Eats',     headline: 'Food from your\nfavourite places.',         sub: 'Restaurants · Dhabas · Cloud kitchens · Local gems near you',               cta: 'Order Food',      color: '#EA580C', dark: '#9A3412', img: 'https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=1400&h=600&fit=crop&q=90', badge: '🍱 2,000+ restaurants',           tags: ['Biryani','Pizza','Burgers','Thali','Desserts','Drinks'] },
   book:   { name: 'Zyphix Book',     headline: 'Trusted services\nat your doorstep.',       sub: 'Plumbers · Electricians · Cleaners · AC Repair · Salon · Beauty',           cta: 'Book a Service',  color: '#7C3AED', dark: '#4C1D95', img: 'https://images.unsplash.com/photo-1521791136064-7986c2920216?w=1400&h=600&fit=crop&q=90', badge: '📅 Verified professionals',        tags: ['Plumbing','Electrical','Cleaning','AC Repair','Painting','Salon'] },
   map:    { name: 'Stores Near Me',  headline: 'Find local stores\nnear you.',               sub: 'Kirana · Medical · Supermarkets — all on the map',                          cta: 'Explore Map',     color: G,         dark: '#065F46', img: 'https://images.unsplash.com/photo-1604719312566-8912e9227c6a?w=1400&h=600&fit=crop&q=90', badge: '📍 100+ cities',                  tags: [] },
@@ -303,7 +303,7 @@ function Trust() {
     <div style={{ background: BG, borderTop: `1px solid ${BD}`, borderBottom: `1px solid ${BD}` }}>
       <div style={{ maxWidth: 1320, margin: '0 auto', padding: '0 24px', display: 'grid', gridTemplateColumns: 'repeat(4,1fr)' }}>
         {[
-          { icon: <Zap size={16} color={G} />, v: '30 Min', l: 'Guaranteed delivery' },
+          { icon: <Zap size={16} color={G} />, v: '10 Min', l: 'Guaranteed delivery' },
           { icon: <Package size={16} color={T2} />, v: '10,000+', l: 'Verified partners' },
           { icon: <Shield size={16} color={T2} />, v: '5 Lakh+', l: 'Happy customers' },
           { icon: <Truck size={16} color={T2} />, v: '₹0 Surge', l: 'No hidden charges' },
@@ -387,7 +387,7 @@ function NowTab() {
         {[
           { tag: 'New User Offer', h: '50% off your first order', sub: 'Code ZYPHIX50 · Max ₹100 off', code: 'ZYPHIX50', img: 'https://images.unsplash.com/photo-1543168256-418811576931?w=900&h=380&fit=crop&q=85' },
           { tag: 'Partner Stores', h: '10,000+ local stores across India', sub: 'Zero surge pricing · Always fresh', code: '', img: 'https://images.unsplash.com/photo-1604719312566-8912e9227c6a?w=900&h=380&fit=crop&q=85' },
-          { tag: 'Pharmacy', h: 'Medicines in 30 minutes', sub: 'Prescription & OTC · All brands', code: '', img: 'https://images.unsplash.com/photo-1585435557343-3b092031a831?w=900&h=380&fit=crop&q=85' },
+          { tag: 'Pharmacy', h: 'Medicines in 10 minutes', sub: 'Prescription & OTC · All brands', code: '', img: 'https://images.unsplash.com/photo-1585435557343-3b092031a831?w=900&h=380&fit=crop&q=85' },
         ].map((b, i) => (
           <div key={i} className="snap-start shrink-0" style={{ width: 'min(660px,88vw)', height: 210, borderRadius: 20, overflow: 'hidden', position: 'relative', background: '#111', flexShrink: 0, boxShadow: SH2, cursor: 'pointer' }}>
             <img src={b.img} alt="" style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover', opacity: .32 }} />
@@ -771,7 +771,7 @@ function HowItWorks() {
   const steps = [
     { n: '01', title: 'Set your location', desc: 'Enter your address or allow GPS. We find verified stores, restaurants, and service pros near you instantly.', icon: <MapPin size={22} color={G} />, img: 'https://images.unsplash.com/photo-1512291313931-d4291048e7b6?w=400&h=280&fit=crop&q=80' },
     { n: '02', title: 'Browse & order', desc: 'Pick from 1,000+ grocery items, local restaurants, or book a certified professional — all in one app.', icon: <ShoppingCart size={22} color={G} />, img: 'https://images.unsplash.com/photo-1608198093002-ad4e005484ec?w=400&h=280&fit=crop&q=80' },
-    { n: '03', title: 'Delivered in 30 min', desc: 'Track live on a map. Our delivery partners reach you in under 30 minutes — no surge pricing, ever.', icon: <Truck size={22} color={G} />, img: 'https://images.unsplash.com/photo-1526367790999-0150786686a2?w=400&h=280&fit=crop&q=80' },
+    { n: '03', title: 'Delivered in 10 min', desc: 'Track live on a map. Our delivery partners reach you in under 10 minutes — no surge pricing, ever.', icon: <Truck size={22} color={G} />, img: 'https://images.unsplash.com/photo-1526367790999-0150786686a2?w=400&h=280&fit=crop&q=80' },
   ];
   return (
     <div style={{ background: BG, borderTop: `1px solid ${BD}`, padding: '64px 0' }}>
@@ -814,7 +814,7 @@ function HowItWorks() {
             { v: '5,00,000+', l: 'Orders delivered', color: G },
             { v: '100+', l: 'Cities across India', color: '#EA580C' },
             { v: '4.8 ★', l: 'Average app rating', color: '#7C3AED' },
-            { v: '< 30 min', l: 'Average delivery time', color: G },
+            { v: '< 10 min', l: 'Average delivery time', color: G },
           ].map(({ v, l, color }, i) => (
             <motion.div key={i} initial={{ opacity: 0, y: 12 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: i * .08 }}>
               <div style={{ background: W, border: `1px solid ${BD}`, borderRadius: 18, padding: '24px 22px', textAlign: 'center', boxShadow: SH }}>
@@ -935,7 +935,7 @@ function Footer() {
             <div style={{ marginBottom: 16 }}>
               <LogoMark size={30} dark />
             </div>
-            <p style={{ fontSize: 13.5, color: 'rgba(255,255,255,.4)', lineHeight: 1.7, marginBottom: 22, maxWidth: 260 }}>India's SuperLocal App — groceries, food & services delivered in 30 minutes. 100+ cities, 10,000+ partners.</p>
+            <p style={{ fontSize: 13.5, color: 'rgba(255,255,255,.4)', lineHeight: 1.7, marginBottom: 22, maxWidth: 260 }}>India's SuperLocal App — groceries, food & services delivered in 10 minutes. 100+ cities, 10,000+ partners.</p>
             <div style={{ display: 'flex', gap: 8, marginBottom: 24 }}>
               {[<Twitter size={14} />, <Instagram size={14} />, <Linkedin size={14} />, <Phone size={14} />].map((ic, i) => (
                 <a key={i} href="#" style={{ width: 36, height: 36, borderRadius: 9, background: 'rgba(255,255,255,.07)', border: '1px solid rgba(255,255,255,.1)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'rgba(255,255,255,.4)', transition: 'all .15s' }}

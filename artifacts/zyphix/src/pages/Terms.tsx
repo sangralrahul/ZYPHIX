@@ -57,7 +57,7 @@ export function Terms() {
           <Section title="3. Our Services">
             <p>Zyphix provides a technology platform connecting users with:</p>
             <ul style={{ paddingLeft: 20, marginTop: 10, display: 'flex', flexDirection: 'column', gap: 6 }}>
-              <li><strong>ZyphixNow:</strong> Grocery and essential items delivered in approximately 30 minutes from partner stores.</li>
+              <li><strong>ZyphixNow:</strong> Grocery and essential items delivered in approximately 10 minutes from partner stores.</li>
               <li><strong>ZyphixEats:</strong> Food delivery from restaurants, dhabas, and cloud kitchens.</li>
               <li><strong>ZyphixBook:</strong> Booking certified home service professionals (plumbers, electricians, cleaners, etc.).</li>
             </ul>

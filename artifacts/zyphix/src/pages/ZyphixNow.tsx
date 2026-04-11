@@ -61,7 +61,7 @@ export function ZyphixNow() {
             </div>
             <div>
               <h1 className="text-2xl font-black text-white">ZyphixNow</h1>
-              <p className="text-sm" style={{ color: '#5A7A9A' }}>Groceries & essentials in 30 mins</p>
+              <p className="text-sm" style={{ color: '#5A7A9A' }}>Groceries & essentials in 10 mins</p>
             </div>
           </motion.div>
 
