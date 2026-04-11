@@ -1365,6 +1365,89 @@ function Footer() {
   );
 }
 
+/* ═══════════════ QUICK BROWSE ═══════════════ */
+const GROC_CATS = [
+  { e: '🥬', n: 'Fruits & Veg',   bg: '#ECFDF5', bd: '#A7F3D0', tc: '#065F46' },
+  { e: '🥛', n: 'Dairy & Eggs',   bg: '#F0F9FF', bd: '#BAE6FD', tc: '#0C4A6E' },
+  { e: '🍿', n: 'Snacks',         bg: '#FFFBEB', bd: '#FDE68A', tc: '#78350F' },
+  { e: '💊', n: 'Pharmacy',       bg: '#FDF4FF', bd: '#E9D5FF', tc: '#581C87' },
+  { e: '🌾', n: 'Grains & Dal',   bg: '#FFFBEB', bd: '#FCD34D', tc: '#713F12' },
+  { e: '🍞', n: 'Bakery',         bg: '#FFF7ED', bd: '#FED7AA', tc: '#9A3412' },
+  { e: '🧹', n: 'Household',      bg: '#F5F3FF', bd: '#DDD6FE', tc: '#4C1D95' },
+  { e: '✨', n: 'Personal Care',  bg: '#F0FDFA', bd: '#99F6E4', tc: '#134E4A' },
+];
+const FOOD_CATS = [
+  { e: '🍛', n: 'Biryani',        bg: '#FFF7ED', bd: '#FED7AA', tc: '#9A3412' },
+  { e: '🍕', n: 'Pizza',          bg: '#FFF1F2', bd: '#FECDD3', tc: '#9F1239' },
+  { e: '🍔', n: 'Burgers',        bg: '#FFFBEB', bd: '#FDE68A', tc: '#78350F' },
+  { e: '🍱', n: 'Thali',          bg: '#F0FDF4', bd: '#BBF7D0', tc: '#14532D' },
+  { e: '☕', n: 'Chai & Drinks',  bg: '#FDF4FF', bd: '#E9D5FF', tc: '#581C87' },
+  { e: '🍰', n: 'Desserts',       bg: '#FFF1F2', bd: '#FECDD3', tc: '#9F1239' },
+  { e: '🥗', n: 'Healthy',        bg: '#ECFDF5', bd: '#A7F3D0', tc: '#065F46' },
+  { e: '🌮', n: 'Street Food',    bg: '#FFFBEB', bd: '#FDE68A', tc: '#78350F' },
+];
+
+function QuickBrowse({ setTab }: { setTab: (t: TabId) => void }) {
+  const scrollToTab = (t: TabId) => {
+    setTab(t);
+    setTimeout(() => document.getElementById('tab-content')?.scrollIntoView({ behavior: 'smooth', block: 'start' }), 60);
+  };
+  const Tile = ({ e, n, bg, bd, tc, tab }: { e: string; n: string; bg: string; bd: string; tc: string; tab: TabId }) => (
+    <motion.button
+      onClick={() => scrollToTab(tab)}
+      whileHover={{ scale: 1.05, y: -3 }}
+      whileTap={{ scale: 0.97 }}
+      style={{ padding: '14px 6px 12px', borderRadius: 14, background: bg, border: `1.5px solid ${bd}`, cursor: 'pointer', textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 5, boxShadow: '0 1px 5px rgba(0,0,0,.05)', transition: 'box-shadow .15s', minWidth: 0 }}
+    >
+      <span style={{ fontSize: 26, lineHeight: 1 }}>{e}</span>
+      <span style={{ fontSize: 10.5, fontWeight: 700, color: tc, lineHeight: 1.3, wordBreak: 'keep-all' }}>{n}</span>
+    </motion.button>
+  );
+
+  return (
+    <div style={{ background: W, padding: '26px 24px 30px', borderBottom: `1px solid ${BD}` }}>
+      <div style={{ maxWidth: 1320, margin: '0 auto' }}>
+        <div style={{ display: 'flex', flexWrap: 'wrap', gap: 28 }}>
+
+          {/* ── Groceries ── */}
+          <div style={{ flex: '1 1 400px', minWidth: 0 }}>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 14 }}>
+              <span style={{ fontFamily: "'Outfit',sans-serif", fontWeight: 800, fontSize: 15, color: T1, display: 'flex', alignItems: 'center', gap: 7 }}>
+                <span style={{ width: 9, height: 9, borderRadius: '50%', background: G, display: 'inline-block', boxShadow: `0 0 0 3px ${G}22` }} />
+                Shop Groceries
+                <span style={{ fontSize: 11.5, fontWeight: 600, color: T3, background: BG, padding: '2px 9px', borderRadius: 99, border: `1px solid ${BD}` }}>30 min</span>
+              </span>
+              <button onClick={() => scrollToTab('now')} style={{ fontSize: 12.5, fontWeight: 700, color: G, background: 'none', border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 2 }}>
+                See all <ChevronRight size={13} />
+              </button>
+            </div>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 10 }}>
+              {GROC_CATS.map(c => <Tile key={c.n} {...c} tab="now" />)}
+            </div>
+          </div>
+
+          {/* ── Food ── */}
+          <div style={{ flex: '1 1 400px', minWidth: 0 }}>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 14 }}>
+              <span style={{ fontFamily: "'Outfit',sans-serif", fontWeight: 800, fontSize: 15, color: T1, display: 'flex', alignItems: 'center', gap: 7 }}>
+                <span style={{ width: 9, height: 9, borderRadius: '50%', background: '#EA580C', display: 'inline-block', boxShadow: '0 0 0 3px rgba(234,88,12,.14)' }} />
+                Order Food
+              </span>
+              <button onClick={() => scrollToTab('eats')} style={{ fontSize: 12.5, fontWeight: 700, color: '#EA580C', background: 'none', border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 2 }}>
+                See all <ChevronRight size={13} />
+              </button>
+            </div>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 10 }}>
+              {FOOD_CATS.map(c => <Tile key={c.n} {...c} tab="eats" />)}
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  );
+}
+
 /* ═══════════════ WHY ZYPHIX STRIP ═══════════════ */
 function WhyZyphixStrip() {
   return (
@@ -1489,12 +1572,13 @@ export function Home() {
       <AnnoBar />
       <Navbar tab={tab} setTab={setTab} />
       <DualHeroBanners setTab={setTab} />
+      <QuickBrowse setTab={setTab} />
       <WaitlistSection />
       <WhyZyphixStrip />
       <Trust />
       <BrandsMarquee />
 
-      <div style={{ maxWidth: 1320, margin: '0 auto', padding: '44px 24px 80px' }}>
+      <div id="tab-content" style={{ maxWidth: 1320, margin: '0 auto', padding: '44px 24px 80px' }}>
         <AnimatePresence mode="wait">
           <motion.div key={tab} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} transition={{ duration: .18 }}>
             {CONTENT[tab]}
