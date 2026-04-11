@@ -13,11 +13,11 @@
   </defs>
   <rect width="180" height="180" rx="42" fill="url(#bg)"/>
   <rect width="180" height="90" rx="42" fill="url(#shine)"/>
+  <!-- Location pin mark: white body, dark green inner dot, tiny highlight -->
   <path
-    d="M44 58H136L44 122H136"
-    stroke="white"
-    stroke-width="21"
-    stroke-linecap="round"
-    stroke-linejoin="round"
+    d="M90 22C63.5 22 42 43.5 42 70C42 107 90 158 90 158C90 158 138 107 138 70C138 43.5 116.5 22 90 22Z"
+    fill="white"
   />
+  <circle cx="90" cy="70" r="22" fill="#07924F"/>
+  <circle cx="90" cy="70" r="9" fill="rgba(255,255,255,0.55)"/>
 </svg>

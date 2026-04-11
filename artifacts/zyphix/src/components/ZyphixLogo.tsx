@@ -1,8 +1,9 @@
 import React from 'react';
 
-function ZMark({ size }: { size: number }) {
+function PinMark({ size }: { size: number }) {
   const r = Math.round(size * 0.265);
-  const inner = size * 0.64;
+  const pinW = size * 0.48;
+  const pinH = size * 0.68;
   return (
     <div style={{
       width: size,
@@ -15,14 +16,13 @@ function ZMark({ size }: { size: number }) {
       flexShrink: 0,
       boxShadow: `0 5px 22px rgba(9,160,88,.52), inset 0 1px 0 rgba(255,255,255,.28), inset 0 -1px 0 rgba(0,0,0,.12)`,
     }}>
-      <svg width={inner} height={inner} viewBox="0 0 22 22" fill="none">
+      <svg width={pinW} height={pinH} viewBox="0 0 22 30" fill="none">
         <path
-          d="M3.5 5H18.5L3.5 17H18.5"
-          stroke="white"
-          strokeWidth="2.85"
-          strokeLinecap="round"
-          strokeLinejoin="round"
+          d="M11 1C5.48 1 1 5.48 1 11C1 18.75 11 29 11 29C11 29 21 18.75 21 11C21 5.48 16.52 1 11 1Z"
+          fill="white"
         />
+        <circle cx="11" cy="11" r="3.8" fill="#07924F" />
+        <circle cx="11" cy="11" r="1.6" fill="rgba(255,255,255,0.55)" />
       </svg>
     </div>
   );
@@ -46,7 +46,7 @@ export function ZyphixLogo({
   const fs = fontSize ?? size * 0.565;
   return (
     <div style={{ display: 'flex', alignItems: 'center', gap, flexShrink: 0 }}>
-      <ZMark size={size} />
+      <PinMark size={size} />
       {showWordmark && (
         <span style={{
           fontFamily: "'Outfit', sans-serif",
@@ -56,8 +56,8 @@ export function ZyphixLogo({
           lineHeight: 1,
           userSelect: 'none',
         }}>
-          <span style={{ color: wordmarkHighlight }}>Z</span>
-          <span style={{ color: wordmarkColor }}>YPHIX</span>
+          <span style={{ color: wordmarkHighlight }}>ZYPH</span>
+          <span style={{ color: wordmarkColor }}>IX</span>
         </span>
       )}
     </div>
@@ -65,5 +65,5 @@ export function ZyphixLogo({
 }
 
 export function ZMarkOnly({ size = 32 }: { size?: number }) {
-  return <ZMark size={size} />;
+  return <PinMark size={size} />;
 }
