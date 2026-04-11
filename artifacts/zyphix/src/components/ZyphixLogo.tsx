@@ -52,12 +52,9 @@ export function ZyphixLogo({
           fontFamily: "'Outfit', sans-serif",
           fontWeight: 900,
           fontSize: fs,
-          letterSpacing: '-0.06em',
+          letterSpacing: '-0.03em',
           lineHeight: 1,
           userSelect: 'none',
-          display: 'inline-flex',
-          alignItems: 'baseline',
-          gap: 0,
         }}>
           <span style={{
             fontStyle: 'italic',
@@ -65,13 +62,10 @@ export function ZyphixLogo({
             WebkitBackgroundClip: 'text',
             WebkitTextFillColor: 'transparent',
             backgroundClip: 'text',
-          }}>ZYPH</span>
-          <span style={{
+          }}>ZYPH</span><span style={{
             color: '#0A0F1A',
             fontStyle: 'normal',
             fontWeight: 900,
-            fontSize: fs * 1.08,
-            letterSpacing: '-0.04em',
           }}>IX</span>
         </span>
       )}
