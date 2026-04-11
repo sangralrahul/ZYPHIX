@@ -27,12 +27,8 @@ const SH2 = '0 4px 12px rgba(0,0,0,.1), 0 16px 40px rgba(0,0,0,.1)';
 function PinIcon({ size = 20 }: { size?: number }) {
   return (
     <svg width={size} height={size} viewBox="0 0 24 24" fill="none">
-      {/* Location pin with inner circle cutout — evenodd reveals gradient background */}
-      <path
-        fillRule="evenodd"
-        d="M12 2C8.69 2 6 4.69 6 8C6 12.82 12 22 12 22C12 22 18 12.82 18 8C18 4.69 15.31 2 12 2Z M14.5 8A2.5 2.5 0 1 0 9.5 8A2.5 2.5 0 1 0 14.5 8Z"
-        fill="white"
-      />
+      <path d="M7 19.5L13.5 4.5" stroke="white" strokeWidth="3.2" strokeLinecap="round"/>
+      <path d="M13 19.5L19.5 4.5" stroke="white" strokeWidth="3.2" strokeLinecap="round"/>
     </svg>
   );
 }
@@ -331,23 +327,38 @@ function DualHeroBanners({ setTab }: { setTab: (t: TabId) => void }) {
 }
 
 /* ═══════════════ TRUST STRIP ═══════════════ */
+function CountUp({ to, suffix = '' }: { to: number; suffix?: string }) {
+  const [val, setVal] = useState(0);
+  useEffect(() => {
+    const steps = 55; const iv = 1600 / steps; let s = 0;
+    const t = setInterval(() => { s++; const ease = 1 - Math.pow(1 - s / steps, 3); setVal(Math.round(ease * to)); if (s >= steps) clearInterval(t); }, iv);
+    return () => clearInterval(t);
+  }, [to]);
+  return <>{val.toLocaleString('en-IN')}{suffix}</>;
+}
+
 function Trust() {
+  const stats = [
+    { icon: <Zap size={16} color={G} />, label: '10 Min', sub: 'Guaranteed delivery', accent: true },
+    { icon: <Package size={16} color={T2} />, countTo: 10000, suffix: '+', sub: 'Verified partner stores', accent: false },
+    { icon: <MapPin size={16} color={T2} />, countTo: 30, suffix: '+ Cities', sub: 'Across India & growing', accent: false },
+    { icon: <Truck size={16} color={T2} />, label: '₹0 Surge', sub: 'Always fair pricing', accent: false },
+  ];
   return (
     <div style={{ background: BG, borderTop: `1px solid ${BD}`, borderBottom: `1px solid ${BD}` }}>
       <div style={{ maxWidth: 1320, margin: '0 auto', padding: '0 24px', display: 'grid', gridTemplateColumns: 'repeat(4,1fr)' }}>
-        {[
-          { icon: <Zap size={16} color={G} />, v: '10 Min', l: 'Guaranteed delivery' },
-          { icon: <Package size={16} color={T2} />, v: '10,000+', l: 'Verified partners' },
-          { icon: <Shield size={16} color={T2} />, v: '5 Lakh+', l: 'Happy customers' },
-          { icon: <Truck size={16} color={T2} />, v: '₹0 Surge', l: 'No hidden charges' },
-        ].map(({ icon, v, l }, i) => (
-          <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '15px 20px', borderRight: i < 3 ? `1px solid ${BD}` : 'none' }}>
-            <div style={{ width: 34, height: 34, borderRadius: 9, background: i === 0 ? 'rgba(13,163,102,.08)' : BG, border: `1px solid ${BD}`, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>{icon}</div>
+        {stats.map((s, i) => (
+          <motion.div key={i} initial={{ y: 16, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ delay: i * .13, duration: .5, ease: [.22,1,.36,1] }}
+            style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '15px 20px', borderRight: i < 3 ? `1px solid ${BD}` : 'none' }}>
+            <motion.div initial={{ scale: 0.6, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} transition={{ delay: i * .13 + .1, type: 'spring', stiffness: 400 }}
+              style={{ width: 34, height: 34, borderRadius: 9, background: s.accent ? 'rgba(13,163,102,.08)' : BG, border: `1px solid ${BD}`, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>{s.icon}</motion.div>
             <div>
-              <p style={{ fontWeight: 800, color: T1, fontSize: 14, lineHeight: 1 }}>{v}</p>
-              <p style={{ fontSize: 11, color: T3, marginTop: 2 }}>{l}</p>
+              <p style={{ fontWeight: 800, color: T1, fontSize: 14, lineHeight: 1 }}>
+                {s.countTo !== undefined ? <CountUp to={s.countTo} suffix={s.suffix ?? ''} /> : s.label}
+              </p>
+              <p style={{ fontSize: 11, color: T3, marginTop: 2 }}>{s.sub}</p>
             </div>
-          </div>
+          </motion.div>
         ))}
       </div>
     </div>
@@ -500,14 +511,10 @@ function BrandRow({ title, brands, accent }: { title: string; brands: BC[]; acce
 /* ═══════════════ NOW TAB ═══════════════ */
 function NowTab() {
   const [cart, setCart] = useState<Record<string, number>>({});
-  const [cat, setCat] = useState('All');
-  const cd = useCountdown(4 * 3600 + 47 * 60 + 22);
   const add = (id: string) => setCart(c => ({ ...c, [id]: (c[id] || 0) + 1 }));
   const rm = (id: string) => setCart(c => { const n = { ...c }; n[id] > 1 ? n[id]-- : delete n[id]; return n; });
   const total = Object.values(cart).reduce((a, b) => a + b, 0);
   const totalP = Object.entries(cart).reduce((s, [id, q]) => s + (products.find(x => x.id === id)?.price ?? 0) * q, 0);
-  const CATS = ['All', 'Fruits & Veg', 'Dairy', 'Snacks', 'Grains & Dal', 'Bakery', 'Personal Care'];
-  const filtered = cat === 'All' ? products : products.filter(p => p.category === cat);
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 40 }}>
@@ -539,11 +546,13 @@ function NowTab() {
         <Row title="Shop by Category" action="All categories" />
         <Scroller>
           {categories.map(c => (
-            <button key={c.id} onClick={() => setCat(cat === c.name ? 'All' : c.name)} className="snap-start shrink-0 flex flex-col items-center gap-2 group">
-              <div style={{ width: 76, height: 76, borderRadius: '50%', overflow: 'hidden', border: cat === c.name ? `2.5px solid ${G}` : `2px solid ${BD}`, boxShadow: cat === c.name ? `0 0 0 3px rgba(13,163,102,.15), ${SH}` : SH, transition: 'all .2s' }}>
+            <button key={c.id} className="snap-start shrink-0 flex flex-col items-center gap-2 group">
+              <div style={{ width: 76, height: 76, borderRadius: '50%', overflow: 'hidden', border: `2px solid ${BD}`, boxShadow: SH, transition: 'all .2s' }}
+                onMouseEnter={e => { (e.currentTarget as HTMLElement).style.borderColor = G; (e.currentTarget as HTMLElement).style.boxShadow = `0 0 0 3px rgba(13,163,102,.15), ${SH}`; }}
+                onMouseLeave={e => { (e.currentTarget as HTMLElement).style.borderColor = BD; (e.currentTarget as HTMLElement).style.boxShadow = SH; }}>
                 <img src={c.image} alt={c.name} className="w-full h-full img-cover group-hover:scale-110 transition-transform duration-300" />
               </div>
-              <span style={{ fontSize: 11.5, fontWeight: 600, color: cat === c.name ? T1 : T2, textAlign: 'center', width: 80, lineHeight: 1.3 }}>{c.name}</span>
+              <span style={{ fontSize: 11.5, fontWeight: 600, color: T2, textAlign: 'center', width: 80, lineHeight: 1.3 }}>{c.name}</span>
             </button>
           ))}
         </Scroller>
@@ -552,83 +561,36 @@ function NowTab() {
       {/* Shop by Brand */}
       <BrandRow title="Shop by Brand" brands={NOW_BRANDS} accent={G} />
 
-      {/* Flash deals */}
-      <div style={{ background: W, border: `1px solid ${BD}`, borderRadius: 20, overflow: 'hidden', boxShadow: SH }}>
-        <div style={{ padding: '18px 22px', display: 'flex', alignItems: 'center', gap: 16, flexWrap: 'wrap', background: '#FFFBEB', borderBottom: `1px solid #FDE68A` }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-            <div style={{ width: 38, height: 38, borderRadius: 10, background: '#FEF3C7', border: '1px solid #FDE68A', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-              <Zap size={18} color="#D97706" fill="#D97706" />
+      {/* Products by Category */}
+      {([
+        { cat: 'Fruits & Veg',  emoji: '🥬', color: '#16a34a' },
+        { cat: 'Dairy',         emoji: '🥛', color: '#2563eb' },
+        { cat: 'Snacks',        emoji: '🍪', color: '#9333ea' },
+        { cat: 'Grains & Dal',  emoji: '🌾', color: '#d97706' },
+        { cat: 'Bakery',        emoji: '🍞', color: '#c2410c' },
+        { cat: 'Personal Care', emoji: '✨', color: '#db2777' },
+      ] as { cat: string; emoji: string; color: string }[]).map(({ cat, emoji, color }, ci) => {
+        const catProds = products.filter(p => p.category === cat);
+        if (!catProds.length) return null;
+        return (
+          <motion.div key={cat} initial={{ opacity: 0, y: 22 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, margin: '-60px' }} transition={{ delay: ci * .06, duration: .5, ease: [.22,1,.36,1] }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 18 }}>
+              <motion.div whileInView={{ scale: [0.7, 1.12, 1] }} viewport={{ once: true }} transition={{ delay: ci * .06 + .1, duration: .4 }}
+                style={{ width: 40, height: 40, borderRadius: 12, background: color + '14', border: `1.5px solid ${color}30`, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 20, flexShrink: 0 }}>{emoji}</motion.div>
+              <div style={{ flex: 1 }}>
+                <h3 style={{ fontWeight: 800, color: T1, fontSize: '1rem', lineHeight: 1 }}>{cat}</h3>
+                <p style={{ fontSize: 11, color: T3, marginTop: 3 }}>{catProds.length} items available</p>
+              </div>
+              <button style={{ fontSize: 12, fontWeight: 700, color, display: 'flex', alignItems: 'center', gap: 2 }}>
+                See all <ChevronRight size={13} />
+              </button>
             </div>
-            <div>
-              <p style={{ fontWeight: 800, color: T1, fontSize: 15 }}>Flash Deals</p>
-              <p style={{ fontSize: 11, color: T3, marginTop: 1 }}>Handpicked, discounted, today only</p>
-            </div>
-          </div>
-          <div style={{ marginLeft: 'auto', display: 'flex', alignItems: 'center', gap: 8 }}>
-            <span style={{ fontSize: 12, color: T2, fontWeight: 500 }}>Ends in</span>
-            {[cd.h, cd.m, cd.s].map((v, i) => (
-              <React.Fragment key={i}>
-                <div style={{ background: T1, borderRadius: 8, padding: '6px 11px', minWidth: 44, textAlign: 'center' }}>
-                  <span style={{ fontWeight: 800, color: '#fff', fontSize: '1.05rem', lineHeight: 1, display: 'block' }}>{v}</span>
-                  <span style={{ fontSize: 7, fontWeight: 600, color: 'rgba(255,255,255,.45)', letterSpacing: '.05em', display: 'block', marginTop: 1 }}>{['HRS','MIN','SEC'][i]}</span>
-                </div>
-                {i < 2 && <span style={{ fontWeight: 700, color: T3, fontSize: 16 }}>:</span>}
-              </React.Fragment>
-            ))}
-          </div>
-        </div>
-        <div style={{ padding: '16px 18px' }}>
-          <Scroller>
-            {products.filter(p => p.origPrice).map(p => <PCard key={p.id} p={p} cart={cart} add={add} rm={rm} />)}
-          </Scroller>
-        </div>
-      </div>
-
-      {/* Trending */}
-      <div>
-        <Row title="Trending Near You" sub="Most ordered across India today" action="See all" />
-        <Scroller>
-          {products.map(p => <PCard key={p.id} p={p} cart={cart} add={add} rm={rm} />)}
-        </Scroller>
-      </div>
-
-      {/* All products */}
-      <div>
-        <Row title="All Products" sub={`${filtered.length} items available`} />
-        <div style={{ display: 'flex', gap: 8, overflowX: 'auto', scrollbarWidth: 'none', marginBottom: 20, paddingBottom: 2 }}>
-          {CATS.map(c => (
-            <button key={c} onClick={() => setCat(c)} style={{ padding: '7px 16px', borderRadius: 8, fontSize: 12.5, fontWeight: 600, whiteSpace: 'nowrap', flexShrink: 0, transition: 'all .15s', background: cat === c ? G : W, color: cat === c ? '#fff' : T2, border: `1.5px solid ${cat === c ? 'transparent' : BD}`, boxShadow: cat === c ? `0 2px 10px rgba(13,163,102,.3)` : SH }}>
-              {c}
-            </button>
-          ))}
-        </div>
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill,minmax(158px,1fr))', gap: 14 }}>
-          <AnimatePresence mode="popLayout">
-            {filtered.map((p, i) => (
-              <motion.div key={p.id} layout initial={{ opacity: 0, scale: .94 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: .94 }} transition={{ delay: i * .02 }}>
-                <div className="group cursor-pointer" style={{ background: W, border: `1px solid ${BD}`, borderRadius: 16, overflow: 'hidden', boxShadow: SH, display: 'flex', flexDirection: 'column', transition: 'all .2s' }}
-                  onMouseEnter={e => { (e.currentTarget as HTMLElement).style.boxShadow = SH2; (e.currentTarget as HTMLElement).style.transform = 'translateY(-2px)'; }}
-                  onMouseLeave={e => { (e.currentTarget as HTMLElement).style.boxShadow = SH; (e.currentTarget as HTMLElement).style.transform = 'translateY(0)'; }}>
-                  <div style={{ position: 'relative', height: 130, background: BG }}>
-                    <img src={p.image} alt={p.name} className="w-full h-full img-cover group-hover:scale-105 transition-transform duration-300" />
-                    {p.origPrice && <div style={{ position: 'absolute', top: 8, left: 8, background: '#EF4444', color: '#fff', fontSize: 10, fontWeight: 800, padding: '2px 7px', borderRadius: 6 }}>-{Math.round((1 - p.price / p.origPrice) * 100)}%</div>}
-                    {!p.origPrice && p.tag && <div style={{ position: 'absolute', top: 8, left: 8, background: 'rgba(13,163,102,.1)', color: G, fontSize: 10, fontWeight: 700, padding: '2px 8px', borderRadius: 6, border: `1px solid rgba(13,163,102,.25)` }}>{p.tag}</div>}
-                  </div>
-                  <div style={{ padding: '10px 12px', flex: 1, display: 'flex', flexDirection: 'column' }}>
-                    <p style={{ fontSize: 9.5, color: T3, marginBottom: 2 }}>{p.brand}</p>
-                    <p style={{ fontSize: 13, fontWeight: 700, color: T1, lineHeight: 1.35, marginBottom: 3, overflow: 'hidden', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical' }}>{p.name}</p>
-                    <p style={{ fontSize: 10.5, color: T3, marginBottom: 10 }}>{p.weight}</p>
-                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginTop: 'auto' }}>
-                      <div><span style={{ fontWeight: 800, color: T1, fontSize: 14 }}>₹{p.price}</span>{p.origPrice && <span style={{ fontSize: 10.5, color: T3, textDecoration: 'line-through', marginLeft: 5 }}>₹{p.origPrice}</span>}</div>
-                      <AddBtn id={p.id} cart={cart} add={add} rm={rm} />
-                    </div>
-                  </div>
-                </div>
-              </motion.div>
-            ))}
-          </AnimatePresence>
-        </div>
-      </div>
+            <Scroller>
+              {catProds.map(p => <PCard key={p.id} p={p} cart={cart} add={add} rm={rm} />)}
+            </Scroller>
+          </motion.div>
+        );
+      })}
 
       {/* Cart toast */}
       <AnimatePresence>

@@ -5,7 +5,8 @@ import { ArrowLeft, Mail, Phone, MapPin, Send, Check, MessageCircle } from 'luci
 function ZLogo({ size = 15 }: { size?: number }) {
   return (
     <svg width={size} height={size} viewBox="0 0 24 24" fill="none">
-      <path fillRule="evenodd" d="M12 2C8.69 2 6 4.69 6 8C6 12.82 12 22 12 22C12 22 18 12.82 18 8C18 4.69 15.31 2 12 2Z M14.5 8A2.5 2.5 0 1 0 9.5 8A2.5 2.5 0 1 0 14.5 8Z" fill="white"/>
+      <path d="M7 19.5L13.5 4.5" stroke="white" strokeWidth="3.2" strokeLinecap="round"/>
+      <path d="M13 19.5L19.5 4.5" stroke="white" strokeWidth="3.2" strokeLinecap="round"/>
     </svg>
   );
 }
