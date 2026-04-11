@@ -13,14 +13,7 @@ const BG = '#F8F9FA';
 const W = '#FFFFFF';
 const ERR = '#EF4444';
 
-function ZLogo({ size = 20 }: { size?: number }) {
-  return (
-    <svg width={size} height={size} viewBox="0 0 24 24" fill="none">
-      <path d="M7 19.5L13.5 4.5" stroke="white" strokeWidth="3.2" strokeLinecap="round"/>
-      <path d="M13 19.5L19.5 4.5" stroke="white" strokeWidth="3.2" strokeLinecap="round"/>
-    </svg>
-  );
-}
+import { ZyphixLogo } from './ZyphixLogo';
 
 function Field({ label, type, value, onChange, icon, error, placeholder, toggle }: {
   label: string; type: string; value: string; onChange: (v: string) => void;
@@ -247,13 +240,8 @@ export function AuthModal() {
             <div style={{ width: 300, flexShrink: 0, background: 'linear-gradient(160deg, #052E1C 0%, #064E3B 40%, #065F46 100%)', padding: '36px 28px', display: 'flex', flexDirection: 'column', position: 'relative', overflow: 'hidden' }}>
               <div style={{ position: 'absolute', inset: 0, backgroundImage: 'radial-gradient(circle at 80% 10%, rgba(13,163,102,.25) 0%, transparent 60%), radial-gradient(circle at 10% 90%, rgba(6,95,70,.4) 0%, transparent 55%)', pointerEvents: 'none' }} />
 
-              <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 40, position: 'relative' }}>
-                <div style={{ width: 40, height: 40, borderRadius: 12, background: 'rgba(255,255,255,.12)', border: '1px solid rgba(255,255,255,.18)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                  <ZLogo size={20} />
-                </div>
-                <span style={{ fontFamily: "'Outfit',sans-serif", fontWeight: 900, fontSize: '1.35rem', letterSpacing: '-.05em', color: '#fff' }}>
-                  <span style={{ color: '#34D399' }}>Z</span>yphix
-                </span>
+              <div style={{ marginBottom: 40, position: 'relative' }}>
+                <ZyphixLogo size={38} wordmarkColor="#ffffff" wordmarkHighlight="#34D399" />
               </div>
 
               <div style={{ position: 'relative', flex: 1 }}>

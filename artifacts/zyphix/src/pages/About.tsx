@@ -2,15 +2,8 @@ import React from 'react';
 import { Link } from 'wouter';
 import { ArrowLeft, Users, MapPin, Star, ArrowRight } from 'lucide-react';
 
-function ZLogo({ size = 15 }: { size?: number }) {
-  return (
-    <svg width={size} height={size} viewBox="0 0 24 24" fill="none">
-      <path d="M7 19.5L13.5 4.5" stroke="white" strokeWidth="3.2" strokeLinecap="round"/>
-      <path d="M13 19.5L19.5 4.5" stroke="white" strokeWidth="3.2" strokeLinecap="round"/>
-    </svg>
-  );
-}
 import { motion } from 'framer-motion';
+import { ZyphixLogo } from '../components/ZyphixLogo';
 
 const T1 = '#111827'; const T2 = '#6B7280'; const T3 = '#9CA3AF';
 const G = '#0DA366'; const G2 = '#0A8C58'; const BD = '#E5E7EB'; const BG = '#F8F9FA'; const W = '#FFFFFF';
@@ -22,10 +15,7 @@ export function About() {
       <div style={{ background: W, borderBottom: `1px solid ${BD}`, position: 'sticky', top: 0, zIndex: 40 }}>
         <div style={{ maxWidth: 1100, margin: '0 auto', padding: '0 24px', height: 60, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
           <Link href="/">
-            <div style={{ display: 'flex', alignItems: 'center', gap: 9 }}>
-              <div style={{ width: 30, height: 30, borderRadius: 7, background: `linear-gradient(145deg, #10D678 0%, #059E5C 50%, #046B42 100%)`, display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 3px 10px rgba(5,158,92,.45), inset 0 1px 0 rgba(255,255,255,.2)' }}><ZLogo size={17} /></div>
-              <span style={{ fontFamily: "'Outfit',sans-serif", fontWeight: 900, fontSize: '1.15rem', letterSpacing: '-.04em', color: T1 }}><span style={{ color: G }}>Z</span>yphix</span>
-            </div>
+            <ZyphixLogo size={30} wordmarkColor={T1} wordmarkHighlight={G} />
           </Link>
           <Link href="/">
             <button style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 13, fontWeight: 600, color: T2, padding: '7px 14px', borderRadius: 8, border: `1px solid ${BD}`, background: W }}>

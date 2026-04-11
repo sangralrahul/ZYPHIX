@@ -8,6 +8,7 @@ import {
 } from 'lucide-react';
 import { products, categories, restaurants, foodCategories, promoCodes, stores } from '@/data/mockData';
 import { useAuth } from '@/context/AuthContext';
+import { ZyphixLogo } from '../components/ZyphixLogo';
 
 type TabId = 'now' | 'eats' | 'map' | 'offers';
 
@@ -24,33 +25,13 @@ const SH  = '0 1px 3px rgba(0,0,0,.08), 0 4px 16px rgba(0,0,0,.06)';
 const SH2 = '0 4px 12px rgba(0,0,0,.1), 0 16px 40px rgba(0,0,0,.1)';
 
 /* ═══════════════ LOGO ═══════════════ */
-function PinIcon({ size = 20 }: { size?: number }) {
-  return (
-    <svg width={size} height={size} viewBox="0 0 24 24" fill="none">
-      <path d="M7 19.5L13.5 4.5" stroke="white" strokeWidth="3.2" strokeLinecap="round"/>
-      <path d="M13 19.5L19.5 4.5" stroke="white" strokeWidth="3.2" strokeLinecap="round"/>
-    </svg>
-  );
-}
-
 function LogoMark({ size = 32, dark = false }: { size?: number; dark?: boolean }) {
-  const r = Math.round(size * 0.24);
   return (
-    <div style={{ display: 'flex', alignItems: 'center', gap: 9, flexShrink: 0 }}>
-      <div style={{
-        width: size, height: size,
-        borderRadius: r,
-        background: 'linear-gradient(145deg, #10D678 0%, #059E5C 50%, #046B42 100%)',
-        display: 'flex', alignItems: 'center', justifyContent: 'center',
-        flexShrink: 0,
-        boxShadow: `0 4px 16px rgba(5,158,92,.5), inset 0 1px 0 rgba(255,255,255,.22)`,
-      }}>
-        <PinIcon size={Math.round(size * 0.62)} />
-      </div>
-      <span style={{ fontFamily: "'Outfit',sans-serif", fontWeight: 900, fontSize: size * 0.575, letterSpacing: '-.04em', color: dark ? '#fff' : T1, lineHeight: 1 }}>
-        <span style={{ color: dark ? '#34D399' : G }}>Z</span>yphix
-      </span>
-    </div>
+    <ZyphixLogo
+      size={size}
+      wordmarkColor={dark ? '#ffffff' : T1}
+      wordmarkHighlight={dark ? '#34D399' : G}
+    />
   );
 }
 
@@ -269,7 +250,7 @@ function DualHeroBanners({ setTab }: { setTab: (t: TabId) => void }) {
                 ⚡ Now · 30 min delivery
               </span>
               <div style={{ width: 44, height: 44, borderRadius: 13, background: 'linear-gradient(145deg, #10D678 0%, #059E5C 100%)', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 4px 18px rgba(16,214,120,.5)' }}>
-                <PinIcon size={22} />
+                <svg width={22} height={22} viewBox="0 0 22 22" fill="none"><path d="M3.5 5H18.5L3.5 17H18.5" stroke="white" strokeWidth="2.85" strokeLinecap="round" strokeLinejoin="round"/></svg>
               </div>
             </div>
             <div>
@@ -312,7 +293,7 @@ function DualHeroBanners({ setTab }: { setTab: (t: TabId) => void }) {
                 🍱 Eats · Local restaurants near you
               </span>
               <div style={{ width: 44, height: 44, borderRadius: 13, background: 'linear-gradient(145deg, #F97316 0%, #EA580C 100%)', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 4px 18px rgba(249,115,22,.5)' }}>
-                <PinIcon size={22} />
+                <svg width={22} height={22} viewBox="0 0 22 22" fill="none"><path d="M3.5 5H18.5L3.5 17H18.5" stroke="white" strokeWidth="2.85" strokeLinecap="round" strokeLinejoin="round"/></svg>
               </div>
             </div>
             <div>

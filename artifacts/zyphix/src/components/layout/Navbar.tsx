@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'wouter';
-import { Search, MapPin, ShoppingCart, User, ChevronDown, Zap, Menu, X } from 'lucide-react';
+import { Search, MapPin, ShoppingCart, User, ChevronDown, Menu, X } from 'lucide-react';
+import { ZyphixLogo } from '../ZyphixLogo';
 
 export function Navbar() {
   const [scrolled, setScrolled] = useState(false);
@@ -27,21 +28,8 @@ export function Navbar() {
         <div className="flex items-center gap-3 h-16">
 
           {/* ── Logo ── */}
-          <Link href="/" className="flex items-center gap-2.5 shrink-0 group">
-            <div className="w-8 h-8 rounded-xl flex items-center justify-center shrink-0 transition-transform group-hover:scale-105"
-              style={{ background: 'linear-gradient(135deg, var(--z-green), #4E7FFF)' }}>
-              <Zap style={{ height: 16, width: 16, color: 'white', fill: 'white' }} />
-            </div>
-            <span className="font-black text-xl tracking-[-0.04em] hidden sm:block"
-              style={{
-                background: 'linear-gradient(90deg, #00D97E, #4E7FFF)',
-                WebkitBackgroundClip: 'text',
-                WebkitTextFillColor: 'transparent',
-                backgroundClip: 'text',
-                fontFamily: "'Outfit', sans-serif",
-              }}>
-              ZYPHIX
-            </span>
+          <Link href="/" className="shrink-0 transition-opacity hover:opacity-90">
+            <ZyphixLogo size={34} wordmarkColor="#ffffff" wordmarkHighlight="#34D399" />
           </Link>
 
           {/* ── Location ── */}
