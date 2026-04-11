@@ -1450,21 +1450,72 @@ function QuickBrowse({ setTab }: { setTab: (t: TabId) => void }) {
 
 /* ═══════════════ WHY ZYPHIX STRIP ═══════════════ */
 function WhyZyphixStrip() {
+  const ITEMS = [
+    {
+      icon: (
+        <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
+          <rect width="28" height="28" rx="8" fill="rgba(0,201,167,.15)" />
+          <path d="M7 10h14M7 14h9M7 18h6" stroke="#00C9A7" strokeWidth="2" strokeLinecap="round"/>
+          <circle cx="20" cy="17" r="4" fill="#00C9A7" opacity=".2"/>
+          <path d="M18.5 17l1 1 2-2" stroke="#00C9A7" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+        </svg>
+      ),
+      title: 'Real Kirana Partners',
+      sub: 'No dark warehouses — your local stores',
+    },
+    {
+      icon: (
+        <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
+          <rect width="28" height="28" rx="8" fill="rgba(0,201,167,.15)" />
+          <path d="M14 7v2M14 19v2M9.5 9.5l1.4 1.4M17.1 17.1l1.4 1.4M7 14h2M19 14h2M9.5 18.5l1.4-1.4M17.1 10.9l1.4-1.4" stroke="#00C9A7" strokeWidth="1.5" strokeLinecap="round"/>
+          <circle cx="14" cy="14" r="3.5" stroke="#00C9A7" strokeWidth="1.5"/>
+        </svg>
+      ),
+      title: 'Zero Extra Charges',
+      sub: 'Lower commission than Swiggy / Zomato',
+    },
+    {
+      icon: (
+        <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
+          <rect width="28" height="28" rx="8" fill="rgba(0,201,167,.15)" />
+          <path d="M14 7C10.7 7 8 9.7 8 13c0 4.3 6 10 6 10s6-5.7 6-10c0-3.3-2.7-6-6-6z" stroke="#00C9A7" strokeWidth="1.5" fill="none"/>
+          <circle cx="14" cy="13" r="2" fill="#00C9A7"/>
+        </svg>
+      ),
+      title: 'Built for J&K',
+      sub: 'Your neighbourhood, now digital',
+    },
+  ];
+
   return (
-    <div style={{ background: '#131D30', padding: '12px 20px', borderTop: '1px solid rgba(255,255,255,.06)', borderBottom: '1px solid rgba(255,255,255,.06)' }}>
-      <p style={{ textAlign: 'center', fontSize: 13, color: '#00C9A7', fontWeight: 500, lineHeight: 1.7 }}>
-        ✓ No dark stores — real kirana shops near you &nbsp;·&nbsp; ✓ Lower commission than Swiggy/Zomato &nbsp;·&nbsp; ✓ Your neighbourhood, now digital
-      </p>
+    <div style={{ background: 'linear-gradient(135deg, #0B1829 0%, #131D30 60%, #0D2040 100%)', borderTop: '1px solid rgba(255,255,255,.07)', borderBottom: '1px solid rgba(255,255,255,.07)', overflow: 'hidden', position: 'relative' }}>
+      <div style={{ position: 'absolute', inset: 0, background: 'radial-gradient(ellipse at 50% 50%, rgba(0,201,167,.07) 0%, transparent 70%)', pointerEvents: 'none' }} />
+      <div style={{ maxWidth: 1100, margin: '0 auto', padding: '20px 24px', display: 'flex', flexWrap: 'wrap', gap: 0 }}>
+        {ITEMS.map(({ icon, title, sub }, i) => (
+          <motion.div key={title}
+            initial={{ opacity: 0, y: 12 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}
+            transition={{ delay: i * 0.1, duration: 0.4 }}
+            style={{ flex: '1 1 240px', display: 'flex', alignItems: 'center', gap: 14, padding: '8px 24px', borderRight: i < 2 ? '1px solid rgba(255,255,255,.08)' : 'none', minWidth: 0 }}>
+            <motion.div whileHover={{ rotate: [0, -8, 8, 0], scale: 1.1 }} transition={{ duration: .4 }}>
+              {icon}
+            </motion.div>
+            <div>
+              <p style={{ fontFamily: "'Outfit',sans-serif", fontWeight: 800, fontSize: 13.5, color: '#fff', letterSpacing: '-.01em', marginBottom: 2 }}>{title}</p>
+              <p style={{ fontSize: 12, color: 'rgba(0,201,167,.75)', fontWeight: 500, lineHeight: 1.4 }}>{sub}</p>
+            </div>
+          </motion.div>
+        ))}
+      </div>
     </div>
   );
 }
 
 /* ═══════════════ WAITLIST SECTION ═══════════════ */
 const WLIST_BENEFITS = [
-  { e: '🎁', n: 'Free Delivery\n6 months',  bg: '#ECFDF5', bd: '#A7F3D0', tc: '#065F46' },
-  { e: '₹200', n: 'Launch\nCredit',          bg: '#FFFBEB', bd: '#FDE68A', tc: '#78350F', big: true },
-  { e: '🥇', n: 'Priority\nAccess',          bg: '#F0F9FF', bd: '#BAE6FD', tc: '#0C4A6E' },
-  { e: '⚡', n: 'First to\nOrder',           bg: '#FFF7ED', bd: '#FED7AA', tc: '#9A3412' },
+  { e: '🎁', title: 'FREE DELIVERY', sub: 'For 6 whole months', grad: 'linear-gradient(140deg,#ECFDF5 0%,#D1FAE5 100%)', bd: '#6EE7B7', tc: '#065F46', glow: '#059669' },
+  { e: '₹200', title: 'LAUNCH CREDIT', sub: 'Yours when we go live', grad: 'linear-gradient(140deg,#FFFBEB 0%,#FEF3C7 100%)', bd: '#FCD34D', tc: '#92400E', glow: '#D97706', big: true },
+  { e: '🥇', title: 'PRIORITY ACCESS', sub: 'First in line, always', grad: 'linear-gradient(140deg,#EFF6FF 0%,#DBEAFE 100%)', bd: '#93C5FD', tc: '#1E40AF', glow: '#3B82F6' },
+  { e: '⚡', title: 'FIRST TO ORDER', sub: 'In Jammu & beyond', grad: 'linear-gradient(140deg,#FFF7ED 0%,#FFEDD5 100%)', bd: '#FDBA74', tc: '#9A3412', glow: '#EA580C' },
 ];
 const WLIST_ROLES = [
   { v: 'customer', e: '🛒', l: 'Customer',        bg: '#ECFDF5', bd: '#A7F3D0', ac: G,        tc: '#065F46' },
@@ -1551,15 +1602,28 @@ function WaitlistSection() {
             </motion.p>
 
             {/* Benefit tiles */}
-            <div style={{ display:'grid', gridTemplateColumns:'repeat(2,1fr)', gap:10, marginBottom:28 }}>
-              {WLIST_BENEFITS.map(({ e, n, bg, bd, tc, big }, i) => (
-                <motion.div key={n}
-                  initial={{ opacity:0, scale:.82 }} whileInView={{ opacity:1, scale:1 }} viewport={{ once:true }}
-                  transition={{ delay:.18 + i*.09, type:'spring', stiffness:210 }}
-                  whileHover={{ scale:1.05, y:-4 }}
-                  style={{ padding:'16px 12px 13px', borderRadius:14, background:bg, border:`1.5px solid ${bd}`, textAlign:'center', boxShadow:'0 2px 8px rgba(0,0,0,.06)', cursor:'default' }}>
-                  <div style={{ fontSize: big ? 19 : 26, fontWeight: big ? 900 : 400, color: big ? tc : undefined, lineHeight:1, marginBottom:5 }}>{e}</div>
-                  <div style={{ fontSize:11, fontWeight:700, color:tc, lineHeight:1.35, whiteSpace:'pre-line' }}>{n}</div>
+            <div style={{ display:'grid', gridTemplateColumns:'repeat(2,1fr)', gap:12, marginBottom:28 }}>
+              {WLIST_BENEFITS.map(({ e, title, sub, grad, bd, tc, glow, big }, i) => (
+                <motion.div key={title}
+                  initial={{ opacity:0, y:18, scale:.9 }} whileInView={{ opacity:1, y:0, scale:1 }} viewport={{ once:true }}
+                  transition={{ delay:.15 + i*.1, type:'spring', stiffness:220, damping:16 }}
+                  whileHover={{ scale:1.06, y:-7 }}
+                  style={{ padding:'20px 14px 18px', borderRadius:18, background:grad, border:`2px solid ${bd}`, textAlign:'center', cursor:'default', position:'relative', overflow:'hidden', boxShadow:`0 4px 16px ${glow}20`, transition:'box-shadow .2s' }}
+                  onHoverStart={(e: MouseEvent) => { (e.target as HTMLElement).style.boxShadow = `0 14px 36px ${glow}40`; }}
+                  onHoverEnd={(e: MouseEvent) => { (e.target as HTMLElement).style.boxShadow = `0 4px 16px ${glow}20`; }}>
+                  {/* top glow */}
+                  <div style={{ position:'absolute', inset:0, background:`radial-gradient(circle at 50% -10%, ${glow}28 0%, transparent 60%)`, pointerEvents:'none' }} />
+                  {/* YOURS badge */}
+                  {big && <div style={{ position:'absolute', top:10, right:10, background:glow, color:'#fff', fontSize:9.5, fontWeight:900, padding:'3px 9px', borderRadius:99, letterSpacing:'.06em', boxShadow:`0 2px 8px ${glow}55` }}>YOURS</div>}
+                  {/* Icon */}
+                  <motion.div
+                    animate={{ y:[0,-3,0], scale:[1,1.04,1] }}
+                    transition={{ repeat:Infinity, duration:2.4 + i*0.5, ease:'easeInOut' }}
+                    style={{ fontSize: big ? 30 : 38, fontWeight: big ? 900 : 400, color: big ? tc : undefined, lineHeight:1, marginBottom:9 }}>
+                    {e}
+                  </motion.div>
+                  <p style={{ fontSize:11.5, fontWeight:900, color:tc, letterSpacing:'.06em', marginBottom:4, textTransform:'uppercase' as const }}>{title}</p>
+                  <p style={{ fontSize:11, color:`${tc}BB`, fontWeight:500, lineHeight:1.4 }}>{sub}</p>
                 </motion.div>
               ))}
             </div>
