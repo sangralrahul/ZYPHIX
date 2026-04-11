@@ -36,22 +36,16 @@
   --radius: 1rem;
 
   /* Brand */
-  --z-bg:     #070A12;
-  --z-surf:   #0C0F1A;
-  --z-card:   #131726;
-  --z-card2:  #1A1E2E;
-  --z-green:  #00E676;
-  --z-green2: #00B85C;
-  --z-orange: #FF6B00;
-  --z-amber:  #FFB800;
-  --z-blue:   #4488FF;
-  --z-purple: #8B6FFF;
-  --z-pink:   #FF4D8B;
-  --z-red:    #FF3B3B;
-  --z-muted:  #5A6180;
-  --z-text:   #EDF0F8;
-  --z-border: rgba(255,255,255,0.06);
-  --z-border2:rgba(255,255,255,0.12);
+  --z-bg:     #0B0F1A;
+  --z-surf:   #141927;
+  --z-card:   #1A2235;
+  --z-card2:  #1F2840;
+  --z-green:  #16C784;
+  --z-green2: #0EA56E;
+  --z-muted:  #6B7A99;
+  --z-text:   #F0F4FF;
+  --z-border: rgba(255,255,255,0.07);
+  --z-border2:rgba(255,255,255,0.13);
 }
 
 @layer base {

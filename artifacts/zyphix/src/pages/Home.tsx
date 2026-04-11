@@ -1,200 +1,262 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
-  Star, Clock, Plus, Minus, ArrowRight, Check, Copy,
-  MapPin, Truck, Shield, Zap, ChevronRight, ChevronLeft,
-  Package, Users, Search, ChevronDown, TrendingUp, Sparkles
+  Search, MapPin, ChevronDown, ShoppingCart, User,
+  Plus, Minus, Star, Clock, ChevronRight, ChevronLeft,
+  Zap, Shield, Package, Truck, Check, Copy,
+  ArrowRight, Phone, Instagram, Twitter, Linkedin
 } from 'lucide-react';
 import { products, categories, restaurants, foodCategories, services, promoCodes, stores } from '@/data/mockData';
 
+/* ─────────────────── helpers ─────────────────── */
 type TabId = 'now' | 'eats' | 'book' | 'map' | 'offers';
 
-const TABS: { id: TabId; label: string; icon: string; accent: string; textColor: string }[] = [
-  { id: 'now',    label: 'ZyphixNow',      icon: '⚡', accent: '#00E676', textColor: '#021a0e' },
-  { id: 'eats',   label: 'ZyphixEats',     icon: '🍱', accent: '#FF6B00', textColor: 'white'   },
-  { id: 'book',   label: 'ZyphixBook',     icon: '📅', accent: '#8B6FFF', textColor: 'white'   },
-  { id: 'map',    label: 'Kirana Near Me', icon: '🗺️', accent: '#4488FF', textColor: 'white'   },
-  { id: 'offers', label: 'Offers',         icon: '🏷️', accent: '#FF4D8B', textColor: 'white'   },
-];
+const GREEN  = '#16C784';
+const GREEN_D = '#0EA56E';
+const BG     = '#0B0F1A';
+const SURF   = '#141927';
+const CARD   = '#1A2235';
+const BORDER = 'rgba(255,255,255,0.07)';
+const BORDER2 = 'rgba(255,255,255,0.13)';
+const T1     = '#F0F4FF';
+const T2     = 'rgba(240,244,255,0.5)';
+const T3     = 'rgba(240,244,255,0.28)';
 
 function useCountdown(init: number) {
   const [s, setS] = useState(init);
-  useEffect(() => { const t = setInterval(() => setS(x => x > 0 ? x - 1 : 0), 1000); return () => clearInterval(t); }, []);
+  useEffect(() => {
+    const t = setInterval(() => setS(x => x > 0 ? x - 1 : 0), 1000);
+    return () => clearInterval(t);
+  }, []);
   const p = (n: number) => String(n).padStart(2, '0');
   return { h: p(Math.floor(s / 3600)), m: p(Math.floor((s % 3600) / 60)), s: p(s % 60) };
 }
 
-function Carousel({ children, className = '' }: { children: React.ReactNode; className?: string }) {
+function Carousel({ children }: { children: React.ReactNode }) {
   const ref = useRef<HTMLDivElement>(null);
   const sc = (d: 1 | -1) => ref.current?.scrollBy({ left: d * 340, behavior: 'smooth' });
   return (
     <div className="relative group/c">
-      <button onClick={() => sc(-1)} className="hidden lg:flex absolute -left-4 top-1/2 -translate-y-1/2 z-10 w-9 h-9 rounded-full items-center justify-center opacity-0 group-hover/c:opacity-100 transition-all" style={{ background: '#1A1E2E', border: '1px solid rgba(255,255,255,0.15)', boxShadow: '0 8px 24px rgba(0,0,0,.7)' }}>
-        <ChevronLeft className="h-4 w-4 text-white" />
+      <button onClick={() => sc(-1)}
+        className="hidden lg:flex absolute -left-4 top-1/2 -translate-y-1/2 z-10 w-8 h-8 rounded-full items-center justify-center opacity-0 group-hover/c:opacity-100 transition-all"
+        style={{ background: CARD, border: `1px solid ${BORDER2}`, boxShadow: '0 4px 16px rgba(0,0,0,.5)' }}>
+        <ChevronLeft size={14} color={T1} />
       </button>
-      <div ref={ref} className={`carousel ${className}`}>{children}</div>
-      <button onClick={() => sc(1)} className="hidden lg:flex absolute -right-4 top-1/2 -translate-y-1/2 z-10 w-9 h-9 rounded-full items-center justify-center opacity-0 group-hover/c:opacity-100 transition-all" style={{ background: '#1A1E2E', border: '1px solid rgba(255,255,255,0.15)', boxShadow: '0 8px 24px rgba(0,0,0,.7)' }}>
-        <ChevronRight className="h-4 w-4 text-white" />
+      <div ref={ref} className="carousel">{children}</div>
+      <button onClick={() => sc(1)}
+        className="hidden lg:flex absolute -right-4 top-1/2 -translate-y-1/2 z-10 w-8 h-8 rounded-full items-center justify-center opacity-0 group-hover/c:opacity-100 transition-all"
+        style={{ background: CARD, border: `1px solid ${BORDER2}`, boxShadow: '0 4px 16px rgba(0,0,0,.5)' }}>
+        <ChevronRight size={14} color={T1} />
       </button>
     </div>
   );
 }
 
-function SH({ title, sub, action, accent = '#00E676' }: { title: string; sub?: string; action?: string; accent?: string }) {
+function SectionHeader({ title, subtitle, action }: { title: string; subtitle?: string; action?: string }) {
   return (
     <div className="flex items-end justify-between mb-5">
       <div>
-        <h2 style={{ fontSize: '1.1rem', fontWeight: 900, color: 'white', letterSpacing: '-.03em' }}>{title}</h2>
-        {sub && <p style={{ fontSize: 11, color: 'rgba(255,255,255,0.4)', marginTop: 2 }}>{sub}</p>}
+        <h2 style={{ fontSize: '1rem', fontWeight: 800, color: T1, letterSpacing: '-.02em' }}>{title}</h2>
+        {subtitle && <p style={{ fontSize: 12, color: T3, marginTop: 3 }}>{subtitle}</p>}
       </div>
       {action && (
-        <button style={{ fontSize: 11, fontWeight: 700, color: accent, background: `${accent}12`, border: `1px solid ${accent}22`, padding: '5px 12px', borderRadius: 999, display: 'flex', alignItems: 'center', gap: 3 }}>
-          {action} <ChevronRight style={{ height: 12, width: 12 }} />
+        <button style={{ fontSize: 12, fontWeight: 700, color: GREEN, display: 'flex', alignItems: 'center', gap: 3 }}>
+          {action} <ChevronRight size={12} />
         </button>
       )}
     </div>
   );
 }
 
-function Stars({ r }: { r: number }) {
-  return <span style={{ display: 'inline-flex', alignItems: 'center', gap: 2, fontSize: 11, fontWeight: 700, color: '#FFB800' }}><Star style={{ height: 11, width: 11, fill: 'currentColor' }} />{r}</span>;
+function StarRating({ r }: { r: number }) {
+  return (
+    <span style={{ display: 'inline-flex', alignItems: 'center', gap: 3, fontSize: 11, fontWeight: 700, color: '#F5C842' }}>
+      <Star size={10} fill="#F5C842" stroke="none" />{r}
+    </span>
+  );
 }
 
-/* ════════════════════════════════════════
-   HERO — full visual redesign
-════════════════════════════════════════ */
+/* ─────────────────── ANNOUNCEMENT BAR ─────────────────── */
+function AnnoBar() {
+  return (
+    <div style={{ background: GREEN, padding: '8px 16px', textAlign: 'center' }}>
+      <p style={{ fontSize: 12, fontWeight: 700, color: '#032D1A', letterSpacing: '.01em' }}>
+        Free delivery on your first order · Use code{' '}
+        <strong style={{ letterSpacing: '.06em' }}>ZYPHIX50</strong>
+        {' '}· Now live in Jammu & Kashmir
+      </p>
+    </div>
+  );
+}
+
+/* ─────────────────── NAVBAR ─────────────────── */
+function Navbar() {
+  const [scrolled, setScrolled] = useState(false);
+  const [focused, setFocused] = useState(false);
+  useEffect(() => {
+    const h = () => setScrolled(window.scrollY > 2);
+    window.addEventListener('scroll', h, { passive: true });
+    return () => window.removeEventListener('scroll', h);
+  }, []);
+  return (
+    <div className="sticky top-0 z-50" style={{ background: scrolled ? 'rgba(11,15,26,0.98)' : 'rgba(11,15,26,0.95)', backdropFilter: 'blur(20px)', WebkitBackdropFilter: 'blur(20px)', borderBottom: `1px solid ${BORDER}`, transition: 'background .2s' }}>
+      <div style={{ maxWidth: 1280, margin: '0 auto', padding: '0 24px', display: 'flex', alignItems: 'center', gap: 12, height: 62 }}>
+
+        {/* Logo */}
+        <a href="/" style={{ display: 'flex', alignItems: 'center', gap: 9, flexShrink: 0 }}>
+          <div style={{ width: 30, height: 30, borderRadius: 8, background: GREEN, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            <Zap size={15} color="#032D1A" fill="#032D1A" />
+          </div>
+          <span style={{ fontFamily: "'Outfit',sans-serif", fontWeight: 900, fontSize: '1.15rem', letterSpacing: '-.03em', color: T1 }}>
+            ZYP<span style={{ color: GREEN }}>HIX</span>
+          </span>
+        </a>
+
+        {/* Location */}
+        <button className="hidden md:flex items-center gap-2" style={{ padding: '7px 14px', borderRadius: 10, background: SURF, border: `1px solid ${BORDER}`, flexShrink: 0, transition: 'border-color .15s' }}
+          onMouseEnter={e => (e.currentTarget.style.borderColor = BORDER2)} onMouseLeave={e => (e.currentTarget.style.borderColor = BORDER)}>
+          <MapPin size={13} color={GREEN} />
+          <div style={{ textAlign: 'left' }}>
+            <p style={{ fontSize: 9, fontWeight: 600, color: T3, lineHeight: 1, textTransform: 'uppercase', letterSpacing: '.06em' }}>Deliver to</p>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 4, marginTop: 2 }}>
+              <span style={{ fontWeight: 700, color: T1, fontSize: 13, lineHeight: 1 }}>Jammu, J&K</span>
+              <ChevronDown size={11} color={T3} />
+            </div>
+          </div>
+        </button>
+
+        {/* Search */}
+        <div style={{ flex: 1, position: 'relative', maxWidth: 500 }}>
+          <Search size={14} style={{ position: 'absolute', left: 14, top: '50%', transform: 'translateY(-50%)', color: focused ? GREEN : T3, zIndex: 1, transition: 'color .15s' }} />
+          <input type="text" placeholder="Search groceries, restaurants, services..."
+            onFocus={() => setFocused(true)} onBlur={() => setFocused(false)}
+            style={{ width: '100%', paddingLeft: 42, paddingRight: 16, paddingTop: 10, paddingBottom: 10, borderRadius: 10, background: SURF, border: `1px solid ${focused ? GREEN + '50' : BORDER}`, fontSize: 13, color: T1, fontFamily: 'inherit', fontWeight: 500, boxShadow: focused ? `0 0 0 3px rgba(22,199,132,0.08)` : 'none', transition: 'all .15s' }}
+          />
+        </div>
+
+        {/* Right actions */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexShrink: 0 }}>
+          <button className="hidden sm:flex items-center gap-2" style={{ padding: '9px 16px', borderRadius: 10, background: SURF, border: `1px solid ${BORDER}`, fontSize: 13, fontWeight: 600, color: T2, transition: 'all .15s' }}
+            onMouseEnter={e => { e.currentTarget.style.borderColor = BORDER2; e.currentTarget.style.color = T1; }} onMouseLeave={e => { e.currentTarget.style.borderColor = BORDER; e.currentTarget.style.color = T2; }}>
+            <User size={14} /><span className="hidden lg:inline">Login</span>
+          </button>
+          <button className="relative flex items-center gap-2" style={{ padding: '9px 18px', borderRadius: 10, background: GREEN, fontSize: 13, fontWeight: 800, color: '#032D1A', boxShadow: `0 2px 12px rgba(22,199,132,0.25)` }}>
+            <ShoppingCart size={15} /><span className="hidden sm:inline">Cart</span>
+            <span style={{ position: 'absolute', top: -6, right: -6, width: 18, height: 18, borderRadius: '50%', background: '#E53E3E', color: 'white', fontSize: 9.5, fontWeight: 800, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>3</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/* ─────────────────── HERO ─────────────────── */
 function Hero() {
   const heroProds = products.slice(0, 6);
-
   return (
-    <div className="relative overflow-hidden" style={{ background: 'linear-gradient(165deg, #060A14 0%, #08101E 40%, #060D16 100%)', minHeight: 560 }}>
+    <div style={{ background: BG, position: 'relative', overflow: 'hidden' }}>
+      {/* Single subtle glow — professional, not garish */}
+      <div style={{ position: 'absolute', top: -120, right: -100, width: 600, height: 600, background: `radial-gradient(circle, rgba(22,199,132,0.07) 0%, transparent 65%)`, pointerEvents: 'none' }} />
 
-      {/* Background food photo — brighter, more visible */}
-      <img
-        src="https://images.unsplash.com/photo-1542838132-92c53300491e?w=1600&h=700&fit=crop&q=80"
-        alt=""
-        className="absolute inset-0 w-full h-full img-cover"
-        style={{ filter: 'brightness(0.4) saturate(1.3)', mixBlendMode: 'screen', opacity: 0.5 }}
-      />
+      <div style={{ maxWidth: 1280, margin: '0 auto', padding: '56px 24px 64px', display: 'flex', alignItems: 'center', gap: 48 }}>
 
-      {/* Gradient mask */}
-      <div className="absolute inset-0" style={{ background: 'linear-gradient(110deg, rgba(6,10,20,0.97) 40%, rgba(6,10,20,0.55) 75%, rgba(6,10,20,0.3) 100%)' }} />
+        {/* ── Left: Copy ── */}
+        <div style={{ flex: 1, minWidth: 0 }}>
 
-      {/* Green radial glow */}
-      <div className="absolute pointer-events-none" style={{ left: '-10%', bottom: '-20%', width: 700, height: 700, background: 'radial-gradient(circle, rgba(0,230,118,0.10) 0%, transparent 65%)', filter: 'blur(10px)' }} />
-      <div className="absolute pointer-events-none" style={{ right: '5%', top: '-10%', width: 500, height: 500, background: 'radial-gradient(circle, rgba(68,136,255,0.08) 0%, transparent 65%)', filter: 'blur(10px)' }} />
+          {/* Live badge */}
+          <div style={{ display: 'inline-flex', alignItems: 'center', gap: 7, background: 'rgba(22,199,132,0.08)', border: `1px solid rgba(22,199,132,0.2)`, borderRadius: 999, padding: '5px 13px', marginBottom: 24 }}>
+            <span style={{ width: 7, height: 7, borderRadius: '50%', background: GREEN, display: 'block', animation: 'pulse-dot 2s ease-in-out infinite' }} />
+            <span style={{ fontSize: 11, fontWeight: 700, color: GREEN, letterSpacing: '.06em' }}>LIVE IN JAMMU & KASHMIR</span>
+          </div>
 
-      <div className="relative max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8 py-12 lg:py-16">
-        <div className="flex items-center gap-8 xl:gap-14">
+          {/* Headline */}
+          <h1 style={{ fontFamily: "'Outfit',sans-serif", fontWeight: 900, lineHeight: 1.04, letterSpacing: '-.04em', marginBottom: 18 }}>
+            <span style={{ display: 'block', fontSize: 'clamp(2rem, 4.2vw, 3.4rem)', color: T1 }}>India's #1</span>
+            <span style={{ display: 'block', fontSize: 'clamp(2rem, 4.2vw, 3.4rem)', color: T1 }}>SuperLocal App.</span>
+            <span style={{ display: 'block', fontSize: 'clamp(2.8rem, 6.5vw, 5rem)', color: GREEN, marginTop: 4 }}>30 Minutes.</span>
+          </h1>
 
-          {/* ── LEFT: copy ── */}
-          <motion.div className="flex-1 min-w-0" initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: .65, ease: [.22,1,.36,1] }}>
+          <p style={{ fontSize: 15, color: T2, lineHeight: 1.7, marginBottom: 28, maxWidth: 420, fontWeight: 400 }}>
+            Groceries, food & services — delivered from your nearest kirana, dhaba & professional across Jammu & Kashmir.
+          </p>
 
-            <div className="inline-flex items-center gap-2 mb-5 px-3.5 py-1.5 rounded-full" style={{ background: 'rgba(0,230,118,0.1)', border: '1px solid rgba(0,230,118,0.22)' }}>
-              <span className="w-2 h-2 rounded-full" style={{ background: '#00E676', animation: 'pulse-dot 2s ease-in-out infinite' }} />
-              <span style={{ fontSize: 11, fontWeight: 800, color: '#00E676', letterSpacing: '.08em' }}>LIVE NOW · JAMMU, J&K</span>
-            </div>
+          {/* Search */}
+          <div style={{ position: 'relative', marginBottom: 24, maxWidth: 440 }}>
+            <Search size={16} style={{ position: 'absolute', left: 14, top: '50%', transform: 'translateY(-50%)', color: T3 }} />
+            <input placeholder="Tomatoes, Amul Milk, Plumber..." style={{ width: '100%', paddingLeft: 46, paddingRight: 110, paddingTop: 13, paddingBottom: 13, borderRadius: 12, background: SURF, border: `1px solid ${BORDER2}`, fontSize: 14, color: T1, fontFamily: 'inherit', fontWeight: 500 }} />
+            <button style={{ position: 'absolute', right: 6, top: '50%', transform: 'translateY(-50%)', background: GREEN, color: '#032D1A', fontWeight: 800, fontSize: 13, padding: '7px 16px', borderRadius: 8 }}>Search</button>
+          </div>
 
-            <h1 style={{ fontFamily: "'Outfit',sans-serif", fontWeight: 900, lineHeight: 1.01, letterSpacing: '-.045em', marginBottom: 20 }}>
-              <span style={{ display: 'block', color: 'white', fontSize: 'clamp(2rem,4.5vw,3.2rem)' }}>India's #1</span>
-              <span style={{ display: 'block', color: 'white', fontSize: 'clamp(2rem,4.5vw,3.2rem)' }}>SuperLocal App.</span>
-              <span style={{ display: 'block', fontSize: 'clamp(3rem,7vw,5.5rem)', background: 'linear-gradient(130deg,#00E676 0%,#00BF63 40%,#4488FF 80%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>
-                30 Minutes.
-              </span>
-            </h1>
+          {/* CTA row */}
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: 12, marginBottom: 28 }}>
+            <button style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '13px 24px', borderRadius: 12, background: GREEN, color: '#032D1A', fontWeight: 800, fontSize: 14, boxShadow: `0 4px 20px rgba(22,199,132,0.3)` }}>
+              <Zap size={16} fill="#032D1A" /> Order Now — Free Delivery
+            </button>
+            <button style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '13px 24px', borderRadius: 12, background: SURF, color: T2, fontWeight: 600, fontSize: 14, border: `1px solid ${BORDER}` }}>
+              How it works <ArrowRight size={14} />
+            </button>
+          </div>
 
-            <p style={{ color: 'rgba(255,255,255,0.45)', fontSize: '0.95rem', lineHeight: 1.65, marginBottom: 24, maxWidth: 400, fontWeight: 500 }}>
-              Groceries · Food · Services — delivered from your nearest kirana, dhaba & professional in Jammu & Kashmir.
-            </p>
-
-            {/* Search */}
-            <div className="relative mb-5 max-w-sm">
-              <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 z-10" style={{ height: 16, width: 16, color: '#00E676' }} />
-              <input placeholder="Tomatoes, Amul Milk, Barber..." className="w-full pl-10 pr-4 py-3.5 rounded-2xl text-white outline-none placeholder:font-medium"
-                style={{ background: 'rgba(255,255,255,0.07)', border: '1.5px solid rgba(0,230,118,0.3)', fontSize: 13, fontWeight: 500 }}
-              />
-              <button className="absolute right-2 top-1/2 -translate-y-1/2 px-3.5 py-1.5 rounded-xl text-xs font-black" style={{ background: '#00E676', color: '#021a0e' }}>Search</button>
-            </div>
-
-            {/* CTA row */}
-            <div className="flex flex-wrap gap-3 mb-6">
-              <button className="flex items-center gap-2 px-6 py-3 rounded-2xl font-black text-sm" style={{ background: '#00E676', color: '#021a0e', boxShadow: '0 8px 28px rgba(0,230,118,0.35)' }}>
-                <Zap style={{ height: 16, width: 16 }} /> Order Now — Free
+          {/* App store badges */}
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: 10, marginBottom: 36 }}>
+            {[{ icon: '🍎', top: 'Download on the', bot: 'App Store' }, { icon: '▶', top: 'Get it on', bot: 'Google Play' }].map((a, i) => (
+              <button key={i} style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '10px 18px', borderRadius: 10, background: SURF, border: `1px solid ${BORDER}` }}>
+                <span style={{ fontSize: 20 }}>{a.icon}</span>
+                <div>
+                  <p style={{ fontSize: 9, color: T3, fontWeight: 500 }}>{a.top}</p>
+                  <p style={{ fontSize: 14, color: T1, fontWeight: 800 }}>{a.bot}</p>
+                </div>
               </button>
-              <button className="flex items-center gap-2 px-6 py-3 rounded-2xl font-bold text-sm" style={{ background: 'rgba(255,255,255,0.07)', color: 'rgba(255,255,255,0.7)', border: '1px solid rgba(255,255,255,0.12)' }}>
-                <span>See How it Works</span> <ArrowRight style={{ height: 14, width: 14 }} />
-              </button>
-            </div>
+            ))}
+          </div>
 
-            {/* App badges */}
-            <div className="flex flex-wrap gap-2.5 mb-8">
-              {[{ic:'🍎',top:'Download on the',bot:'App Store'},{ic:'▶',top:'Get it on',bot:'Google Play'}].map((a,i)=>(
-                <button key={i} className="flex items-center gap-2 px-3.5 py-2.5 rounded-xl transition-all hover:scale-105"
-                  style={{ background: 'rgba(255,255,255,0.07)', border: '1px solid rgba(255,255,255,0.11)' }}>
-                  <span style={{ fontSize: 18 }}>{a.ic}</span>
-                  <div>
-                    <p style={{ fontSize: 8.5, color: 'rgba(255,255,255,0.38)', fontWeight: 600, lineHeight: 1.2 }}>{a.top}</p>
-                    <p style={{ fontSize: 13, color: 'white', fontWeight: 900, lineHeight: 1.2 }}>{a.bot}</p>
+          {/* Stats */}
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: 28, paddingTop: 24, borderTop: `1px solid ${BORDER}` }}>
+            {[['50K+', 'Happy customers'], ['1,200+', 'Kirana stores'], ['30 min', 'Avg. delivery'], ['₹0', 'Surge pricing']].map(([v, l], i) => (
+              <motion.div key={i} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.4 + i * 0.1 }}>
+                <p style={{ fontFamily: "'Outfit',sans-serif", fontWeight: 900, fontSize: 'clamp(1.1rem, 2vw, 1.5rem)', color: T1, lineHeight: 1 }}>{v}</p>
+                <p style={{ fontSize: 11, color: T3, marginTop: 3 }}>{l}</p>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+
+        {/* ── Right: Product grid ── */}
+        <div className="hidden lg:block" style={{ width: 360, flexShrink: 0 }}>
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
+            {heroProds.map((p, i) => (
+              <motion.div key={p.id} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 + i * 0.08 }}
+                className="group cursor-pointer"
+                style={{ background: CARD, border: `1px solid ${BORDER}`, borderRadius: 16, overflow: 'hidden', transform: i % 2 === 1 ? 'translateY(16px)' : undefined, transition: 'all .18s' }}
+                onMouseEnter={e => { (e.currentTarget as HTMLElement).style.borderColor = BORDER2; (e.currentTarget as HTMLElement).style.transform = i % 2 === 1 ? 'translateY(14px)' : 'translateY(-2px)'; }}
+                onMouseLeave={e => { (e.currentTarget as HTMLElement).style.borderColor = BORDER; (e.currentTarget as HTMLElement).style.transform = i % 2 === 1 ? 'translateY(16px)' : 'translateY(0)'; }}>
+                <div style={{ height: 96, background: SURF, overflow: 'hidden', position: 'relative' }}>
+                  <img src={p.image} alt={p.name} className="w-full h-full img-cover group-hover:scale-105 transition-transform duration-300" />
+                  {p.origPrice && (
+                    <div style={{ position: 'absolute', top: 7, left: 7, background: '#DC2626', color: 'white', fontSize: 9, fontWeight: 800, padding: '2px 6px', borderRadius: 5 }}>
+                      -{Math.round((1 - p.price / p.origPrice) * 100)}%
+                    </div>
+                  )}
+                </div>
+                <div style={{ padding: '10px 11px' }}>
+                  <p style={{ fontSize: 9, color: T3, marginBottom: 2 }}>{p.brand}</p>
+                  <p style={{ fontSize: 11.5, fontWeight: 700, color: T1, lineHeight: 1.3, marginBottom: 8, overflow: 'hidden', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical' }}>{p.name}</p>
+                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                    <span style={{ fontWeight: 800, color: T1, fontSize: 13 }}>₹{p.price}</span>
+                    <button style={{ width: 26, height: 26, borderRadius: 7, background: `rgba(22,199,132,0.1)`, border: `1px solid rgba(22,199,132,0.25)`, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                      <Plus size={12} color={GREEN} />
+                    </button>
                   </div>
-                </button>
-              ))}
-            </div>
-
-            {/* Stats */}
-            <div className="flex flex-wrap gap-6" style={{ paddingTop: 16, borderTop: '1px solid rgba(255,255,255,0.07)' }}>
-              {[['50K+','Happy customers'],['1,200+','Kirana stores'],['30 min','Avg delivery'],['₹0','Surge ever']].map(([v,l],i)=>(
-                <motion.div key={i} initial={{opacity:0,y:8}} animate={{opacity:1,y:0}} transition={{delay:.45+i*.08}}>
-                  <p style={{ fontWeight: 900, color: 'white', fontSize: 'clamp(1.1rem,2.2vw,1.5rem)', lineHeight: 1, fontFamily: "'Outfit',sans-serif" }}>{v}</p>
-                  <p style={{ fontSize: 10, color: 'rgba(255,255,255,0.38)', marginTop: 2, fontWeight: 500 }}>{l}</p>
-                </motion.div>
-              ))}
-            </div>
-          </motion.div>
-
-          {/* ── RIGHT: floating product grid ── */}
-          <motion.div className="hidden lg:block shrink-0" style={{ width: 340 }} initial={{ opacity: 0, x: 30 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: .7, delay: .15 }}>
-            <div className="relative">
-
-              {/* Glow behind grid */}
-              <div className="absolute inset-0" style={{ background: 'radial-gradient(ellipse at center, rgba(0,230,118,0.08) 0%, transparent 70%)', filter: 'blur(24px)', transform: 'scale(1.3)' }} />
-
-              {/* 2×3 product grid */}
-              <div className="relative grid grid-cols-2 gap-3">
-                {heroProds.map((p, i) => (
-                  <motion.div key={p.id} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: .3 + i * .08 }}
-                    className="rounded-2xl overflow-hidden cursor-pointer group"
-                    style={{ background: 'rgba(18,22,38,0.9)', border: '1px solid rgba(255,255,255,0.1)', backdropFilter: 'blur(12px)', boxShadow: '0 12px 40px rgba(0,0,0,0.5)', transform: i % 2 === 1 ? 'translateY(14px)' : undefined }}>
-                    <div className="relative overflow-hidden" style={{ height: 90, background: 'rgba(255,255,255,0.03)' }}>
-                      <img src={p.image} alt={p.name} className="w-full h-full img-cover group-hover:scale-110 transition-transform duration-300" />
-                      {p.origPrice && (
-                        <div className="absolute top-1.5 left-1.5">
-                          <span style={{ background: '#FF3B3B', color: 'white', fontSize: 9, fontWeight: 800, padding: '1px 5px', borderRadius: 999 }}>
-                            -{Math.round((1-p.price/p.origPrice)*100)}%
-                          </span>
-                        </div>
-                      )}
-                    </div>
-                    <div className="p-2.5">
-                      <p style={{ fontSize: 9, color: 'rgba(255,255,255,0.4)', marginBottom: 1 }}>{p.brand}</p>
-                      <p style={{ fontSize: 11, fontWeight: 700, color: 'white', lineHeight: 1.3, marginBottom: 4, overflow: 'hidden', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical' }}>{p.name}</p>
-                      <div className="flex items-center justify-between">
-                        <span style={{ fontSize: 13, fontWeight: 900, color: 'white' }}>₹{p.price}</span>
-                        <button style={{ width: 24, height: 24, borderRadius: 8, background: 'rgba(0,230,118,0.15)', border: '1px solid rgba(0,230,118,0.3)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                          <Plus style={{ height: 11, width: 11, color: '#00E676' }} />
-                        </button>
-                      </div>
-                    </div>
-                  </motion.div>
-                ))}
-              </div>
-
-              {/* Delivery time badge */}
-              <motion.div className="absolute -bottom-4 left-1/2 -translate-x-1/2" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 1 }}>
-                <div className="flex items-center gap-2 px-4 py-2.5 rounded-2xl whitespace-nowrap" style={{ background: '#00E676', boxShadow: '0 8px 28px rgba(0,230,118,0.45)' }}>
-                  <Truck style={{ height: 15, width: 15, color: '#021a0e' }} />
-                  <span style={{ fontSize: 12, fontWeight: 900, color: '#021a0e' }}>Delivering in 30 min · Jammu</span>
                 </div>
               </motion.div>
+            ))}
+          </div>
+
+          {/* Delivery badge below grid */}
+          <motion.div style={{ marginTop: 20 }} initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.9 }}>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, padding: '10px 20px', background: `rgba(22,199,132,0.08)`, border: `1px solid rgba(22,199,132,0.18)`, borderRadius: 12 }}>
+              <Truck size={14} color={GREEN} />
+              <span style={{ fontSize: 12, fontWeight: 700, color: GREEN }}>Free delivery in 30 min · Jammu</span>
             </div>
           </motion.div>
         </div>
@@ -203,68 +265,60 @@ function Hero() {
   );
 }
 
-/* ════════════════════════════════════════
-   TRUST BAR
-════════════════════════════════════════ */
+/* ─────────────────── TRUST BAR ─────────────────── */
 function TrustBar() {
   const items = [
-    { icon: '⚡', v: '30 Min', l: 'Delivery Guaranteed', c: '#00E676' },
-    { icon: '🏪', v: '1,200+', l: 'Verified Kirana Stores', c: '#FFB800' },
-    { icon: '🛡️', v: '100%',   l: 'Secure & Inspected', c: '#4488FF' },
-    { icon: '👨‍👩‍👧', v: '50K+',   l: 'Families Served', c: '#8B6FFF' },
+    { icon: <Zap size={18} color={GREEN} />, v: '30 Min', l: 'Delivery Guaranteed' },
+    { icon: <Package size={18} color={T2} />, v: '1,200+', l: 'Verified Kirana Stores' },
+    { icon: <Shield size={18} color={T2} />, v: '100%', l: 'Secure & Verified' },
+    { icon: <Truck size={18} color={T2} />, v: '₹0', l: 'Surge Pricing Ever' },
   ];
   return (
-    <div style={{ background: '#0A0F1A', borderBottom: '1px solid rgba(255,255,255,0.06)' }}>
-      <div className="max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-2 lg:grid-cols-4" style={{ borderLeft: '1px solid rgba(255,255,255,0.06)' }}>
-          {items.map(({ icon, v, l, c }, i) => (
-            <div key={i} className="flex items-center gap-3 py-4 px-5" style={{ borderRight: '1px solid rgba(255,255,255,0.06)' }}>
-              <div className="text-2xl">{icon}</div>
-              <div>
-                <p style={{ fontWeight: 900, color: c, fontSize: '1.1rem', lineHeight: 1 }}>{v}</p>
-                <p style={{ fontSize: 11, color: 'rgba(255,255,255,0.38)', fontWeight: 500, marginTop: 2 }}>{l}</p>
-              </div>
+    <div style={{ background: SURF, borderBottom: `1px solid ${BORDER}`, borderTop: `1px solid ${BORDER}` }}>
+      <div style={{ maxWidth: 1280, margin: '0 auto', padding: '0 24px', display: 'grid', gridTemplateColumns: 'repeat(4,1fr)' }}>
+        {items.map(({ icon, v, l }, i) => (
+          <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '16px 20px', borderRight: i < 3 ? `1px solid ${BORDER}` : 'none' }}>
+            {icon}
+            <div>
+              <p style={{ fontWeight: 800, color: T1, fontSize: '1rem', lineHeight: 1 }}>{v}</p>
+              <p style={{ fontSize: 11, color: T3, marginTop: 3 }}>{l}</p>
             </div>
-          ))}
-        </div>
+          </div>
+        ))}
       </div>
     </div>
   );
 }
 
-/* ════════════════════════════════════════
-   HOW IT WORKS
-════════════════════════════════════════ */
+/* ─────────────────── HOW IT WORKS ─────────────────── */
 function HowItWorks() {
   const steps = [
-    { icon: '📍', n: '01', title: 'Choose Location', desc: 'Set your Jammu/J&K address — we find the nearest verified stores instantly.', c: '#00E676' },
-    { icon: '🛒', n: '02', title: 'Pick What You Need', desc: 'Browse 1,000+ items: groceries, food, medicines, services — 24/7.', c: '#4488FF' },
-    { icon: '⚡', n: '03', title: 'Delivered in 30 Min', desc: 'Live tracking. Real kirana partner packs & brings it. ₹0 surge pricing.', c: '#FF6B00' },
+    { icon: <MapPin size={22} color={GREEN} />, n: '01', title: 'Choose Location', desc: 'Set your Jammu/J&K address. We find the nearest verified kirana stores instantly.' },
+    { icon: <ShoppingCart size={22} color={GREEN} />, n: '02', title: 'Pick What You Need', desc: 'Browse 1,000+ items — groceries, food, medicines, services — all available 24/7.' },
+    { icon: <Truck size={22} color={GREEN} />, n: '03', title: 'Delivered in 30 Minutes', desc: 'Live tracking. Your local kirana packs and delivers your order. Zero surge pricing.' },
   ];
   return (
-    <div className="relative py-14" style={{ background: '#0A0F1A' }}>
-      <div className="absolute inset-0 pointer-events-none" style={{ background: 'radial-gradient(ellipse at 50% 120%, rgba(0,230,118,0.05), transparent 60%)' }} />
-      <div className="max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center mb-10">
-          <div style={{ display: 'inline-flex', alignItems: 'center', gap: 6, background: 'rgba(0,230,118,0.08)', border: '1px solid rgba(0,230,118,0.18)', padding: '4px 14px', borderRadius: 999, marginBottom: 12 }}>
-            <span style={{ fontSize: 10, fontWeight: 800, color: '#00E676', letterSpacing: '.08em' }}>HOW IT WORKS</span>
-          </div>
-          <h2 style={{ fontFamily: "'Outfit',sans-serif", fontWeight: 900, fontSize: 'clamp(1.8rem,4vw,2.8rem)', letterSpacing: '-.04em', color: 'white', lineHeight: 1.1 }}>
-            Order in <span style={{ background: 'linear-gradient(120deg,#00E676,#4488FF)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>60 seconds</span>
+    <div style={{ background: BG, padding: '56px 0' }}>
+      <div style={{ maxWidth: 1280, margin: '0 auto', padding: '0 24px' }}>
+        <div style={{ textAlign: 'center', marginBottom: 40 }}>
+          <p style={{ fontSize: 11, fontWeight: 700, color: GREEN, letterSpacing: '.1em', textTransform: 'uppercase', marginBottom: 12 }}>How it works</p>
+          <h2 style={{ fontFamily: "'Outfit',sans-serif", fontWeight: 900, fontSize: 'clamp(1.8rem,4vw,2.8rem)', letterSpacing: '-.04em', color: T1, lineHeight: 1.1 }}>
+            Order in under <span style={{ color: GREEN }}>60 seconds</span>
           </h2>
-          <p style={{ fontSize: 13, color: 'rgba(255,255,255,0.38)', marginTop: 8 }}>Simple. Fast. Designed for Jammu & Kashmir.</p>
+          <p style={{ fontSize: 14, color: T2, marginTop: 12 }}>Simple, fast, and designed for Jammu & Kashmir.</p>
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: 20 }} className="grid-cols-1 md:grid-cols-3">
           {steps.map((s, i) => (
-            <motion.div key={i} initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: i * .12 }}>
-              <div className="h-full rounded-3xl p-6" style={{ background: 'linear-gradient(145deg, #131726, #0F1320)', border: `1px solid ${s.c}18` }}>
-                <div className="flex items-center gap-3 mb-5">
-                  <div style={{ width: 52, height: 52, borderRadius: 16, background: `${s.c}14`, border: `1px solid ${s.c}22`, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 24 }}>{s.icon}</div>
-                  <span style={{ fontFamily: "'Outfit',sans-serif", fontWeight: 900, fontSize: '2.5rem', color: `${s.c}22`, letterSpacing: '-.06em' }}>{s.n}</span>
+            <motion.div key={i} initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: i * .1 }}>
+              <div style={{ background: SURF, border: `1px solid ${BORDER}`, borderRadius: 20, padding: '28px 24px', height: '100%' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 14, marginBottom: 20 }}>
+                  <div style={{ width: 48, height: 48, borderRadius: 14, background: 'rgba(22,199,132,0.08)', border: `1px solid rgba(22,199,132,0.16)`, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                    {s.icon}
+                  </div>
+                  <span style={{ fontFamily: "'Outfit',sans-serif", fontWeight: 900, fontSize: '2.2rem', color: `rgba(22,199,132,0.15)`, letterSpacing: '-.06em' }}>{s.n}</span>
                 </div>
-                <h3 style={{ fontWeight: 900, color: 'white', fontSize: '1rem', marginBottom: 6 }}>{s.title}</h3>
-                <p style={{ fontSize: 13, color: 'rgba(255,255,255,0.4)', lineHeight: 1.65 }}>{s.desc}</p>
-                <div style={{ marginTop: 16, height: 2, borderRadius: 999, background: `linear-gradient(90deg, ${s.c}60, transparent)` }} />
+                <h3 style={{ fontWeight: 800, color: T1, fontSize: '0.95rem', marginBottom: 8 }}>{s.title}</h3>
+                <p style={{ fontSize: 13, color: T2, lineHeight: 1.65 }}>{s.desc}</p>
               </div>
             </motion.div>
           ))}
@@ -274,59 +328,99 @@ function HowItWorks() {
   );
 }
 
-/* ════════════════════════════════════════
-   NOW TAB
-════════════════════════════════════════ */
-const DEALS = products.filter(p => p.origPrice).slice(0, 8);
+/* ─────────────────── ADD BUTTON ─────────────────── */
+function AddBtn({ id, cart, add, remove }: { id: string; cart: Record<string, number>; add: (id: string) => void; remove: (id: string) => void }) {
+  if (cart[id]) {
+    return (
+      <div style={{ display: 'inline-flex', alignItems: 'center', background: GREEN, borderRadius: 8, overflow: 'hidden' }}>
+        <button onClick={e => { e.stopPropagation(); remove(id); }} style={{ width: 28, height: 28, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+          <Minus size={11} color="#032D1A" />
+        </button>
+        <span style={{ fontSize: 12, fontWeight: 800, color: '#032D1A', minWidth: 18, textAlign: 'center' }}>{cart[id]}</span>
+        <button onClick={e => { e.stopPropagation(); add(id); }} style={{ width: 28, height: 28, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+          <Plus size={11} color="#032D1A" />
+        </button>
+      </div>
+    );
+  }
+  return (
+    <button onClick={e => { e.stopPropagation(); add(id); }}
+      style={{ width: 28, height: 28, borderRadius: 8, background: 'rgba(22,199,132,0.09)', border: `1px solid rgba(22,199,132,0.25)`, display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'all .15s' }}
+      onMouseEnter={e => { (e.currentTarget as HTMLElement).style.background = 'rgba(22,199,132,0.18)'; }}
+      onMouseLeave={e => { (e.currentTarget as HTMLElement).style.background = 'rgba(22,199,132,0.09)'; }}>
+      <Plus size={12} color={GREEN} />
+    </button>
+  );
+}
 
+/* ─────────────────── PRODUCT CARD ─────────────────── */
+function ProductCard({ p, cart, add, remove, wide = false }: { p: typeof products[0]; cart: Record<string, number>; add: (id: string) => void; remove: (id: string) => void; wide?: boolean }) {
+  const disc = p.origPrice ? Math.round((1 - p.price / p.origPrice) * 100) : null;
+  return (
+    <div className="snap-start group cursor-pointer"
+      style={{ width: wide ? 176 : 160, flexShrink: 0, background: CARD, border: `1px solid ${BORDER}`, borderRadius: 14, overflow: 'hidden', transition: 'all .18s' }}
+      onMouseEnter={e => { (e.currentTarget as HTMLElement).style.borderColor = BORDER2; (e.currentTarget as HTMLElement).style.transform = 'translateY(-2px)'; (e.currentTarget as HTMLElement).style.boxShadow = '0 8px 32px rgba(0,0,0,.4)'; }}
+      onMouseLeave={e => { (e.currentTarget as HTMLElement).style.borderColor = BORDER; (e.currentTarget as HTMLElement).style.transform = 'translateY(0)'; (e.currentTarget as HTMLElement).style.boxShadow = 'none'; }}>
+      <div style={{ position: 'relative', height: 120, background: SURF, overflow: 'hidden' }}>
+        <img src={p.image} alt={p.name} className="w-full h-full img-cover group-hover:scale-105 transition-transform duration-300" />
+        {disc && (
+          <div style={{ position: 'absolute', top: 7, left: 7, background: '#DC2626', color: 'white', fontSize: 9.5, fontWeight: 800, padding: '2px 6px', borderRadius: 5 }}>
+            -{disc}%
+          </div>
+        )}
+        {!disc && p.tag && (
+          <div style={{ position: 'absolute', top: 7, left: 7, background: 'rgba(22,199,132,0.15)', color: GREEN, fontSize: 9.5, fontWeight: 700, padding: '2px 7px', borderRadius: 5, border: `1px solid rgba(22,199,132,0.25)` }}>
+            {p.tag}
+          </div>
+        )}
+      </div>
+      <div style={{ padding: '10px 11px' }}>
+        <p style={{ fontSize: 9.5, color: T3, marginBottom: 2, fontWeight: 500 }}>{p.brand}</p>
+        <p style={{ fontSize: 12.5, fontWeight: 700, color: T1, lineHeight: 1.35, marginBottom: 3, overflow: 'hidden', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical' }}>{p.name}</p>
+        <p style={{ fontSize: 10, color: T3, marginBottom: 9 }}>{p.weight}</p>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 4 }}>
+          <div>
+            <span style={{ fontWeight: 800, color: T1, fontSize: 13 }}>₹{p.price}</span>
+            {p.origPrice && <span style={{ fontSize: 10, color: T3, textDecoration: 'line-through', marginLeft: 4 }}>₹{p.origPrice}</span>}
+          </div>
+          <AddBtn id={p.id} cart={cart} add={add} remove={remove} />
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/* ─────────────────── NOW TAB ─────────────────── */
 function NowTab() {
   const [cart, setCart] = useState<Record<string, number>>({});
   const [activeCat, setActiveCat] = useState('All');
-  const cd = useCountdown(4 * 3600 + 12 * 60 + 47);
-  const cats = ['All', 'Fruits & Veg', 'Dairy', 'Snacks', 'Grains & Dal', 'Bakery', 'Spices', 'Personal Care', 'Medicine'];
-  const filtered = activeCat === 'All' ? products : products.filter(p => p.category === activeCat);
+  const cd = useCountdown(4 * 3600 + 47 * 60 + 22);
   const add = (id: string) => setCart(c => ({ ...c, [id]: (c[id] || 0) + 1 }));
   const rem = (id: string) => setCart(c => { const n = { ...c }; n[id] > 1 ? n[id]-- : delete n[id]; return n; });
   const totalItems = Object.values(cart).reduce((a, b) => a + b, 0);
   const totalPrice = Object.entries(cart).reduce((s, [id, q]) => s + (products.find(x => x.id === id)?.price ?? 0) * q, 0);
-
-  const AddBtn = ({ id }: { id: string }) => cart[id] ? (
-    <div style={{ display: 'flex', alignItems: 'center', background: '#00E676', borderRadius: 12, overflow: 'hidden' }}>
-      <button onClick={e => { e.stopPropagation(); rem(id); }} style={{ width: 28, height: 28, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-        <Minus style={{ height: 11, width: 11, color: '#021a0e' }} />
-      </button>
-      <span style={{ fontSize: 11, fontWeight: 900, color: '#021a0e', minWidth: 14, textAlign: 'center' }}>{cart[id]}</span>
-      <button onClick={e => { e.stopPropagation(); add(id); }} style={{ width: 28, height: 28, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-        <Plus style={{ height: 11, width: 11, color: '#021a0e' }} />
-      </button>
-    </div>
-  ) : (
-    <button onClick={e => { e.stopPropagation(); add(id); }}
-      style={{ width: 28, height: 28, borderRadius: 10, background: 'rgba(0,230,118,0.1)', border: '1.5px solid rgba(0,230,118,0.3)', display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'all .15s' }}>
-      <Plus style={{ height: 12, width: 12, color: '#00E676' }} />
-    </button>
-  );
+  const cats = ['All', 'Fruits & Veg', 'Dairy', 'Snacks', 'Grains & Dal', 'Bakery', 'Personal Care'];
+  const filtered = activeCat === 'All' ? products : products.filter(p => p.category === activeCat);
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: 32 }}>
+    <div style={{ display: 'flex', flexDirection: 'column', gap: 36 }}>
 
       {/* Promo Banners */}
       <Carousel>
         {[
-          { tag:'⚡ FREE DELIVERY', tagBg:'rgba(0,230,118,0.12)', tagColor:'#00E676', h:'50% OFF First Order', sub:'Use code ZYPHIX50 · Max ₹100', code:'ZYPHIX50', img:'https://images.unsplash.com/photo-1543168256-418811576931?w=700&h=320&fit=crop&q=80', grad:'linear-gradient(120deg,#010f06,#010a04)' },
-          { tag:'🏪 1,200+ STORES',  tagBg:'rgba(255,107,0,0.12)',  tagColor:'#FF8040', h:'Real Kirana, Real Fast',  sub:'Local inventory · Zero surge pricing',  code:'',  img:'https://images.unsplash.com/photo-1604719312566-8912e9227c6a?w=700&h=320&fit=crop&q=80', grad:'linear-gradient(120deg,#120400,#080200)' },
-          { tag:'💊 MEDICINES',      tagBg:'rgba(68,136,255,0.12)', tagColor:'#6AA0FF', h:'Medicines in 30 Min',   sub:'All pharmacy & medical orders',        code:'',  img:'https://images.unsplash.com/photo-1585435557343-3b092031a831?w=700&h=320&fit=crop&q=80', grad:'linear-gradient(120deg,#001020,#000810)' },
+          { tag: 'New User Offer', headline: '50% off your first order', sub: 'Use code ZYPHIX50 · Max ₹100 discount', code: 'ZYPHIX50', img: 'https://images.unsplash.com/photo-1543168256-418811576931?w=800&h=320&fit=crop&q=80' },
+          { tag: 'Partner Stores', headline: 'Real kirana. Real fast.', sub: '1,200+ local stores · Zero surge pricing', code: '', img: 'https://images.unsplash.com/photo-1604719312566-8912e9227c6a?w=800&h=320&fit=crop&q=80' },
+          { tag: 'Pharmacy', headline: 'Medicines in 30 minutes', sub: 'Prescription & OTC · All brands available', code: '', img: 'https://images.unsplash.com/photo-1585435557343-3b092031a831?w=800&h=320&fit=crop&q=80' },
         ].map((b, i) => (
-          <div key={i} className="snap-start shrink-0 relative overflow-hidden cursor-pointer lift rounded-3xl"
-            style={{ width: 'min(560px,82vw)', height: 196, background: b.grad, border: '1px solid rgba(255,255,255,0.07)' }}>
-            <img src={b.img} alt="" className="absolute inset-0 w-full h-full img-cover" style={{ opacity: 0.22 }} />
-            <div className="absolute inset-0" style={{ background: 'linear-gradient(90deg,rgba(0,0,0,0.75) 50%,transparent)' }} />
-            <div className="absolute inset-0 p-6 flex flex-col justify-between">
-              <span style={{ display: 'inline-flex', alignItems: 'center', background: b.tagBg, color: b.tagColor, fontSize: 9, fontWeight: 800, letterSpacing: '.07em', padding: '3px 10px', borderRadius: 999, border: `1px solid ${b.tagColor}25`, width: 'fit-content' }}>{b.tag}</span>
+          <div key={i} className="snap-start shrink-0 cursor-pointer" style={{ width: 'min(600px,85vw)', height: 200, borderRadius: 18, overflow: 'hidden', position: 'relative', background: '#111827', flexShrink: 0 }}>
+            <img src={b.img} alt="" className="absolute inset-0 w-full h-full img-cover" style={{ opacity: 0.28 }} />
+            <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(90deg, rgba(10,15,26,0.92) 50%, transparent)' }} />
+            <div style={{ position: 'absolute', inset: 0, padding: '24px 28px', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
+              <span style={{ display: 'inline-block', background: `rgba(22,199,132,0.1)`, color: GREEN, border: `1px solid rgba(22,199,132,0.22)`, fontSize: 10, fontWeight: 700, letterSpacing: '.06em', padding: '3px 10px', borderRadius: 6, width: 'fit-content' }}>{b.tag}</span>
               <div>
-                <p style={{ fontWeight: 900, color: 'white', fontSize: 'clamp(1.2rem,2.5vw,1.7rem)', lineHeight: 1.18, letterSpacing: '-.03em', marginBottom: 6 }}>{b.h}</p>
-                <p style={{ fontSize: 11, color: 'rgba(255,255,255,0.42)', marginBottom: 12 }}>{b.sub}</p>
-                {b.code && <span style={{ display: 'inline-block', fontWeight: 900, fontSize: 12, letterSpacing: '.09em', color: b.tagColor, background: 'rgba(0,0,0,0.5)', border: `2px dashed ${b.tagColor}55`, padding: '5px 12px', borderRadius: 10 }}>{b.code}</span>}
+                <p style={{ fontFamily: "'Outfit',sans-serif", fontWeight: 900, color: T1, fontSize: 'clamp(1.2rem,2.5vw,1.6rem)', lineHeight: 1.15, marginBottom: 6 }}>{b.headline}</p>
+                <p style={{ fontSize: 12, color: T2, marginBottom: b.code ? 12 : 0 }}>{b.sub}</p>
+                {b.code && <span style={{ display: 'inline-block', fontWeight: 800, fontSize: 12, letterSpacing: '.08em', color: GREEN, background: 'rgba(0,0,0,0.4)', border: `1.5px dashed rgba(22,199,132,0.45)`, padding: '5px 12px', borderRadius: 8 }}>{b.code}</span>}
               </div>
             </div>
           </div>
@@ -335,144 +429,91 @@ function NowTab() {
 
       {/* Categories */}
       <div>
-        <SH title="Shop by Category" action="All categories" />
-        <Carousel className="pb-3">
+        <SectionHeader title="Shop by Category" action="All categories" />
+        <Carousel>
           {categories.map(cat => (
-            <button key={cat.id} onClick={() => setActiveCat(activeCat === cat.name ? 'All' : cat.name)} className="snap-start shrink-0 flex flex-col items-center gap-2.5 group">
-              <div style={{ width: 74, height: 74, borderRadius: '50%', overflow: 'hidden', border: activeCat === cat.name ? `2.5px solid ${cat.color}` : '2.5px solid rgba(255,255,255,0.08)', boxShadow: activeCat === cat.name ? `0 0 0 4px ${cat.color}22, 0 8px 28px rgba(0,0,0,.5)` : '0 4px 16px rgba(0,0,0,.4)', transition: 'all .2s' }}>
+            <button key={cat.id} onClick={() => setActiveCat(activeCat === cat.name ? 'All' : cat.name)}
+              className="snap-start shrink-0 flex flex-col items-center gap-2.5 group" style={{ flexShrink: 0 }}>
+              <div style={{ width: 72, height: 72, borderRadius: '50%', overflow: 'hidden', border: activeCat === cat.name ? `2px solid ${GREEN}` : `2px solid ${BORDER2}`, boxShadow: activeCat === cat.name ? `0 0 0 3px rgba(22,199,132,0.15)` : 'none', transition: 'all .2s' }}>
                 <img src={cat.image} alt={cat.name} className="w-full h-full img-cover group-hover:scale-110 transition-transform duration-300" />
               </div>
-              <span style={{ fontSize: 11, fontWeight: 700, textAlign: 'center', width: 76, lineHeight: 1.3, color: activeCat === cat.name ? 'white' : 'rgba(255,255,255,0.45)' }}>{cat.name}</span>
+              <span style={{ fontSize: 11, fontWeight: 600, textAlign: 'center', width: 76, lineHeight: 1.3, color: activeCat === cat.name ? T1 : T3 }}>{cat.name}</span>
             </button>
           ))}
         </Carousel>
       </div>
 
       {/* Flash Deals */}
-      <div style={{ background: 'linear-gradient(135deg,#160700,#0C0300)', border: '1px solid rgba(255,107,0,0.2)', borderRadius: 24, overflow: 'hidden' }}>
-        <div style={{ padding: '14px 20px', display: 'flex', alignItems: 'center', gap: 16, flexWrap: 'wrap', borderBottom: '1px solid rgba(255,255,255,0.06)' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-            <div style={{ width: 38, height: 38, borderRadius: 12, background: 'rgba(255,107,0,0.18)', border: '1px solid rgba(255,107,0,0.28)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 18 }}>⚡</div>
+      <div style={{ background: SURF, border: `1px solid ${BORDER}`, borderRadius: 18, overflow: 'hidden' }}>
+        <div style={{ padding: '16px 20px', display: 'flex', alignItems: 'center', gap: 20, flexWrap: 'wrap', borderBottom: `1px solid ${BORDER}` }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+            <Zap size={18} color={GREEN} fill={GREEN} />
             <div>
-              <p style={{ fontWeight: 900, color: 'white', fontSize: '0.95rem', lineHeight: 1.1 }}>Flash Deals</p>
-              <p style={{ fontSize: 10, color: 'rgba(255,255,255,0.38)', marginTop: 1 }}>Best prices · Today only</p>
+              <p style={{ fontWeight: 800, color: T1, fontSize: 14, lineHeight: 1.1 }}>Flash Deals</p>
+              <p style={{ fontSize: 11, color: T3, marginTop: 2 }}>Best prices, today only</p>
             </div>
           </div>
           <div style={{ marginLeft: 'auto', display: 'flex', alignItems: 'center', gap: 8 }}>
-            <p style={{ fontSize: 11, fontWeight: 700, color: '#FF8040', marginRight: 4 }}>Ends in</p>
+            <span style={{ fontSize: 12, fontWeight: 600, color: T2, marginRight: 4 }}>Ends in</span>
             {[cd.h, cd.m, cd.s].map((v, i) => (
               <React.Fragment key={i}>
-                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', background: 'rgba(255,255,255,0.07)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: 10, padding: '5px 11px', minWidth: 44 }}>
-                  <span style={{ fontWeight: 900, color: 'white', fontSize: '1.2rem', lineHeight: 1 }}>{v}</span>
-                  <span style={{ fontSize: 7.5, fontWeight: 700, color: 'rgba(255,255,255,0.35)', marginTop: 2 }}>{['HRS','MIN','SEC'][i]}</span>
+                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', background: BG, border: `1px solid ${BORDER2}`, borderRadius: 8, padding: '5px 10px', minWidth: 42 }}>
+                  <span style={{ fontWeight: 800, color: T1, fontSize: '1.1rem', lineHeight: 1 }}>{v}</span>
+                  <span style={{ fontSize: 7.5, fontWeight: 600, color: T3, marginTop: 2, letterSpacing: '.04em' }}>{['HRS', 'MIN', 'SEC'][i]}</span>
                 </div>
-                {i < 2 && <span style={{ fontWeight: 900, color: '#FF8040' }}>:</span>}
+                {i < 2 && <span style={{ fontWeight: 800, color: T3 }}>:</span>}
               </React.Fragment>
             ))}
           </div>
         </div>
         <div style={{ padding: 16 }}>
           <Carousel>
-            {DEALS.map(p => {
-              const disc = Math.round((1-p.price/(p.origPrice??p.price))*100);
-              return (
-                <div key={p.id} className="snap-start group cursor-pointer" style={{ width: 154, background: '#131726', border: '1px solid rgba(255,255,255,0.07)', borderRadius: 16, overflow: 'hidden', flexShrink: 0, transition: 'all .2s' }}>
-                  <div style={{ position: 'relative', height: 115, background: '#1A1E2E', overflow: 'hidden' }}>
-                    <img src={p.image} alt={p.name} className="w-full h-full img-cover group-hover:scale-110 transition-transform duration-300" />
-                    <div style={{ position: 'absolute', top: 7, left: 7, background: '#FF3B3B', color: 'white', fontSize: 9, fontWeight: 800, padding: '2px 6px', borderRadius: 999 }}>-{disc}%</div>
-                    <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to top, rgba(0,0,0,0.4), transparent 55%)' }} />
-                  </div>
-                  <div style={{ padding: 10 }}>
-                    <p style={{ fontSize: 9.5, color: 'rgba(255,255,255,0.38)', marginBottom: 2 }}>{p.brand}</p>
-                    <p style={{ fontSize: 11.5, fontWeight: 700, color: 'white', lineHeight: 1.3, marginBottom: 4, overflow: 'hidden', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical' }}>{p.name}</p>
-                    <p style={{ fontSize: 9.5, color: 'rgba(255,255,255,0.35)', marginBottom: 8 }}>{p.weight}</p>
-                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 4 }}>
-                      <div><span style={{ fontWeight: 900, color: 'white', fontSize: 13 }}>₹{p.price}</span><span style={{ fontSize: 9.5, color: 'rgba(255,255,255,0.35)', textDecoration: 'line-through', marginLeft: 4 }}>₹{p.origPrice}</span></div>
-                      <AddBtn id={p.id} />
-                    </div>
-                  </div>
-                </div>
-              );
-            })}
+            {products.filter(p => p.origPrice).slice(0, 8).map(p => (
+              <ProductCard key={p.id} p={p} cart={cart} add={add} remove={rem} />
+            ))}
           </Carousel>
         </div>
       </div>
 
-      {/* Brands */}
+      {/* Trending */}
       <div>
-        <SH title="Top Brands" sub="Sold by verified kirana partners" action="Browse all" />
+        <SectionHeader title="Trending Near You" subtitle="Most ordered in Jammu today" action="See all" />
         <Carousel>
-          {[
-            {n:'Amul',  img:'https://images.unsplash.com/photo-1550583724-b2692b85b150?w=120&h=120&fit=crop&q=80',bg:'#003087'},
-            {n:'Parle', img:'https://images.unsplash.com/photo-1558961363-fa8fdf82db35?w=120&h=120&fit=crop&q=80',bg:'#C00'},
-            {n:'Nestle',img:'https://images.unsplash.com/photo-1569718212165-3a8278d5f624?w=120&h=120&fit=crop&q=80',bg:'#1a1a2e'},
-            {n:'MDH',   img:'https://images.unsplash.com/photo-1532336414038-cf19250c5757?w=120&h=120&fit=crop&q=80',bg:'#7b1fa2'},
-            {n:'ITC',   img:'https://images.unsplash.com/photo-1574323347407-f5e1ad6d020b?w=120&h=120&fit=crop&q=80',bg:'#1b5e20'},
-            {n:'Dabur', img:'https://images.unsplash.com/photo-1571875257727-256c39da42af?w=120&h=120&fit=crop&q=80',bg:'#e65100'},
-            {n:'Colgate',img:'https://images.unsplash.com/photo-1559591935-c7c7cb7de30c?w=120&h=120&fit=crop&q=80',bg:'#b71c1c'},
-            {n:"Lay's", img:'https://images.unsplash.com/photo-1566478989037-eec170784d0b?w=120&h=120&fit=crop&q=80',bg:'#f9a825'},
-          ].map((b,i)=>(
-            <button key={i} className="snap-start shrink-0 flex flex-col items-center gap-2 group">
-              <div style={{ width: 68, height: 68, borderRadius: 18, background: b.bg, border: '1px solid rgba(255,255,255,0.09)', overflow: 'hidden', boxShadow: '0 6px 20px rgba(0,0,0,.5)', transition: 'all .2s' }} className="group-hover:scale-105 group-hover:shadow-2xl">
-                <img src={b.img} alt={b.n} className="w-full h-full img-cover" />
-              </div>
-              <span style={{ fontSize: 11, fontWeight: 600, color: 'rgba(255,255,255,0.42)' }}>{b.n}</span>
+          {products.map(p => <ProductCard key={p.id} p={p} cart={cart} add={add} remove={rem} />)}
+        </Carousel>
+      </div>
+
+      {/* All products */}
+      <div>
+        <SectionHeader title="All Products" subtitle={`${filtered.length} items available`} />
+        {/* Category filter */}
+        <div style={{ display: 'flex', gap: 8, overflowX: 'auto', scrollbarWidth: 'none', marginBottom: 20, paddingBottom: 4 }}>
+          {cats.map(c => (
+            <button key={c} onClick={() => setActiveCat(c)} style={{ padding: '7px 16px', borderRadius: 8, fontSize: 12, fontWeight: 600, transition: 'all .15s', whiteSpace: 'nowrap', flexShrink: 0, background: activeCat === c ? GREEN : SURF, color: activeCat === c ? '#032D1A' : T2, border: activeCat === c ? 'none' : `1px solid ${BORDER}`, boxShadow: activeCat === c ? `0 2px 12px rgba(22,199,132,0.25)` : 'none' }}>
+              {c}
             </button>
           ))}
-        </Carousel>
-      </div>
-
-      {/* Trending carousel */}
-      <div>
-        <SH title="Trending Near You" sub="Most ordered in Jammu today" action="See all" />
-        <Carousel>
-          {products.map(p => (
-            <div key={p.id} className="snap-start group cursor-pointer" style={{ width: 168, background: '#131726', border: '1px solid rgba(255,255,255,0.07)', borderRadius: 16, overflow: 'hidden', flexShrink: 0, transition: 'all .2s' }}>
-              <div style={{ position: 'relative', height: 140, background: '#1A1E2E', overflow: 'hidden' }}>
-                <img src={p.image} alt={p.name} className="w-full h-full img-cover group-hover:scale-110 transition-transform duration-300" />
-                <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to top, rgba(0,0,0,0.45), transparent 55%)' }} />
-                {p.tag && (
-                  <div style={{ position: 'absolute', top: 7, left: 7, background: p.tag==='Fresh'?'rgba(0,230,118,.15)':p.tag==='Bestseller'?'rgba(255,184,0,.15)':'rgba(255,59,59,.15)', color: p.tag==='Fresh'?'#00E676':p.tag==='Bestseller'?'#FFB800':'#FF6B6B', fontSize: 9, fontWeight: 800, letterSpacing: '.06em', padding: '2px 7px', borderRadius: 999, border: `1px solid ${p.tag==='Fresh'?'rgba(0,230,118,.25)':p.tag==='Bestseller'?'rgba(255,184,0,.25)':'rgba(255,59,59,.25)'}` }}>{p.tag}</div>
-                )}
-              </div>
-              <div style={{ padding: 11 }}>
-                <p style={{ fontSize: 9.5, color: 'rgba(255,255,255,0.38)', marginBottom: 2 }}>{p.brand}</p>
-                <p style={{ fontSize: 12, fontWeight: 700, color: 'white', lineHeight: 1.3, marginBottom: 3, overflow: 'hidden', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical' }}>{p.name}</p>
-                <p style={{ fontSize: 10, color: 'rgba(255,255,255,0.35)', marginBottom: 9 }}>{p.weight}</p>
-                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 4 }}>
-                  <div><span style={{ fontWeight: 900, color: 'white', fontSize: 13 }}>₹{p.price}</span>{p.origPrice&&<span style={{fontSize:9.5,color:'rgba(255,255,255,0.35)',textDecoration:'line-through',marginLeft:4}}>₹{p.origPrice}</span>}</div>
-                  <AddBtn id={p.id} />
-                </div>
-              </div>
-            </div>
-          ))}
-        </Carousel>
-      </div>
-
-      {/* Product grid */}
-      <div>
-        <SH title="All Products" sub={`${filtered.length} items available`} />
-        <div style={{ display: 'flex', gap: 8, overflowX: 'auto', scrollbarWidth: 'none', marginBottom: 20 }}>
-          {cats.map(c => (
-            <button key={c} onClick={() => setActiveCat(c)} style={{ padding: '7px 17px', borderRadius: 999, fontSize: 11.5, fontWeight: 700, transition: 'all .15s', whiteSpace: 'nowrap', flexShrink: 0, cursor: 'pointer', background: activeCat===c?'#00E676':' rgba(255,255,255,0.05)', color: activeCat===c?'#021a0e':'rgba(255,255,255,0.45)', border: activeCat===c?'none':'1px solid rgba(255,255,255,0.08)', boxShadow: activeCat===c?'0 4px 16px rgba(0,230,118,0.3)':'none' }}>{c}</button>
-          ))}
         </div>
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(148px, 1fr))', gap: 12 }}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill,minmax(148px,1fr))', gap: 12 }}>
           <AnimatePresence mode="popLayout">
             {filtered.map((p, i) => (
-              <motion.div key={p.id} layout initial={{opacity:0,scale:.92}} animate={{opacity:1,scale:1}} exit={{opacity:0,scale:.92}} transition={{delay:i*.025}}>
-                <div className="group cursor-pointer" style={{ background: '#131726', border: '1px solid rgba(255,255,255,0.07)', borderRadius: 16, overflow: 'hidden', transition: 'all .2s', height: '100%', display: 'flex', flexDirection: 'column' }}>
-                  <div style={{ position: 'relative', height: 130, background: '#1A1E2E', overflow: 'hidden' }}>
-                    <img src={p.image} alt={p.name} className="w-full h-full img-cover group-hover:scale-108 transition-transform duration-300" />
-                    {p.tag && <div style={{ position: 'absolute', top: 7, left: 7, background: p.tag==='Fresh'?'rgba(0,230,118,.15)':p.tag==='Bestseller'?'rgba(255,184,0,.15)':'rgba(255,59,59,.15)', color: p.tag==='Fresh'?'#00E676':p.tag==='Bestseller'?'#FFB800':'#FF6B6B', fontSize: 9, fontWeight: 800, letterSpacing: '.06em', padding: '2px 7px', borderRadius: 999, border: `1px solid ${p.tag==='Fresh'?'rgba(0,230,118,.25)':p.tag==='Bestseller'?'rgba(255,184,0,.25)':'rgba(255,59,59,.25)'}` }}>{p.tag}</div>}
+              <motion.div key={p.id} layout initial={{ opacity: 0, scale: 0.94 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.94 }} transition={{ delay: i * .025 }}>
+                <div className="group cursor-pointer"
+                  style={{ background: CARD, border: `1px solid ${BORDER}`, borderRadius: 14, overflow: 'hidden', height: '100%', display: 'flex', flexDirection: 'column', transition: 'all .18s' }}
+                  onMouseEnter={e => { (e.currentTarget as HTMLElement).style.borderColor = BORDER2; (e.currentTarget as HTMLElement).style.transform = 'translateY(-2px)'; }}
+                  onMouseLeave={e => { (e.currentTarget as HTMLElement).style.borderColor = BORDER; (e.currentTarget as HTMLElement).style.transform = 'translateY(0)'; }}>
+                  <div style={{ position: 'relative', height: 120, background: SURF, overflow: 'hidden' }}>
+                    <img src={p.image} alt={p.name} className="w-full h-full img-cover group-hover:scale-105 transition-transform duration-300" />
+                    {p.origPrice && <div style={{ position: 'absolute', top: 7, left: 7, background: '#DC2626', color: 'white', fontSize: 9.5, fontWeight: 800, padding: '2px 6px', borderRadius: 5 }}>-{Math.round((1 - p.price / p.origPrice) * 100)}%</div>}
+                    {!p.origPrice && p.tag && <div style={{ position: 'absolute', top: 7, left: 7, background: 'rgba(22,199,132,0.15)', color: GREEN, fontSize: 9.5, fontWeight: 700, padding: '2px 7px', borderRadius: 5, border: `1px solid rgba(22,199,132,0.25)` }}>{p.tag}</div>}
                   </div>
-                  <div style={{ padding: 11, flex: 1, display: 'flex', flexDirection: 'column' }}>
-                    <p style={{ fontSize: 9.5, color: 'rgba(255,255,255,0.38)', marginBottom: 2 }}>{p.brand}</p>
-                    <p style={{ fontSize: 12, fontWeight: 700, color: 'white', lineHeight: 1.3, marginBottom: 3, overflow: 'hidden', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical' }}>{p.name}</p>
-                    <p style={{ fontSize: 10, color: 'rgba(255,255,255,0.35)', marginBottom: 8 }}>{p.weight}</p>
+                  <div style={{ padding: '10px 11px', flex: 1, display: 'flex', flexDirection: 'column' }}>
+                    <p style={{ fontSize: 9.5, color: T3, marginBottom: 2 }}>{p.brand}</p>
+                    <p style={{ fontSize: 12.5, fontWeight: 700, color: T1, lineHeight: 1.35, marginBottom: 3, overflow: 'hidden', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical' }}>{p.name}</p>
+                    <p style={{ fontSize: 10, color: T3, marginBottom: 8 }}>{p.weight}</p>
                     <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 4, marginTop: 'auto' }}>
-                      <div><span style={{ fontWeight: 900, color: 'white', fontSize: 13 }}>₹{p.price}</span>{p.origPrice&&<span style={{fontSize:9.5,color:'rgba(255,255,255,0.35)',textDecoration:'line-through',marginLeft:4}}>₹{p.origPrice}</span>}</div>
-                      <AddBtn id={p.id} />
+                      <div><span style={{ fontWeight: 800, color: T1, fontSize: 13 }}>₹{p.price}</span>{p.origPrice && <span style={{ fontSize: 10, color: T3, textDecoration: 'line-through', marginLeft: 4 }}>₹{p.origPrice}</span>}</div>
+                      <AddBtn id={p.id} cart={cart} add={add} remove={rem} />
                     </div>
                   </div>
                 </div>
@@ -485,15 +526,16 @@ function NowTab() {
       {/* Cart toast */}
       <AnimatePresence>
         {totalItems > 0 && (
-          <motion.div initial={{y:80,opacity:0}} animate={{y:0,opacity:1}} exit={{y:80,opacity:0}} style={{ position: 'fixed', bottom: 24, left: 16, right: 16, zIndex: 50 }} className="md:left-1/2 md:-translate-x-1/2 md:w-[440px]">
-            <div style={{ background: '#00E676', borderRadius: 24, padding: '14px 20px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', boxShadow: '0 20px 60px rgba(0,230,118,.5)' }}>
+          <motion.div initial={{ y: 80, opacity: 0 }} animate={{ y: 0, opacity: 1 }} exit={{ y: 80, opacity: 0 }}
+            style={{ position: 'fixed', bottom: 24, left: '50%', transform: 'translateX(-50%)', zIndex: 50, width: 'min(440px,calc(100vw - 32px))' }}>
+            <div style={{ background: GREEN, borderRadius: 14, padding: '14px 20px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', boxShadow: `0 16px 48px rgba(22,199,132,0.4)` }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-                <div style={{ width: 32, height: 32, borderRadius: 10, background: 'rgba(0,0,0,0.18)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 900, fontSize: 13, color: '#021a0e' }}>{totalItems}</div>
-                <span style={{ fontWeight: 900, color: '#021a0e', fontSize: 13 }}>{totalItems} item{totalItems>1?'s':''} · View Cart</span>
+                <div style={{ width: 32, height: 32, borderRadius: 8, background: 'rgba(0,0,0,0.15)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 900, fontSize: 13, color: '#032D1A' }}>{totalItems}</div>
+                <span style={{ fontWeight: 800, color: '#032D1A', fontSize: 13 }}>{totalItems} item{totalItems > 1 ? 's' : ''} · View Cart</span>
               </div>
               <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                <span style={{ fontWeight: 900, color: '#021a0e' }}>₹{totalPrice}</span>
-                <ArrowRight style={{ height: 18, width: 18, color: '#021a0e' }} />
+                <span style={{ fontWeight: 800, color: '#032D1A' }}>₹{totalPrice}</span>
+                <ArrowRight size={18} color="#032D1A" />
               </div>
             </div>
           </motion.div>
@@ -503,55 +545,64 @@ function NowTab() {
   );
 }
 
-/* ════════════════════════════════════════
-   EATS TAB
-════════════════════════════════════════ */
+/* ─────────────────── EATS TAB ─────────────────── */
 function EatsTab() {
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: 28 }}>
-      <div className="relative overflow-hidden rounded-3xl lift cursor-pointer" style={{ height: 220 }}>
-        <img src="https://images.unsplash.com/photo-1567337710282-00832b415979?w=1100&h=400&fit=crop&q=80" alt="" className="absolute inset-0 w-full h-full img-cover" />
-        <div className="absolute inset-0" style={{ background: 'linear-gradient(90deg,rgba(0,0,0,.92) 45%,rgba(0,0,0,.2))' }} />
-        <div className="absolute inset-0 p-7 flex flex-col justify-center" style={{ maxWidth: 360 }}>
-          <span style={{ display: 'inline-block', background: 'rgba(255,107,0,0.14)', color: '#FF8040', fontSize: 9, fontWeight: 800, letterSpacing: '.07em', padding: '3px 10px', borderRadius: 999, border: '1px solid rgba(255,107,0,0.25)', width: 'fit-content', marginBottom: 12 }}>🍱 ZYPHIXEATS</span>
-          <h2 style={{ fontFamily: "'Outfit',sans-serif", fontWeight: 900, color: 'white', lineHeight: 1.1, marginBottom: 8, fontSize: 'clamp(1.5rem,3.5vw,2.3rem)', letterSpacing: '-.04em' }}>Local food.<br /><span style={{ background: 'linear-gradient(120deg,#FF6B00,#FFB800)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>Delivered fast.</span></h2>
-          <p style={{ fontSize: 12, color: 'rgba(255,255,255,0.42)', marginBottom: 16 }}>Restaurants · Dhabas · Home kitchens · Tiffin services</p>
-          <button style={{ background: 'linear-gradient(135deg,#FF6B00,#E55E00)', color: 'white', fontSize: 12, fontWeight: 900, padding: '10px 20px', borderRadius: 14, width: 'fit-content', boxShadow: '0 8px 24px rgba(255,107,0,0.35)' }}>Explore Restaurants →</button>
+    <div style={{ display: 'flex', flexDirection: 'column', gap: 32 }}>
+      <div style={{ position: 'relative', height: 220, borderRadius: 18, overflow: 'hidden', background: '#111827' }}>
+        <img src="https://images.unsplash.com/photo-1567337710282-00832b415979?w=1200&h=440&fit=crop&q=80" alt="" className="absolute inset-0 w-full h-full img-cover" style={{ opacity: 0.3 }} />
+        <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(90deg, rgba(11,15,26,0.95) 50%, transparent)' }} />
+        <div style={{ position: 'absolute', inset: 0, padding: '32px 36px', display: 'flex', flexDirection: 'column', justifyContent: 'center', maxWidth: 480 }}>
+          <p style={{ fontSize: 11, fontWeight: 700, color: GREEN, letterSpacing: '.08em', textTransform: 'uppercase', marginBottom: 12 }}>ZyphixEats</p>
+          <h2 style={{ fontFamily: "'Outfit',sans-serif", fontWeight: 900, color: T1, lineHeight: 1.1, marginBottom: 8, fontSize: 'clamp(1.5rem,3vw,2.2rem)', letterSpacing: '-.04em' }}>
+            Local food,<br />delivered fast.
+          </h2>
+          <p style={{ fontSize: 13, color: T2, marginBottom: 20 }}>Restaurants · Dhabas · Home kitchens · Tiffin services</p>
+          <button style={{ background: GREEN, color: '#032D1A', fontSize: 13, fontWeight: 800, padding: '10px 22px', borderRadius: 10, width: 'fit-content' }}>
+            Explore Restaurants →
+          </button>
         </div>
       </div>
+
       <div>
-        <SH title="What's your craving?" action="All cuisines" accent="#FF6B00" />
+        <SectionHeader title="What are you craving?" action="All cuisines" />
         <Carousel>
-          {foodCategories.map((fc,i)=>(
-            <button key={i} className="snap-start shrink-0 flex flex-col items-center gap-2 group">
-              <div style={{ width: 70, height: 70, borderRadius: '50%', overflow: 'hidden', border: '2px solid rgba(255,255,255,0.09)', boxShadow: '0 4px 16px rgba(0,0,0,.4)' }}>
+          {foodCategories.map((fc, i) => (
+            <button key={i} className="snap-start shrink-0 flex flex-col items-center gap-2.5 group">
+              <div style={{ width: 68, height: 68, borderRadius: '50%', overflow: 'hidden', border: `2px solid ${BORDER2}`, transition: 'border-color .18s' }}
+                onMouseEnter={e => { (e.currentTarget as HTMLElement).style.borderColor = GREEN + '50'; }}
+                onMouseLeave={e => { (e.currentTarget as HTMLElement).style.borderColor = BORDER2; }}>
                 <img src={fc.image} alt={fc.name} className="w-full h-full img-cover group-hover:scale-110 transition-transform duration-300" />
               </div>
-              <span style={{ fontSize: 11, fontWeight: 600, textAlign: 'center', width: 76, lineHeight: 1.3, color: 'rgba(255,255,255,0.45)' }}>{fc.name}</span>
+              <span style={{ fontSize: 11, fontWeight: 600, textAlign: 'center', width: 76, lineHeight: 1.3, color: T3 }}>{fc.name}</span>
             </button>
           ))}
         </Carousel>
       </div>
+
       <div>
-        <SH title="Restaurants Near You" sub="Open now · Jammu, J&K" action="See all" accent="#FF6B00" />
-        <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4">
-          {restaurants.map((r,i)=>(
-            <motion.div key={r.id} initial={{opacity:0,y:16}} animate={{opacity:1,y:0}} transition={{delay:i*.07}}>
-              <div className="rounded-3xl overflow-hidden cursor-pointer group" style={{ background: '#131726', border: '1px solid rgba(255,255,255,0.07)', transition: 'all .2s' }}>
-                <div style={{ position: 'relative', height: 160, background: '#1A1E2E', overflow: 'hidden' }}>
+        <SectionHeader title="Restaurants Near You" subtitle="Open now · Jammu, J&K" action="See all" />
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill,minmax(280px,1fr))', gap: 14 }}>
+          {restaurants.map((r, i) => (
+            <motion.div key={r.id} initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * .06 }}>
+              <div className="group cursor-pointer" style={{ background: CARD, border: `1px solid ${BORDER}`, borderRadius: 16, overflow: 'hidden', transition: 'all .18s' }}
+                onMouseEnter={e => { (e.currentTarget as HTMLElement).style.borderColor = BORDER2; (e.currentTarget as HTMLElement).style.transform = 'translateY(-2px)'; (e.currentTarget as HTMLElement).style.boxShadow = '0 8px 28px rgba(0,0,0,.4)'; }}
+                onMouseLeave={e => { (e.currentTarget as HTMLElement).style.borderColor = BORDER; (e.currentTarget as HTMLElement).style.transform = 'translateY(0)'; (e.currentTarget as HTMLElement).style.boxShadow = 'none'; }}>
+                <div style={{ height: 150, background: SURF, overflow: 'hidden', position: 'relative' }}>
                   <img src={r.image} alt={r.name} className="w-full h-full img-cover group-hover:scale-105 transition-transform duration-400" />
-                  <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to top,rgba(0,0,0,.65) 30%,transparent)' }} />
-                  {r.deliveryFee===0&&<div style={{ position: 'absolute', top: 10, right: 10, background: 'rgba(0,230,118,0.14)', color: '#00E676', fontSize: 9, fontWeight: 800, letterSpacing: '.06em', padding: '2px 8px', borderRadius: 999, border: '1px solid rgba(0,230,118,0.25)' }}>FREE DELIVERY</div>}
+                  {r.deliveryFee === 0 && (
+                    <div style={{ position: 'absolute', top: 10, right: 10, background: 'rgba(22,199,132,0.12)', color: GREEN, fontSize: 9.5, fontWeight: 700, padding: '3px 8px', borderRadius: 6, border: `1px solid rgba(22,199,132,0.22)` }}>FREE DELIVERY</div>
+                  )}
                 </div>
                 <div style={{ padding: '12px 14px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                   <div style={{ minWidth: 0 }}>
-                    <p style={{ fontWeight: 900, color: 'white', fontSize: '0.95rem', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{r.name}</p>
-                    <p style={{ fontSize: 11, color: 'rgba(255,255,255,0.42)', marginTop: 2, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{r.cuisine}</p>
+                    <p style={{ fontWeight: 800, color: T1, fontSize: 14, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{r.name}</p>
+                    <p style={{ fontSize: 12, color: T2, marginTop: 2, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{r.cuisine}</p>
                   </div>
                   <div style={{ flexShrink: 0, marginLeft: 12, textAlign: 'right' }}>
-                    <Stars r={r.rating} />
-                    <p style={{ fontSize: 10, color: 'rgba(255,255,255,0.38)', marginTop: 3, display: 'flex', alignItems: 'center', gap: 3, justifyContent: 'flex-end' }}>
-                      <Clock style={{ height: 10, width: 10 }} />{r.eta}
+                    <StarRating r={r.rating} />
+                    <p style={{ fontSize: 11, color: T3, marginTop: 3, display: 'flex', alignItems: 'center', gap: 3, justifyContent: 'flex-end' }}>
+                      <Clock size={10} />{r.eta}
                     </p>
                   </div>
                 </div>
@@ -564,61 +615,68 @@ function EatsTab() {
   );
 }
 
-/* ════════════════════════════════════════
-   BOOK TAB
-════════════════════════════════════════ */
+/* ─────────────────── BOOK TAB ─────────────────── */
 function BookTab() {
-  const [sel, setSel] = useState<string|null>(null);
-  const [slot, setSlot] = useState<string|null>(null);
+  const [sel, setSel] = useState<string | null>(null);
+  const [slot, setSlot] = useState<string | null>(null);
   const [booked, setBooked] = useState(false);
-  const SLOTS=['9:00 AM','10:30 AM','12:00 PM','2:00 PM','3:30 PM','5:00 PM','6:30 PM','8:00 PM'];
+  const SLOTS = ['9:00 AM', '10:30 AM', '12:00 PM', '2:00 PM', '3:30 PM', '5:00 PM', '6:30 PM', '8:00 PM'];
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: 24 }}>
-      <div className="relative overflow-hidden rounded-3xl" style={{ height: 196 }}>
-        <img src="https://images.unsplash.com/photo-1521791136064-7986c2920216?w=1200&h=400&fit=crop&q=80" alt="" className="absolute inset-0 w-full h-full img-cover" style={{ filter: 'brightness(0.25)' }} />
-        <div className="absolute inset-0" style={{ background: 'linear-gradient(120deg,rgba(139,111,255,0.4),rgba(6,10,18,0.85))' }} />
-        <div className="absolute inset-0 p-8 flex flex-col justify-center">
-          <span style={{ display: 'inline-block', background: 'rgba(139,111,255,0.14)', color: '#9D86FF', fontSize: 9, fontWeight: 800, letterSpacing: '.07em', padding: '3px 10px', borderRadius: 999, border: '1px solid rgba(139,111,255,0.25)', width: 'fit-content', marginBottom: 12 }}>📅 BOOK IN 60 SECONDS</span>
-          <h2 style={{ fontFamily: "'Outfit',sans-serif", fontWeight: 900, color: 'white', lineHeight: 1.1, fontSize: 'clamp(1.5rem,3.5vw,2.2rem)', letterSpacing: '-.04em', marginBottom: 8 }}>Trusted Professionals,<br /><span style={{ background: 'linear-gradient(120deg,#8B6FFF,#FF4D8B)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>At Your Doorstep</span></h2>
-          <p style={{ fontSize: 12, color: 'rgba(255,255,255,0.42)' }}>Verified · Rated 4.8★ · Zero cancellation fee</p>
+    <div style={{ display: 'flex', flexDirection: 'column', gap: 28 }}>
+      <div style={{ position: 'relative', height: 196, borderRadius: 18, overflow: 'hidden', background: '#111827' }}>
+        <img src="https://images.unsplash.com/photo-1521791136064-7986c2920216?w=1200&h=400&fit=crop&q=80" alt="" className="absolute inset-0 w-full h-full img-cover" style={{ opacity: 0.2 }} />
+        <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(120deg, rgba(11,15,26,0.97) 50%, transparent)' }} />
+        <div style={{ position: 'absolute', inset: 0, padding: '32px 36px', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
+          <p style={{ fontSize: 11, fontWeight: 700, color: GREEN, letterSpacing: '.08em', textTransform: 'uppercase', marginBottom: 12 }}>ZyphixBook</p>
+          <h2 style={{ fontFamily: "'Outfit',sans-serif", fontWeight: 900, color: T1, lineHeight: 1.08, fontSize: 'clamp(1.4rem,3vw,2.2rem)', letterSpacing: '-.04em', marginBottom: 8 }}>
+            Trusted professionals,<br />at your doorstep.
+          </h2>
+          <p style={{ fontSize: 13, color: T2 }}>Verified · Rated 4.8★ · Zero cancellation fee</p>
         </div>
       </div>
+
       <div>
-        <SH title="Available Services" action="View all" accent="#8B6FFF" />
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-          {services.map(s=>{
-            const active=sel===s.id;
+        <SectionHeader title="Available Services" action="View all" />
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill,minmax(200px,1fr))', gap: 12 }}>
+          {services.map(s => {
+            const active = sel === s.id;
             return (
-              <div key={s.id} onClick={()=>{setSel(active?null:s.id);setSlot(null);setBooked(false);}} className="cursor-pointer" style={{ background: active?'rgba(139,111,255,.1)':'#131726', border: active?'1px solid rgba(139,111,255,.38)':'1px solid rgba(255,255,255,0.07)', borderRadius: 20, padding: 18, transition: 'all .2s', transform: active?'scale(1.02)':undefined }}>
+              <div key={s.id} onClick={() => { setSel(active ? null : s.id); setSlot(null); setBooked(false); }} className="cursor-pointer"
+                style={{ background: active ? `rgba(22,199,132,0.06)` : CARD, border: `1px solid ${active ? 'rgba(22,199,132,0.3)' : BORDER}`, borderRadius: 16, padding: '18px 16px', transition: 'all .18s' }}>
                 <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', marginBottom: 12 }}>
-                  <span style={{ fontSize: 28 }}>{s.emoji}</span>
-                  {active&&<div style={{ width: 18, height: 18, borderRadius: '50%', background: '#8B6FFF', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><Check style={{ height: 10, width: 10, color: 'white' }} /></div>}
+                  <span style={{ fontSize: 26 }}>{s.emoji}</span>
+                  {active && <div style={{ width: 18, height: 18, borderRadius: '50%', background: GREEN, display: 'flex', alignItems: 'center', justifyContent: 'center' }}><Check size={10} color="#032D1A" /></div>}
                 </div>
-                <p style={{ fontWeight: 900, color: 'white', fontSize: 13, lineHeight: 1.3, marginBottom: 2 }}>{s.title}</p>
-                <p style={{ fontSize: 10, color: 'rgba(255,255,255,0.38)', marginBottom: 8 }}>{s.category}</p>
-                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 4 }}>
-                  <span style={{ fontWeight: 900, color: 'white', fontSize: 13 }}>₹{s.price}</span>
-                  <Stars r={s.rating} />
+                <p style={{ fontWeight: 800, color: T1, fontSize: 13, lineHeight: 1.3, marginBottom: 3 }}>{s.title}</p>
+                <p style={{ fontSize: 11, color: T3, marginBottom: 10 }}>{s.category}</p>
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                  <span style={{ fontWeight: 800, color: T1, fontSize: 14 }}>₹{s.price}</span>
+                  <StarRating r={s.rating} />
                 </div>
-                <p style={{ fontSize: 9.5, fontWeight: 700, color: '#00E676' }}>{s.available} pros · {s.nextSlot}</p>
+                <p style={{ fontSize: 10, fontWeight: 600, color: GREEN, marginTop: 6 }}>{s.available} pros available</p>
               </div>
             );
           })}
         </div>
       </div>
+
       <AnimatePresence>
-        {sel&&(
-          <motion.div initial={{opacity:0,y:16}} animate={{opacity:1,y:0}} exit={{opacity:0}}>
-            <div style={{ background: '#131726', border: '1px solid rgba(255,255,255,0.08)', borderRadius: 20, padding: 22 }}>
-              <p style={{ fontWeight: 900, color: 'white', fontSize: '1rem', marginBottom: 4 }}>Pick a time slot — Today</p>
-              <p style={{ fontSize: 11, color: 'rgba(255,255,255,0.4)', marginBottom: 20 }}>{services.find(x=>x.id===sel)?.title} · ₹{services.find(x=>x.id===sel)?.price}</p>
-              <div className="grid grid-cols-4 gap-2.5 mb-5">
-                {SLOTS.map(sl=>(
-                  <button key={sl} onClick={()=>setSlot(sl)} style={{ padding: '10px 4px', borderRadius: 14, fontSize: 11.5, fontWeight: 700, transition: 'all .15s', background: slot===sl?'#8B6FFF':'rgba(255,255,255,0.05)', color: slot===sl?'white':'rgba(255,255,255,0.45)', border: slot===sl?'none':'1px solid rgba(255,255,255,0.08)', transform: slot===sl?'scale(1.06)':undefined, boxShadow: slot===sl?'0 8px 24px rgba(139,111,255,.3)':'none' }}>{sl}</button>
+        {sel && (
+          <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }}>
+            <div style={{ background: SURF, border: `1px solid ${BORDER}`, borderRadius: 16, padding: '24px 20px' }}>
+              <p style={{ fontWeight: 800, color: T1, fontSize: 15, marginBottom: 4 }}>Select a time slot</p>
+              <p style={{ fontSize: 12, color: T3, marginBottom: 20 }}>{services.find(x => x.id === sel)?.title} · ₹{services.find(x => x.id === sel)?.price}</p>
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4,1fr)', gap: 10, marginBottom: 20 }}>
+                {SLOTS.map(sl => (
+                  <button key={sl} onClick={() => setSlot(sl)}
+                    style={{ padding: '10px 4px', borderRadius: 10, fontSize: 12, fontWeight: 600, background: slot === sl ? GREEN : SURF, color: slot === sl ? '#032D1A' : T2, border: `1px solid ${slot === sl ? 'transparent' : BORDER}`, transition: 'all .15s', boxShadow: slot === sl ? `0 4px 14px rgba(22,199,132,0.25)` : 'none' }}>
+                    {sl}
+                  </button>
                 ))}
               </div>
-              <button onClick={()=>slot&&setBooked(true)} disabled={!slot} style={{ width: '100%', padding: '14px', borderRadius: 16, fontWeight: 900, fontSize: 13, transition: 'all .2s', background: booked?'rgba(0,230,118,.1)':slot?'#8B6FFF':'rgba(139,111,255,.1)', color: booked?'#00E676':'white', boxShadow: slot&&!booked?'0 8px 28px rgba(139,111,255,.3)':'none', opacity: !slot?0.4:1, cursor: slot?'pointer':'not-allowed' }}>
-                {booked?'✓ Booking Confirmed! See you soon.':slot?'Confirm Booking →':'Select a time slot above'}
+              <button onClick={() => slot && setBooked(true)} disabled={!slot}
+                style={{ width: '100%', padding: '13px', borderRadius: 12, fontWeight: 800, fontSize: 14, background: booked ? `rgba(22,199,132,0.08)` : slot ? GREEN : `rgba(22,199,132,0.05)`, color: booked ? GREEN : slot ? '#032D1A' : T3, border: `1px solid ${booked ? 'rgba(22,199,132,0.25)' : 'transparent'}`, cursor: slot ? 'pointer' : 'not-allowed', transition: 'all .2s', boxShadow: slot && !booked ? `0 4px 20px rgba(22,199,132,0.3)` : 'none' }}>
+                {booked ? '✓ Booking confirmed! See you soon.' : slot ? 'Confirm Booking →' : 'Select a time slot above'}
               </button>
             </div>
           </motion.div>
@@ -628,146 +686,129 @@ function BookTab() {
   );
 }
 
-/* ════════════════════════════════════════
-   MAP TAB
-════════════════════════════════════════ */
+/* ─────────────────── MAP TAB ─────────────────── */
 function MapTab() {
-  const T: Record<string,{e:string;c:string}> = { kirana:{e:'🏪',c:'#00E676'}, medical:{e:'💊',c:'#4488FF'}, restaurant:{e:'🍲',c:'#FF6B00'}, electronics:{e:'💡',c:'#FFB800'}, garage:{e:'🔧',c:'#6366f1'}, salon:{e:'✂️',c:'#FF4D8B'} };
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
-      <div className="relative overflow-hidden rounded-3xl lift cursor-pointer" style={{ height: 230 }}>
-        <img src="https://images.unsplash.com/photo-1524661135-423995f22d0b?w=1200&h=450&fit=crop&q=80" alt="Map" className="absolute inset-0 w-full h-full img-cover" style={{ opacity: 0.18 }} />
-        <div className="absolute inset-0" style={{ background: 'radial-gradient(ellipse at center,rgba(0,0,0,.05),rgba(6,10,18,.92))' }} />
-        <div className="absolute inset-0 flex flex-col items-center justify-center text-center p-6">
-          <div style={{ fontSize: 44, marginBottom: 12 }}>📍</div>
-          <p style={{ fontFamily: "'Outfit',sans-serif", fontWeight: 900, color: 'white', fontSize: '1.5rem', letterSpacing: '-.04em', marginBottom: 4 }}>Jammu, J&K</p>
-          <p style={{ fontSize: 12, color: 'rgba(255,255,255,0.42)', marginBottom: 18 }}>8 verified stores within 1 km radius · All open now</p>
-          <button style={{ background: '#00E676', color: '#021a0e', fontSize: 13, fontWeight: 900, padding: '10px 22px', borderRadius: 14, boxShadow: '0 8px 24px rgba(0,230,118,.35)' }}>Open Full Map →</button>
+      <div style={{ position: 'relative', height: 220, borderRadius: 18, overflow: 'hidden', background: SURF, border: `1px solid ${BORDER}`, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', textAlign: 'center', padding: 24 }}>
+        <div style={{ width: 60, height: 60, borderRadius: 18, background: `rgba(22,199,132,0.08)`, border: `1px solid rgba(22,199,132,0.18)`, display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 16 }}>
+          <MapPin size={26} color={GREEN} />
         </div>
+        <p style={{ fontFamily: "'Outfit',sans-serif", fontWeight: 900, color: T1, fontSize: '1.4rem', letterSpacing: '-.03em', marginBottom: 6 }}>Jammu, J&K</p>
+        <p style={{ fontSize: 13, color: T2, marginBottom: 20 }}>8 verified stores within 1 km · All open now</p>
+        <button style={{ background: GREEN, color: '#032D1A', fontSize: 13, fontWeight: 800, padding: '10px 22px', borderRadius: 10 }}>Open Full Map →</button>
       </div>
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-        {stores.map((st:any)=>{
-          const t=T[st.type]||T.kirana;
-          return (
-            <div key={st.id} className="lift cursor-pointer" style={{ background: '#131726', border: '1px solid rgba(255,255,255,0.07)', borderRadius: 18, padding: '14px 16px', display: 'flex', alignItems: 'center', gap: 12 }}>
-              <div style={{ width: 44, height: 44, borderRadius: 14, background: `${t.c}12`, border: `1px solid ${t.c}20`, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 20, flexShrink: 0 }}>{t.e}</div>
-              <div style={{ flex: 1, minWidth: 0 }}>
-                <p style={{ fontWeight: 800, color: 'white', fontSize: 13, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{st.name}</p>
-                <div style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 10, color: 'rgba(255,255,255,0.42)', marginTop: 2 }}>
-                  <span style={{ display: 'flex', alignItems: 'center', gap: 2 }}><MapPin style={{ height: 9, width: 9 }} />{st.distance}</span>
-                  <span>·</span><span>{st.openHours}</span>
-                </div>
-              </div>
-              <div style={{ flexShrink: 0, textAlign: 'right' }}>
-                <Stars r={st.rating} />
-                <span style={{ display: 'block', marginTop: 5, background: st.open?'rgba(0,230,118,.1)':'rgba(255,59,59,.1)', color: st.open?'#00E676':'#FF6B6B', border: `1px solid ${st.open?'rgba(0,230,118,.22)':'rgba(255,59,59,.22)'}`, fontSize: 9, fontWeight: 800, padding: '2px 7px', borderRadius: 999 }}>{st.open?'Open':'Closed'}</span>
-              </div>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill,minmax(280px,1fr))', gap: 12 }}>
+        {stores.map((st: any) => (
+          <div key={st.id} className="cursor-pointer" style={{ background: CARD, border: `1px solid ${BORDER}`, borderRadius: 14, padding: '14px 16px', display: 'flex', alignItems: 'center', gap: 12, transition: 'all .18s' }}
+            onMouseEnter={e => { (e.currentTarget as HTMLElement).style.borderColor = BORDER2; }}
+            onMouseLeave={e => { (e.currentTarget as HTMLElement).style.borderColor = BORDER; }}>
+            <div style={{ width: 44, height: 44, borderRadius: 12, background: SURF, border: `1px solid ${BORDER}`, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 20, flexShrink: 0 }}>
+              {st.type === 'kirana' ? '🏪' : st.type === 'medical' ? '💊' : st.type === 'restaurant' ? '🍽️' : '🏢'}
             </div>
-          );
-        })}
+            <div style={{ flex: 1, minWidth: 0 }}>
+              <p style={{ fontWeight: 700, color: T1, fontSize: 13, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{st.name}</p>
+              <p style={{ fontSize: 11, color: T3, marginTop: 2 }}>{st.distance} · {st.openHours}</p>
+            </div>
+            <div style={{ flexShrink: 0, textAlign: 'right' }}>
+              <StarRating r={st.rating} />
+              <span style={{ display: 'block', marginTop: 5, background: st.open ? 'rgba(22,199,132,0.08)' : 'rgba(239,68,68,0.08)', color: st.open ? GREEN : '#EF4444', border: `1px solid ${st.open ? 'rgba(22,199,132,0.2)' : 'rgba(239,68,68,0.2)'}`, fontSize: 9.5, fontWeight: 700, padding: '2px 7px', borderRadius: 6 }}>{st.open ? 'Open' : 'Closed'}</span>
+            </div>
+          </div>
+        ))}
       </div>
     </div>
   );
 }
 
-/* ════════════════════════════════════════
-   OFFERS TAB
-════════════════════════════════════════ */
+/* ─────────────────── OFFERS TAB ─────────────────── */
 function OffersTab() {
-  const [copied, setCopied] = useState<string|null>(null);
-  const copy = (c: string) => { navigator.clipboard.writeText(c); setCopied(c); setTimeout(()=>setCopied(null),2500); };
-  const TS: Record<string,{c:string}> = { discount:{c:'#00E676'}, delivery:{c:'#FF8040'}, referral:{c:'#6AA0FF'} };
+  const [copied, setCopied] = useState<string | null>(null);
+  const copy = (c: string) => { navigator.clipboard.writeText(c); setCopied(c); setTimeout(() => setCopied(null), 2500); };
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
-      <div className="relative overflow-hidden rounded-3xl" style={{ minHeight: 220 }}>
-        <img src="https://images.unsplash.com/photo-1607082348824-0a96f2a4b9da?w=1000&h=380&fit=crop&q=80" alt="" className="absolute inset-0 w-full h-full img-cover" style={{ filter: 'brightness(.2) saturate(1.4)' }} />
-        <div className="absolute inset-0" style={{ background: 'linear-gradient(120deg,rgba(0,90,35,.95),rgba(6,10,18,.75))' }} />
-        <div className="absolute inset-0 p-7 flex flex-col justify-center">
-          <span style={{ display: 'inline-block', background: 'rgba(0,230,118,0.12)', color: '#00E676', fontSize: 9, fontWeight: 800, letterSpacing: '.07em', padding: '3px 10px', borderRadius: 999, border: '1px solid rgba(0,230,118,0.22)', width: 'fit-content', marginBottom: 12 }}>🔥 LIMITED TIME OFFER</span>
-          <h2 style={{ fontFamily: "'Outfit',sans-serif", fontWeight: 900, color: 'white', lineHeight: 1.1, fontSize: 'clamp(1.6rem,3.5vw,2.5rem)', letterSpacing: '-.04em', marginBottom: 8 }}>
-            Flat <span style={{ background: 'linear-gradient(120deg,#00E676,#4488FF)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>50% Off</span><br />Your First Order
+      <div style={{ position: 'relative', height: 216, borderRadius: 18, overflow: 'hidden', background: '#0a1a12' }}>
+        <img src="https://images.unsplash.com/photo-1607082348824-0a96f2a4b9da?w=1000&h=380&fit=crop&q=80" alt="" className="absolute inset-0 w-full h-full img-cover" style={{ opacity: 0.15 }} />
+        <div style={{ position: 'absolute', inset: 0, background: `linear-gradient(120deg, rgba(11,15,26,0.97) 50%, transparent)` }} />
+        <div style={{ position: 'absolute', inset: 0, padding: '28px 36px', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
+          <p style={{ fontSize: 11, fontWeight: 700, color: GREEN, letterSpacing: '.08em', textTransform: 'uppercase', marginBottom: 12 }}>New User Offer</p>
+          <h2 style={{ fontFamily: "'Outfit',sans-serif", fontWeight: 900, color: T1, lineHeight: 1.08, fontSize: 'clamp(1.5rem,3vw,2.3rem)', letterSpacing: '-.04em', marginBottom: 8 }}>
+            Flat <span style={{ color: GREEN }}>50% off</span><br />your first order.
           </h2>
-          <p style={{ fontSize: 12, color: 'rgba(255,255,255,0.42)', marginBottom: 18 }}>Min ₹199 · Max ₹100 off · New users only</p>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 12, flexWrap: 'wrap' }}>
-            <span style={{ fontWeight: 900, fontSize: 13, color: '#00E676', background: 'rgba(0,0,0,.5)', border: '2px dashed rgba(0,230,118,.45)', padding: '6px 14px', borderRadius: 12, letterSpacing: '.09em' }}>ZYPHIX50</span>
-            <button onClick={()=>copy('ZYPHIX50')} style={{ background: '#00E676', color: '#021a0e', fontSize: 12, fontWeight: 900, padding: '8px 18px', borderRadius: 12, display: 'flex', alignItems: 'center', gap: 6 }}>
-              {copied==='ZYPHIX50'?<><Check style={{height:13,width:13}}/>Copied!</>:<><Copy style={{height:13,width:13}}/>Copy Code</>}
+          <p style={{ fontSize: 13, color: T2, marginBottom: 18 }}>Min ₹199 · Max ₹100 off · New users only</p>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+            <span style={{ fontWeight: 800, fontSize: 13, color: GREEN, background: 'rgba(0,0,0,.5)', border: `1.5px dashed rgba(22,199,132,0.4)`, padding: '6px 14px', borderRadius: 9, letterSpacing: '.08em' }}>ZYPHIX50</span>
+            <button onClick={() => copy('ZYPHIX50')} style={{ background: GREEN, color: '#032D1A', fontSize: 12, fontWeight: 800, padding: '8px 16px', borderRadius: 9, display: 'flex', alignItems: 'center', gap: 6 }}>
+              {copied === 'ZYPHIX50' ? <><Check size={13} />Copied!</> : <><Copy size={13} />Copy Code</>}
             </button>
           </div>
         </div>
       </div>
-      <SH title="All Active Coupons" sub={`${promoCodes.length} offers`} />
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-        {promoCodes.map(offer=>{
-          const tc=TS[offer.type]||TS.discount;
-          const isCopied=copied===offer.code;
+
+      <SectionHeader title="All Coupons" subtitle={`${promoCodes.length} active offers`} />
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill,minmax(280px,1fr))', gap: 12 }}>
+        {promoCodes.map(offer => {
+          const isCopied = copied === offer.code;
           return (
-            <div key={offer.code} onClick={()=>copy(offer.code)} className="cursor-pointer" style={{ background: isCopied?`${tc.c}06`:'#131726', border: `1px solid ${isCopied?`${tc.c}22`:'rgba(255,255,255,0.07)'}`, borderRadius: 18, padding: 18, transition: 'all .2s', display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: 12 }}>
+            <div key={offer.code} onClick={() => copy(offer.code)} className="cursor-pointer"
+              style={{ background: isCopied ? `rgba(22,199,132,0.05)` : CARD, border: `1px solid ${isCopied ? 'rgba(22,199,132,0.2)' : BORDER}`, borderRadius: 14, padding: '16px 18px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 12, transition: 'all .18s' }}>
               <div style={{ flex: 1, minWidth: 0 }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 6 }}>
-                  <span style={{ fontWeight: 900, fontSize: '1rem', letterSpacing: '.04em', color: tc.c }}>{offer.code}</span>
-                  <span style={{ fontSize: 9, fontWeight: 800, background: `${tc.c}12`, color: tc.c, border: `1px solid ${tc.c}22`, padding: '2px 7px', borderRadius: 999 }}>{offer.type}</span>
-                </div>
-                <p style={{ fontSize: 13, fontWeight: 600, color: 'white', marginBottom: 3 }}>{offer.description}</p>
-                <p style={{ fontSize: 10, color: 'rgba(255,255,255,0.38)' }}>Valid till 31 Dec 2025</p>
+                <span style={{ fontWeight: 800, fontSize: '1rem', letterSpacing: '.04em', color: GREEN }}>{offer.code}</span>
+                <p style={{ fontSize: 13, fontWeight: 600, color: T1, margin: '5px 0 3px' }}>{offer.description}</p>
+                <p style={{ fontSize: 11, color: T3 }}>Valid till 31 Dec 2025</p>
               </div>
-              <button style={{ flexShrink: 0, display: 'flex', alignItems: 'center', gap: 5, fontSize: 11, fontWeight: 700, padding: '6px 12px', borderRadius: 10, background: isCopied?`${tc.c}14`:'rgba(255,255,255,.06)', color: isCopied?tc.c:'rgba(255,255,255,0.45)', border: isCopied?`1px solid ${tc.c}28`:'1px solid rgba(255,255,255,.09)', transition: 'all .15s' }}>
-                {isCopied?<Check style={{height:12,width:12}}/>:<Copy style={{height:12,width:12}}/>}
-                {isCopied?'Done':'Copy'}
+              <button style={{ flexShrink: 0, display: 'flex', alignItems: 'center', gap: 5, fontSize: 12, fontWeight: 700, padding: '6px 12px', borderRadius: 8, background: isCopied ? `rgba(22,199,132,0.1)` : SURF, color: isCopied ? GREEN : T2, border: `1px solid ${isCopied ? 'rgba(22,199,132,0.25)' : BORDER}`, transition: 'all .15s' }}>
+                {isCopied ? <Check size={12} /> : <Copy size={12} />}
+                {isCopied ? 'Done' : 'Copy'}
               </button>
             </div>
           );
         })}
       </div>
-      <div style={{ background: 'linear-gradient(120deg,#040c24,#070516)', border: '1px solid rgba(68,136,255,0.2)', borderRadius: 20, padding: '20px 24px', display: 'flex', alignItems: 'center', gap: 20, flexWrap: 'wrap', justifyContent: 'space-between' }}>
+
+      <div style={{ background: SURF, border: `1px solid ${BORDER}`, borderRadius: 16, padding: '20px 24px', display: 'flex', alignItems: 'center', gap: 20, flexWrap: 'wrap', justifyContent: 'space-between' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
-          <div style={{ width: 52, height: 52, borderRadius: 16, background: 'rgba(68,136,255,0.12)', border: '1px solid rgba(68,136,255,0.2)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 26, flexShrink: 0 }}>🎁</div>
+          <div style={{ width: 48, height: 48, borderRadius: 14, background: `rgba(22,199,132,0.08)`, border: `1px solid rgba(22,199,132,0.18)`, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 22 }}>🎁</div>
           <div>
-            <p style={{ fontWeight: 900, color: 'white', fontSize: '0.95rem' }}>Refer & Earn ₹100</p>
-            <p style={{ fontSize: 12, color: 'rgba(255,255,255,0.42)', marginTop: 2 }}>You & your friend both get ₹100 wallet credits</p>
+            <p style={{ fontWeight: 800, color: T1, fontSize: 14 }}>Refer & Earn ₹100</p>
+            <p style={{ fontSize: 12, color: T2, marginTop: 3 }}>You & your friend both get ₹100 wallet credits</p>
           </div>
         </div>
-        <button style={{ background: '#00E676', color: '#021a0e', fontSize: 13, fontWeight: 900, padding: '10px 22px', borderRadius: 14, flexShrink: 0, boxShadow: '0 8px 24px rgba(0,230,118,.3)' }}>Share Now →</button>
+        <button style={{ background: GREEN, color: '#032D1A', fontSize: 13, fontWeight: 800, padding: '10px 22px', borderRadius: 10, flexShrink: 0 }}>Share Now →</button>
       </div>
     </div>
   );
 }
 
-/* ════════════════════════════════════════
-   APP DOWNLOAD SECTION
-════════════════════════════════════════ */
+/* ─────────────────── APP DOWNLOAD ─────────────────── */
 function AppDownload() {
   return (
-    <div style={{ background: '#0A0F1A', padding: '60px 0' }}>
-      <div className="max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="rounded-3xl overflow-hidden relative" style={{ background: 'linear-gradient(135deg,#101826,#0E1522)', border: '1px solid rgba(255,255,255,0.08)' }}>
-          <div className="absolute inset-0 pointer-events-none" style={{ background: 'radial-gradient(ellipse at 80% 50%, rgba(0,230,118,0.06), transparent 60%)' }} />
-          <div className="flex flex-col md:flex-row items-center gap-8 p-8 lg:p-12 relative">
-            <div style={{ flex: 1 }}>
-              <div style={{ display: 'inline-flex', alignItems: 'center', gap: 6, background: 'rgba(0,230,118,0.08)', border: '1px solid rgba(0,230,118,0.18)', padding: '4px 14px', borderRadius: 999, marginBottom: 16 }}>
-                <span style={{ fontSize: 10, fontWeight: 800, color: '#00E676', letterSpacing: '.08em' }}>📱 DOWNLOAD FREE</span>
-              </div>
-              <h2 style={{ fontFamily: "'Outfit',sans-serif", fontWeight: 900, color: 'white', lineHeight: 1.08, fontSize: 'clamp(1.8rem,3.5vw,2.8rem)', letterSpacing: '-.04em', marginBottom: 12 }}>
-                Get the <span style={{ background: 'linear-gradient(120deg,#00E676,#4488FF)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>ZYPHIX</span> app.<br />Order in 30 seconds.
-              </h2>
-              <p style={{ color: 'rgba(255,255,255,0.42)', fontSize: 13, marginBottom: 24, lineHeight: 1.6 }}>Exclusive app-only deals · Live order tracking · Offline mode</p>
-              <div style={{ display: 'flex', flexWrap: 'wrap', gap: 12 }}>
-                {[{ic:'🍎',top:'Download on the',bot:'App Store'},{ic:'▶',top:'Get it on',bot:'Google Play'}].map((a,i)=>(
-                  <button key={i} style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '12px 18px', borderRadius: 18, background: 'rgba(255,255,255,0.07)', border: '1px solid rgba(255,255,255,0.11)', transition: 'all .2s' }} className="hover:scale-105">
-                    <span style={{ fontSize: 28 }}>{a.ic}</span>
-                    <div>
-                      <p style={{ fontSize: 9, color: 'rgba(255,255,255,0.38)', fontWeight: 600, lineHeight: 1.2 }}>{a.top}</p>
-                      <p style={{ fontSize: 17, fontWeight: 900, color: 'white', lineHeight: 1.1 }}>{a.bot}</p>
-                    </div>
-                  </button>
-                ))}
-              </div>
+    <div style={{ background: SURF, borderTop: `1px solid ${BORDER}`, padding: '56px 0' }}>
+      <div style={{ maxWidth: 1280, margin: '0 auto', padding: '0 24px' }}>
+        <div style={{ background: CARD, border: `1px solid ${BORDER}`, borderRadius: 24, padding: '40px 48px', display: 'flex', alignItems: 'center', gap: 40, flexWrap: 'wrap', justifyContent: 'space-between' }}>
+          <div style={{ maxWidth: 480 }}>
+            <p style={{ fontSize: 11, fontWeight: 700, color: GREEN, letterSpacing: '.1em', textTransform: 'uppercase', marginBottom: 14 }}>Download Free</p>
+            <h2 style={{ fontFamily: "'Outfit',sans-serif", fontWeight: 900, color: T1, lineHeight: 1.08, fontSize: 'clamp(1.8rem,3.5vw,2.6rem)', letterSpacing: '-.04em', marginBottom: 12 }}>
+              Get the ZYPHIX app.<br />Order in 30 seconds.
+            </h2>
+            <p style={{ color: T2, fontSize: 14, marginBottom: 24, lineHeight: 1.65 }}>Exclusive app-only deals · Live tracking · Works offline</p>
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: 12 }}>
+              {[{ icon: '🍎', top: 'Download on the', bot: 'App Store' }, { icon: '▶', top: 'Get it on', bot: 'Google Play' }].map((a, i) => (
+                <button key={i} style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '12px 20px', borderRadius: 12, background: SURF, border: `1px solid ${BORDER2}`, transition: 'all .2s' }}
+                  onMouseEnter={e => { (e.currentTarget as HTMLElement).style.borderColor = GREEN + '40'; }} onMouseLeave={e => { (e.currentTarget as HTMLElement).style.borderColor = BORDER2; }}>
+                  <span style={{ fontSize: 26 }}>{a.icon}</span>
+                  <div>
+                    <p style={{ fontSize: 9, color: T3, fontWeight: 500 }}>{a.top}</p>
+                    <p style={{ fontSize: 16, fontWeight: 800, color: T1 }}>{a.bot}</p>
+                  </div>
+                </button>
+              ))}
             </div>
-            <div style={{ flexShrink: 0, textAlign: 'center' }}>
-              <div style={{ fontSize: 80, marginBottom: 8 }}>📲</div>
-              <p style={{ fontWeight: 900, color: 'white', fontSize: '1.3rem' }}>4.8 ★</p>
-              <p style={{ fontSize: 11, color: 'rgba(255,255,255,0.38)' }}>50,000+ ratings</p>
-            </div>
+          </div>
+          <div style={{ textAlign: 'center', flexShrink: 0 }}>
+            <div style={{ width: 80, height: 80, borderRadius: 24, background: `rgba(22,199,132,0.08)`, border: `1px solid rgba(22,199,132,0.18)`, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 38, margin: '0 auto 12px' }}>📱</div>
+            <p style={{ fontFamily: "'Outfit',sans-serif", fontWeight: 900, color: T1, fontSize: '1.4rem' }}>4.8 ★</p>
+            <p style={{ fontSize: 12, color: T3 }}>50,000+ ratings</p>
           </div>
         </div>
       </div>
@@ -775,46 +816,52 @@ function AppDownload() {
   );
 }
 
-/* ════════════════════════════════════════
-   FOOTER
-════════════════════════════════════════ */
+/* ─────────────────── FOOTER ─────────────────── */
 function Footer() {
   return (
-    <footer style={{ background: '#060A12', borderTop: '1px solid rgba(255,255,255,0.05)' }}>
-      <div className="max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <div className="grid grid-cols-2 md:grid-cols-5 gap-8 mb-10">
-          <div className="col-span-2">
-            <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 14 }}>
-              <div style={{ width: 32, height: 32, borderRadius: 10, background: 'linear-gradient(135deg,#00E676,#4488FF)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                <Zap style={{ height: 15, width: 15, color: 'white', fill: 'white' }} />
+    <footer style={{ background: BG, borderTop: `1px solid ${BORDER}` }}>
+      <div style={{ maxWidth: 1280, margin: '0 auto', padding: '48px 24px' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr 1fr 1fr', gap: 40, marginBottom: 40 }}>
+          <div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 16 }}>
+              <div style={{ width: 30, height: 30, borderRadius: 8, background: GREEN, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                <Zap size={15} color="#032D1A" fill="#032D1A" />
               </div>
-              <span style={{ fontFamily: "'Outfit',sans-serif", fontWeight: 900, fontSize: '1.3rem', letterSpacing: '-.04em', background: 'linear-gradient(90deg,#00E676,#4488FF)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>ZYPHIX</span>
+              <span style={{ fontFamily: "'Outfit',sans-serif", fontWeight: 900, fontSize: '1.15rem', letterSpacing: '-.03em', color: T1 }}>
+                ZYP<span style={{ color: GREEN }}>HIX</span>
+              </span>
             </div>
-            <p style={{ fontSize: 12, lineHeight: 1.7, color: 'rgba(255,255,255,0.32)', marginBottom: 18, maxWidth: 240 }}>India's SuperLocal App — groceries, food & services delivered in 30 minutes across Jammu & Kashmir.</p>
+            <p style={{ fontSize: 13, color: T3, lineHeight: 1.7, marginBottom: 20, maxWidth: 260 }}>India's SuperLocal App — groceries, food & services delivered in 30 minutes across Jammu & Kashmir.</p>
             <div style={{ display: 'flex', gap: 8 }}>
-              {['Twitter','Instagram','LinkedIn','WhatsApp'].map(s=>(
-                <a key={s} href="#" style={{ fontSize: 11, padding: '5px 10px', borderRadius: 8, color: 'rgba(255,255,255,0.38)', background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.07)', transition: 'all .15s' }}>{s}</a>
+              {[<Twitter size={14} />, <Instagram size={14} />, <Linkedin size={14} />, <Phone size={14} />].map((ic, i) => (
+                <a key={i} href="#" style={{ width: 34, height: 34, borderRadius: 8, background: SURF, border: `1px solid ${BORDER}`, display: 'flex', alignItems: 'center', justifyContent: 'center', color: T2, transition: 'all .15s' }}
+                  onMouseEnter={e => { (e.currentTarget as HTMLElement).style.borderColor = BORDER2; (e.currentTarget as HTMLElement).style.color = T1; }}
+                  onMouseLeave={e => { (e.currentTarget as HTMLElement).style.borderColor = BORDER; (e.currentTarget as HTMLElement).style.color = T2; }}>
+                  {ic}
+                </a>
               ))}
             </div>
           </div>
           {[
-            { title:'Services', links:['ZyphixNow','ZyphixEats','ZyphixBook','Kirana Near Me','Offers'] },
-            { title:'Company',  links:['About Us','Careers','Press Kit','Blog','Investors'] },
-            { title:'Support',  links:['Help Center','Contact Us','Refund Policy','Privacy Policy','Terms'] },
-          ].map(({title,links})=>(
+            { title: 'Services', links: ['ZyphixNow', 'ZyphixEats', 'ZyphixBook', 'Kirana Near Me', 'Offers'] },
+            { title: 'Company', links: ['About Us', 'Careers', 'Press Kit', 'Blog', 'Investors'] },
+            { title: 'Support', links: ['Help Center', 'Contact Us', 'Refund Policy', 'Privacy Policy', 'Terms'] },
+          ].map(({ title, links }) => (
             <div key={title}>
-              <p style={{ fontWeight: 900, color: 'white', fontSize: 13, marginBottom: 16 }}>{title}</p>
+              <p style={{ fontWeight: 700, color: T1, fontSize: 13, marginBottom: 16 }}>{title}</p>
               <ul style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
-                {links.map(l=><li key={l}><a href="#" style={{ fontSize: 12, color: 'rgba(255,255,255,0.32)' }}>{l}</a></li>)}
+                {links.map(l => (
+                  <li key={l}><a href="#" style={{ fontSize: 13, color: T3, transition: 'color .15s' }} onMouseEnter={e => { (e.currentTarget as HTMLElement).style.color = T2; }} onMouseLeave={e => { (e.currentTarget as HTMLElement).style.color = T3; }}>{l}</a></li>
+                ))}
               </ul>
             </div>
           ))}
         </div>
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 10, paddingTop: 20, borderTop: '1px solid rgba(255,255,255,0.06)' }}>
-          <p style={{ fontSize: 11, color: 'rgba(255,255,255,0.22)' }}>© 2025 ZYPHIX Technologies Pvt. Ltd. · Jammu, J&K, India</p>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 10, paddingTop: 24, borderTop: `1px solid ${BORDER}` }}>
+          <p style={{ fontSize: 12, color: T3 }}>© 2025 ZYPHIX Technologies Pvt. Ltd. · Jammu, J&K, India</p>
           <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-            <span style={{ width: 6, height: 6, borderRadius: '50%', background: '#00E676', display: 'block' }} />
-            <p style={{ fontSize: 11, fontWeight: 600, color: '#00E676' }}>All systems operational</p>
+            <span style={{ width: 6, height: 6, borderRadius: '50%', background: GREEN, display: 'block' }} />
+            <p style={{ fontSize: 12, fontWeight: 600, color: GREEN }}>All systems operational</p>
           </div>
         </div>
       </div>
@@ -822,115 +869,49 @@ function Footer() {
   );
 }
 
-/* ════════════════════════════════════════
-   ANNOUNCEMENT BAR
-════════════════════════════════════════ */
-function AnnoBar() {
-  return (
-    <div style={{ background: 'linear-gradient(90deg,#00B85C,#007A3D,#00B85C)', backgroundSize: '200% 100%', animation: 'gradient-move 4s linear infinite', padding: '7px 0', textAlign: 'center' }}>
-      <p style={{ fontSize: 11.5, fontWeight: 800, color: '#021a0e', letterSpacing: '.01em' }}>
-        ⚡ FREE delivery on first order — Use code{' '}
-        <span style={{ background: 'rgba(0,0,0,0.2)', padding: '1px 6px', borderRadius: 4, letterSpacing: '.06em' }}>ZYPHIX50</span>
-        {' '}· Now live in Jammu, J&K · ₹0 surge pricing, ever
-      </p>
-    </div>
-  );
-}
+/* ─────────────────── SERVICE TABS ─────────────────── */
+const TABS: { id: TabId; label: string }[] = [
+  { id: 'now',    label: '⚡ ZyphixNow' },
+  { id: 'eats',   label: '🍱 ZyphixEats' },
+  { id: 'book',   label: '📅 ZyphixBook' },
+  { id: 'map',    label: '📍 Kirana Near Me' },
+  { id: 'offers', label: '🏷️ Offers' },
+];
 
-/* ════════════════════════════════════════
-   NAVBAR
-════════════════════════════════════════ */
-function Navbar() {
-  const [scrolled, setScrolled] = useState(false);
-  const [focused, setFocused] = useState(false);
-  useEffect(() => {
-    const h = () => setScrolled(window.scrollY > 8);
-    window.addEventListener('scroll', h, { passive: true });
-    return () => window.removeEventListener('scroll', h);
-  }, []);
-  return (
-    <div className="sticky top-0 z-50 w-full" style={{ background: scrolled ? 'rgba(6,10,18,0.97)' : 'rgba(8,13,22,0.92)', backdropFilter: 'blur(28px)', WebkitBackdropFilter: 'blur(28px)', borderBottom: '1px solid rgba(255,255,255,0.07)', boxShadow: scrolled ? '0 4px 40px rgba(0,0,0,0.7)' : 'none', transition: 'all .3s' }}>
-      <div className="max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div style={{ display: 'flex', alignItems: 'center', gap: 12, height: 60 }}>
-          {/* Logo */}
-          <a href="/" style={{ display: 'flex', alignItems: 'center', gap: 9, flexShrink: 0, textDecoration: 'none' }}>
-            <div style={{ width: 32, height: 32, borderRadius: 10, background: 'linear-gradient(135deg,#00E676,#4488FF)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-              <Zap style={{ height: 15, width: 15, color: 'white', fill: 'white' }} />
-            </div>
-            <span className="hidden sm:block" style={{ fontFamily: "'Outfit',sans-serif", fontWeight: 900, fontSize: '1.2rem', letterSpacing: '-.04em', background: 'linear-gradient(90deg,#00E676 0%,#4488FF 60%,#8B6FFF 100%)', backgroundSize: '200% auto', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text', animation: 'shimmer 5s linear infinite' }}>ZYPHIX</span>
-          </a>
-          {/* Location */}
-          <button className="hidden md:flex items-center gap-1.5 transition-all hover:bg-white/5" style={{ padding: '6px 12px', borderRadius: 12, border: '1px solid rgba(255,255,255,0.08)', flexShrink: 0 }}>
-            <div style={{ width: 20, height: 20, borderRadius: 6, background: 'rgba(0,230,118,0.12)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-              <MapPin style={{ height: 11, width: 11, color: '#00E676' }} />
-            </div>
-            <div style={{ textAlign: 'left' }}>
-              <p style={{ fontSize: 8.5, fontWeight: 600, color: 'rgba(255,255,255,0.38)', lineHeight: 1.2, textTransform: 'uppercase', letterSpacing: '.07em' }}>Deliver to</p>
-              <div style={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-                <span style={{ fontWeight: 900, color: 'white', fontSize: 13, lineHeight: 1.2 }}>Jammu, J&K</span>
-                <ChevronDown style={{ height: 11, width: 11, color: 'rgba(255,255,255,0.38)' }} />
-              </div>
-            </div>
-          </button>
-          {/* Search */}
-          <div style={{ flex: 1, position: 'relative', maxWidth: 480 }}>
-            <Search style={{ position: 'absolute', left: 13, top: '50%', transform: 'translateY(-50%)', height: 15, width: 15, color: focused ? '#00E676' : 'rgba(255,255,255,0.35)', zIndex: 1, transition: 'color .15s' }} />
-            <input type="text" placeholder="Search groceries, food, services..." onFocus={() => setFocused(true)} onBlur={() => setFocused(false)}
-              style={{ width: '100%', paddingLeft: 40, paddingRight: 16, paddingTop: 9, paddingBottom: 9, borderRadius: 16, background: focused ? 'rgba(22,28,46,0.98)' : 'rgba(20,25,40,0.7)', border: focused ? '1px solid rgba(0,230,118,0.3)' : '1px solid rgba(255,255,255,0.08)', fontSize: 13, color: 'white', outline: 'none', fontWeight: 500, boxShadow: focused ? '0 0 0 3px rgba(0,230,118,0.07)' : 'none', transition: 'all .18s', fontFamily: "'Outfit',sans-serif" }}
-            />
-          </div>
-          {/* Actions */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexShrink: 0 }}>
-            <button className="hidden sm:flex items-center gap-1.5 hover:bg-white/5 transition-all" style={{ padding: '8px 14px', borderRadius: 12, background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.09)', fontSize: 13, fontWeight: 700, color: 'rgba(255,255,255,0.7)' }}>
-              <Users style={{ height: 14, width: 14 }} /><span className="hidden lg:inline">Login</span>
-            </button>
-            <button className="relative flex items-center gap-2" style={{ padding: '8px 16px', borderRadius: 12, background: 'linear-gradient(135deg,#00E676,#00BF63)', fontSize: 13, fontWeight: 900, color: '#021a0e', boxShadow: '0 4px 18px rgba(0,230,118,0.3)' }}>
-              <Package style={{ height: 15, width: 15 }} /><span className="hidden sm:inline">Cart</span>
-              <span style={{ position: 'absolute', top: -6, right: -6, width: 18, height: 18, borderRadius: '50%', background: '#FF6B00', color: 'white', fontSize: 9.5, fontWeight: 900, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>3</span>
-            </button>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-}
-
-/* ════════════════════════════════════════
-   ROOT
-════════════════════════════════════════ */
+/* ─────────────────── ROOT ─────────────────── */
 export function Home() {
   const [activeTab, setActiveTab] = useState<TabId>('now');
-  const CONTENT: Record<TabId, React.ReactNode> = { now: <NowTab />, eats: <EatsTab />, book: <BookTab />, map: <MapTab />, offers: <OffersTab /> };
+  const CONTENT: Record<TabId, React.ReactNode> = {
+    now: <NowTab />, eats: <EatsTab />, book: <BookTab />, map: <MapTab />, offers: <OffersTab />
+  };
 
   return (
-    <div style={{ background: '#060A12', minHeight: '100vh' }}>
+    <div style={{ background: BG, minHeight: '100vh' }}>
       <AnnoBar />
       <Navbar />
       <Hero />
       <TrustBar />
       <HowItWorks />
 
-      {/* Sticky service tabs */}
-      <div className="sticky z-40" style={{ top: 0, background: 'rgba(6,10,18,0.94)', backdropFilter: 'blur(28px)', WebkitBackdropFilter: 'blur(28px)', borderBottom: '1px solid rgba(255,255,255,0.07)' }}>
-        <div className="max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div style={{ display: 'flex', alignItems: 'center', overflowX: 'auto', scrollbarWidth: 'none', gap: 4, padding: '10px 0' }}>
-            {TABS.map(t => {
-              const active = activeTab === t.id;
-              return (
-                <button key={t.id} onClick={() => setActiveTab(t.id)}
-                  style={{ display: 'flex', alignItems: 'center', gap: 7, padding: '9px 18px', borderRadius: 14, fontSize: 13, fontWeight: 800, flexShrink: 0, whiteSpace: 'nowrap', transition: 'all .2s', background: active ? t.accent : 'transparent', color: active ? t.textColor : 'rgba(255,255,255,0.42)', boxShadow: active ? `0 4px 18px ${t.accent}45` : 'none', transform: active ? 'scale(1.04)' : undefined }}>
-                  <span style={{ fontSize: 15 }}>{t.icon}</span>{t.label}
-                </button>
-              );
-            })}
-          </div>
+      {/* Service tab bar */}
+      <div className="sticky z-40" style={{ top: 0, background: 'rgba(11,15,26,0.97)', backdropFilter: 'blur(20px)', WebkitBackdropFilter: 'blur(20px)', borderBottom: `1px solid ${BORDER}` }}>
+        <div style={{ maxWidth: 1280, margin: '0 auto', padding: '0 24px', display: 'flex', alignItems: 'center', overflowX: 'auto', scrollbarWidth: 'none', gap: 4 }}>
+          {TABS.map(t => {
+            const active = activeTab === t.id;
+            return (
+              <button key={t.id} onClick={() => setActiveTab(t.id)}
+                style={{ padding: '14px 20px', fontSize: 13, fontWeight: active ? 700 : 500, color: active ? T1 : T2, borderBottom: active ? `2px solid ${GREEN}` : '2px solid transparent', flexShrink: 0, whiteSpace: 'nowrap', transition: 'all .15s', background: 'none' }}>
+                {t.label}
+              </button>
+            );
+          })}
         </div>
       </div>
 
       {/* Tab content */}
-      <div className="max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8 py-7 pb-28">
+      <div style={{ maxWidth: 1280, margin: '0 auto', padding: '32px 24px 80px' }}>
         <AnimatePresence mode="wait">
-          <motion.div key={activeTab} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -6 }} transition={{ duration: 0.2 }}>
+          <motion.div key={activeTab} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} transition={{ duration: 0.18 }}>
             {CONTENT[activeTab]}
           </motion.div>
         </AnimatePresence>
