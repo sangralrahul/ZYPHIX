@@ -36,6 +36,29 @@ const CATS = [
   { id:'stationery',  e:tw('✏'),  n:'Stationery',          c:'#4f46e5', bg:'#EEF2FF' },
 ];
 
+const SUB_CATS: Record<string, string[]> = {
+  fruits_veg: ['Tomatoes','Potatoes','Onions','Garlic','Ginger','Capsicum','Cauliflower','Cabbage','Brinjal','Ladyfinger','Spinach','Methi','Peas','Carrot','Beetroot','Radish','Apples','Bananas','Mangoes','Oranges','Grapes','Guava','Papaya','Watermelon','Pomegranate','Lemon','Pears','Kiwi','Pineapple','Coconut'],
+  dairy:      ['Full Cream Milk','Toned Milk','Double Toned Milk','Curd / Dahi','Paneer','Butter','Ghee','Cream','Cheese','Condensed Milk','Lassi','Buttermilk (Chaas)','Eggs (6 pack)','Eggs (12 pack)','Flavoured Milk','Tofu'],
+  snacks:     ['Potato Chips','Bhujia','Namkeen','Popcorn','Peanuts','Roasted Chana','Mukhwas','Trail Mix','Papad','Khakhra','Mathri','Bikaneri Bhujia','Aloo Bhujia','Ribbon Pakoda','Corn Puffs','Rice Crackers','Prawn Crackers','Banana Chips','Chakli','Dry Fruits Mix'],
+  beverages:  ['Cola (Pepsi/Coke)','Sprite/7UP','Limca','Thums Up','Maaza / Slice','Real Juice','Paper Boat','Tropicana','Coconut Water','Packaged Drinking Water','Sparkling Water','Energy Drinks (Red Bull)','Iced Tea','Nimbu Pani Mix','Rooh Afza','Aam Panna','Jaljeera'],
+  grains:     ['Basmati Rice (1kg)','Basmati Rice (5kg)','Non-Basmati Rice','Brown Rice','Toor Dal','Moong Dal','Chana Dal','Urad Dal','Masoor Dal','Rajma','Kala Chana','White Peas','Lobia','Soya Chunks','Wheat','Jowar','Bajra','Maize','Oats','Barley'],
+  spices:     ['Turmeric Powder','Red Chilli Powder','Coriander Powder','Cumin Seeds','Cumin Powder','Garam Masala','Black Pepper','Green Cardamom','Cloves','Cinnamon','Bay Leaves','Hing (Asafoetida)','Mustard Seeds','Fenugreek Seeds','Fennel Seeds','Amchur Powder','Chaat Masala','Biryani Masala','Chicken Masala','Pav Bhaji Masala','Sambar Powder','Meat Masala','Kitchen King'],
+  atta:       ['Wheat Atta (5kg)','Wheat Atta (10kg)','Multigrain Atta','Besan (Gram Flour)','Maida (All Purpose)','Sooji / Rava','Rice Flour','Ragi Flour','Corn Flour','Jowar Flour','Bajra Flour','White Bread','Brown Bread','Multigrain Bread','Sandwich Bread','Pav (Dinner Rolls)','Burger Buns','Bread Sticks','Rusk'],
+  oil:        ['Sunflower Oil (1L)','Sunflower Oil (5L)','Mustard Oil','Soyabean Oil','Groundnut Oil','Rice Bran Oil','Coconut Oil','Refined Vegetable Oil','Olive Oil','Palm Oil','Desi Ghee (Cow)','Desi Ghee (Buffalo)','Vanaspati','Butter (Cooking)'],
+  breakfast:  ['Cornflakes','Muesli','Granola','Poha (Flattened Rice)','Upma Mix','Idli Batter','Dosa Batter','Instant Oats','Rolled Oats','Semiya (Vermicelli)','Suji Halwa Mix','Sabudana (Sago)','Beaten Rice','Sattu','Quinoa','Protein Oats'],
+  biscuits:   ['Marie Biscuits','Glucose Biscuits','Cream Biscuits (Bourbon)','Cream Biscuits (Hide & Seek)','Digestive Biscuits','Khari Biscuit','Good Day','Oreo','Parle-G','Monaco','Jim Jam','Rusk','Milk Rusk','Wafers','Cookies','Butter Cookies','Almond Cookies','Chocolate Chip Cookies','Cake Slice','Muffins'],
+  noodles:    ['Maggi Noodles','Yippee Noodles','Top Ramen','Knorr Noodles','Wai Wai','Cup Noodles','Wheat Noodles','Rice Noodles','Spaghetti Pasta','Penne Pasta','Fusilli Pasta','Macaroni','Hakka Noodles','Glass Noodles','Biryani Kit','Pasta Sauce (Arrabiata)','Pasta Sauce (White)'],
+  tea:        ['Tata Tea Gold','Tata Tea Agni','Red Label','Taj Mahal','Green Tea','Tulsi Tea','Ginger Tea','Chamomile Tea','Peppermint Tea','Darjeeling Tea','Masala Chai Mix','Filter Coffee','Bru Instant Coffee','Nescafe Classic','Nescafe Gold','Cold Coffee Mix','Chai Premix','Kadak Chai Mix'],
+  personal:   ['Shampoo (Regular)','Shampoo (Anti-Dandruff)','Conditioner','Body Wash','Soap Bar','Face Wash','Moisturizer','Sunscreen SPF 50','Deodorant','Perfume','Toothpaste','Toothbrush','Mouthwash','Face Scrub','Toner','Serum','Hair Oil','Hair Gel','Razors','Shaving Cream','Sanitary Pads','Panty Liners','Tampons','Intimate Wash'],
+  household:  ['Brooms','Mops','Dustpan','Floor Cleaning Brush','Scrubber Pads','Dish Cloth','Duster','Mop Refill','Dustbin Bags','Candles','Matchboxes','AA Batteries','AAA Batteries','LED Bulbs','Extension Cord','Mosquito Repellent','Rat Poison','Fly Swatter','Air Freshener','Room Freshener Spray','Incense Sticks (Agarbatti)','Dhoop','Camphor (Kapoor)'],
+  cleaning:   ['Washing Powder (1kg)','Washing Powder (5kg)','Liquid Detergent','Fabric Softener','Dishwash Bar','Dishwash Liquid','Floor Cleaner (Phenyl)','Floor Cleaner (Lizol)','Toilet Cleaner (Harpic)','Bathroom Cleaner','Glass Cleaner','Surface Disinfectant','Multi-Purpose Spray','Scrubber (Steel)','Scrubber (Sponge)','Drain Cleaner','Shoe Cleaner','Dry Cleaning Sheets'],
+  baby:       ['Baby Formula (Stage 1)','Baby Formula (Stage 2)','Baby Cereal','Baby Food Puree','Baby Biscuits','Diapers (S)','Diapers (M)','Diapers (L)','Baby Wipes','Baby Shampoo','Baby Soap','Baby Oil','Baby Powder','Baby Lotion','Baby Cream','Diaper Rash Cream','Baby Toothbrush','Baby Toothpaste','Baby Bottle','Pacifier','Baby Clothes (Onesie)'],
+  pharmacy:   ['Paracetamol (Crocin/Dolo)','Ibuprofen','Antacid (Gelusil/Pudin Hara)','ORS Sachet','Vitamin C','Vitamin D3','Multivitamin','Calcium Tablets','Iron Supplement','Cough Syrup','Cold & Flu Tablets','Antihistamine','Eye Drops','Nasal Drops','Bandages','Cotton Wool','Dettol Antiseptic','Betadine','Hand Sanitizer','Face Masks','Glucometer Strips','BP Monitor','Thermometer','Pulse Oximeter'],
+  frozen:     ['Frozen Green Peas','Frozen Sweet Corn','Frozen Mixed Vegetables','Frozen Spinach','Frozen Paneer','Frozen Parathas','Frozen Samosas','Frozen Spring Rolls','Frozen French Fries','Frozen Pizza','Frozen Burger Patty','Frozen Chicken Nuggets','Frozen Fish','Ice Cream (Vanilla)','Ice Cream (Chocolate)','Ice Cream (Strawberry)','Kulfi','Frozen Desserts'],
+  pet:        ['Dog Dry Food','Dog Wet Food','Cat Dry Food','Cat Wet Food','Fish Food','Bird Seeds','Dog Treats','Cat Treats','Pet Shampoo (Dog)','Pet Shampoo (Cat)','Dog Leash','Dog Collar','Cat Litter','Litter Tray','Pet Bed','Pet Toys (Ball)','Pet Toys (Rope)','Flea & Tick Spray','Deworming Tablets','Pet Vitamin Drops'],
+  stationery: ['Ball Pens (Blue)','Ball Pens (Black)','Gel Pens','Pencils (HB)','Pencils (2B)','Eraser','Sharpener','Ruler','Notebooks (Single Line)','Notebooks (Square)','Register (200 Pages)','Register (400 Pages)','Drawing Book','Sketch Pens','Crayons','Stapler','Staple Pins','Paper Clips','Glue Stick','Scissors','Sticky Notes','Highlighters','Files & Folders','Envelopes','Tape (Clear)','Double Tape'],
+};
+
 const STORE_TYPES = [
   { v:'kirana',    e:tw('🏪'), l:'Kirana / General Store' },
   { v:'super',     e:tw('🛒'), l:'Supermarket' },
@@ -194,52 +217,141 @@ function StoreInfoStep({ onNext }: { onNext:(d:object)=>void }) {
 
 /* ─── Step 2: Categories ─── */
 function CategoriesStep({ onNext, onBack }: { onNext:(s:Set<string>)=>void; onBack:()=>void }) {
-  const [selected, setSelected] = useState<Set<string>>(new Set());
-  const toggle = (id:string) => setSelected(prev=>{const n=new Set(prev); n.has(id)?n.delete(id):n.add(id); return n;});
+  const [selectedCats, setSelectedCats] = useState<Set<string>>(new Set());
+  const [expandedCat, setExpandedCat] = useState<string|null>(null);
+  const [selectedSubs, setSelectedSubs] = useState<Record<string,Set<string>>>({});
+
+  const getSubs = (id:string): Set<string> => selectedSubs[id] ?? new Set();
+  const totalItems = Object.values(selectedSubs).reduce((acc,s)=>acc+s.size,0);
+
+  const handleCatClick = (id:string) => {
+    if (expandedCat === id) { setExpandedCat(null); return; }
+    setExpandedCat(id);
+    setSelectedCats(prev => { const n=new Set(prev); n.add(id); return n; });
+  };
+
+  const toggleSub = (catId:string, item:string) => {
+    setSelectedSubs(prev => {
+      const cur = new Set(prev[catId] ?? []);
+      cur.has(item) ? cur.delete(item) : cur.add(item);
+      return {...prev, [catId]: cur};
+    });
+    setSelectedCats(prev => { const n=new Set(prev); n.add(catId); return n; });
+  };
+
+  const addAll = (catId:string) => {
+    const all = new Set(SUB_CATS[catId] ?? []);
+    setSelectedSubs(prev => ({...prev, [catId]: all}));
+    setSelectedCats(prev => { const n=new Set(prev); n.add(catId); return n; });
+  };
+
+  const clearAll = (catId:string) => {
+    setSelectedSubs(prev => ({...prev, [catId]: new Set()}));
+  };
+
+  const expandedCatData = expandedCat ? CATS.find(c=>c.id===expandedCat) : null;
+  const expandedSubs    = expandedCat ? (SUB_CATS[expandedCat] ?? []) : [];
+  const expandedSelSet  = expandedCat ? getSubs(expandedCat) : new Set<string>();
 
   return (
     <motion.div initial={{opacity:0,x:30}} animate={{opacity:1,x:0}} exit={{opacity:0,x:-30}} transition={{type:'spring',stiffness:120,damping:18}}>
-      <div style={{ marginBottom:24 }}>
+      <div style={{ marginBottom:20 }}>
         <h2 style={{ fontFamily:"'Outfit',sans-serif", fontWeight:900, fontSize:'1.55rem', color:T1, letterSpacing:'-.03em', marginBottom:6 }}>What do you sell?</h2>
-        <p style={{ color:T2, fontSize:14 }}>Select all the categories available in your store</p>
-        {selected.size>0 && (
+        <p style={{ color:T2, fontSize:14 }}>Tap a category to pick the exact items — or use "Add All"</p>
+        {totalItems>0 && (
           <motion.div initial={{opacity:0,y:-8}} animate={{opacity:1,y:0}}
             style={{ display:'inline-flex', alignItems:'center', gap:7, background:`${G}12`, border:`1px solid ${G}35`, color:G, fontSize:12.5, fontWeight:700, padding:'5px 14px', borderRadius:99, marginTop:10 }}>
-            <Check size={13}/> {selected.size} {selected.size===1?'category':'categories'} selected
+            <Check size={13}/> {totalItems} items across {selectedCats.size} {selectedCats.size===1?'category':'categories'}
           </motion.div>
         )}
       </div>
 
-      <div style={{ display:'grid', gridTemplateColumns:'repeat(auto-fill,minmax(140px,1fr))', gap:12, marginBottom:28 }}>
+      {/* Category grid */}
+      <div style={{ display:'grid', gridTemplateColumns:'repeat(auto-fill,minmax(130px,1fr))', gap:10, marginBottom:16 }}>
         {CATS.map(({id,e,n,c,bg},i)=>{
-          const on = selected.has(id);
+          const isExpanded = expandedCat === id;
+          const subCount   = getSubs(id).size;
+          const hasItems   = subCount > 0;
           return (
             <motion.button key={id}
               initial={{opacity:0,scale:.9}} animate={{opacity:1,scale:1}} transition={{delay:i*.03,type:'spring',stiffness:200}}
-              whileHover={{scale:1.04,y:-3}} whileTap={{scale:.97}}
-              onClick={()=>toggle(id)}
-              style={{ padding:'18px 10px 14px', borderRadius:16, background:on?bg:W, border:`2px solid ${on?c:BD}`, cursor:'pointer', textAlign:'center', display:'flex', flexDirection:'column', alignItems:'center', gap:8, boxShadow:on?`0 4px 16px ${c}25`:SH, transition:'all .15s', position:'relative' }}>
-              {on && (
-                <motion.div initial={{scale:0}} animate={{scale:1}} transition={{type:'spring',stiffness:300}}
-                  style={{ position:'absolute', top:8, right:8, width:20, height:20, borderRadius:'50%', background:c, display:'flex', alignItems:'center', justifyContent:'center' }}>
-                  <Check size={11} color="#fff" strokeWidth={3}/>
-                </motion.div>
+              whileHover={{scale:1.03,y:-2}} whileTap={{scale:.97}}
+              onClick={()=>handleCatClick(id)}
+              style={{ padding:'14px 8px 12px', borderRadius:14, background:isExpanded||hasItems?bg:W, border:`2px solid ${isExpanded||hasItems?c:BD}`, cursor:'pointer', textAlign:'center', display:'flex', flexDirection:'column', alignItems:'center', gap:6, boxShadow:isExpanded||hasItems?`0 4px 16px ${c}25`:SH, transition:'all .15s', position:'relative' }}>
+              {hasItems && (
+                <div style={{ position:'absolute', top:6, right:6, minWidth:20, height:20, borderRadius:99, background:c, display:'flex', alignItems:'center', justifyContent:'center', fontSize:10, fontWeight:800, color:'#fff', padding:'0 5px' }}>
+                  {subCount}
+                </div>
               )}
-              <img src={e} alt={n} draggable={false} style={{width:38,height:38,objectFit:'contain'}} />
-              <span style={{fontSize:11,fontWeight:700,color:on?c:T2,lineHeight:1.35}}>{n}</span>
+              <img src={e} alt={n} draggable={false} style={{width:34,height:34,objectFit:'contain'}} />
+              <span style={{fontSize:10.5,fontWeight:700,color:isExpanded||hasItems?c:T2,lineHeight:1.3}}>{n}</span>
             </motion.button>
           );
         })}
       </div>
+
+      {/* Subcategory panel */}
+      <AnimatePresence>
+        {expandedCat && expandedCatData && (
+          <motion.div
+            key={expandedCat}
+            initial={{opacity:0,y:-12,scale:.98}} animate={{opacity:1,y:0,scale:1}} exit={{opacity:0,y:-8,scale:.98}}
+            transition={{type:'spring',stiffness:260,damping:22}}
+            style={{ background:expandedCatData.bg, border:`2px solid ${expandedCatData.c}40`, borderRadius:18, padding:'18px 20px', marginBottom:20, boxShadow:`0 8px 32px ${expandedCatData.c}18` }}>
+            {/* Panel header */}
+            <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between', marginBottom:14 }}>
+              <div style={{ display:'flex', alignItems:'center', gap:10 }}>
+                <img src={expandedCatData.e} alt="" draggable={false} style={{width:28,height:28,objectFit:'contain'}} />
+                <div>
+                  <p style={{ fontFamily:"'Outfit',sans-serif", fontWeight:800, fontSize:14.5, color:T1, marginBottom:1 }}>{expandedCatData.n}</p>
+                  <p style={{ fontSize:11.5, color:T2 }}>{expandedSelSet.size} of {expandedSubs.length} items selected</p>
+                </div>
+              </div>
+              <div style={{ display:'flex', gap:8, alignItems:'center' }}>
+                {expandedSelSet.size < expandedSubs.length ? (
+                  <button onClick={()=>addAll(expandedCat)}
+                    style={{ padding:'6px 14px', borderRadius:99, background:expandedCatData.c, color:'#fff', fontSize:12, fontWeight:800, border:'none', cursor:'pointer', display:'flex', alignItems:'center', gap:5 }}>
+                    <Check size={12}/> Add All
+                  </button>
+                ) : (
+                  <button onClick={()=>clearAll(expandedCat)}
+                    style={{ padding:'6px 14px', borderRadius:99, background:'#EF4444', color:'#fff', fontSize:12, fontWeight:800, border:'none', cursor:'pointer' }}>
+                    Clear All
+                  </button>
+                )}
+                <button onClick={()=>setExpandedCat(null)}
+                  style={{ padding:'6px 12px', borderRadius:99, background:'rgba(0,0,0,.08)', color:T1, fontSize:12, fontWeight:700, border:'none', cursor:'pointer' }}>
+                  Done ✓
+                </button>
+              </div>
+            </div>
+
+            {/* Item chips */}
+            <div style={{ display:'flex', flexWrap:'wrap', gap:8 }}>
+              {expandedSubs.map(item => {
+                const on = expandedSelSet.has(item);
+                return (
+                  <motion.button key={item} whileHover={{scale:1.04}} whileTap={{scale:.96}}
+                    onClick={()=>toggleSub(expandedCat, item)}
+                    style={{ padding:'6px 14px', borderRadius:99, background:on?expandedCatData.c:'rgba(255,255,255,.85)', border:`1.5px solid ${on?expandedCatData.c:BD}`, color:on?'#fff':T1, fontSize:12.5, fontWeight:on?700:500, cursor:'pointer', transition:'all .12s', boxShadow:on?`0 2px 8px ${expandedCatData.c}35`:'none', display:'flex', alignItems:'center', gap:5 }}>
+                    {on && <Check size={11} strokeWidth={3}/>}
+                    {item}
+                  </motion.button>
+                );
+              })}
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       <div style={{ display:'flex', gap:12 }}>
         <button onClick={onBack}
           style={{ padding:'14px 22px', borderRadius:12, background:W, border:`1.5px solid ${BD}`, color:T2, fontSize:14, fontWeight:700, cursor:'pointer', display:'flex', alignItems:'center', gap:6 }}>
           <ArrowLeft size={15}/> Back
         </button>
-        <motion.button onClick={()=>onNext(selected)} whileHover={{scale:1.02}} whileTap={{scale:.97}}
-          style={{ flex:1, padding:'15px', borderRadius:13, background: selected.size>0?G:'#9CA3AF', color:'#fff', fontSize:15, fontWeight:800, border:'none', cursor: selected.size>0?'pointer':'not-allowed', display:'flex', alignItems:'center', justifyContent:'center', gap:8, transition:'background .2s', boxShadow: selected.size>0?`0 6px 24px ${G}45`:'none' }}>
-          Continue {selected.size>0?`(${selected.size} selected)`:''} <ArrowRight size={16}/>
+        <motion.button onClick={()=>onNext(selectedCats)} whileHover={{scale:1.02}} whileTap={{scale:.97}}
+          style={{ flex:1, padding:'15px', borderRadius:13, background: selectedCats.size>0?G:'#9CA3AF', color:'#fff', fontSize:15, fontWeight:800, border:'none', cursor: selectedCats.size>0?'pointer':'not-allowed', display:'flex', alignItems:'center', justifyContent:'center', gap:8, transition:'background .2s', boxShadow: selectedCats.size>0?`0 6px 24px ${G}45`:'none' }}>
+          Continue {totalItems>0?`(${totalItems} items)`:''} <ArrowRight size={16}/>
         </motion.button>
       </div>
     </motion.div>
