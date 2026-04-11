@@ -29,7 +29,7 @@ export function Navbar() {
 
           {/* ── Logo ── */}
           <Link href="/" className="shrink-0 transition-opacity hover:opacity-90">
-            <ZyphixLogo size={34} wordmarkColor="#ffffff" wordmarkHighlight="#34D399" playAnimation={true} />
+            <ZyphixLogo size={34} wordmarkColor="#ffffff" wordmarkHighlight="#34D399" />
           </Link>
 
           {/* ── Location ── */}
