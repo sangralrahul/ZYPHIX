@@ -2,7 +2,7 @@ import React from 'react';
 
 function PinMark({ size }: { size: number }) {
   const r = Math.round(size * 0.265);
-  const fs = Math.round(size * 0.44);
+  const fs = Math.round(size * 0.46);
   return (
     <div style={{
       width: size,
@@ -18,11 +18,13 @@ function PinMark({ size }: { size: number }) {
       <span style={{
         fontFamily: "'Outfit', sans-serif",
         fontWeight: 900,
+        fontStyle: 'italic',
         fontSize: fs,
         color: '#ffffff',
         lineHeight: 1,
-        letterSpacing: '-0.05em',
+        letterSpacing: '-0.08em',
         userSelect: 'none',
+        textShadow: '0 1px 6px rgba(0,0,0,.18)',
       }}>//</span>
     </div>
   );
@@ -30,8 +32,6 @@ function PinMark({ size }: { size: number }) {
 
 export function ZyphixLogo({
   size = 32,
-  wordmarkColor = '#0A0F1A',
-  wordmarkHighlight = '#0DA366',
   showWordmark = true,
   gap = 9,
   fontSize,
@@ -43,7 +43,7 @@ export function ZyphixLogo({
   gap?: number;
   fontSize?: number;
 }) {
-  const fs = fontSize ?? size * 0.565;
+  const fs = fontSize ?? size * 0.6;
   return (
     <div style={{ display: 'flex', alignItems: 'center', gap, flexShrink: 0 }}>
       <PinMark size={size} />
@@ -52,13 +52,38 @@ export function ZyphixLogo({
           fontFamily: "'Outfit', sans-serif",
           fontWeight: 900,
           fontSize: fs,
-          letterSpacing: '-0.055em',
+          letterSpacing: '-0.06em',
           lineHeight: 1,
           userSelect: 'none',
+          display: 'inline-flex',
+          alignItems: 'baseline',
+          gap: 0,
         }}>
-          <span style={{ color: wordmarkHighlight }}>ZYPH</span>
-          <span style={{ color: wordmarkHighlight, fontWeight: 300, letterSpacing: '-0.02em', opacity: 0.75 }}>/</span>
-          <span style={{ color: wordmarkColor }}>X</span>
+          <span style={{
+            fontStyle: 'italic',
+            background: 'linear-gradient(135deg, #18F590 0%, #0DC268 55%, #08924C 100%)',
+            WebkitBackgroundClip: 'text',
+            WebkitTextFillColor: 'transparent',
+            backgroundClip: 'text',
+          }}>ZYPH</span>
+          <span style={{
+            fontStyle: 'italic',
+            fontWeight: 200,
+            fontSize: fs * 1.05,
+            background: 'linear-gradient(180deg, #6DFFC0 0%, #0DC268 100%)',
+            WebkitBackgroundClip: 'text',
+            WebkitTextFillColor: 'transparent',
+            backgroundClip: 'text',
+            letterSpacing: '0.01em',
+            lineHeight: 1,
+          }}>/</span>
+          <span style={{
+            color: '#0A0F1A',
+            fontStyle: 'normal',
+            fontWeight: 900,
+            fontSize: fs * 1.08,
+            letterSpacing: '-0.04em',
+          }}>X</span>
         </span>
       )}
     </div>
