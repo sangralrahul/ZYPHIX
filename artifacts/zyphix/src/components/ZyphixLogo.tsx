@@ -2,7 +2,7 @@ import React from 'react';
 
 function PinMark({ size }: { size: number }) {
   const r = Math.round(size * 0.265);
-  const fs = Math.round(size * 0.58);
+  const fs = Math.round(size * 0.44);
   return (
     <div style={{
       width: size,
@@ -23,7 +23,7 @@ function PinMark({ size }: { size: number }) {
         lineHeight: 1,
         letterSpacing: '-0.05em',
         userSelect: 'none',
-      }}>Z</span>
+      }}>//</span>
     </div>
   );
 }
