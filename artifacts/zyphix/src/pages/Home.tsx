@@ -235,78 +235,73 @@ function Navbar({ tab, setTab }: { tab: TabId; setTab: (t: TabId) => void }) {
 }
 
 /* ═══════════════ HERO ═══════════════ */
-function Hero({ tab, setTab }: { tab: TabId; setTab: (t: TabId) => void }) {
+
+const HERO_DATA: Record<string, { name: string; headline: string; sub: string; cta: string; color: string; dark: string; img: string; badge: string; tags: string[] }> = {
+  now:    { name: 'Zyphix Now',      headline: 'Groceries delivered\nin 30 minutes.',        sub: 'Kirana stores · Pharmacy · Supermarket · 1,000+ products at kirana prices', cta: 'Order Groceries', color: G,         dark: '#065F46', img: 'https://images.unsplash.com/photo-1542838132-92c53300491e?w=1400&h=600&fit=crop&q=90', badge: '⚡ Fastest delivery in India',   tags: ['Vegetables','Dairy','Snacks','Pharmacy','Beverages','Household'] },
+  eats:   { name: 'Zyphix Eats',     headline: 'Food from your\nfavourite places.',         sub: 'Restaurants · Dhabas · Cloud kitchens · Local gems near you',               cta: 'Order Food',      color: '#EA580C', dark: '#9A3412', img: 'https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=1400&h=600&fit=crop&q=90', badge: '🍱 2,000+ restaurants',           tags: ['Biryani','Pizza','Burgers','Thali','Desserts','Drinks'] },
+  book:   { name: 'Zyphix Book',     headline: 'Trusted services\nat your doorstep.',       sub: 'Plumbers · Electricians · Cleaners · AC Repair · Salon · Beauty',           cta: 'Book a Service',  color: '#7C3AED', dark: '#4C1D95', img: 'https://images.unsplash.com/photo-1521791136064-7986c2920216?w=1400&h=600&fit=crop&q=90', badge: '📅 Verified professionals',        tags: ['Plumbing','Electrical','Cleaning','AC Repair','Painting','Salon'] },
+  map:    { name: 'Stores Near Me',  headline: 'Find local stores\nnear you.',               sub: 'Kirana · Medical · Supermarkets — all on the map',                          cta: 'Explore Map',     color: G,         dark: '#065F46', img: 'https://images.unsplash.com/photo-1604719312566-8912e9227c6a?w=1400&h=600&fit=crop&q=90', badge: '📍 100+ cities',                  tags: [] },
+  offers: { name: 'Exclusive Offers',headline: "Deals you won't\nfind elsewhere.",           sub: 'Promo codes · Flash sales · First-order discounts',                          cta: 'See All Offers',  color: '#D97706', dark: '#92400E', img: 'https://images.unsplash.com/photo-1607082348824-0a96f2a4b9da?w=1400&h=600&fit=crop&q=90', badge: '🏷️ New deals daily',               tags: [] },
+};
+
+function ServiceHero({ tab, setTab }: { tab: TabId; setTab: (t: TabId) => void }) {
+  const h = HERO_DATA[tab] ?? HERO_DATA.now;
   return (
     <div style={{ background: W }}>
-      {/* Main headline + search */}
-      <div style={{ maxWidth: 1320, margin: '0 auto', padding: '56px 24px 40px', textAlign: 'center' }}>
-        <motion.div initial={{ opacity: 0, y: 18 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: .55 }}>
-          <div style={{ display: 'inline-flex', alignItems: 'center', gap: 7, background: `rgba(13,163,102,.07)`, border: `1px solid rgba(13,163,102,.2)`, borderRadius: 999, padding: '5px 14px', marginBottom: 22 }}>
-            <span style={{ width: 7, height: 7, borderRadius: '50%', background: G, animation: 'pulse-dot 2s ease-in-out infinite', display: 'block' }} />
-            <span style={{ fontSize: 11.5, fontWeight: 700, color: G, letterSpacing: '.06em' }}>NOW LIVE ACROSS INDIA · 100+ CITIES</span>
-          </div>
-          <h1 style={{ fontFamily: "'Outfit',sans-serif", fontWeight: 900, fontSize: 'clamp(2.8rem,6vw,5rem)', color: T1, letterSpacing: '-.05em', lineHeight: 1.02, marginBottom: 16, maxWidth: 800, margin: '0 auto 16px' }}>
-            Get it delivered in<br /><span style={{ color: G }}>30 minutes.</span>
-          </h1>
-          <p style={{ fontSize: 17, color: T2, lineHeight: 1.6, maxWidth: 520, margin: '0 auto 32px', fontWeight: 400 }}>
-            Groceries, food & home services — from verified local partners across India.
-          </p>
-          {/* Search bar */}
-          <div style={{ position: 'relative', maxWidth: 600, margin: '0 auto 40px', display: 'flex', gap: 10 }}>
-            <div style={{ flex: 1, position: 'relative' }}>
-              <MapPin size={16} style={{ position: 'absolute', left: 14, top: '50%', transform: 'translateY(-50%)', color: G }} />
-              <input placeholder="Enter your delivery address..." style={{ width: '100%', paddingLeft: 46, paddingRight: 16, paddingTop: 15, paddingBottom: 15, borderRadius: 14, background: BG, border: `2px solid ${BD}`, fontSize: 15, color: T1, fontFamily: 'inherit', fontWeight: 500, outline: 'none', transition: 'border-color .18s', boxShadow: SH }}
-                onFocus={e => e.target.style.borderColor = G + '80'}
-                onBlur={e => e.target.style.borderColor = BD}
-              />
-            </div>
-            <button style={{ padding: '15px 28px', borderRadius: 14, background: G, color: '#fff', fontWeight: 800, fontSize: 15, flexShrink: 0, boxShadow: `0 4px 20px rgba(13,163,102,.35)`, transition: 'background .15s' }}
-              onMouseEnter={e => (e.currentTarget as HTMLElement).style.background = G2}
-              onMouseLeave={e => (e.currentTarget as HTMLElement).style.background = G}>
-              Find Stores
-            </button>
-          </div>
-        </motion.div>
-
-        {/* 3 large service cards */}
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: 18 }}>
-          {[
-            { id: 'now' as TabId, name: 'Zyphix Now', headline: 'Grocery in\n30 minutes', sub: '1,000+ products · Kirana · Pharmacy', color: G, dark: '#065F46', img: 'https://images.unsplash.com/photo-1542838132-92c53300491e?w=800&h=500&fit=crop&q=85', badge: '⚡ Fastest' },
-            { id: 'eats' as TabId, name: 'Zyphix Eats', headline: 'Food from your\nfavorite places', sub: 'Restaurants · Dhabas · Cloud kitchens', color: '#EA580C', dark: '#9A3412', img: 'https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=800&h=500&fit=crop&q=85', badge: '🍱 Popular' },
-            { id: 'book' as TabId, name: 'Zyphix Book', headline: 'Services at\nyour doorstep', sub: 'Plumbers · Electricians · Cleaners · More', color: '#7C3AED', dark: '#4C1D95', img: 'https://images.unsplash.com/photo-1521791136064-7986c2920216?w=800&h=500&fit=crop&q=85', badge: '📅 Verified' },
-          ].map((s, i) => {
+      {/* Service selector pills */}
+      <div style={{ maxWidth: 1320, margin: '0 auto', padding: '22px 24px 0' }}>
+        <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap' }}>
+          {([
+            { id: 'now'  as TabId, label: 'Zyphix Now',  em: '⚡', color: G },
+            { id: 'eats' as TabId, label: 'Zyphix Eats', em: '🍱', color: '#EA580C' },
+            { id: 'book' as TabId, label: 'Zyphix Book', em: '🔧', color: '#7C3AED' },
+          ] as const).map(s => {
             const on = tab === s.id;
             return (
-              <motion.button key={s.id} onClick={() => setTab(s.id)}
-                initial={{ opacity: 0, y: 28 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: .15 + i * .1, duration: .5 }}
-                style={{ position: 'relative', height: 340, borderRadius: 22, overflow: 'hidden', cursor: 'pointer', textAlign: 'left', border: `2.5px solid ${on ? s.color : 'transparent'}`, boxShadow: on ? `0 0 0 4px ${s.color}22, ${SH2}` : SH, transition: 'all .22s', transform: on ? 'translateY(-4px)' : 'none' }}
-                onMouseEnter={e => { if (!on) { (e.currentTarget as HTMLElement).style.transform = 'translateY(-2px)'; (e.currentTarget as HTMLElement).style.boxShadow = SH2; } }}
-                onMouseLeave={e => { if (!on) { (e.currentTarget as HTMLElement).style.transform = 'none'; (e.currentTarget as HTMLElement).style.boxShadow = SH; } }}>
-                {/* Photo */}
-                <img src={s.img} alt={s.name} style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover', transition: 'transform .4s' }} />
-                {/* Gradient overlay */}
-                <div style={{ position: 'absolute', inset: 0, background: `linear-gradient(165deg, ${s.dark}E8 0%, ${s.dark}B0 50%, ${s.dark}55 100%)` }} />
-                {/* Content */}
-                <div style={{ position: 'absolute', inset: 0, padding: '26px 24px', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
-                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                    <span style={{ background: 'rgba(255,255,255,.18)', backdropFilter: 'blur(8px)', color: '#fff', fontSize: 11, fontWeight: 700, padding: '4px 10px', borderRadius: 99, border: '1px solid rgba(255,255,255,.25)' }}>{s.badge}</span>
-                    {on && <span style={{ background: s.color, color: '#fff', fontSize: 10.5, fontWeight: 800, padding: '3px 9px', borderRadius: 99, letterSpacing: '.03em' }}>ACTIVE</span>}
-                  </div>
-                  <div>
-                    <p style={{ fontSize: 11, fontWeight: 700, color: 'rgba(255,255,255,.65)', letterSpacing: '.08em', textTransform: 'uppercase', marginBottom: 8 }}>{s.name}</p>
-                    <h3 style={{ fontFamily: "'Outfit',sans-serif", fontWeight: 900, color: '#fff', fontSize: 'clamp(1.4rem,2.2vw,1.75rem)', lineHeight: 1.15, letterSpacing: '-.03em', marginBottom: 10, whiteSpace: 'pre-line' }}>{s.headline}</h3>
-                    <p style={{ fontSize: 12.5, color: 'rgba(255,255,255,.7)', marginBottom: 18 }}>{s.sub}</p>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                      <span style={{ background: on ? s.color : 'rgba(255,255,255,.95)', color: on ? '#fff' : s.dark, fontSize: 12.5, fontWeight: 800, padding: '8px 16px', borderRadius: 10, display: 'flex', alignItems: 'center', gap: 5 }}>
-                        Order now <ArrowRight size={13} />
-                      </span>
-                    </div>
-                  </div>
-                </div>
-              </motion.button>
+              <button key={s.id} onClick={() => setTab(s.id)}
+                style={{ display: 'flex', alignItems: 'center', gap: 7, padding: '9px 20px', borderRadius: 12, fontSize: 14, fontWeight: 700, cursor: 'pointer', transition: 'all .18s', border: `2px solid ${on ? s.color : BD}`, background: on ? `${s.color}12` : W, color: on ? s.color : T2, boxShadow: on ? `0 2px 12px ${s.color}22` : 'none' }}>
+                <span>{s.em}</span> {s.label}
+                {on && <span style={{ width: 7, height: 7, borderRadius: '50%', background: s.color, display: 'block' }} />}
+              </button>
             );
           })}
         </div>
+      </div>
+
+      {/* Focused hero banner — changes with active tab */}
+      <div style={{ maxWidth: 1320, margin: '0 auto', padding: '14px 24px 32px' }}>
+        <AnimatePresence mode="wait">
+          <motion.div key={tab}
+            initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }}
+            transition={{ duration: .2 }}
+            style={{ position: 'relative', borderRadius: 24, overflow: 'hidden', height: 320, display: 'flex', alignItems: 'flex-end' }}>
+            <img src={h.img} alt={h.name} style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover' }} />
+            <div style={{ position: 'absolute', inset: 0, background: `linear-gradient(90deg, ${h.dark}F5 0%, ${h.dark}CC 45%, ${h.dark}55 75%, transparent 100%)` }} />
+            <div style={{ position: 'relative', padding: '32px 44px', width: '100%' }}>
+              <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6, background: 'rgba(255,255,255,.15)', backdropFilter: 'blur(8px)', color: '#fff', fontSize: 11.5, fontWeight: 700, padding: '5px 14px', borderRadius: 99, border: '1px solid rgba(255,255,255,.25)', marginBottom: 14 }}>{h.badge}</span>
+              <h1 style={{ fontFamily: "'Outfit',sans-serif", fontWeight: 900, color: '#fff', fontSize: 'clamp(1.9rem,3.5vw,2.9rem)', lineHeight: 1.08, letterSpacing: '-.04em', marginBottom: 10, whiteSpace: 'pre-line' }}>{h.headline}</h1>
+              <p style={{ fontSize: 14.5, color: 'rgba(255,255,255,.68)', maxWidth: 500, lineHeight: 1.55, marginBottom: h.tags.length ? 18 : 22 }}>{h.sub}</p>
+              {h.tags.length > 0 && (
+                <div style={{ display: 'flex', gap: 7, flexWrap: 'wrap', marginBottom: 22 }}>
+                  {h.tags.map(t => (
+                    <span key={t} style={{ background: 'rgba(255,255,255,.12)', backdropFilter: 'blur(4px)', color: '#fff', fontSize: 12, fontWeight: 600, padding: '5px 13px', borderRadius: 9, border: '1px solid rgba(255,255,255,.2)', cursor: 'pointer' }}>{t}</span>
+                  ))}
+                </div>
+              )}
+              <div style={{ display: 'flex', gap: 10, alignItems: 'center' }}>
+                <div style={{ position: 'relative', maxWidth: 340 }}>
+                  <MapPin size={14} style={{ position: 'absolute', left: 12, top: '50%', transform: 'translateY(-50%)', color: 'rgba(255,255,255,.65)' }} />
+                  <input placeholder="Enter delivery address…" style={{ paddingLeft: 36, paddingRight: 14, paddingTop: 13, paddingBottom: 13, borderRadius: 11, background: 'rgba(255,255,255,.12)', backdropFilter: 'blur(8px)', border: '1.5px solid rgba(255,255,255,.25)', fontSize: 13.5, color: '#fff', fontFamily: 'inherit', outline: 'none', width: 280 }} />
+                </div>
+                <button style={{ padding: '13px 26px', borderRadius: 11, background: h.color, color: '#fff', fontWeight: 800, fontSize: 14.5, flexShrink: 0, boxShadow: `0 4px 18px ${h.color}55`, transition: 'filter .15s', whiteSpace: 'nowrap' }}
+                  onMouseEnter={e => (e.currentTarget as HTMLElement).style.filter = 'brightness(1.1)'}
+                  onMouseLeave={e => (e.currentTarget as HTMLElement).style.filter = 'brightness(1)'}>
+                  {h.cta} →
+                </button>
+              </div>
+            </div>
+          </motion.div>
+        </AnimatePresence>
       </div>
     </div>
   );
@@ -996,7 +991,7 @@ export function Home() {
     <div style={{ background: BG, minHeight: '100vh' }}>
       <AnnoBar />
       <Navbar tab={tab} setTab={setTab} />
-      <Hero tab={tab} setTab={setTab} />
+      <ServiceHero tab={tab} setTab={setTab} />
       <Trust />
       <BrandsMarquee />
 
