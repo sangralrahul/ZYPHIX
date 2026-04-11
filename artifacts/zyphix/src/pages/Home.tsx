@@ -223,29 +223,12 @@ function Navbar({ tab, setTab }: { tab: TabId; setTab: (t: TabId) => void }) {
         </div>
       </div>
       {/* Service strip */}
-      <div style={{ maxWidth: 1320, margin: '0 auto', padding: '0 24px', height: 56, display: 'flex', alignItems: 'center', gap: 4 }}>
-        {SVCS.map(s => {
-          const on = tab === s.id;
-          return (
-            <button key={s.id} onClick={() => setTab(s.id)}
-              style={{ display: 'flex', alignItems: 'center', gap: 9, padding: '8px 16px', borderRadius: 10, flexShrink: 0, cursor: 'pointer', transition: 'all .18s', background: on ? `${s.color}0F` : 'transparent', border: `1.5px solid ${on ? s.color + '33' : 'transparent'}` }}
-              onMouseEnter={e => { if (!on) (e.currentTarget as HTMLElement).style.background = BG; }}
-              onMouseLeave={e => { if (!on) (e.currentTarget as HTMLElement).style.background = 'transparent'; }}>
-              <div style={{ width: 34, height: 34, borderRadius: 9, overflow: 'hidden', border: `1.5px solid ${on ? s.color + '44' : BD}`, flexShrink: 0 }}>
-                <img src={s.img} alt={s.name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-              </div>
-              <div style={{ textAlign: 'left' }}>
-                <p style={{ fontFamily: "'Outfit',sans-serif", fontWeight: 800, fontSize: 14, color: on ? s.color : T1, lineHeight: 1.15, letterSpacing: '-.02em' }}>{s.name}</p>
-                <p style={{ fontSize: 10.5, color: on ? s.color + 'CC' : T3, fontWeight: 500 }}>{s.tag}</p>
-              </div>
-              {on && <div style={{ width: 5, height: 5, borderRadius: '50%', background: s.color, marginLeft: 4 }} />}
-            </button>
-          );
-        })}
-        <div style={{ width: 1, height: 28, background: BD, margin: '0 8px' }} />
+      <div style={{ maxWidth: 1320, margin: '0 auto', padding: '0 24px', height: 48, display: 'flex', alignItems: 'center', gap: 4 }}>
         {[{ id: 'map' as TabId, l: '📍 Stores Near Me' }, { id: 'offers' as TabId, l: '🏷️ Offers' }].map(x => (
           <button key={x.id} onClick={() => setTab(x.id)}
-            style={{ padding: '8px 14px', borderRadius: 9, fontSize: 12.5, fontWeight: tab === x.id ? 700 : 500, color: tab === x.id ? T1 : T2, background: tab === x.id ? BG : 'transparent', border: `1.5px solid ${tab === x.id ? BD : 'transparent'}`, flexShrink: 0, transition: 'all .15s', whiteSpace: 'nowrap' }}>
+            style={{ padding: '8px 14px', borderRadius: 9, fontSize: 13, fontWeight: tab === x.id ? 700 : 500, color: tab === x.id ? T1 : T2, background: tab === x.id ? BG : 'transparent', border: `1.5px solid ${tab === x.id ? BD : 'transparent'}`, flexShrink: 0, transition: 'all .15s', whiteSpace: 'nowrap', cursor: 'pointer' }}
+            onMouseEnter={e => { if (tab !== x.id) (e.currentTarget as HTMLElement).style.background = BG; }}
+            onMouseLeave={e => { if (tab !== x.id) (e.currentTarget as HTMLElement).style.background = 'transparent'; }}>
             {x.l}
           </button>
         ))}
