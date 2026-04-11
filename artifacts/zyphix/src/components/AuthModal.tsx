@@ -16,7 +16,7 @@ const ERR = '#EF4444';
 function ZLogo({ size = 20 }: { size?: number }) {
   return (
     <svg width={size} height={size} viewBox="0 0 24 24" fill="none">
-      <path d="M3,3 H21 V8 L9,16 H21 V21 H3 V16 L15,8 H3 Z" fill="white"/>
+      <path fillRule="evenodd" d="M12 2C8.69 2 6 4.69 6 8C6 12.82 12 22 12 22C12 22 18 12.82 18 8C18 4.69 15.31 2 12 2Z M14.5 8A2.5 2.5 0 1 0 9.5 8A2.5 2.5 0 1 0 14.5 8Z" fill="white"/>
     </svg>
   );
 }

@@ -112,7 +112,7 @@ export function Navbar() {
               <input placeholder="Search..." className="w-full pl-9 pr-4 py-2.5 rounded-xl text-white text-sm outline-none placeholder:text-[var(--z-muted)]"
                 style={{ background: 'rgba(22,24,31,0.8)', border: '1px solid rgba(255,255,255,0.07)' }} />
             </div>
-            {[['⚡', 'ZyphixNow'], ['🍱', 'ZyphixEats'], ['📅', 'ZyphixBook'], ['🗺️', 'Kirana Near Me'], ['🏷️', 'Offers']].map(([icon, label]) => (
+            {[['⚡', 'ZyphixNow'], ['🍱', 'ZyphixEats'], ['🗺️', 'Kirana Near Me'], ['🏷️', 'Offers']].map(([icon, label]) => (
               <div key={label} onClick={() => setMobileOpen(false)}
                 className="flex items-center gap-3 py-3 px-3 rounded-xl hover:bg-white/5 transition-colors cursor-pointer font-medium text-white/80">
                 <span>{icon}</span>{label}

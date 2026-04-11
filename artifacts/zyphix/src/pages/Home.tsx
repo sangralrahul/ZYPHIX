@@ -6,10 +6,10 @@ import {
   Shield, Package, Truck, Zap, Check, Copy, ArrowRight,
   Phone, Instagram, Twitter, Linkedin, PlayCircle
 } from 'lucide-react';
-import { products, categories, restaurants, foodCategories, services, promoCodes, stores } from '@/data/mockData';
+import { products, categories, restaurants, foodCategories, promoCodes, stores } from '@/data/mockData';
 import { useAuth } from '@/context/AuthContext';
 
-type TabId = 'now' | 'eats' | 'book' | 'map' | 'offers';
+type TabId = 'now' | 'eats' | 'map' | 'offers';
 
 /* ─── Tokens ─── */
 const G   = '#0DA366';   // primary green
@@ -24,10 +24,15 @@ const SH  = '0 1px 3px rgba(0,0,0,.08), 0 4px 16px rgba(0,0,0,.06)';
 const SH2 = '0 4px 12px rgba(0,0,0,.1), 0 16px 40px rgba(0,0,0,.1)';
 
 /* ═══════════════ LOGO ═══════════════ */
-function ZIcon({ size = 20 }: { size?: number }) {
+function PinIcon({ size = 20 }: { size?: number }) {
   return (
     <svg width={size} height={size} viewBox="0 0 24 24" fill="none">
-      <path d="M3,3 H21 V8 L9,16 H21 V21 H3 V16 L15,8 H3 Z" fill="white"/>
+      {/* Location pin with inner circle cutout — evenodd reveals gradient background */}
+      <path
+        fillRule="evenodd"
+        d="M12 2C8.69 2 6 4.69 6 8C6 12.82 12 22 12 22C12 22 18 12.82 18 8C18 4.69 15.31 2 12 2Z M14.5 8A2.5 2.5 0 1 0 9.5 8A2.5 2.5 0 1 0 14.5 8Z"
+        fill="white"
+      />
     </svg>
   );
 }
@@ -44,7 +49,7 @@ function LogoMark({ size = 32, dark = false }: { size?: number; dark?: boolean }
         flexShrink: 0,
         boxShadow: `0 4px 16px rgba(5,158,92,.5), inset 0 1px 0 rgba(255,255,255,.22)`,
       }}>
-        <ZIcon size={Math.round(size * 0.62)} />
+        <PinIcon size={Math.round(size * 0.62)} />
       </div>
       <span style={{ fontFamily: "'Outfit',sans-serif", fontWeight: 900, fontSize: size * 0.575, letterSpacing: '-.04em', color: dark ? '#fff' : T1, lineHeight: 1 }}>
         <span style={{ color: dark ? '#34D399' : G }}>Z</span>yphix
@@ -121,7 +126,6 @@ function AnnoBar() {
 const SVCS = [
   { id: 'now' as TabId, name: 'Zyphix Now', tag: 'Grocery · 10 min', color: G, img: 'https://images.unsplash.com/photo-1542838132-92c53300491e?w=64&h=64&fit=crop&q=80' },
   { id: 'eats' as TabId, name: 'Zyphix Eats', tag: 'Food delivery', color: '#EA580C', img: 'https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=64&h=64&fit=crop&q=80' },
-  { id: 'book' as TabId, name: 'Zyphix Book', tag: 'Home services', color: '#7C3AED', img: 'https://images.unsplash.com/photo-1521791136064-7986c2920216?w=64&h=64&fit=crop&q=80' },
 ];
 
 function Navbar({ tab, setTab }: { tab: TabId; setTab: (t: TabId) => void }) {
@@ -158,7 +162,7 @@ function Navbar({ tab, setTab }: { tab: TabId; setTab: (t: TabId) => void }) {
         <div style={{ flex: 1, position: 'relative', maxWidth: 500 }}>
           <Search size={14} style={{ position: 'absolute', left: 13, top: '50%', transform: 'translateY(-50%)', color: focus ? (active?.color ?? G) : T3, transition: 'color .15s' }} />
           <input value={q} onChange={e => setQ(e.target.value)} onFocus={() => setFocus(true)} onBlur={() => setFocus(false)}
-            placeholder={`Search ${tab === 'now' ? 'groceries, brands' : tab === 'eats' ? 'dishes, restaurants' : 'services, professionals'}...`}
+            placeholder={`Search ${tab === 'now' ? 'groceries, brands' : tab === 'eats' ? 'dishes, restaurants' : 'stores, offers'}...`}
             style={{ width: '100%', paddingLeft: 40, paddingRight: 14, paddingTop: 10, paddingBottom: 10, borderRadius: 10, background: BG, border: `1.5px solid ${focus ? (active?.color ?? G) + '66' : BD}`, fontSize: 13, color: T1, fontFamily: 'inherit', fontWeight: 500, outline: 'none', transition: 'all .18s', boxShadow: focus ? `0 0 0 3px ${(active?.color ?? G)}14` : 'none' }} />
         </div>
         <div style={{ display: 'flex', gap: 8, marginLeft: 'auto', flexShrink: 0, position: 'relative' }}>
@@ -255,49 +259,100 @@ function Navbar({ tab, setTab }: { tab: TabId; setTab: (t: TabId) => void }) {
 const HERO_DATA: Record<string, { name: string; headline: string; sub: string; cta: string; color: string; dark: string; img: string; badge: string; tags: string[] }> = {
   now:    { name: 'Zyphix Now',      headline: 'Groceries delivered\nin 10 minutes.',        sub: 'Kirana stores · Pharmacy · Supermarket · 1,000+ products at kirana prices', cta: 'Order Groceries', color: G,         dark: '#065F46', img: 'https://images.unsplash.com/photo-1542838132-92c53300491e?w=1400&h=600&fit=crop&q=90', badge: '⚡ Fastest delivery in India',   tags: ['Vegetables','Dairy','Snacks','Pharmacy','Beverages','Household'] },
   eats:   { name: 'Zyphix Eats',     headline: 'Food from your\nfavourite places.',         sub: 'Restaurants · Dhabas · Cloud kitchens · Local gems near you',               cta: 'Order Food',      color: '#EA580C', dark: '#9A3412', img: 'https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=1400&h=600&fit=crop&q=90', badge: '🍱 2,000+ restaurants',           tags: ['Biryani','Pizza','Burgers','Thali','Desserts','Drinks'] },
-  book:   { name: 'Zyphix Book',     headline: 'Trusted services\nat your doorstep.',       sub: 'Plumbers · Electricians · Cleaners · AC Repair · Salon · Beauty',           cta: 'Book a Service',  color: '#7C3AED', dark: '#4C1D95', img: 'https://images.unsplash.com/photo-1521791136064-7986c2920216?w=1400&h=600&fit=crop&q=90', badge: '📅 Verified professionals',        tags: ['Plumbing','Electrical','Cleaning','AC Repair','Painting','Salon'] },
   map:    { name: 'Stores Near Me',  headline: 'Find local stores\nnear you.',               sub: 'Kirana · Medical · Supermarkets — all on the map',                          cta: 'Explore Map',     color: G,         dark: '#065F46', img: 'https://images.unsplash.com/photo-1604719312566-8912e9227c6a?w=1400&h=600&fit=crop&q=90', badge: '📍 100+ cities',                  tags: [] },
   offers: { name: 'Exclusive Offers',headline: "Deals you won't\nfind elsewhere.",           sub: 'Promo codes · Flash sales · First-order discounts',                          cta: 'See All Offers',  color: '#D97706', dark: '#92400E', img: 'https://images.unsplash.com/photo-1607082348824-0a96f2a4b9da?w=1400&h=600&fit=crop&q=90', badge: '🏷️ New deals daily',               tags: [] },
 };
 
-function ServiceHero({ tab }: { tab: TabId; setTab: (t: TabId) => void }) {
-  const h = HERO_DATA[tab] ?? HERO_DATA.now;
+/* ═══════════════ DUAL HERO BANNERS ═══════════════ */
+function DualHeroBanners({ setTab }: { setTab: (t: TabId) => void }) {
+  const [hovNow, setHovNow] = useState(false);
+  const [hovEats, setHovEats] = useState(false);
   return (
     <div style={{ background: W }}>
-      {/* Focused hero banner — changes with active tab */}
-      <div style={{ maxWidth: 1320, margin: '0 auto', padding: '18px 24px 32px' }}>
-        <AnimatePresence mode="wait">
-          <motion.div key={tab}
-            initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }}
-            transition={{ duration: .2 }}
-            style={{ position: 'relative', borderRadius: 24, overflow: 'hidden', height: 320, display: 'flex', alignItems: 'flex-end' }}>
-            <img src={h.img} alt={h.name} style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover' }} />
-            <div style={{ position: 'absolute', inset: 0, background: `linear-gradient(90deg, ${h.dark}F5 0%, ${h.dark}CC 45%, ${h.dark}55 75%, transparent 100%)` }} />
-            <div style={{ position: 'relative', padding: '32px 44px', width: '100%' }}>
-              <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6, background: 'rgba(255,255,255,.15)', backdropFilter: 'blur(8px)', color: '#fff', fontSize: 11.5, fontWeight: 700, padding: '5px 14px', borderRadius: 99, border: '1px solid rgba(255,255,255,.25)', marginBottom: 14 }}>{h.badge}</span>
-              <h1 style={{ fontFamily: "'Outfit',sans-serif", fontWeight: 900, color: '#fff', fontSize: 'clamp(1.9rem,3.5vw,2.9rem)', lineHeight: 1.08, letterSpacing: '-.04em', marginBottom: 10, whiteSpace: 'pre-line' }}>{h.headline}</h1>
-              <p style={{ fontSize: 14.5, color: 'rgba(255,255,255,.68)', maxWidth: 500, lineHeight: 1.55, marginBottom: h.tags.length ? 18 : 22 }}>{h.sub}</p>
-              {h.tags.length > 0 && (
-                <div style={{ display: 'flex', gap: 7, flexWrap: 'wrap', marginBottom: 22 }}>
-                  {h.tags.map(t => (
-                    <span key={t} style={{ background: 'rgba(255,255,255,.12)', backdropFilter: 'blur(4px)', color: '#fff', fontSize: 12, fontWeight: 600, padding: '5px 13px', borderRadius: 9, border: '1px solid rgba(255,255,255,.2)', cursor: 'pointer' }}>{t}</span>
-                  ))}
-                </div>
-              )}
-              <div style={{ display: 'flex', gap: 10, alignItems: 'center' }}>
-                <div style={{ position: 'relative', maxWidth: 340 }}>
-                  <MapPin size={14} style={{ position: 'absolute', left: 12, top: '50%', transform: 'translateY(-50%)', color: 'rgba(255,255,255,.65)' }} />
-                  <input placeholder="Enter delivery address…" style={{ paddingLeft: 36, paddingRight: 14, paddingTop: 13, paddingBottom: 13, borderRadius: 11, background: 'rgba(255,255,255,.12)', backdropFilter: 'blur(8px)', border: '1.5px solid rgba(255,255,255,.25)', fontSize: 13.5, color: '#fff', fontFamily: 'inherit', outline: 'none', width: 280 }} />
-                </div>
-                <button style={{ padding: '13px 26px', borderRadius: 11, background: h.color, color: '#fff', fontWeight: 800, fontSize: 14.5, flexShrink: 0, boxShadow: `0 4px 18px ${h.color}55`, transition: 'filter .15s', whiteSpace: 'nowrap' }}
-                  onMouseEnter={e => (e.currentTarget as HTMLElement).style.filter = 'brightness(1.1)'}
-                  onMouseLeave={e => (e.currentTarget as HTMLElement).style.filter = 'brightness(1)'}>
-                  {h.cta} →
-                </button>
+      <div style={{ maxWidth: 1320, margin: '0 auto', padding: '20px 24px 36px', display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 18 }}>
+
+        {/* ── ZyphixNow ── */}
+        <motion.div
+          initial={{ opacity: 0, y: 18 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: .32 }}
+          style={{ position: 'relative', height: 480, borderRadius: 26, overflow: 'hidden', cursor: 'pointer', boxShadow: hovNow ? '0 24px 64px rgba(6,95,70,.38)' : SH2, transition: 'box-shadow .28s, transform .28s', transform: hovNow ? 'translateY(-5px)' : 'none' }}
+          onMouseEnter={() => setHovNow(true)} onMouseLeave={() => setHovNow(false)}
+          onClick={() => setTab('now')}
+        >
+          <img src="https://images.unsplash.com/photo-1542838132-92c53300491e?w=1400&h=960&fit=crop&q=90" alt="Zyphix Now"
+            style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover', transform: hovNow ? 'scale(1.05)' : 'scale(1)', transition: 'transform .45s ease' }} />
+          <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(175deg, rgba(3,32,18,.2) 0%, rgba(4,58,34,.68) 45%, rgba(2,26,14,.98) 100%)' }} />
+          {/* Decorative glow */}
+          <div style={{ position: 'absolute', top: -60, right: -40, width: 220, height: 220, borderRadius: '50%', background: 'rgba(16,214,120,.12)', filter: 'blur(40px)', pointerEvents: 'none' }} />
+          <div style={{ position: 'absolute', inset: 0, padding: '32px 36px', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
+            {/* Top row */}
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+              <span style={{ background: 'rgba(16,214,120,.18)', backdropFilter: 'blur(10px)', border: '1px solid rgba(16,214,120,.38)', color: '#6EE7B7', fontSize: 12, fontWeight: 700, padding: '5px 16px', borderRadius: 99, letterSpacing: '.03em' }}>
+                ⚡ Now · 10 min delivery
+              </span>
+              <div style={{ width: 44, height: 44, borderRadius: 13, background: 'linear-gradient(145deg, #10D678 0%, #059E5C 100%)', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 4px 18px rgba(16,214,120,.5)' }}>
+                <PinIcon size={22} />
               </div>
             </div>
-          </motion.div>
-        </AnimatePresence>
+            {/* Bottom content */}
+            <div>
+              <p style={{ fontSize: 11.5, fontWeight: 700, color: '#86EFAC', letterSpacing: '.11em', textTransform: 'uppercase', marginBottom: 10 }}>Zyphix Now</p>
+              <h2 style={{ fontFamily: "'Outfit',sans-serif", fontWeight: 900, color: '#fff', lineHeight: 1.04, fontSize: 'clamp(2rem,3.2vw,2.95rem)', letterSpacing: '-.045em', marginBottom: 13 }}>Groceries<br />in 10 minutes.</h2>
+              <p style={{ fontSize: 14, color: 'rgba(255,255,255,.6)', marginBottom: 20, lineHeight: 1.6 }}>Fresh produce · Dairy · Pharmacy · Snacks<br />1,000+ products at kirana prices</p>
+              <div style={{ display: 'flex', gap: 7, flexWrap: 'wrap', marginBottom: 26 }}>
+                {['Vegetables', 'Dairy', 'Snacks', 'Pharmacy', 'Household'].map(tag => (
+                  <span key={tag} style={{ background: 'rgba(255,255,255,.1)', backdropFilter: 'blur(6px)', color: 'rgba(255,255,255,.84)', fontSize: 12, fontWeight: 600, padding: '5px 13px', borderRadius: 9, border: '1px solid rgba(255,255,255,.18)' }}>{tag}</span>
+                ))}
+              </div>
+              <button style={{ display: 'inline-flex', alignItems: 'center', gap: 8, background: G, color: '#fff', fontSize: 15, fontWeight: 800, padding: '14px 30px', borderRadius: 13, boxShadow: '0 8px 28px rgba(16,214,120,.48)', border: 'none', cursor: 'pointer', transition: 'filter .15s' }}
+                onMouseEnter={e => (e.currentTarget as HTMLElement).style.filter = 'brightness(1.1)'}
+                onMouseLeave={e => (e.currentTarget as HTMLElement).style.filter = 'brightness(1)'}>
+                Order Groceries <ArrowRight size={16} />
+              </button>
+            </div>
+          </div>
+        </motion.div>
+
+        {/* ── ZyphixEats ── */}
+        <motion.div
+          initial={{ opacity: 0, y: 18 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: .32, delay: .1 }}
+          style={{ position: 'relative', height: 480, borderRadius: 26, overflow: 'hidden', cursor: 'pointer', boxShadow: hovEats ? '0 24px 64px rgba(154,52,18,.38)' : SH2, transition: 'box-shadow .28s, transform .28s', transform: hovEats ? 'translateY(-5px)' : 'none' }}
+          onMouseEnter={() => setHovEats(true)} onMouseLeave={() => setHovEats(false)}
+          onClick={() => setTab('eats')}
+        >
+          <img src="https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=1400&h=960&fit=crop&q=90" alt="Zyphix Eats"
+            style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover', transform: hovEats ? 'scale(1.05)' : 'scale(1)', transition: 'transform .45s ease' }} />
+          <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(175deg, rgba(50,10,5,.15) 0%, rgba(100,22,5,.65) 45%, rgba(40,4,0,.98) 100%)' }} />
+          {/* Decorative glow */}
+          <div style={{ position: 'absolute', top: -60, right: -40, width: 220, height: 220, borderRadius: '50%', background: 'rgba(249,115,22,.12)', filter: 'blur(40px)', pointerEvents: 'none' }} />
+          <div style={{ position: 'absolute', inset: 0, padding: '32px 36px', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
+            {/* Top row */}
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+              <span style={{ background: 'rgba(251,146,60,.18)', backdropFilter: 'blur(10px)', border: '1px solid rgba(251,146,60,.38)', color: '#FDBA74', fontSize: 12, fontWeight: 700, padding: '5px 16px', borderRadius: 99, letterSpacing: '.03em' }}>
+                🍱 Eats · 2,000+ restaurants
+              </span>
+              <div style={{ width: 44, height: 44, borderRadius: 13, background: 'linear-gradient(145deg, #F97316 0%, #EA580C 100%)', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 4px 18px rgba(249,115,22,.5)' }}>
+                <PinIcon size={22} />
+              </div>
+            </div>
+            {/* Bottom content */}
+            <div>
+              <p style={{ fontSize: 11.5, fontWeight: 700, color: '#FDBA74', letterSpacing: '.11em', textTransform: 'uppercase', marginBottom: 10 }}>Zyphix Eats</p>
+              <h2 style={{ fontFamily: "'Outfit',sans-serif", fontWeight: 900, color: '#fff', lineHeight: 1.04, fontSize: 'clamp(2rem,3.2vw,2.95rem)', letterSpacing: '-.045em', marginBottom: 13 }}>Food from your<br />favourite places.</h2>
+              <p style={{ fontSize: 14, color: 'rgba(255,255,255,.6)', marginBottom: 20, lineHeight: 1.6 }}>Restaurants · Dhabas · Cloud kitchens<br />Local gems near you, delivered hot</p>
+              <div style={{ display: 'flex', gap: 7, flexWrap: 'wrap', marginBottom: 26 }}>
+                {['Biryani', 'Pizza', 'Burgers', 'Thali', 'Desserts'].map(tag => (
+                  <span key={tag} style={{ background: 'rgba(255,255,255,.1)', backdropFilter: 'blur(6px)', color: 'rgba(255,255,255,.84)', fontSize: 12, fontWeight: 600, padding: '5px 13px', borderRadius: 9, border: '1px solid rgba(255,255,255,.18)' }}>{tag}</span>
+                ))}
+              </div>
+              <button style={{ display: 'inline-flex', alignItems: 'center', gap: 8, background: '#EA580C', color: '#fff', fontSize: 15, fontWeight: 800, padding: '14px 30px', borderRadius: 13, boxShadow: '0 8px 28px rgba(234,88,12,.48)', border: 'none', cursor: 'pointer', transition: 'filter .15s' }}
+                onMouseEnter={e => (e.currentTarget as HTMLElement).style.filter = 'brightness(1.1)'}
+                onMouseLeave={e => (e.currentTarget as HTMLElement).style.filter = 'brightness(1)'}>
+                Order Food <ArrowRight size={16} />
+              </button>
+            </div>
+          </div>
+        </motion.div>
+
       </div>
     </div>
   );
@@ -689,73 +744,6 @@ function EatsTab() {
   );
 }
 
-/* ═══════════════ BOOK TAB ═══════════════ */
-function BookTab() {
-  const [sel, setSel] = useState<string | null>(null);
-  const [slot, setSlot] = useState<string | null>(null);
-  const [done, setDone] = useState(false);
-  const SLOTS = ['9:00 AM','10:30 AM','12:00 PM','2:00 PM','3:30 PM','5:00 PM','6:30 PM','8:00 PM'];
-  return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: 28 }}>
-      <div style={{ position: 'relative', height: 210, borderRadius: 22, overflow: 'hidden', boxShadow: SH2 }}>
-        <img src="https://images.unsplash.com/photo-1521791136064-7986c2920216?w=1400&h=440&fit=crop&q=85" alt="" style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover' }} />
-        <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(100deg,rgba(0,0,0,.9) 42%,rgba(0,0,0,.18))' }} />
-        <div style={{ position: 'absolute', inset: 0, padding: '36px 44px', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
-          <p style={{ fontSize: 11, fontWeight: 700, color: '#C4B5FD', letterSpacing: '.1em', textTransform: 'uppercase', marginBottom: 12 }}>Zyphix Book</p>
-          <h2 style={{ fontFamily: "'Outfit',sans-serif", fontWeight: 900, color: '#fff', lineHeight: 1.08, fontSize: 'clamp(1.5rem,3vw,2.3rem)', letterSpacing: '-.04em', marginBottom: 8 }}>Trusted professionals,<br />at your doorstep.</h2>
-          <p style={{ fontSize: 13, color: 'rgba(255,255,255,.58)' }}>Background-verified · Rated 4.8★ · Zero cancellation fee</p>
-        </div>
-      </div>
-      {/* Service partners */}
-      <TabMarquee logos={BookBrandLogos} items={BOOK_MARQUEE} label={"Partner\nBrands"} />
-
-      <div>
-        <Row title="Available Services" action="View all" />
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill,minmax(210px,1fr))', gap: 14 }}>
-          {services.map(s => {
-            const on = sel === s.id;
-            return (
-              <div key={s.id} onClick={() => { setSel(on ? null : s.id); setSlot(null); setDone(false); }} className="cursor-pointer"
-                style={{ background: W, border: `1.5px solid ${on ? '#7C3AED' : BD}`, borderRadius: 18, padding: '18px 16px', transition: 'all .18s', boxShadow: on ? `0 0 0 3px rgba(124,58,237,.15), ${SH}` : SH }}>
-                <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', marginBottom: 12 }}>
-                  <span style={{ fontSize: 28 }}>{s.emoji}</span>
-                  {on && <div style={{ width: 20, height: 20, borderRadius: '50%', background: '#7C3AED', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><Check size={11} color="#fff" /></div>}
-                </div>
-                <p style={{ fontWeight: 800, color: T1, fontSize: 13.5, marginBottom: 3 }}>{s.title}</p>
-                <p style={{ fontSize: 11, color: T3, marginBottom: 10 }}>{s.category}</p>
-                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                  <span style={{ fontWeight: 800, color: T1, fontSize: 15 }}>₹{s.price}</span>
-                  <Rat r={s.rating} />
-                </div>
-                <p style={{ fontSize: 10.5, fontWeight: 600, color: G, marginTop: 6 }}>{s.available} pros available</p>
-              </div>
-            );
-          })}
-        </div>
-      </div>
-      <AnimatePresence>
-        {sel && (
-          <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }}>
-            <div style={{ background: W, border: `1px solid ${BD}`, borderRadius: 20, padding: '26px 22px', boxShadow: SH }}>
-              <p style={{ fontWeight: 800, color: T1, fontSize: 16, marginBottom: 5 }}>Select a time slot</p>
-              <p style={{ fontSize: 12.5, color: T3, marginBottom: 22 }}>{services.find(x => x.id === sel)?.title} · ₹{services.find(x => x.id === sel)?.price}</p>
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4,1fr)', gap: 10, marginBottom: 22 }}>
-                {SLOTS.map(sl => (
-                  <button key={sl} onClick={() => setSlot(sl)} style={{ padding: '11px 4px', borderRadius: 11, fontSize: 12.5, fontWeight: 600, background: slot === sl ? G : BG, color: slot === sl ? '#fff' : T1, border: `1.5px solid ${slot === sl ? 'transparent' : BD}`, transition: 'all .15s', boxShadow: slot === sl ? `0 4px 14px rgba(13,163,102,.25)` : 'none' }}>
-                    {sl}
-                  </button>
-                ))}
-              </div>
-              <button onClick={() => slot && setDone(true)} disabled={!slot} style={{ width: '100%', padding: '15px', borderRadius: 13, fontWeight: 800, fontSize: 15, background: done ? '#F0FDF4' : slot ? G : BG, color: done ? G : slot ? '#fff' : T3, border: `1.5px solid ${done ? 'rgba(13,163,102,.3)' : 'transparent'}`, cursor: slot ? 'pointer' : 'default', transition: 'all .2s', boxShadow: slot && !done ? `0 4px 20px rgba(13,163,102,.3)` : 'none' }}>
-                {done ? '✓ Booking confirmed! See you soon.' : slot ? 'Confirm Booking →' : 'Select a time slot to continue'}
-              </button>
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-    </div>
-  );
-}
 
 /* ═══════════════ MAP TAB ═══════════════ */
 function MapTab() {
@@ -1172,91 +1160,6 @@ const EATS_MARQUEE = [
   { name: 'Barbeque Nation', color: '#8B0000' },
 ];
 
-const BookBrandLogos: Record<string, React.ReactNode> = {
-  'Urban Company': (
-    <svg viewBox="0 0 122 36" width={122} height={36}>
-      <path d="M8 8 L8 24 Q8 30 14 30 Q20 30 20 24 L20 8" stroke="#7C3AED" strokeWidth="3" fill="none" strokeLinecap="round"/>
-      <text x="70" y="23" textAnchor="middle" fill="#7C3AED" fontSize="13" fontWeight="900" fontFamily="Arial Black,Arial,sans-serif">Urban Company</text>
-    </svg>
-  ),
-  Apollo: (
-    <svg viewBox="0 0 84 36" width={84} height={36}>
-      <circle cx="18" cy="18" r="13" fill="none" stroke="#00427A" strokeWidth="2.5"/>
-      <path d="M12 26 L18 6 L24 26 M14 20 L22 20" stroke="#00427A" strokeWidth="2.2" fill="none" strokeLinecap="round"/>
-      <text x="56" y="23" textAnchor="middle" fill="#00427A" fontSize="14" fontWeight="900" fontFamily="Arial,sans-serif">Apollo</text>
-    </svg>
-  ),
-  'Dr. Lal PathLabs': (
-    <svg viewBox="0 0 120 36" width={120} height={36}>
-      <path d="M8 28 L8 8 M8 16 Q18 12 18 18 Q18 28 8 28" stroke="#E31837" strokeWidth="2.5" fill="none" strokeLinecap="round"/>
-      <circle cx="24" cy="10" r="3" fill="#E31837"/>
-      <line x1="22" y1="10" x2="26" y2="18" stroke="#E31837" strokeWidth="1.5"/>
-      <text x="74" y="23" textAnchor="middle" fill="#E31837" fontSize="11.5" fontWeight="900" fontFamily="Arial Black,Arial,sans-serif">Dr. Lal PathLabs</text>
-    </svg>
-  ),
-  Housejoy: (
-    <svg viewBox="0 0 94 36" width={94} height={36}>
-      <path d="M8 18 L17 8 L26 18 M11 18 L11 28 L23 28 L23 18" stroke="#FF6B35" strokeWidth="2.5" fill="none" strokeLinecap="round" strokeLinejoin="round"/>
-      <rect x="15" y="22" width="4" height="6" rx="1" fill="#FF6B35"/>
-      <text x="60" y="23" textAnchor="middle" fill="#FF6B35" fontSize="14" fontWeight="900" fontFamily="Arial,sans-serif">housejoy</text>
-    </svg>
-  ),
-  Sulekha: (
-    <svg viewBox="0 0 84 36" width={84} height={36}>
-      <path d="M20 10 Q10 10 10 16 Q10 22 20 22 Q30 22 30 28 Q30 34 20 34" stroke="#0066CC" strokeWidth="3" fill="none" strokeLinecap="round"/>
-      <text x="54" y="23" textAnchor="middle" fill="#0066CC" fontSize="15" fontWeight="900" fontFamily="Arial,sans-serif">Sulekha</text>
-    </svg>
-  ),
-  JustDial: (
-    <svg viewBox="0 0 86 36" width={86} height={36}>
-      <circle cx="18" cy="18" r="14" fill="#FF6B00"/>
-      <text x="18" y="23" textAnchor="middle" fill="#fff" fontSize="11" fontWeight="900" fontFamily="Arial Black,Arial,sans-serif">J</text>
-      <text x="56" y="23" textAnchor="middle" fill="#FF6B00" fontSize="14" fontWeight="900" fontFamily="Arial Black,Arial,sans-serif">JustDial</text>
-    </svg>
-  ),
-  HomeTriangle: (
-    <svg viewBox="0 0 110 36" width={110} height={36}>
-      <path d="M4 26 L17 6 L30 26 Z" fill="#2E86AB"/>
-      <path d="M10 26 L10 20 L14 20 L14 26 M20 26 L20 18 L24 18 L24 26" stroke="#fff" strokeWidth="1.5" fill="none" strokeLinecap="round"/>
-      <text x="72" y="23" textAnchor="middle" fill="#2E86AB" fontSize="13" fontWeight="900" fontFamily="Arial Black,Arial,sans-serif">HomeTriangle</text>
-    </svg>
-  ),
-  'Quikr Services': (
-    <svg viewBox="0 0 118 36" width={118} height={36}>
-      <circle cx="18" cy="18" r="13" fill="none" stroke="#9C27B0" strokeWidth="2.5"/>
-      <circle cx="18" cy="18" r="7" fill="none" stroke="#9C27B0" strokeWidth="2"/>
-      <line x1="27" y1="27" x2="32" y2="32" stroke="#9C27B0" strokeWidth="2.5" strokeLinecap="round"/>
-      <text x="77" y="23" textAnchor="middle" fill="#9C27B0" fontSize="12.5" fontWeight="900" fontFamily="Arial Black,Arial,sans-serif">Quikr Services</text>
-    </svg>
-  ),
-  TaskBob: (
-    <svg viewBox="0 0 82 36" width={82} height={36}>
-      <circle cx="14" cy="10" r="5" fill="#FF6B00"/>
-      <path d="M8 30 L8 22 Q8 16 14 16 Q20 16 20 22 L20 30" fill="#FF6B00"/>
-      <text x="52" y="23" textAnchor="middle" fill="#FF6B00" fontSize="14" fontWeight="900" fontFamily="Arial,sans-serif">TaskBob</text>
-    </svg>
-  ),
-  'Mr. Right': (
-    <svg viewBox="0 0 88 36" width={88} height={36}>
-      <path d="M6 26 L14 8 L22 26 M8 20 L20 20" stroke="#0F9D58" strokeWidth="2.5" fill="none" strokeLinecap="round" strokeLinejoin="round"/>
-      <circle cx="25" cy="22" r="3" fill="#0F9D58"/>
-      <text x="58" y="23" textAnchor="middle" fill="#0F9D58" fontSize="14" fontWeight="900" fontFamily="Arial,sans-serif">Mr. Right</text>
-    </svg>
-  ),
-};
-
-const BOOK_MARQUEE = [
-  { name: 'Urban Company',   color: '#7C3AED' },
-  { name: 'Apollo',          color: '#00427A' },
-  { name: 'Dr. Lal PathLabs',color: '#E31837' },
-  { name: 'Housejoy',        color: '#FF6B35' },
-  { name: 'Sulekha',         color: '#0066CC' },
-  { name: 'JustDial',        color: '#FF6B00' },
-  { name: 'HomeTriangle',    color: '#2E86AB' },
-  { name: 'Quikr Services',  color: '#9C27B0' },
-  { name: 'TaskBob',         color: '#FF6B00' },
-  { name: 'Mr. Right',       color: '#0F9D58' },
-];
 
 function TabMarquee({ logos, items, label }: {
   logos: Record<string, React.ReactNode>;
@@ -1401,7 +1304,7 @@ function SocialProof() {
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: 20 }}>
           {[
             { name: 'Priya Sharma', city: 'Delhi', rating: 5, text: 'Ordered groceries at 11pm and they arrived in 28 minutes. Unbelievable! The app is so smooth and the prices are the same as my local kirana.' },
-            { name: 'Rahul Verma', city: 'Mumbai', rating: 5, text: 'Used ZyphixBook to get an electrician on a Sunday. Verified professional, came on time, fixed the issue, and the price was completely transparent.' },
+            { name: 'Rahul Verma', city: 'Mumbai', rating: 5, text: 'Ordered from my favourite biryani place on ZyphixEats — they delivered in 22 minutes. The food was hot, the app was smooth, and the price was the same as eating there.' },
             { name: 'Anjali Patel', city: 'Bengaluru', rating: 5, text: 'ZyphixEats is my go-to for ordering from that small biryani place nearby. They\'re not on Swiggy but they\'re on Zyphix. Love that!' },
           ].map((r, i) => (
             <motion.div key={i} initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: i * .1 }}>
@@ -1480,7 +1383,7 @@ function AppDownload() {
             </div>
           </div>
           <div style={{ display: 'flex', gap: 16, flexShrink: 0, position: 'relative' }}>
-            {['🛒', '🍱', '🔧'].map((em, i) => (
+            {['🛒', '🍱'].map((em, i) => (
               <div key={i} style={{ width: 100, height: 200, borderRadius: 20, background: 'rgba(255,255,255,.1)', border: '1px solid rgba(255,255,255,.15)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 40, transform: i === 1 ? 'translateY(-12px)' : 'none' }}>
                 {em}
               </div>
@@ -1502,7 +1405,7 @@ function Footer() {
             <div style={{ marginBottom: 16 }}>
               <LogoMark size={30} dark />
             </div>
-            <p style={{ fontSize: 13.5, color: 'rgba(255,255,255,.4)', lineHeight: 1.7, marginBottom: 22, maxWidth: 260 }}>India's SuperLocal App — groceries, food & services delivered in 10 minutes. 100+ cities, 10,000+ partners.</p>
+            <p style={{ fontSize: 13.5, color: 'rgba(255,255,255,.4)', lineHeight: 1.7, marginBottom: 22, maxWidth: 260 }}>India's SuperLocal App — groceries &amp; food delivered in 10 minutes. 100+ cities, 10,000+ partners.</p>
             <div style={{ display: 'flex', gap: 8, marginBottom: 24 }}>
               {[<Twitter size={14} />, <Instagram size={14} />, <Linkedin size={14} />, <Phone size={14} />].map((ic, i) => (
                 <a key={i} href="#" style={{ width: 36, height: 36, borderRadius: 9, background: 'rgba(255,255,255,.07)', border: '1px solid rgba(255,255,255,.1)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'rgba(255,255,255,.4)', transition: 'all .15s' }}
@@ -1514,7 +1417,7 @@ function Footer() {
             </div>
           </div>
           {[
-            { t: 'Services', links: [{ l: 'Zyphix Now', h: '#' }, { l: 'Zyphix Eats', h: '#' }, { l: 'Zyphix Book', h: '#' }, { l: 'Stores Near Me', h: '#' }, { l: 'Offers', h: '#' }] },
+            { t: 'Services', links: [{ l: 'Zyphix Now', h: '#' }, { l: 'Zyphix Eats', h: '#' }, { l: 'Stores Near Me', h: '#' }, { l: 'Offers', h: '#' }] },
             { t: 'Company', links: [{ l: 'About Us', h: '/about' }, { l: 'Careers', h: '#' }, { l: 'Press Kit', h: '#' }, { l: 'Blog', h: '#' }, { l: 'Investors', h: '#' }] },
             { t: 'Support', links: [{ l: 'Help Center', h: '#' }, { l: 'Contact Us', h: '/contact' }, { l: 'Refund Policy', h: '/terms' }, { l: 'Privacy Policy', h: '/privacy' }, { l: 'Terms of Service', h: '/terms' }] },
           ].map(({ t, links }) => (
@@ -1542,13 +1445,13 @@ function Footer() {
 export function Home() {
   const [tab, setTab] = useState<TabId>('now');
   const CONTENT: Record<TabId, React.ReactNode> = {
-    now: <NowTab />, eats: <EatsTab />, book: <BookTab />, map: <MapTab />, offers: <OffersTab />
+    now: <NowTab />, eats: <EatsTab />, map: <MapTab />, offers: <OffersTab />
   };
   return (
     <div style={{ background: BG, minHeight: '100vh' }}>
       <AnnoBar />
       <Navbar tab={tab} setTab={setTab} />
-      <ServiceHero tab={tab} setTab={setTab} />
+      <DualHeroBanners setTab={setTab} />
       <Trust />
       <BrandsMarquee />
 

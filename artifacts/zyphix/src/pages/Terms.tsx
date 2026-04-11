@@ -59,7 +59,6 @@ export function Terms() {
             <ul style={{ paddingLeft: 20, marginTop: 10, display: 'flex', flexDirection: 'column', gap: 6 }}>
               <li><strong>ZyphixNow:</strong> Grocery and essential items delivered in approximately 10 minutes from partner stores.</li>
               <li><strong>ZyphixEats:</strong> Food delivery from restaurants, dhabas, and cloud kitchens.</li>
-              <li><strong>ZyphixBook:</strong> Booking certified home service professionals (plumbers, electricians, cleaners, etc.).</li>
             </ul>
             <p style={{ marginTop: 10 }}>Zyphix is a marketplace platform. We are not the seller of goods nor the employer of service professionals. Responsibility for product quality and service lies with the respective partner store or professional.</p>
           </Section>
@@ -77,7 +76,6 @@ export function Terms() {
             <ul style={{ paddingLeft: 20, display: 'flex', flexDirection: 'column', gap: 8 }}>
               <li><strong>Groceries (ZyphixNow):</strong> Orders may be cancelled within 2 minutes of placement at no charge. After preparation begins, cancellation charges may apply up to 100% of the order value.</li>
               <li><strong>Food (ZyphixEats):</strong> Orders confirmed by the restaurant cannot be cancelled. Refunds are issued if the restaurant cancels or if delivery is delayed beyond 60 minutes.</li>
-              <li><strong>Services (ZyphixBook):</strong> Free cancellation up to 2 hours before scheduled time. Cancellations within 2 hours attract a 25% cancellation fee.</li>
               <li><strong>Refunds:</strong> Approved refunds are credited to your original payment method within 5–7 business days, or immediately to your Zyphix Wallet.</li>
             </ul>
           </Section>
