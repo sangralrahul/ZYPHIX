@@ -1742,6 +1742,7 @@ export function Home() {
       <Navbar tab={tab} setTab={setTab} />
       <WaitlistSection />
       <QuickBrowse setTab={setTab} />
+      <DualHeroBanners setTab={setTab} />
       <WhyZyphixStrip />
       <Trust />
       <BrandsMarquee />
