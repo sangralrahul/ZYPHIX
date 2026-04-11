@@ -220,27 +220,8 @@ const HERO_DATA: Record<string, { name: string; headline: string; sub: string; c
 function DualHeroBanners({ setTab }: { setTab: (t: TabId) => void }) {
   const [hovNow, setHovNow] = useState(false);
   const [hovEats, setHovEats] = useState(false);
-  const nowVidRef = useRef<HTMLVideoElement>(null);
-  const eatsVidRef = useRef<HTMLVideoElement>(null);
   const scrollToWaitlist = () => document.getElementById('waitlist')?.scrollIntoView({ behavior: 'smooth' });
 
-  useEffect(() => {
-    const tryPlay = (vid: HTMLVideoElement | null) => {
-      if (!vid) return;
-      vid.muted = true;
-      vid.volume = 0;
-      const p = vid.play();
-      if (p !== undefined) p.catch(() => {});
-    };
-    const refs = [nowVidRef, eatsVidRef];
-    refs.forEach(r => tryPlay(r.current));
-    // IntersectionObserver as backup — plays when banner enters viewport
-    const obs = new IntersectionObserver(entries => {
-      entries.forEach(e => { if (e.isIntersecting) tryPlay(e.target as HTMLVideoElement); });
-    }, { threshold: 0.1 });
-    refs.forEach(r => { if (r.current) obs.observe(r.current); });
-    return () => obs.disconnect();
-  }, []);
   return (
     <div style={{ background: W }}>
       <style>{`
@@ -250,6 +231,20 @@ function DualHeroBanners({ setTab }: { setTab: (t: TabId) => void }) {
           .hero-headline { font-size: 1.65rem !important; }
           .hero-pills { flex-wrap: wrap !important; }
         }
+        @keyframes kbNow {
+          0%   { transform: scale(1.00) translate(0%,    0%);   }
+          33%  { transform: scale(1.10) translate(-2.5%, 1%);   }
+          66%  { transform: scale(1.06) translate(1.5%,  -1.5%);}
+          100% { transform: scale(1.00) translate(0%,    0%);   }
+        }
+        @keyframes kbEats {
+          0%   { transform: scale(1.08) translate(2%,  0%);   }
+          33%  { transform: scale(1.00) translate(0%,  2%);   }
+          66%  { transform: scale(1.10) translate(-2%, -1%);  }
+          100% { transform: scale(1.08) translate(2%,  0%);   }
+        }
+        .kb-now  { animation: kbNow  18s ease-in-out infinite; }
+        .kb-eats { animation: kbEats 20s ease-in-out infinite; }
       `}</style>
       <div className="hero-grid" style={{ maxWidth: 1320, margin: '0 auto', padding: '20px 24px 36px', display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 18 }}>
 
@@ -261,12 +256,7 @@ function DualHeroBanners({ setTab }: { setTab: (t: TabId) => void }) {
           onMouseEnter={() => setHovNow(true)} onMouseLeave={() => setHovNow(false)}
           onClick={() => setTab('now')}
         >
-          <video ref={nowVidRef} autoPlay muted loop playsInline preload="auto"
-            poster="https://images.unsplash.com/photo-1542838132-92c53300491e?w=1400&h=960&fit=crop&q=80"
-            onCanPlay={e => { (e.target as HTMLVideoElement).muted = true; (e.target as HTMLVideoElement).play().catch(() => {}); }}
-            style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover', transform: hovNow ? 'scale(1.05)' : 'scale(1)', transition: 'transform .45s ease' }}>
-            <source src="/videos/grocery.mp4" type="video/mp4" />
-          </video>
+          <div className="kb-now" style={{ position: 'absolute', inset: '-8%', backgroundImage: 'url(https://images.unsplash.com/photo-1542838132-92c53300491e?w=1600&h=1100&fit=crop&q=85)', backgroundSize: 'cover', backgroundPosition: 'center' }} />
           <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(175deg, rgba(3,32,18,.2) 0%, rgba(4,58,34,.68) 45%, rgba(2,26,14,.98) 100%)' }} />
           <div style={{ position: 'absolute', top: -60, right: -40, width: 220, height: 220, borderRadius: '50%', background: 'rgba(16,214,120,.12)', filter: 'blur(40px)', pointerEvents: 'none' }} />
           <div style={{ position: 'absolute', inset: 0, padding: '32px 36px', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
@@ -308,12 +298,7 @@ function DualHeroBanners({ setTab }: { setTab: (t: TabId) => void }) {
           onMouseEnter={() => setHovEats(true)} onMouseLeave={() => setHovEats(false)}
           onClick={() => setTab('eats')}
         >
-          <video ref={eatsVidRef} autoPlay muted loop playsInline preload="auto"
-            poster="https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=1400&h=960&fit=crop&q=80"
-            onCanPlay={e => { (e.target as HTMLVideoElement).muted = true; (e.target as HTMLVideoElement).play().catch(() => {}); }}
-            style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover', transform: hovEats ? 'scale(1.05)' : 'scale(1)', transition: 'transform .45s ease' }}>
-            <source src="/videos/food.mp4" type="video/mp4" />
-          </video>
+          <div className="kb-eats" style={{ position: 'absolute', inset: '-8%', backgroundImage: 'url(https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=1600&h=1100&fit=crop&q=85)', backgroundSize: 'cover', backgroundPosition: 'center' }} />
           <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(175deg, rgba(50,10,5,.15) 0%, rgba(100,22,5,.65) 45%, rgba(40,4,0,.98) 100%)' }} />
           <div style={{ position: 'absolute', top: -60, right: -40, width: 220, height: 220, borderRadius: '50%', background: 'rgba(249,115,22,.12)', filter: 'blur(40px)', pointerEvents: 'none' }} />
           <div style={{ position: 'absolute', inset: 0, padding: '32px 36px', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
