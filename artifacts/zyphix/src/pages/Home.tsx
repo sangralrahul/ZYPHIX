@@ -1,12 +1,13 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
-  Search, MapPin, ChevronDown, ShoppingCart, User,
+  Search, MapPin, ChevronDown, ShoppingCart, User, LogOut,
   Plus, Minus, Star, Clock, ChevronRight, ChevronLeft,
   Zap, Shield, Package, Truck, Check, Copy, ArrowRight,
   Phone, Instagram, Twitter, Linkedin, PlayCircle
 } from 'lucide-react';
 import { products, categories, restaurants, foodCategories, services, promoCodes, stores } from '@/data/mockData';
+import { useAuth } from '@/context/AuthContext';
 
 type TabId = 'now' | 'eats' | 'book' | 'map' | 'offers';
 
@@ -111,6 +112,8 @@ function Navbar({ tab, setTab }: { tab: TabId; setTab: (t: TabId) => void }) {
   const [scrolled, setScrolled] = useState(false);
   const [q, setQ] = useState('');
   const [focus, setFocus] = useState(false);
+  const [userMenuOpen, setUserMenuOpen] = useState(false);
+  const { user, logout, openModal } = useAuth();
   useEffect(() => {
     const h = () => setScrolled(window.scrollY > 6);
     window.addEventListener('scroll', h, { passive: true });
@@ -142,12 +145,55 @@ function Navbar({ tab, setTab }: { tab: TabId; setTab: (t: TabId) => void }) {
             placeholder={`Search ${tab === 'now' ? 'groceries, brands' : tab === 'eats' ? 'dishes, restaurants' : 'services, professionals'}...`}
             style={{ width: '100%', paddingLeft: 40, paddingRight: 14, paddingTop: 10, paddingBottom: 10, borderRadius: 10, background: BG, border: `1.5px solid ${focus ? (active?.color ?? G) + '66' : BD}`, fontSize: 13, color: T1, fontFamily: 'inherit', fontWeight: 500, outline: 'none', transition: 'all .18s', boxShadow: focus ? `0 0 0 3px ${(active?.color ?? G)}14` : 'none' }} />
         </div>
-        <div style={{ display: 'flex', gap: 8, marginLeft: 'auto', flexShrink: 0 }}>
-          <button style={{ display: 'flex', alignItems: 'center', gap: 7, padding: '9px 16px', borderRadius: 10, border: `1.5px solid ${BD}`, fontSize: 13, fontWeight: 600, color: T2, background: W, transition: 'all .15s' }}
-            onMouseEnter={e => { (e.currentTarget as HTMLElement).style.borderColor = G + '55'; (e.currentTarget as HTMLElement).style.color = G; }}
-            onMouseLeave={e => { (e.currentTarget as HTMLElement).style.borderColor = BD; (e.currentTarget as HTMLElement).style.color = T2; }}>
-            <User size={14} /><span className="hidden lg:inline">Sign in</span>
-          </button>
+        <div style={{ display: 'flex', gap: 8, marginLeft: 'auto', flexShrink: 0, position: 'relative' }}>
+          {user ? (
+            <div style={{ position: 'relative' }}>
+              <button onClick={() => setUserMenuOpen(o => !o)}
+                style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '7px 12px', borderRadius: 10, border: `1.5px solid ${BD}`, fontSize: 13, fontWeight: 600, color: T1, background: W, transition: 'all .15s', cursor: 'pointer' }}>
+                <div style={{ width: 26, height: 26, borderRadius: '50%', background: G, color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 11, fontWeight: 900 }}>
+                  {user.name[0].toUpperCase()}
+                </div>
+                <span className="hidden lg:inline">{user.name.split(' ')[0]}</span>
+                <ChevronDown size={11} color={T3} />
+              </button>
+              <AnimatePresence>
+                {userMenuOpen && (
+                  <motion.div initial={{ opacity: 0, y: 6, scale: .96 }} animate={{ opacity: 1, y: 0, scale: 1 }} exit={{ opacity: 0, y: 6, scale: .96 }} transition={{ duration: .14 }}
+                    style={{ position: 'absolute', top: 'calc(100% + 8px)', right: 0, background: W, border: `1px solid ${BD}`, borderRadius: 14, width: 200, boxShadow: SH2, zIndex: 100, overflow: 'hidden' }}
+                    onMouseLeave={() => setUserMenuOpen(false)}>
+                    <div style={{ padding: '12px 14px', borderBottom: `1px solid ${BD}`, background: BG }}>
+                      <p style={{ fontWeight: 700, fontSize: 13, color: T1 }}>{user.name}</p>
+                      <p style={{ fontSize: 11, color: T3, marginTop: 2 }}>{user.email}</p>
+                    </div>
+                    {[
+                      { l: 'My Orders', href: '#' },
+                      { l: 'Account Settings', href: '#' },
+                      { l: 'Saved Addresses', href: '#' },
+                    ].map(({ l, href }) => (
+                      <a key={l} href={href} style={{ display: 'block', padding: '10px 14px', fontSize: 13, color: T2, fontWeight: 500, transition: 'background .12s' }}
+                        onMouseEnter={e => (e.currentTarget as HTMLElement).style.background = BG}
+                        onMouseLeave={e => (e.currentTarget as HTMLElement).style.background = W}>{l}</a>
+                    ))}
+                    <div style={{ borderTop: `1px solid ${BD}` }}>
+                      <button onClick={() => { logout(); setUserMenuOpen(false); }}
+                        style={{ width: '100%', display: 'flex', alignItems: 'center', gap: 8, padding: '10px 14px', fontSize: 13, color: '#EF4444', fontWeight: 600, transition: 'background .12s', textAlign: 'left' }}
+                        onMouseEnter={e => (e.currentTarget as HTMLElement).style.background = '#FFF5F5'}
+                        onMouseLeave={e => (e.currentTarget as HTMLElement).style.background = W}>
+                        <LogOut size={13} /> Sign out
+                      </button>
+                    </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
+          ) : (
+            <button onClick={openModal}
+              style={{ display: 'flex', alignItems: 'center', gap: 7, padding: '9px 16px', borderRadius: 10, border: `1.5px solid ${BD}`, fontSize: 13, fontWeight: 600, color: T2, background: W, transition: 'all .15s', cursor: 'pointer' }}
+              onMouseEnter={e => { (e.currentTarget as HTMLElement).style.borderColor = G + '55'; (e.currentTarget as HTMLElement).style.color = G; }}
+              onMouseLeave={e => { (e.currentTarget as HTMLElement).style.borderColor = BD; (e.currentTarget as HTMLElement).style.color = T2; }}>
+              <User size={14} /><span className="hidden lg:inline">Sign in</span>
+            </button>
+          )}
           <button className="relative" style={{ display: 'flex', alignItems: 'center', gap: 7, padding: '9px 18px', borderRadius: 10, background: G, fontSize: 13, fontWeight: 800, color: '#fff', boxShadow: `0 2px 12px rgba(13,163,102,.3)`, transition: 'background .15s' }}
             onMouseEnter={e => (e.currentTarget as HTMLElement).style.background = G2}
             onMouseLeave={e => (e.currentTarget as HTMLElement).style.background = G}>
@@ -916,14 +962,14 @@ function Footer() {
             </div>
           </div>
           {[
-            { t: 'Services', l: ['Zyphix Now', 'Zyphix Eats', 'Zyphix Book', 'Stores Near Me', 'Offers'] },
-            { t: 'Company', l: ['About Us', 'Careers', 'Press Kit', 'Blog', 'Investors'] },
-            { t: 'Support', l: ['Help Center', 'Contact Us', 'Refund Policy', 'Privacy Policy', 'Terms of Service'] },
-          ].map(({ t, l }) => (
+            { t: 'Services', links: [{ l: 'Zyphix Now', h: '#' }, { l: 'Zyphix Eats', h: '#' }, { l: 'Zyphix Book', h: '#' }, { l: 'Stores Near Me', h: '#' }, { l: 'Offers', h: '#' }] },
+            { t: 'Company', links: [{ l: 'About Us', h: '/about' }, { l: 'Careers', h: '#' }, { l: 'Press Kit', h: '#' }, { l: 'Blog', h: '#' }, { l: 'Investors', h: '#' }] },
+            { t: 'Support', links: [{ l: 'Help Center', h: '#' }, { l: 'Contact Us', h: '/contact' }, { l: 'Refund Policy', h: '/terms' }, { l: 'Privacy Policy', h: '/privacy' }, { l: 'Terms of Service', h: '/terms' }] },
+          ].map(({ t, links }) => (
             <div key={t}>
               <p style={{ fontWeight: 700, color: '#fff', fontSize: 13, marginBottom: 16 }}>{t}</p>
               <ul style={{ display: 'flex', flexDirection: 'column', gap: 11 }}>
-                {l.map(link => <li key={link}><a href="#" style={{ fontSize: 13, color: 'rgba(255,255,255,.38)', transition: 'color .15s' }} onMouseEnter={e => (e.currentTarget as HTMLElement).style.color = 'rgba(255,255,255,.75)'} onMouseLeave={e => (e.currentTarget as HTMLElement).style.color = 'rgba(255,255,255,.38)'}>{link}</a></li>)}
+                {links.map(({ l, h }) => <li key={l}><a href={h} style={{ fontSize: 13, color: 'rgba(255,255,255,.38)', transition: 'color .15s' }} onMouseEnter={e => (e.currentTarget as HTMLElement).style.color = 'rgba(255,255,255,.75)'} onMouseLeave={e => (e.currentTarget as HTMLElement).style.color = 'rgba(255,255,255,.38)'}>{l}</a></li>)}
               </ul>
             </div>
           ))}
