@@ -657,7 +657,7 @@ function EatsTab() {
         </Scroller>
       </div>
       {/* Top restaurant chains */}
-      <BrandRow title="Order from Top Chains" brands={EATS_BRANDS} accent="#EA580C" />
+      <TabMarquee logos={EatsBrandLogos} items={EATS_MARQUEE} label={"Partner\nBrands"} />
 
       <div>
         <Row title="Restaurants Near You" sub="Open now · Delivering to your area" action="See all" />
@@ -708,7 +708,7 @@ function BookTab() {
         </div>
       </div>
       {/* Service partners */}
-      <BrandRow title="Our Service Partners" brands={BOOK_BRANDS} accent="#7C3AED" />
+      <TabMarquee logos={BookBrandLogos} items={BOOK_MARQUEE} label={"Partner\nBrands"} />
 
       <div>
         <Row title="Available Services" action="View all" />
@@ -1033,6 +1033,289 @@ function BrandsMarquee() {
                 }}
               >
                 {BrandLogos[b.name]}
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/* ═══════════════ EATS & BOOK PARTNER MARQUEES ═══════════════ */
+
+const EatsBrandLogos: Record<string, React.ReactNode> = {
+  "Domino's": (
+    <svg viewBox="0 0 92 36" width={92} height={36}>
+      <rect x="2" y="7" width="24" height="22" rx="3.5" fill="#fff" stroke="#006DB7" strokeWidth="2"/>
+      <line x1="2" y1="18" x2="26" y2="18" stroke="#006DB7" strokeWidth="1.8"/>
+      <circle cx="9.5" cy="12.5" r="2.2" fill="#006DB7"/>
+      <circle cx="18.5" cy="23" r="2.2" fill="#006DB7"/>
+      <text x="60" y="23" textAnchor="middle" fill="#006DB7" fontSize="13" fontWeight="700" fontFamily="Arial,sans-serif">domino's</text>
+    </svg>
+  ),
+  "McDonald's": (
+    <svg viewBox="0 0 94 36" width={94} height={36}>
+      <path d="M4 28 L4 14 Q4 6 11 6 Q17 6 17 14 L17 18 L17 14 Q17 6 24 6 Q31 6 31 14 L31 28" stroke="#FFC72C" strokeWidth="4" fill="none" strokeLinecap="round" strokeLinejoin="round"/>
+      <text x="62" y="23" textAnchor="middle" fill="#DA291C" fontSize="12" fontWeight="900" fontFamily="Arial Black,Arial,sans-serif">McDonald's</text>
+    </svg>
+  ),
+  KFC: (
+    <svg viewBox="0 0 72 36" width={72} height={36}>
+      <circle cx="18" cy="18" r="15" fill="#E8002D"/>
+      <text x="18" y="23" textAnchor="middle" fill="#fff" fontSize="11" fontWeight="900" fontFamily="Arial Black,Arial,sans-serif">KFC</text>
+      <text x="46" y="23" textAnchor="middle" fill="#E8002D" fontSize="15" fontWeight="900" fontFamily="Arial Black,Arial,sans-serif">KFC</text>
+    </svg>
+  ),
+  Subway: (
+    <svg viewBox="0 0 100 36" width={100} height={36}>
+      <rect x="1" y="7" width="98" height="22" rx="4" fill="#009B77"/>
+      <text x="50" y="23" textAnchor="middle" fill="#FFC20E" fontSize="14" fontWeight="900" fontFamily="Arial Black,Arial,sans-serif" letterSpacing="2">SUBWAY</text>
+    </svg>
+  ),
+  'Pizza Hut': (
+    <svg viewBox="0 0 90 36" width={90} height={36}>
+      <path d="M12 18 L20 6 L28 18 Z" fill="#EE3124"/>
+      <rect x="11" y="17" width="18" height="12" rx="2" fill="#EE3124"/>
+      <text x="60" y="23" textAnchor="middle" fill="#EE3124" fontSize="12.5" fontWeight="900" fontFamily="Arial Black,Arial,sans-serif">Pizza Hut</text>
+    </svg>
+  ),
+  'Burger King': (
+    <svg viewBox="0 0 108 36" width={108} height={36}>
+      <rect x="2" y="6" width="28" height="5" rx="2.5" fill="#FF8732"/>
+      <rect x="2" y="14" width="28" height="8" rx="4" fill="#DA291C"/>
+      <rect x="2" y="25" width="28" height="5" rx="2.5" fill="#FF8732"/>
+      <text x="18" y="21" textAnchor="middle" fill="#fff" fontSize="8.5" fontWeight="900" fontFamily="Arial,sans-serif">BK</text>
+      <text x="72" y="23" textAnchor="middle" fill="#7B3D00" fontSize="12.5" fontWeight="900" fontFamily="Arial Black,Arial,sans-serif">Burger King</text>
+    </svg>
+  ),
+  'Wow Momo': (
+    <svg viewBox="0 0 96 36" width={96} height={36}>
+      <path d="M10 24 Q10 10 16 10 Q19 6 22 10 Q28 10 28 24 Q24 28 16 28 Q12 28 10 24Z" fill="#E94B4B"/>
+      <path d="M14 16 Q18 12 22 16" stroke="#fff" strokeWidth="1.5" fill="none" strokeLinecap="round"/>
+      <text x="62" y="23" textAnchor="middle" fill="#E94B4B" fontSize="13" fontWeight="900" fontFamily="Arial Black,Arial,sans-serif">Wow Momo</text>
+    </svg>
+  ),
+  Haldirams: (
+    <svg viewBox="0 0 108 36" width={108} height={36}>
+      <path d="M8 26 L8 10 M8 18 L18 10 M18 10 L18 26" stroke="#E55126" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" fill="none"/>
+      <text x="66" y="23" textAnchor="middle" fill="#E55126" fontSize="15" fontWeight="900" fontFamily="Arial Black,Arial,sans-serif">Haldirams</text>
+    </svg>
+  ),
+  Starbucks: (
+    <svg viewBox="0 0 100 36" width={100} height={36}>
+      <circle cx="18" cy="18" r="14" fill="#00704A"/>
+      <path d="M18 8 L20 14 L26 14 L21 18 L23 24 L18 20 L13 24 L15 18 L10 14 L16 14 Z" fill="#fff"/>
+      <text x="60" y="23" textAnchor="middle" fill="#00704A" fontSize="13" fontWeight="900" fontFamily="Arial,sans-serif">Starbucks</text>
+    </svg>
+  ),
+  CCD: (
+    <svg viewBox="0 0 78 36" width={78} height={36}>
+      <path d="M8 26 Q4 26 4 18 Q4 10 8 10 L12 10 Q10 14 10 18 Q10 22 12 26Z" fill="#6F3D22"/>
+      <path d="M8 30 Q28 30 28 18 Q28 8 22 6" stroke="#6F3D22" strokeWidth="2.5" fill="none" strokeLinecap="round"/>
+      <circle cx="24" cy="5" r="2.5" fill="#6F3D22"/>
+      <text x="52" y="23" textAnchor="middle" fill="#6F3D22" fontSize="16" fontWeight="900" fontFamily="Arial Black,Arial,sans-serif">CCD</text>
+    </svg>
+  ),
+  Behrouz: (
+    <svg viewBox="0 0 86 36" width={86} height={36}>
+      <path d="M10 8 L14 4 L18 8 M14 4 L14 28" stroke="#8B1A2B" strokeWidth="2.5" fill="none" strokeLinecap="round"/>
+      <path d="M8 28 L20 28" stroke="#8B1A2B" strokeWidth="2.5" strokeLinecap="round"/>
+      <text x="56" y="23" textAnchor="middle" fill="#8B1A2B" fontSize="14" fontWeight="900" fontFamily="Georgia,serif">Behrouz</text>
+    </svg>
+  ),
+  Box8: (
+    <svg viewBox="0 0 74 36" width={74} height={36}>
+      <path d="M4 12 L14 7 L24 12 L24 24 L14 29 L4 24 Z" fill="#F05A22"/>
+      <path d="M4 12 L14 17 L24 12 M14 17 L14 29" stroke="#fff" strokeWidth="1.5" fill="none"/>
+      <text x="51" y="24" textAnchor="middle" fill="#F05A22" fontSize="18" fontWeight="900" fontFamily="Arial Black,Arial,sans-serif">b8</text>
+    </svg>
+  ),
+  'Chai Point': (
+    <svg viewBox="0 0 98 36" width={98} height={36}>
+      <path d="M6 26 Q6 10 14 10 L22 10 Q30 10 30 18 Q30 26 22 26 L6 26" fill="none" stroke="#C2412D" strokeWidth="2.5" strokeLinecap="round"/>
+      <path d="M30 16 Q34 14 34 18 Q34 22 30 20" stroke="#C2412D" strokeWidth="2" fill="none" strokeLinecap="round"/>
+      <line x1="10" y1="30" x2="26" y2="30" stroke="#C2412D" strokeWidth="2.5" strokeLinecap="round"/>
+      <text x="64" y="23" textAnchor="middle" fill="#C2412D" fontSize="13" fontWeight="900" fontFamily="Arial Black,Arial,sans-serif">Chai Point</text>
+    </svg>
+  ),
+  'Biryani Blues': (
+    <svg viewBox="0 0 112 36" width={112} height={36}>
+      <path d="M4 28 Q4 10 14 10 Q18 6 22 10 Q32 10 32 28 L4 28" fill="#2E4A86"/>
+      <path d="M8 20 Q18 16 28 20" stroke="#fff" strokeWidth="1.5" fill="none" strokeLinecap="round"/>
+      <text x="73" y="23" textAnchor="middle" fill="#2E4A86" fontSize="12.5" fontWeight="900" fontFamily="Arial Black,Arial,sans-serif">Biryani Blues</text>
+    </svg>
+  ),
+  'Barbeque Nation': (
+    <svg viewBox="0 0 130 36" width={130} height={36}>
+      <path d="M12 28 Q10 22 12 16 Q14 10 16 16 Q18 10 20 16 Q22 10 24 16 Q26 22 24 28" stroke="#8B0000" strokeWidth="2.5" fill="none" strokeLinecap="round"/>
+      <path d="M10 30 L26 30" stroke="#8B0000" strokeWidth="2.5" strokeLinecap="round"/>
+      <text x="79" y="23" textAnchor="middle" fill="#8B0000" fontSize="12.5" fontWeight="900" fontFamily="Arial Black,Arial,sans-serif">Barbeque Nation</text>
+    </svg>
+  ),
+};
+
+const EATS_MARQUEE = [
+  { name: "Domino's",        color: '#006DB7' },
+  { name: "McDonald's",      color: '#DA291C' },
+  { name: 'KFC',             color: '#E8002D' },
+  { name: 'Subway',          color: '#009B77' },
+  { name: 'Pizza Hut',       color: '#EE3124' },
+  { name: 'Burger King',     color: '#FF8732' },
+  { name: 'Wow Momo',        color: '#E94B4B' },
+  { name: 'Haldirams',       color: '#E55126' },
+  { name: 'Starbucks',       color: '#00704A' },
+  { name: 'CCD',             color: '#6F3D22' },
+  { name: 'Behrouz',         color: '#8B1A2B' },
+  { name: 'Box8',            color: '#F05A22' },
+  { name: 'Chai Point',      color: '#C2412D' },
+  { name: 'Biryani Blues',   color: '#2E4A86' },
+  { name: 'Barbeque Nation', color: '#8B0000' },
+];
+
+const BookBrandLogos: Record<string, React.ReactNode> = {
+  'Urban Company': (
+    <svg viewBox="0 0 122 36" width={122} height={36}>
+      <path d="M8 8 L8 24 Q8 30 14 30 Q20 30 20 24 L20 8" stroke="#7C3AED" strokeWidth="3" fill="none" strokeLinecap="round"/>
+      <text x="70" y="23" textAnchor="middle" fill="#7C3AED" fontSize="13" fontWeight="900" fontFamily="Arial Black,Arial,sans-serif">Urban Company</text>
+    </svg>
+  ),
+  Apollo: (
+    <svg viewBox="0 0 84 36" width={84} height={36}>
+      <circle cx="18" cy="18" r="13" fill="none" stroke="#00427A" strokeWidth="2.5"/>
+      <path d="M12 26 L18 6 L24 26 M14 20 L22 20" stroke="#00427A" strokeWidth="2.2" fill="none" strokeLinecap="round"/>
+      <text x="56" y="23" textAnchor="middle" fill="#00427A" fontSize="14" fontWeight="900" fontFamily="Arial,sans-serif">Apollo</text>
+    </svg>
+  ),
+  'Dr. Lal PathLabs': (
+    <svg viewBox="0 0 120 36" width={120} height={36}>
+      <path d="M8 28 L8 8 M8 16 Q18 12 18 18 Q18 28 8 28" stroke="#E31837" strokeWidth="2.5" fill="none" strokeLinecap="round"/>
+      <circle cx="24" cy="10" r="3" fill="#E31837"/>
+      <line x1="22" y1="10" x2="26" y2="18" stroke="#E31837" strokeWidth="1.5"/>
+      <text x="74" y="23" textAnchor="middle" fill="#E31837" fontSize="11.5" fontWeight="900" fontFamily="Arial Black,Arial,sans-serif">Dr. Lal PathLabs</text>
+    </svg>
+  ),
+  Housejoy: (
+    <svg viewBox="0 0 94 36" width={94} height={36}>
+      <path d="M8 18 L17 8 L26 18 M11 18 L11 28 L23 28 L23 18" stroke="#FF6B35" strokeWidth="2.5" fill="none" strokeLinecap="round" strokeLinejoin="round"/>
+      <rect x="15" y="22" width="4" height="6" rx="1" fill="#FF6B35"/>
+      <text x="60" y="23" textAnchor="middle" fill="#FF6B35" fontSize="14" fontWeight="900" fontFamily="Arial,sans-serif">housejoy</text>
+    </svg>
+  ),
+  Sulekha: (
+    <svg viewBox="0 0 84 36" width={84} height={36}>
+      <path d="M20 10 Q10 10 10 16 Q10 22 20 22 Q30 22 30 28 Q30 34 20 34" stroke="#0066CC" strokeWidth="3" fill="none" strokeLinecap="round"/>
+      <text x="54" y="23" textAnchor="middle" fill="#0066CC" fontSize="15" fontWeight="900" fontFamily="Arial,sans-serif">Sulekha</text>
+    </svg>
+  ),
+  JustDial: (
+    <svg viewBox="0 0 86 36" width={86} height={36}>
+      <circle cx="18" cy="18" r="14" fill="#FF6B00"/>
+      <text x="18" y="23" textAnchor="middle" fill="#fff" fontSize="11" fontWeight="900" fontFamily="Arial Black,Arial,sans-serif">J</text>
+      <text x="56" y="23" textAnchor="middle" fill="#FF6B00" fontSize="14" fontWeight="900" fontFamily="Arial Black,Arial,sans-serif">JustDial</text>
+    </svg>
+  ),
+  HomeTriangle: (
+    <svg viewBox="0 0 110 36" width={110} height={36}>
+      <path d="M4 26 L17 6 L30 26 Z" fill="#2E86AB"/>
+      <path d="M10 26 L10 20 L14 20 L14 26 M20 26 L20 18 L24 18 L24 26" stroke="#fff" strokeWidth="1.5" fill="none" strokeLinecap="round"/>
+      <text x="72" y="23" textAnchor="middle" fill="#2E86AB" fontSize="13" fontWeight="900" fontFamily="Arial Black,Arial,sans-serif">HomeTriangle</text>
+    </svg>
+  ),
+  'Quikr Services': (
+    <svg viewBox="0 0 118 36" width={118} height={36}>
+      <circle cx="18" cy="18" r="13" fill="none" stroke="#9C27B0" strokeWidth="2.5"/>
+      <circle cx="18" cy="18" r="7" fill="none" stroke="#9C27B0" strokeWidth="2"/>
+      <line x1="27" y1="27" x2="32" y2="32" stroke="#9C27B0" strokeWidth="2.5" strokeLinecap="round"/>
+      <text x="77" y="23" textAnchor="middle" fill="#9C27B0" fontSize="12.5" fontWeight="900" fontFamily="Arial Black,Arial,sans-serif">Quikr Services</text>
+    </svg>
+  ),
+  TaskBob: (
+    <svg viewBox="0 0 82 36" width={82} height={36}>
+      <circle cx="14" cy="10" r="5" fill="#FF6B00"/>
+      <path d="M8 30 L8 22 Q8 16 14 16 Q20 16 20 22 L20 30" fill="#FF6B00"/>
+      <text x="52" y="23" textAnchor="middle" fill="#FF6B00" fontSize="14" fontWeight="900" fontFamily="Arial,sans-serif">TaskBob</text>
+    </svg>
+  ),
+  'Mr. Right': (
+    <svg viewBox="0 0 88 36" width={88} height={36}>
+      <path d="M6 26 L14 8 L22 26 M8 20 L20 20" stroke="#0F9D58" strokeWidth="2.5" fill="none" strokeLinecap="round" strokeLinejoin="round"/>
+      <circle cx="25" cy="22" r="3" fill="#0F9D58"/>
+      <text x="58" y="23" textAnchor="middle" fill="#0F9D58" fontSize="14" fontWeight="900" fontFamily="Arial,sans-serif">Mr. Right</text>
+    </svg>
+  ),
+};
+
+const BOOK_MARQUEE = [
+  { name: 'Urban Company',   color: '#7C3AED' },
+  { name: 'Apollo',          color: '#00427A' },
+  { name: 'Dr. Lal PathLabs',color: '#E31837' },
+  { name: 'Housejoy',        color: '#FF6B35' },
+  { name: 'Sulekha',         color: '#0066CC' },
+  { name: 'JustDial',        color: '#FF6B00' },
+  { name: 'HomeTriangle',    color: '#2E86AB' },
+  { name: 'Quikr Services',  color: '#9C27B0' },
+  { name: 'TaskBob',         color: '#FF6B00' },
+  { name: 'Mr. Right',       color: '#0F9D58' },
+];
+
+function TabMarquee({ logos, items, label }: {
+  logos: Record<string, React.ReactNode>;
+  items: Array<{ name: string; color: string }>;
+  label: string;
+}) {
+  const trackRef = useRef<HTMLDivElement>(null);
+  const itemRefs = useRef<(HTMLDivElement | null)[]>([]);
+  const doubled = [...items, ...items];
+
+  const onEnter = (i: number) => {
+    if (trackRef.current) trackRef.current.style.animationPlayState = 'paused';
+    itemRefs.current.forEach((el, idx) => {
+      if (!el) return;
+      el.style.filter = idx === i ? 'none' : 'grayscale(1) opacity(0.3)';
+      el.style.transform = idx === i ? 'translateY(-2px) scale(1.06)' : 'translateY(0) scale(1)';
+    });
+  };
+
+  const onLeave = () => {
+    if (trackRef.current) trackRef.current.style.animationPlayState = 'running';
+    itemRefs.current.forEach(el => {
+      if (!el) return;
+      el.style.filter = 'grayscale(1) opacity(0.3)';
+      el.style.transform = 'translateY(0) scale(1)';
+    });
+  };
+
+  return (
+    <div style={{ background: W, border: `1px solid ${BD}`, borderRadius: 16, overflow: 'hidden' }}>
+      <div style={{ display: 'flex', alignItems: 'center', padding: '12px 0' }}>
+        <div style={{ flexShrink: 0, padding: '0 20px 0 16px', borderRight: `1px solid ${BD}` }}>
+          <p style={{ fontSize: 9, fontWeight: 800, color: T3, letterSpacing: '.12em', textTransform: 'uppercase', whiteSpace: 'nowrap', lineHeight: 1.4 }}>
+            {label.split('\n').map((line, i, arr) => (
+              <React.Fragment key={i}>{line}{i < arr.length - 1 && <br />}</React.Fragment>
+            ))}
+          </p>
+        </div>
+        <div style={{ overflow: 'hidden', flex: 1, maskImage: 'linear-gradient(to right, transparent, black 60px, black calc(100% - 60px), transparent)', WebkitMaskImage: 'linear-gradient(to right, transparent, black 60px, black calc(100% - 60px), transparent)' }}>
+          <div ref={trackRef} style={{ display: 'flex', animation: 'marquee 36s linear infinite', width: 'max-content' }}>
+            {doubled.map((b, i) => (
+              <div
+                key={i}
+                ref={el => { itemRefs.current[i] = el; }}
+                onMouseEnter={() => onEnter(i)}
+                onMouseLeave={onLeave}
+                style={{
+                  display: 'flex', alignItems: 'center', justifyContent: 'center',
+                  padding: '6px 20px',
+                  borderRight: `1px solid ${BD}`,
+                  flexShrink: 0,
+                  cursor: 'default',
+                  filter: 'grayscale(1) opacity(0.3)',
+                  transition: 'filter 0.22s ease, transform 0.22s ease',
+                  height: 52,
+                }}
+              >
+                {logos[b.name]}
               </div>
             ))}
           </div>
