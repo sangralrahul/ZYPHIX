@@ -271,7 +271,7 @@ function DualHeroBanners() {
                 ⚡ Now · 30 min delivery
               </span>
               <div style={{ width: 44, height: 44, borderRadius: 13, background: 'linear-gradient(145deg, #10D678 0%, #059E5C 100%)', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 4px 18px rgba(16,214,120,.5)' }}>
-                <svg width={20} height={28} viewBox="0 0 22 30" fill="none"><path d="M11 1C5.48 1 1 5.48 1 11C1 18.75 11 29 11 29C11 29 21 18.75 21 11C21 5.48 16.52 1 11 1Z" fill="white"/><circle cx="11" cy="11" r="3.8" fill="#07924F"/><circle cx="11" cy="11" r="1.6" fill="rgba(255,255,255,0.55)"/></svg>
+                <span style={{ fontFamily: "'Outfit', sans-serif", fontWeight: 900, fontStyle: 'italic', fontSize: 18, color: '#fff', lineHeight: 1, letterSpacing: '-0.08em', userSelect: 'none', textShadow: '0 1px 4px rgba(0,0,0,.25)' }}>//</span>
               </div>
             </div>
             <div>
@@ -326,7 +326,7 @@ function DualHeroBanners() {
                 🍱 Eats · Local restaurants near you
               </span>
               <div style={{ width: 44, height: 44, borderRadius: 13, background: 'linear-gradient(145deg, #F97316 0%, #EA580C 100%)', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 4px 18px rgba(249,115,22,.5)' }}>
-                <svg width={20} height={28} viewBox="0 0 22 30" fill="none"><path d="M11 1C5.48 1 1 5.48 1 11C1 18.75 11 29 11 29C11 29 21 18.75 21 11C21 5.48 16.52 1 11 1Z" fill="white"/><circle cx="11" cy="11" r="3.8" fill="#C2410C"/><circle cx="11" cy="11" r="1.6" fill="rgba(255,255,255,0.55)"/></svg>
+                <span style={{ fontFamily: "'Outfit', sans-serif", fontWeight: 900, fontStyle: 'italic', fontSize: 18, color: '#fff', lineHeight: 1, letterSpacing: '-0.08em', userSelect: 'none', textShadow: '0 1px 4px rgba(0,0,0,.25)' }}>//</span>
               </div>
             </div>
             <div>
