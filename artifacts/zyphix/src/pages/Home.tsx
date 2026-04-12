@@ -1772,38 +1772,57 @@ function QuickBrowse({ setTab }: { setTab?: (t: TabId) => void }) {
   );
 }
 
-/* ═══════════════ STATS STRIP (7 items matching reference) ═══════════════ */
+/* ═══════════════ STATS STRIP ═══════════════ */
 function WhyZyphixStrip() {
   const ITEMS = [
-    { Icon: Package,    title: 'Real Kirana Partners', sub: 'No dark warehouses',          color: G,         iconBg: '#ECFDF5' },
-    { Icon: BadgeCheck, title: 'Zero Extra Charges',   sub: 'Less than Swiggy / Zomato',   color: '#16A34A', iconBg: '#F0FDF4' },
-    { Icon: MapPin,     title: 'Built for J&K',        sub: 'Your neighbourhood, digital', color: '#7C3AED', iconBg: '#F5F3FF' },
-    { Icon: Zap,        title: '30 Min Delivery',      sub: 'Guaranteed every time',       color: G,         iconBg: '#ECFDF5' },
-    { Icon: Star,       title: 'Jammu First',          sub: 'Launching in J&K',            color: '#EA580C', iconBg: '#FFF7ED' },
-    { Icon: TrendingUp, title: 'Tier 2 India',         sub: 'Built for Bharat',            color: '#2563EB', iconBg: '#EFF6FF' },
-    { Icon: Shield,     title: '₹0 Surge Pricing',     sub: 'Always fair, always honest',  color: G,         iconBg: '#ECFDF5' },
+    { Icon: Zap,        title: '30-Min Delivery',       sub: 'Guaranteed every time',        color: G,         iconBg: '#DCFCE7' },
+    { Icon: Star,       title: 'Jammu First',           sub: 'Launching in J&K',             color: '#F59E0B', iconBg: '#FEF3C7' },
+    { Icon: TrendingUp, title: 'Tier 2 India',          sub: 'Built for Bharat',             color: '#3B82F6', iconBg: '#DBEAFE' },
+    { Icon: Shield,     title: '₹0 Surge Pricing',      sub: 'Always fair, always honest',   color: '#10B981', iconBg: '#D1FAE5' },
+    { Icon: Package,    title: 'Real Kirana Partners',  sub: 'No dark warehouses',           color: '#8B5CF6', iconBg: '#EDE9FE' },
+    { Icon: BadgeCheck, title: 'Zero Extra Charges',    sub: 'Less than Swiggy / Zomato',    color: '#059669', iconBg: '#ECFDF5' },
+    { Icon: MapPin,     title: 'Built for J&K',         sub: 'Your neighbourhood, digital',  color: '#EA580C', iconBg: '#FFEDD5' },
   ];
   const doubled = [...ITEMS, ...ITEMS];
   const ref = useRef<HTMLDivElement>(null);
+
   return (
-    <div style={{ background: W, borderTop: `1px solid ${BD}`, borderBottom: `1px solid ${BD}`, overflow: 'hidden' }}>
-      <style>{`@keyframes stripScroll{from{transform:translateX(0)}to{transform:translateX(-50%)}}`}</style>
+    <div style={{ background: W, borderTop: `1px solid ${BD}`, borderBottom: `1px solid ${BD}`, overflow: 'hidden', position: 'relative' }}>
+      <style>{`
+        @keyframes stripScroll { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+      `}</style>
+
+      {/* Left fade */}
+      <div style={{ position: 'absolute', left: 0, top: 0, bottom: 0, width: 100, background: 'linear-gradient(to right, #fff 30%, transparent)', zIndex: 2, pointerEvents: 'none' }} />
+      {/* Right fade */}
+      <div style={{ position: 'absolute', right: 0, top: 0, bottom: 0, width: 100, background: 'linear-gradient(to left, #fff 30%, transparent)', zIndex: 2, pointerEvents: 'none' }} />
+
       <div
         ref={ref}
-        style={{ display: 'flex', width: 'max-content', animation: 'stripScroll 32s linear infinite' }}
+        style={{ display: 'flex', width: 'max-content', animation: 'stripScroll 38s linear infinite' }}
         onMouseEnter={() => { if (ref.current) ref.current.style.animationPlayState = 'paused'; }}
         onMouseLeave={() => { if (ref.current) ref.current.style.animationPlayState = 'running'; }}
       >
         {doubled.map(({ Icon, title, sub, color, iconBg }, i) => (
-          <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '18px 28px', borderRight: `1px solid ${BD}`, flexShrink: 0, whiteSpace: 'nowrap' }}>
-            <div style={{ width: 36, height: 36, borderRadius: 10, background: iconBg, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-              <Icon size={16} color={color} strokeWidth={2.2} />
+          <React.Fragment key={i}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 11, padding: '15px 30px', flexShrink: 0, whiteSpace: 'nowrap' }}>
+              <div style={{
+                width: 36, height: 36, borderRadius: '50%', background: iconBg,
+                display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0,
+                boxShadow: `0 0 0 1px ${color}22`,
+              }}>
+                <Icon size={15} color={color} strokeWidth={2.3} />
+              </div>
+              <div>
+                <p style={{ fontFamily: "'Outfit',sans-serif", fontWeight: 800, fontSize: 13, color: T1, letterSpacing: '-.02em', lineHeight: 1.2 }}>{title}</p>
+                <p style={{ fontSize: 11, color: T3, fontWeight: 500, marginTop: 1.5, letterSpacing: '.01em' }}>{sub}</p>
+              </div>
             </div>
-            <div>
-              <p style={{ fontFamily: "'Outfit',sans-serif", fontWeight: 800, fontSize: 13, color: T1, letterSpacing: '-.015em', marginBottom: 1, lineHeight: 1.2 }}>{title}</p>
-              <p style={{ fontSize: 11.5, color: T2, fontWeight: 500 }}>{sub}</p>
+            {/* Dot separator */}
+            <div style={{ display: 'flex', alignItems: 'center', flexShrink: 0, paddingRight: 4 }}>
+              <div style={{ width: 3, height: 3, borderRadius: '50%', background: '#D1D5DB' }} />
             </div>
-          </div>
+          </React.Fragment>
         ))}
       </div>
     </div>
