@@ -108,7 +108,6 @@ export function ZyphixLogo({
           userSelect: 'none',
           display: 'inline-flex',
           alignItems: 'baseline',
-          overflow: 'hidden',
         }}>
           <ZyphWord />
           <IxWord />
@@ -142,6 +141,7 @@ function ZyphWord() {
         WebkitTextFillColor: 'transparent',
         backgroundClip: 'text',
         display: 'inline-block',
+        paddingRight: '0.04em',
         willChange: 'transform',
       }}
     >
