@@ -1,7 +1,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 
-const LOOP = 3.8;
+const LOOP = 2.2;
 
 /* ─── Icon mark ─── */
 function PinMark({ size }: { size: number }) {
@@ -20,7 +20,7 @@ function PinMark({ size }: { size: number }) {
         times:    [0, 0.12, 0.17, 0.20, 0.72, 0.80, 0.92, 1],
         ease:     'easeOut',
         repeat:   Infinity,
-        repeatDelay: 0.15,
+        repeatDelay: 0.05,
       }}
       whileHover={{ scale: 1.12, rotate: 7 }}
       whileTap={{ scale: 0.9 }}
@@ -48,7 +48,7 @@ function PinMark({ size }: { size: number }) {
           times:    [0, 0.14, 0.22, 0.72, 0.80, 0.90, 1],
           ease:     'easeOut',
           repeat:   Infinity,
-          repeatDelay: 0.15,
+          repeatDelay: 0.05,
         }}
         style={{
           fontFamily: "'Outfit', sans-serif",
@@ -112,7 +112,7 @@ export function ZyphixLogo({
               times:    [0, 0.16, 0.24, 0.72, 0.80, 0.91, 1],
               ease:     [0.22, 1, 0.36, 1],
               repeat:   Infinity,
-              repeatDelay: 0.15,
+              repeatDelay: 0.05,
             }}
             style={{
               fontStyle: 'italic',
@@ -137,7 +137,7 @@ export function ZyphixLogo({
               times:    [0, 0.19, 0.28, 0.72, 0.80, 0.91, 1],
               ease:     [0.22, 1, 0.36, 1],
               repeat:   Infinity,
-              repeatDelay: 0.15,
+              repeatDelay: 0.05,
             }}
             style={{
               color: '#0A0F1A',
