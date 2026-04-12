@@ -88,7 +88,7 @@ function Nav() {
       <div style={{ maxWidth: 1200, margin: '0 auto', padding: '0 24px', height: 64, display: 'flex', alignItems: 'center', gap: 32 }}>
 
         {/* Logo */}
-        <a href="/" style={{ textDecoration: 'none', flexShrink: 0 }}>
+        <a href="/" style={{ textDecoration: 'none', flexShrink: 0 }} onClick={e => { e.preventDefault(); nav('/'); }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 9 }}>
             <div style={{ width: 32, height: 32, borderRadius: 9, background: G, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
               <span style={{ color: '#fff', fontWeight: 900, fontSize: 14, fontFamily: "'Outfit', sans-serif" }}>Z</span>
@@ -112,7 +112,7 @@ function Nav() {
         {/* Right actions */}
         <div style={{ display: 'flex', gap: 8, alignItems: 'center', marginLeft: 'auto' }} className="hidden md:flex">
           {/* Dark theme toggle */}
-          <button onClick={() => nav('/')} title="Dark mode"
+          <button onClick={() => nav('/dark')} title="Dark mode"
             style={{ width: 34, height: 34, borderRadius: 8, border: `1px solid ${BD}`, background: BG, display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', color: T3, transition: 'all 0.15s' }}
             onMouseEnter={e => { (e.currentTarget as HTMLElement).style.borderColor = T1; (e.currentTarget as HTMLElement).style.color = T1; }}
             onMouseLeave={e => { (e.currentTarget as HTMLElement).style.borderColor = BD; (e.currentTarget as HTMLElement).style.color = T3; }}>
