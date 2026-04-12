@@ -75,7 +75,7 @@ function fmt(n: number) {
 }
 
 function funEquivalent(yearly: number) {
-  if (yearly >= 10000) return "That's enough for a Gulmarg trip! 🏔️";
+  if (yearly >= 10000) return "That's enough for a Gulmarg trip!";
   if (yearly >= 5000)  return "That's almost a new phone! 📱";
   return "That's 3 months of chai! ☕";
 }
@@ -178,7 +178,8 @@ export function ReceiptComparison() {
             The same ₹300 food order.<br />Very different total bill.
           </h2>
         </div>
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 24, marginBottom: 36 }}>
+        <style>{`@media(max-width:767px){.receipt-grid{grid-template-columns:1fr!important;}}`}</style>
+        <div className="receipt-grid" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 24, marginBottom: 36 }}>
 
           {/* Other apps */}
           <div style={{ background: W, border: `1.5px solid #FCA5A5`, borderRadius: 20, overflow: 'hidden', boxShadow: SH }}>
