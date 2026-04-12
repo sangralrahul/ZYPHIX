@@ -5,18 +5,13 @@ import {
   Search, MapPin, ChevronDown, ShoppingCart, User, LogOut,
   Plus, Minus, Star, Clock, ChevronRight, ChevronLeft,
   Shield, Package, Truck, Zap, Check, Copy, ArrowRight,
-  Phone, Instagram, Twitter, Linkedin, PlayCircle,
+  Phone, Instagram, Twitter, Linkedin,
   Gift, Crown, BadgeCheck, Users, TrendingUp,
-  LocateFixed, X, Utensils, Store, Bike, Megaphone, Tag
+  LocateFixed, X, Utensils, Store, Bike, Tag
 } from 'lucide-react';
 import { products, categories, restaurants, foodCategories, promoCodes, stores } from '@/data/mockData';
 import { useAuth } from '@/context/AuthContext';
 import { ZyphixLogo } from '../components/ZyphixLogo';
-import {
-  CategoryGrid, SavingsCalculator, ReceiptComparison,
-  HowItWorksSimple, WhyKirana, LiveCounter, KiranaQuotes,
-  AppPreviewMockup, ReferAndEarn, TrustMediaBar,
-} from '../components/HomeSections';
 
 type TabId = 'now' | 'eats' | 'map' | 'offers';
 
