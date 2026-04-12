@@ -264,6 +264,7 @@ function DropColumn({ letter, full, idx }: { letter: string; full: string; idx: 
         style={{
           position: 'absolute', bottom: '36%',
           display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 3,
+          width: 'clamp(4.8rem, 9.5vw, 7.8rem)',
         }}
         animate={{ y: wordY, opacity: wordOp }}
         transition={{ duration: ZFC / 1000, times: wordT, ease: wordEase as never, repeat: Infinity, delay }}
@@ -273,7 +274,8 @@ function DropColumn({ letter, full, idx }: { letter: string; full: string; idx: 
           fontSize: 'clamp(0.68rem, 1.05vw, 0.84rem)',
           color: T1,
           letterSpacing: '0.06em', textTransform: 'uppercase' as const,
-          whiteSpace: 'nowrap', userSelect: 'none', lineHeight: 1.2,
+          textAlign: 'center' as const,
+          userSelect: 'none', lineHeight: 1.25,
         }}>{full}</span>
 
         {/* Impact ripple line */}
