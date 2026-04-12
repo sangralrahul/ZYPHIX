@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback, type ReactNode, type CSSProperties } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Link } from 'wouter';
+import { Link, useLocation } from 'wouter';
 
 /* ── Design tokens — light theme ────────────────────────── */
 const BG   = '#FFFFFF';
@@ -937,11 +937,11 @@ export function SplashVideoCore({ onDone }: { onDone?: () => void }) {
 
 /* ── SplashVideo — standalone page with back nav ────────── */
 export function SplashVideo() {
-  const [, setLoc] = useState('');
+  const [, setLoc] = useLocation();
   return (
     <div style={{ width: '100vw', height: '100vh', position: 'relative', overflow: 'hidden' }}>
       <button
-        onClick={() => window.history.back()}
+        onClick={() => setLoc('/')}
         style={{ position: 'absolute', top: 20, left: 20, zIndex: 200, padding: '8px 18px', borderRadius: 7, background: 'rgba(0,0,0,0.04)', border: '1px solid rgba(0,0,0,0.09)', color: T2, fontFamily: INT, fontSize: 13, fontWeight: 500, cursor: 'pointer' }}>
         ← Back
       </button>
