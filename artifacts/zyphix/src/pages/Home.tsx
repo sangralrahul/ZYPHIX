@@ -3,10 +3,11 @@ import { motion, AnimatePresence } from 'framer-motion';
 import {
   Search, MapPin, ChevronDown, ShoppingCart, User, LogOut,
   ArrowRight, Star, Check, Phone, Instagram, Twitter, Linkedin,
-  ChevronRight, Truck, Zap, Shield, Clock
+  ChevronRight, Truck, Zap, Shield, Clock, Sun
 } from 'lucide-react';
 import { useAuth } from '@/context/AuthContext';
 import { ZyphixLogo } from '../components/ZyphixLogo';
+import { useLocation } from 'wouter';
 
 /* ═══════ DARK PREMIUM DESIGN TOKENS ═══════ */
 const BG    = '#060B12';
@@ -56,6 +57,7 @@ function Navbar() {
   const [focus, setFocus] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const { user, logout, openModal } = useAuth();
+  const [, navigate] = useLocation();
 
   useEffect(() => {
     const h = () => setScrolled(window.scrollY > 10);
@@ -102,7 +104,14 @@ function Navbar() {
             }} />
         </div>
 
-        <div style={{ display: 'flex', gap: 8, marginLeft: 'auto', flexShrink: 0 }}>
+        <div style={{ display: 'flex', gap: 8, marginLeft: 'auto', flexShrink: 0, alignItems: 'center' }}>
+          {/* Theme toggle: switch to light */}
+          <motion.button whileHover={{ scale: 1.08, rotate: 20 }} whileTap={{ scale: 0.93 }}
+            onClick={() => navigate('/light')}
+            title="Switch to Light Theme"
+            style={{ width: 36, height: 36, borderRadius: 10, border: `1.5px solid ${BD2}`, background: CARD, display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', color: T2 }}>
+            <Sun size={16} color={G} />
+          </motion.button>
           {user ? (
             <button onClick={logout} style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '8px 14px', borderRadius: 10, border: `1px solid ${BD2}`, background: CARD, color: T2, fontSize: 13, fontWeight: 600, cursor: 'pointer' }}>
               <div style={{ width: 24, height: 24, borderRadius: '50%', background: G, color: BG, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 11, fontWeight: 900 }}>{user.name[0]}</div>
