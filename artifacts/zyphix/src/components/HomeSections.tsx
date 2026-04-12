@@ -537,36 +537,39 @@ export function AppPreviewMockup() {
         </div>
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 24, marginBottom: 32 }}>
           {/* ZyphixNow */}
-          <div style={{ background: T1, borderRadius: 24, overflow: 'hidden', border: '1px solid rgba(255,255,255,.1)', boxShadow: '0 20px 60px rgba(0,0,0,.3)' }}>
-            <div style={{ background: 'linear-gradient(135deg, #059669, #0DA366)', padding: '16px 20px' }}>
-              <p style={{ fontWeight: 800, color: '#fff', fontSize: 15 }}>⚡ ZyphixNow · Groceries</p>
+          <div style={{ background: W, borderRadius: 20, overflow: 'hidden', border: `1.5px solid ${BD}`, boxShadow: '0 4px 24px rgba(0,0,0,.07)' }}>
+            <div style={{ background: 'linear-gradient(135deg, #059669, #0DA366)', padding: '14px 20px', display: 'flex', alignItems: 'center', gap: 8 }}>
+              <span style={{ fontSize: 17 }}>⚡</span>
+              <p style={{ fontWeight: 800, color: '#fff', fontSize: 14, letterSpacing: '-.01em' }}>ZyphixNow · Groceries</p>
             </div>
             <div style={{ padding: '16px', display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
               {GROC_ITEMS.map(({ emoji, name, price }) => (
-                <div key={name} style={{ background: 'rgba(255,255,255,.05)', border: '1px solid rgba(255,255,255,.08)', borderRadius: 14, padding: '12px 10px' }}>
-                  <div style={{ width: 38, height: 38, borderRadius: 10, background: `${G}20`, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 20, marginBottom: 8 }}>{emoji}</div>
-                  <p style={{ fontSize: 11, color: 'rgba(255,255,255,.75)', lineHeight: 1.4, marginBottom: 6 }}>{name}</p>
+                <div key={name} style={{ background: BG, border: `1px solid ${BD}`, borderRadius: 14, padding: '12px 10px' }}>
+                  <div style={{ width: 38, height: 38, borderRadius: 10, background: '#ECFDF5', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 20, marginBottom: 8 }}>{emoji}</div>
+                  <p style={{ fontSize: 11.5, color: T2, lineHeight: 1.4, marginBottom: 6 }}>{name}</p>
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                    <span style={{ fontWeight: 800, color: '#fff', fontSize: 13 }}>{price}</span>
-                    <span style={{ background: G, color: '#fff', fontSize: 11, fontWeight: 800, padding: '3px 8px', borderRadius: 7 }}>+ Add</span>
+                    <span style={{ fontWeight: 800, color: T1, fontSize: 13 }}>{price}</span>
+                    <span style={{ background: G, color: '#fff', fontSize: 10.5, fontWeight: 800, padding: '3px 8px', borderRadius: 7 }}>+ Add</span>
                   </div>
                 </div>
               ))}
             </div>
           </div>
+
           {/* ZyphixEats */}
-          <div style={{ background: T1, borderRadius: 24, overflow: 'hidden', border: '1px solid rgba(255,255,255,.1)', boxShadow: '0 20px 60px rgba(0,0,0,.3)' }}>
-            <div style={{ background: 'linear-gradient(135deg, #B45309, #D97706)', padding: '16px 20px' }}>
-              <p style={{ fontWeight: 800, color: '#fff', fontSize: 15 }}>🍱 ZyphixEats · Food</p>
+          <div style={{ background: W, borderRadius: 20, overflow: 'hidden', border: `1.5px solid ${BD}`, boxShadow: '0 4px 24px rgba(0,0,0,.07)' }}>
+            <div style={{ background: 'linear-gradient(135deg, #B45309, #D97706)', padding: '14px 20px', display: 'flex', alignItems: 'center', gap: 8 }}>
+              <span style={{ fontSize: 17 }}>🍱</span>
+              <p style={{ fontWeight: 800, color: '#fff', fontSize: 14, letterSpacing: '-.01em' }}>ZyphixEats · Food</p>
             </div>
             <div style={{ padding: '16px', display: 'flex', flexDirection: 'column', gap: 10 }}>
               {RESTAURANT_ITEMS.map(({ emoji, name, rating, time, tag }) => (
-                <div key={name} style={{ background: 'rgba(255,255,255,.05)', border: '1px solid rgba(255,255,255,.08)', borderRadius: 14, padding: '14px 14px', display: 'flex', alignItems: 'center', gap: 12 }}>
-                  <div style={{ width: 44, height: 44, borderRadius: 12, background: 'rgba(217,119,6,.2)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 22, flexShrink: 0 }}>{emoji}</div>
+                <div key={name} style={{ background: BG, border: `1px solid ${BD}`, borderRadius: 14, padding: '14px', display: 'flex', alignItems: 'center', gap: 12 }}>
+                  <div style={{ width: 44, height: 44, borderRadius: 12, background: '#FEF3C7', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 22, flexShrink: 0 }}>{emoji}</div>
                   <div>
-                    <p style={{ fontWeight: 700, color: '#fff', fontSize: 13.5, marginBottom: 3 }}>{name}</p>
-                    <p style={{ fontSize: 11.5, color: 'rgba(255,255,255,.4)' }}>
-                      <span style={{ color: '#FCD34D' }}>{rating}</span>  ·  {time}  ·  {tag}
+                    <p style={{ fontWeight: 700, color: T1, fontSize: 13.5, marginBottom: 3 }}>{name}</p>
+                    <p style={{ fontSize: 11.5, color: T2 }}>
+                      <span style={{ color: '#D97706', fontWeight: 700 }}>{rating}</span> · {time} · {tag}
                     </p>
                   </div>
                 </div>
