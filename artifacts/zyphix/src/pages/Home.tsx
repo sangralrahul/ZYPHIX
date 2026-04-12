@@ -12,6 +12,7 @@ import {
 import { products, categories, restaurants, foodCategories, promoCodes, stores } from '@/data/mockData';
 import { useAuth } from '@/context/AuthContext';
 import { ZyphixLogo } from '../components/ZyphixLogo';
+import { SplashVideoCore } from './SplashVideo';
 
 type TabId = 'now' | 'eats' | 'map' | 'offers';
 
@@ -2238,6 +2239,9 @@ export function Home() {
       <AnnoBar />
       <Navbar />
       <WaitlistSection />
+      <div style={{ width: '100%', height: 540, background: '#fff', borderBottom: '1px solid #E5E7EB', overflow: 'hidden' }}>
+        <SplashVideoCore />
+      </div>
       <div id="quick-browse"><QuickBrowse /></div>
       <DualHeroBanners />
       <WhyZyphixStrip />
