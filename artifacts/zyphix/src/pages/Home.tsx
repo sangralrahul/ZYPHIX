@@ -171,8 +171,13 @@ function Navbar({ tab = 'now', setTab }: { tab?: TabId; setTab?: (t: TabId) => v
   const allAreas = Object.values(LOC_AREAS).flat();
   const active = SVCS.find(s => s.id === tab);
 
-  const displayLoc = locVal
-    ? locVal.length > 18 ? locVal.slice(0, 17) + '…' : locVal
+  const delivMins = locVal
+    ? locVal.includes('Srinagar') ? '45 mins'
+    : locVal.startsWith('Current') ? '28 mins'
+    : '30 mins'
+    : null;
+  const areaLabel = locVal
+    ? locVal.length > 20 ? locVal.slice(0, 19) + '…' : locVal
     : 'Select Location';
 
   return (
@@ -187,16 +192,38 @@ function Navbar({ tab = 'now', setTab }: { tab?: TabId; setTab?: (t: TabId) => v
         {/* ── Location picker ── */}
         <div ref={locRef} style={{ position: 'relative', flexShrink: 0 }}>
           <button onClick={() => { setLocOpen(o => !o); setLocSearch(''); }}
-            style={{ display: 'flex', alignItems: 'center', gap: 7, background: 'transparent', border: 'none', cursor: 'pointer', padding: '4px 0' }}>
-            <MapPin size={15} color={locVal ? G : T3} />
-            <div style={{ textAlign: 'left' }}>
-              <p style={{ fontSize: 8.5, fontWeight: 600, color: T3, textTransform: 'uppercase', letterSpacing: '.07em', lineHeight: 1 }}>Deliver to</p>
-              <div style={{ display: 'flex', alignItems: 'center', gap: 3, marginTop: 2 }}>
-                <span style={{ fontWeight: 700, color: locVal ? T1 : T3, fontSize: 13 }}>{displayLoc}</span>
-                <motion.span animate={{ rotate: locOpen ? 180 : 0 }} transition={{ duration: .18 }}>
-                  <ChevronDown size={11} color={T3} />
-                </motion.span>
-              </div>
+            style={{ display: 'flex', alignItems: 'center', gap: 8, background: 'transparent', border: 'none', cursor: 'pointer', padding: '4px 0', minWidth: 0 }}>
+            <motion.div animate={{ color: locVal ? G : T3 }} transition={{ duration: .25 }}>
+              <MapPin size={16} color={locVal ? G : T3} />
+            </motion.div>
+            <div style={{ textAlign: 'left', minWidth: 0 }}>
+              <AnimatePresence mode="wait">
+                {delivMins ? (
+                  <motion.div key="with-loc" initial={{ opacity: 0, y: -6 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: 6 }} transition={{ duration: .2 }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
+                      <Zap size={11} color={G} strokeWidth={2.5} style={{ flexShrink: 0 }} />
+                      <span style={{ fontSize: 9, fontWeight: 700, color: G, textTransform: 'uppercase', letterSpacing: '.06em' }}>Delivery in</span>
+                    </div>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 4, marginTop: 1 }}>
+                      <span style={{ fontWeight: 900, color: T1, fontSize: 16, letterSpacing: '-.03em', lineHeight: 1 }}>{delivMins}</span>
+                      <motion.span animate={{ rotate: locOpen ? 180 : 0 }} transition={{ duration: .18 }} style={{ flexShrink: 0, marginTop: 1 }}>
+                        <ChevronDown size={12} color={T3} />
+                      </motion.span>
+                    </div>
+                    <p style={{ fontSize: 10.5, color: T2, marginTop: 2, maxWidth: 130, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', lineHeight: 1 }}>{areaLabel}</p>
+                  </motion.div>
+                ) : (
+                  <motion.div key="no-loc" initial={{ opacity: 0, y: -6 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: 6 }} transition={{ duration: .2 }}>
+                    <p style={{ fontSize: 8.5, fontWeight: 600, color: T3, textTransform: 'uppercase', letterSpacing: '.07em', lineHeight: 1 }}>Deliver to</p>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 3, marginTop: 2 }}>
+                      <span style={{ fontWeight: 700, color: T3, fontSize: 13 }}>Select Location</span>
+                      <motion.span animate={{ rotate: locOpen ? 180 : 0 }} transition={{ duration: .18 }}>
+                        <ChevronDown size={11} color={T3} />
+                      </motion.span>
+                    </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
             </div>
           </button>
 
