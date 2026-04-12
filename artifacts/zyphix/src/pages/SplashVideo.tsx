@@ -187,18 +187,49 @@ function Scene1() {
   );
 }
 
-/* ── Scene 2 — ZyphixNow ────────────────────────────────── */
+/* ── Grocery data ────────────────────────────────────────── */
+const GROCERIES = [
+  { name: 'Tomatoes',  price: '₹25/kg',  cat: 'Veggie', img: 'photo-1546094096-0df4bcaaa337' },
+  { name: 'Broccoli',  price: '₹80/pc',  cat: 'Veggie', img: 'photo-1459411621453-7b03977f4bfc' },
+  { name: 'Carrots',   price: '₹35/kg',  cat: 'Veggie', img: 'photo-1447175008436-054170c2e979' },
+  { name: 'Spinach',   price: '₹20/bn',  cat: 'Veggie', img: 'photo-1576045057995-568f588f82fb' },
+  { name: 'Mangoes',   price: '₹120/dz', cat: 'Fruit',  img: 'photo-1553279768-865429fa0078' },
+  { name: 'Apples',    price: '₹160/kg', cat: 'Fruit',  img: 'photo-1568702846914-96b305d2aaeb' },
+  { name: 'Bananas',   price: '₹45/dz',  cat: 'Fruit',  img: 'photo-1571771894821-ce9b6c11b08e' },
+  { name: 'Basmati',   price: '₹90/kg',  cat: 'Grain',  img: 'photo-1536304929831-ee1ca9d44906' },
+];
+
+const CAT_COLOR: Record<string, string> = { Veggie: G, Fruit: '#F97316', Grain: '#D97706', Dairy: '#6366F1' };
+
+function GroceryCard({ item, delay, show }: { item: typeof GROCERIES[0]; delay: number; show: boolean }) {
+  return (
+    <motion.div
+      style={{ background: '#fff', borderRadius: 14, padding: '0.7vw 0.6vw 0.6vw', display: 'flex', flexDirection: 'column', alignItems: 'center', boxShadow: '0 2px 12px rgba(0,0,0,0.09)', border: '1px solid rgba(0,0,0,0.06)', width: '7.2vw', minWidth: 78, position: 'relative', overflow: 'hidden' }}
+      initial={{ opacity: 0, y: 32, scale: 0.82 }}
+      animate={show ? { opacity: 1, y: 0, scale: 1 } : {}}
+      transition={{ duration: 0.48, delay, ease: [0.34, 1.56, 0.64, 1] }}>
+      <div style={{ position: 'absolute', top: 5, right: 5, fontSize: '0.55vw', fontFamily: INT, fontWeight: 700, color: CAT_COLOR[item.cat] ?? G, background: `${CAT_COLOR[item.cat] ?? G}14`, padding: '2px 5px', borderRadius: 4 }}>{item.cat}</div>
+      <div style={{ width: '4.8vw', height: '4.8vw', minWidth: 48, minHeight: 48, borderRadius: '50%', overflow: 'hidden', marginBottom: '0.5vw', boxShadow: '0 2px 8px rgba(0,0,0,0.12)' }}>
+        <img src={`https://images.unsplash.com/${item.img}?w=200&q=80`} alt={item.name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+      </div>
+      <p style={{ fontFamily: OFT, fontWeight: 700, fontSize: '0.8vw', color: T1, textAlign: 'center', lineHeight: 1.2, marginBottom: '0.3vw' }}>{item.name}</p>
+      <p style={{ fontFamily: INT, fontWeight: 700, fontSize: '0.72vw', color: CAT_COLOR[item.cat] ?? G }}>{item.price}</p>
+    </motion.div>
+  );
+}
+
+/* ── Scene 2 — ZyphixNow (Grocery showcase) ─────────────── */
 function Scene2() {
   const [ph, setPh] = useState(0);
   const [count, setCount] = useState(0);
   useEffect(() => {
-    const ts = [150, 600, 1200, 2000, 4300].map((d, i) => setTimeout(() => setPh(i + 1), d));
+    const ts = [150, 700, 1100, 2200, 4300].map((d, i) => setTimeout(() => setPh(i + 1), d));
     return () => ts.forEach(clearTimeout);
   }, []);
   useEffect(() => {
     if (ph < 2) return;
     let n = 0;
-    const id = setInterval(() => { n += 2; setCount(Math.min(n, 30)); if (n >= 30) clearInterval(id); }, 40);
+    const id = setInterval(() => { n += 2; setCount(Math.min(n, 30)); if (n >= 30) clearInterval(id); }, 45);
     return () => clearInterval(id);
   }, [ph]);
 
@@ -208,219 +239,334 @@ function Scene2() {
       initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
       transition={{ duration: 0.55 }}>
       <Grid />
+      <Blob x="-8%" y="20%" size="34vw" color={`${G}0B`} delay={0} />
+      <Blob x="52%" y="-8%" size="26vw" color={`${G}07`} delay={2} />
 
-      {/* Blobs */}
-      <Blob x="-5%" y="30%" size="32vw" color={`${G}0C`} delay={0} />
-      <Blob x="55%" y="-10%" size="28vw" color={`${G}08`} delay={2} />
-
-      {/* Speed lines top-left */}
-      {[0, 1, 2, 3, 4].map(i => (
+      {/* Speed lines */}
+      {[0,1,2,3].map(i => (
         <motion.div key={i}
-          style={{ position: 'absolute', left: 0, top: `${20 + i * 12}%`, height: 1.5, background: `linear-gradient(to right, transparent, ${G}40, transparent)`, borderRadius: 2, zIndex: 2, pointerEvents: 'none' }}
-          animate={{ width: ['0%', '35%', '0%'], x: ['-5%', '0%', '8%'], opacity: [0, 0.8, 0] }}
-          transition={{ duration: 1.4, delay: 0.6 + i * 0.18, repeat: Infinity, repeatDelay: 2.5, ease: EASE }}
+          style={{ position: 'absolute', left: 0, top: `${22 + i * 13}%`, height: 1.5, background: `linear-gradient(to right, transparent, ${G}45, transparent)`, borderRadius: 2, zIndex: 2, pointerEvents: 'none' }}
+          animate={{ width: ['0%', '40%', '0%'], opacity: [0, 1, 0] }}
+          transition={{ duration: 1.3, delay: 0.5 + i * 0.2, repeat: Infinity, repeatDelay: 2.8, ease: EASE }}
         />
       ))}
 
-      {/* Floating grocery emojis */}
-      {[
-        { e: '🥦', x: '56%', y: '8%', d: 0.3 }, { e: '🧅', x: '72%', y: '22%', d: 1.1 },
-        { e: '🍅', x: '85%', y: '50%', d: 0.7 }, { e: '🥛', x: '62%', y: '75%', d: 1.8 },
-        { e: '🍎', x: '78%', y: '82%', d: 0.5 }, { e: '🥕', x: '90%', y: '12%', d: 2.1 },
-      ].map((it, i) => (
-        <FloatEmoji key={i} emoji={it.e} x={it.x} y={it.y} delay={it.d} size="2.4vw" />
-      ))}
-
-      {/* Left accent line */}
+      {/* Left accent bar */}
       <motion.div style={{ position: 'absolute', left: 0, top: 0, bottom: 0, width: 3, background: GD, zIndex: 5 }}
         initial={{ scaleY: 0, originY: 1 }}
         animate={ph >= 1 ? { scaleY: 1 } : {}}
         transition={{ duration: 0.8, ease: EASE }} />
 
       {/* Left — Text */}
-      <div style={{ flex: '0 0 50%', display: 'flex', flexDirection: 'column', justifyContent: 'center', padding: '0 4vw 0 8vw', position: 'relative', zIndex: 10 }}>
-        <motion.div style={{ display: 'flex', alignItems: 'center', gap: 9, marginBottom: '2.5vh' }}
+      <div style={{ flex: '0 0 44%', display: 'flex', flexDirection: 'column', justifyContent: 'center', padding: '0 3vw 0 8vw', position: 'relative', zIndex: 10 }}>
+        <motion.div style={{ display: 'flex', alignItems: 'center', gap: 9, marginBottom: '2vh' }}
           initial={{ opacity: 0, x: -24 }}
-          animate={ph >= 5 ? { opacity: 0 } : ph >= 1 ? { opacity: 1, x: 0 } : {}}
+          animate={ph >= 1 ? { opacity: 1, x: 0 } : {}}
           transition={{ duration: 0.55, ease: EASE }}>
-          <div style={{ width: 30, height: 30, borderRadius: 8, background: GD, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, boxShadow: `0 4px 12px ${G}35` }}>
+          <div style={{ width: 30, height: 30, borderRadius: 8, background: GD, display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: `0 4px 12px ${G}40` }}>
             <span style={{ fontFamily: OFT, fontWeight: 900, fontStyle: 'italic', fontSize: 13, color: '#fff' }}>//</span>
           </div>
-          <span style={{ fontFamily: INT, fontWeight: 600, fontSize: '1.1vw', color: T2, letterSpacing: '0.15em', textTransform: 'uppercase' }}>Zyphix Now</span>
+          <span style={{ fontFamily: INT, fontWeight: 600, fontSize: '1.05vw', color: T2, letterSpacing: '0.14em', textTransform: 'uppercase' }}>Zyphix Now</span>
         </motion.div>
 
-        <motion.h2 style={{ fontFamily: OFT, fontWeight: 900, fontSize: '6.2vw', lineHeight: 0.9, letterSpacing: '-0.045em', marginBottom: '2.5vh' }}
+        <motion.div style={{ fontFamily: OFT, fontWeight: 900, fontSize: '6vw', lineHeight: 0.88, letterSpacing: '-0.045em', marginBottom: '2vh' }}
           initial={{ opacity: 0, y: 28 }}
-          animate={ph >= 5 ? { opacity: 0 } : ph >= 2 ? { opacity: 1, y: 0 } : {}}
+          animate={ph >= 2 ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.7, ease: EASE }}>
-          <span style={{ color: T1, display: 'block' }}>Grocery</span>
-          <motion.span style={{ color: G, display: 'block', position: 'relative' }}>
-            in{' '}
-            <motion.span style={{ fontVariantNumeric: 'tabular-nums' }}>
-              {ph >= 2 ? count : 0}
-            </motion.span>{' '}
-            mins.
-          </motion.span>
-        </motion.h2>
+          <span style={{ color: T1, display: 'block' }}>Fresh grocery</span>
+          <span style={{ color: G, display: 'block' }}>in <span style={{ fontVariantNumeric: 'tabular-nums' }}>{ph >= 2 ? count : 0}</span> mins.</span>
+        </motion.div>
 
-        <motion.p style={{ fontFamily: INT, fontSize: '1.4vw', color: T2, fontWeight: 400, lineHeight: 1.7, marginBottom: '3.5vh', maxWidth: '27vw' }}
+        <motion.p style={{ fontFamily: INT, fontSize: '1.3vw', color: T2, fontWeight: 400, lineHeight: 1.7, marginBottom: '3vh', maxWidth: '25vw' }}
           initial={{ opacity: 0 }}
-          animate={ph >= 5 ? { opacity: 0 } : ph >= 3 ? { opacity: 1 } : {}}
+          animate={ph >= 3 ? { opacity: 1 } : {}}
           transition={{ duration: 0.75, ease: EASE }}>
-          Straight from your neighbourhood kirana store, delivered to your door in minutes.
+          Vegetables, fruits, grains & dairy — straight from your kirana.
         </motion.p>
 
-        <motion.div style={{ display: 'inline-flex', alignItems: 'center', gap: 9, padding: '9px 20px', borderRadius: 8, background: `${G}0E`, border: `1.5px solid ${G}30`, color: G, fontFamily: INT, fontWeight: 600, fontSize: '1.05vw', width: 'fit-content' }}
+        <motion.div style={{ display: 'flex', gap: 10, flexWrap: 'wrap' }}
           initial={{ opacity: 0, y: 10 }}
-          animate={ph >= 5 ? { opacity: 0 } : ph >= 4 ? { opacity: 1, y: 0 } : {}}
+          animate={ph >= 4 ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.55, ease: EASE }}>
-          🏪 Kirana Partners · Jammu
+          {['🥦 Veggies', '🍎 Fruits', '🌾 Grains', '🥛 Dairy'].map((tag, i) => (
+            <motion.div key={tag}
+              style={{ padding: '5px 12px', borderRadius: 6, background: `${G}10`, border: `1.5px solid ${G}28`, color: G, fontFamily: INT, fontWeight: 600, fontSize: '0.85vw' }}
+              initial={{ opacity: 0, scale: 0.85 }}
+              animate={ph >= 4 ? { opacity: 1, scale: 1 } : {}}
+              transition={{ delay: i * 0.07, duration: 0.4, ease: [0.34, 1.56, 0.64, 1] }}>
+              {tag}
+            </motion.div>
+          ))}
+        </motion.div>
+
+        {/* Delivery badge */}
+        <motion.div
+          style={{ marginTop: '2.5vh', display: 'inline-flex', alignItems: 'center', gap: 9, padding: '9px 18px', borderRadius: 8, background: T1, color: '#fff', fontFamily: OFT, fontWeight: 700, fontSize: '1vw', width: 'fit-content', boxShadow: `0 6px 20px ${T1}30` }}
+          initial={{ opacity: 0, y: 10 }}
+          animate={ph >= 4 ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: 0.5, delay: 0.3, ease: [0.34, 1.56, 0.64, 1] }}>
+          <motion.span animate={{ rotate: [0, -15, 15, 0] }} transition={{ duration: 0.6, delay: 2, repeat: Infinity, repeatDelay: 3 }}>⚡</motion.span>
+          Express delivery · Jammu
         </motion.div>
       </div>
 
-      {/* Right — Image */}
-      <div style={{ flex: '0 0 50%', position: 'relative', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-        {/* Rotating dashed ring */}
-        <motion.div
-          style={{ position: 'absolute', width: '32vw', height: '32vw', borderRadius: '50%', border: `2px dashed ${G}25`, pointerEvents: 'none', zIndex: 3 }}
-          animate={{ rotate: 360 }}
-          transition={{ duration: 20, repeat: Infinity, ease: 'linear' }}
-        />
-        <div style={{ position: 'absolute', width: '36vw', height: '36vw', borderRadius: '50%', background: `radial-gradient(circle, ${G}0C, transparent 70%)`, pointerEvents: 'none' }} />
-        <motion.div style={{ position: 'relative', zIndex: 10 }}
-          initial={{ opacity: 0, x: 40, scale: 0.88 }}
-          animate={ph >= 5 ? { opacity: 0 } : ph >= 2 ? { opacity: 1, x: 0, scale: 1 } : {}}
-          transition={{ duration: 0.85, ease: EASE }}>
-          <div style={{ width: '27vw', height: '27vw', borderRadius: '50%', overflow: 'hidden', boxShadow: `0 0 0 1px ${G}20, 0 8px 32px rgba(0,0,0,0.1), 0 40px 80px rgba(0,0,0,0.08)` }}>
-            <img src="https://images.unsplash.com/photo-1542838132-92c53300491e?w=700&q=85" alt="groceries" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+      {/* Right — Grocery card grid */}
+      <div style={{ flex: '0 0 56%', position: 'relative', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '2vh 4vw 2vh 2vw' }}>
+        {/* Radial glow */}
+        <div style={{ position: 'absolute', width: '38vw', height: '38vw', borderRadius: '50%', background: `radial-gradient(circle, ${G}08 0%, transparent 68%)`, pointerEvents: 'none' }} />
+
+        <div style={{ position: 'relative', zIndex: 10, display: 'flex', flexDirection: 'column', gap: '1vw' }}>
+          {/* Row 1 */}
+          <div style={{ display: 'flex', gap: '1vw' }}>
+            {GROCERIES.slice(0, 4).map((item, i) => (
+              <GroceryCard key={item.name} item={item} delay={0.3 + i * 0.1} show={ph >= 2} />
+            ))}
           </div>
-          <div style={{ position: 'absolute', inset: -6, borderRadius: '50%', border: `2px solid ${G}22`, pointerEvents: 'none' }} />
-          {/* Floating badge */}
+          {/* Row 2 */}
+          <div style={{ display: 'flex', gap: '1vw' }}>
+            {GROCERIES.slice(4, 8).map((item, i) => (
+              <GroceryCard key={item.name} item={item} delay={0.65 + i * 0.1} show={ph >= 2} />
+            ))}
+          </div>
+          {/* Shelf divider */}
           <motion.div
-            style={{ position: 'absolute', bottom: '8%', left: '-14%', background: '#fff', borderRadius: 10, padding: '8px 14px', boxShadow: '0 4px 20px rgba(0,0,0,0.12)', display: 'flex', alignItems: 'center', gap: 8, zIndex: 20, border: `1px solid ${G}20` }}
-            initial={{ opacity: 0, y: 16, scale: 0.85 }}
-            animate={ph >= 3 ? { opacity: 1, y: 0, scale: 1 } : {}}
-            transition={{ duration: 0.55, ease: [0.34, 1.56, 0.64, 1] }}>
-            <span style={{ fontSize: '1.3vw' }}>⚡</span>
-            <div>
-              <p style={{ fontFamily: OFT, fontWeight: 800, fontSize: '1.1vw', color: T1, lineHeight: 1 }}>Express</p>
-              <p style={{ fontFamily: INT, fontSize: '0.85vw', color: T2, lineHeight: 1.3 }}>30 min delivery</p>
+            style={{ height: 3, borderRadius: 2, background: `linear-gradient(to right, transparent, ${G}30, transparent)` }}
+            initial={{ scaleX: 0 }} animate={ph >= 2 ? { scaleX: 1 } : {}}
+            transition={{ duration: 0.8, delay: 1.1, ease: EASE }}
+          />
+          {/* Cart total bar */}
+          <motion.div
+            style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '8px 14px', borderRadius: 10, background: '#fff', boxShadow: '0 2px 16px rgba(0,0,0,0.1)', border: `1.5px solid ${G}25` }}
+            initial={{ opacity: 0, y: 12 }}
+            animate={ph >= 3 ? { opacity: 1, y: 0 } : {}}
+            transition={{ duration: 0.5, delay: 1.2, ease: [0.34, 1.56, 0.64, 1] }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+              <span style={{ fontSize: '1.1vw' }}>🛒</span>
+              <span style={{ fontFamily: INT, fontWeight: 600, fontSize: '0.85vw', color: T2 }}>8 items · ₹650</span>
+            </div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+              <motion.div style={{ width: 8, height: 8, borderRadius: '50%', background: G }}
+                animate={{ opacity: [1, 0.3, 1] }} transition={{ duration: 1.2, repeat: Infinity }} />
+              <span style={{ fontFamily: OFT, fontWeight: 700, fontSize: '0.85vw', color: G }}>Packed in 8 min</span>
             </div>
           </motion.div>
-        </motion.div>
-        <div style={{ position: 'absolute', inset: 0, background: `linear-gradient(to right, ${BG} 0%, transparent 12%)`, pointerEvents: 'none' }} />
+        </div>
+
+        <div style={{ position: 'absolute', inset: 0, background: `linear-gradient(to right, ${BG} 0%, transparent 8%)`, pointerEvents: 'none' }} />
       </div>
     </motion.div>
   );
 }
 
-/* ── Scene 3 — ZyphixEats ───────────────────────────────── */
+/* ── Pizza slice pull component ──────────────────────────── */
+const PIZZA_IMG = 'https://images.unsplash.com/photo-1574071318508-1cdbab80d002?w=700&q=80';
+
+function PizzaPull({ show }: { show: boolean }) {
+  return (
+    <div style={{ position: 'relative', width: '22vw', height: '22vw' }}>
+      {/* Glow */}
+      <div style={{ position: 'absolute', inset: '-15%', borderRadius: '50%', background: `radial-gradient(circle, ${OR}14, transparent 68%)`, pointerEvents: 'none' }} />
+
+      {/* Pizza base */}
+      <motion.div
+        style={{ width: '22vw', height: '22vw', borderRadius: '50%', overflow: 'hidden', boxShadow: `0 0 0 2px ${OR}22, 0 8px 40px rgba(0,0,0,0.18), 0 40px 70px rgba(0,0,0,0.1)` }}
+        initial={{ opacity: 0, scale: 0.85 }}
+        animate={show ? { opacity: 1, scale: 1 } : {}}
+        transition={{ duration: 0.75, ease: [0.34, 1.56, 0.64, 1] }}>
+        <img src={PIZZA_IMG} alt="pizza" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+      </motion.div>
+
+      {/* Lifted slice — same image, triangle clip-path */}
+      <motion.div
+        style={{
+          position: 'absolute', inset: 0,
+          backgroundImage: `url(${PIZZA_IMG})`,
+          backgroundSize: '100% 100%',
+          backgroundPosition: 'center',
+          clipPath: 'polygon(50% 50%, 30% 0%, 70% 0%)',
+          filter: 'drop-shadow(0 -6px 14px rgba(234,88,12,0.35))',
+          zIndex: 10,
+        }}
+        initial={{ y: 0, rotate: 0, opacity: 0 }}
+        animate={show ? { y: [-55, -75, -55], rotate: [0, 5, 0], opacity: 1 } : {}}
+        transition={show ? { y: { duration: 2.8, repeat: Infinity, ease: 'easeInOut', delay: 0.8 }, rotate: { duration: 2.8, repeat: Infinity, ease: 'easeInOut', delay: 0.8 }, opacity: { duration: 0.5 } } : {}}
+      />
+
+      {/* Cheese strings */}
+      {show && [-11, -1, 9].map((offsetX, i) => (
+        <motion.div key={i}
+          style={{ position: 'absolute', top: '3%', left: `calc(50% + ${offsetX}px)`, width: 2.5, borderRadius: 2, background: 'linear-gradient(to bottom, #FCD34D, #FBBF24BB)', zIndex: 9, transformOrigin: 'top center' }}
+          animate={{ height: [0, 44, 52, 44, 0] }}
+          transition={{ duration: 2.8, delay: 1.0 + i * 0.13, repeat: Infinity, ease: 'easeInOut' }}
+        />
+      ))}
+
+      {/* Steam wisps */}
+      {show && [28, 50, 68].map((pct, i) => (
+        <motion.div key={i}
+          style={{ position: 'absolute', bottom: '18%', left: `${pct}%`, width: 7, height: 24, borderRadius: '50%', background: 'rgba(255,255,255,0.7)', filter: 'blur(3.5px)', zIndex: 5, pointerEvents: 'none' }}
+          animate={{ y: [0, -55], opacity: [0, 0.75, 0], x: [0, i % 2 === 0 ? 9 : -9, 0] }}
+          transition={{ duration: 1.8, delay: i * 0.55, repeat: Infinity, ease: 'easeOut' }}
+        />
+      ))}
+    </div>
+  );
+}
+
+/* ── Scene 3 — ZyphixEats (Food showcase) ───────────────── */
+const FOOD_ITEMS = [
+  { name: 'Margherita Pizza', place: 'Pizza Palace', time: '25 min', rating: '4.7', img: 'photo-1574071318508-1cdbab80d002' },
+  { name: 'Chicken Biryani',  place: 'Biryani House', time: '30 min', rating: '4.9', img: 'photo-1589302168068-964664d93dc0' },
+  { name: 'Classic Burger',   place: 'Burger Studio', time: '20 min', rating: '4.6', img: 'photo-1568901346375-23c9450c58cd' },
+];
+
 function Scene3() {
   const [ph, setPh] = useState(0);
+  const [foodIdx, setFoodIdx] = useState(0);
   useEffect(() => {
-    const ts = [150, 600, 1200, 2000, 4300].map((d, i) => setTimeout(() => setPh(i + 1), d));
+    const ts = [150, 700, 1300, 2200, 4300].map((d, i) => setTimeout(() => setPh(i + 1), d));
     return () => ts.forEach(clearTimeout);
   }, []);
+  useEffect(() => {
+    if (ph < 3) return;
+    const id = setInterval(() => setFoodIdx(n => (n + 1) % FOOD_ITEMS.length), 1400);
+    return () => clearInterval(id);
+  }, [ph]);
+
+  const food = FOOD_ITEMS[foodIdx];
 
   return (
-    <motion.div className="absolute inset-0 flex flex-row-reverse items-stretch overflow-hidden"
+    <motion.div className="absolute inset-0 flex items-stretch overflow-hidden"
       style={{ background: BG }}
       initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
       transition={{ duration: 0.55 }}>
       <Grid />
+      <Blob x="55%" y="35%" size="38vw" color={`${OR}0A`} delay={0} />
+      <Blob x="2%" y="5%"  size="22vw" color={`${OR}07`} delay={2} />
 
-      {/* Blobs */}
-      <Blob x="60%" y="40%" size="35vw" color={`${OR}0A`} delay={0} />
-      <Blob x="5%" y="-5%" size="25vw" color={`${OR}06`} delay={1.8} />
-
-      {/* Animated orange arc sweep */}
+      {/* Animated orange arc */}
       <motion.div
-        style={{ position: 'absolute', right: '-5%', top: '-20%', width: '60vw', height: '60vw', borderRadius: '50%', border: `80px solid ${OR}07`, pointerEvents: 'none', zIndex: 1 }}
-        animate={{ rotate: [0, 20, 0], scale: [1, 1.04, 1] }}
+        style={{ position: 'absolute', right: '-6%', top: '-18%', width: '56vw', height: '56vw', borderRadius: '50%', border: `70px solid ${OR}07`, pointerEvents: 'none', zIndex: 1 }}
+        animate={{ rotate: [0, 25, 0], scale: [1, 1.05, 1] }}
         transition={{ duration: 7, repeat: Infinity, ease: 'easeInOut' }}
       />
 
-      {/* Floating food emojis */}
-      {[
-        { e: '🍕', x: '8%',  y: '10%', d: 0.4 }, { e: '🍛', x: '18%', y: '78%', d: 1.3 },
-        { e: '🍔', x: '5%',  y: '48%', d: 0.9 }, { e: '🥗', x: '26%', y: '15%', d: 2.0 },
-        { e: '🍜', x: '12%', y: '65%', d: 0.2 }, { e: '🧆', x: '32%', y: '88%', d: 1.6 },
-      ].map((it, i) => (
-        <FloatEmoji key={i} emoji={it.e} x={it.x} y={it.y} delay={it.d} size="2.4vw" />
-      ))}
-
-      {/* Right accent line */}
+      {/* Right accent bar */}
       <motion.div style={{ position: 'absolute', right: 0, top: 0, bottom: 0, width: 3, background: ORD, zIndex: 5 }}
         initial={{ scaleY: 0, originY: 1 }}
         animate={ph >= 1 ? { scaleY: 1 } : {}}
         transition={{ duration: 0.8, ease: EASE }} />
 
-      {/* Right — Text */}
-      <div style={{ flex: '0 0 50%', display: 'flex', flexDirection: 'column', justifyContent: 'center', padding: '0 8vw 0 4vw', position: 'relative', zIndex: 10 }}>
-        <motion.div style={{ display: 'flex', alignItems: 'center', gap: 9, marginBottom: '2.5vh' }}
-          initial={{ opacity: 0, x: 24 }}
-          animate={ph >= 5 ? { opacity: 0 } : ph >= 1 ? { opacity: 1, x: 0 } : {}}
+      {/* Left — Text */}
+      <div style={{ flex: '0 0 46%', display: 'flex', flexDirection: 'column', justifyContent: 'center', padding: '0 3vw 0 8vw', position: 'relative', zIndex: 10 }}>
+        <motion.div style={{ display: 'flex', alignItems: 'center', gap: 9, marginBottom: '2vh' }}
+          initial={{ opacity: 0, x: -24 }}
+          animate={ph >= 1 ? { opacity: 1, x: 0 } : {}}
           transition={{ duration: 0.55, ease: EASE }}>
-          <div style={{ width: 30, height: 30, borderRadius: 8, background: ORD, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, boxShadow: `0 4px 12px ${OR}35` }}>
+          <div style={{ width: 30, height: 30, borderRadius: 8, background: ORD, display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: `0 4px 12px ${OR}40` }}>
             <span style={{ fontFamily: OFT, fontWeight: 900, fontStyle: 'italic', fontSize: 13, color: '#fff' }}>//</span>
           </div>
-          <span style={{ fontFamily: INT, fontWeight: 600, fontSize: '1.1vw', color: T2, letterSpacing: '0.15em', textTransform: 'uppercase' }}>Zyphix Eats</span>
+          <span style={{ fontFamily: INT, fontWeight: 600, fontSize: '1.05vw', color: T2, letterSpacing: '0.14em', textTransform: 'uppercase' }}>Zyphix Eats</span>
         </motion.div>
 
-        <motion.h2 style={{ fontFamily: OFT, fontWeight: 900, fontSize: '6.2vw', lineHeight: 0.9, letterSpacing: '-0.045em', marginBottom: '2.5vh' }}
+        <motion.h2 style={{ fontFamily: OFT, fontWeight: 900, fontSize: '6vw', lineHeight: 0.88, letterSpacing: '-0.045em', marginBottom: '2vh' }}
           initial={{ opacity: 0, y: 28 }}
-          animate={ph >= 5 ? { opacity: 0 } : ph >= 2 ? { opacity: 1, y: 0 } : {}}
+          animate={ph >= 2 ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.7, ease: EASE }}>
           <span style={{ color: T1, display: 'block' }}>Cravings</span>
-          <span style={{ color: OR, display: 'block' }}>delivered fast.</span>
+          <span style={{ color: OR, display: 'block' }}>delivered hot.</span>
         </motion.h2>
 
-        <motion.p style={{ fontFamily: INT, fontSize: '1.4vw', color: T2, fontWeight: 400, lineHeight: 1.7, marginBottom: '3.5vh', maxWidth: '27vw' }}
+        <motion.p style={{ fontFamily: INT, fontSize: '1.3vw', color: T2, fontWeight: 400, lineHeight: 1.7, marginBottom: '2.5vh', maxWidth: '24vw' }}
           initial={{ opacity: 0 }}
-          animate={ph >= 5 ? { opacity: 0 } : ph >= 3 ? { opacity: 1 } : {}}
+          animate={ph >= 3 ? { opacity: 1 } : {}}
           transition={{ duration: 0.75, ease: EASE }}>
-          Your favourite restaurants, at your door — hot and on time.
+          Pizza, biryani, burgers & more — from your favourite Jammu restaurants.
         </motion.p>
 
-        <motion.div style={{ display: 'inline-flex', alignItems: 'center', gap: 9, padding: '9px 20px', borderRadius: 8, background: `${OR}0E`, border: `1.5px solid ${OR}30`, color: OR, fontFamily: INT, fontWeight: 600, fontSize: '1.05vw', width: 'fit-content' }}
+        {/* Live food card ticker */}
+        <motion.div
+          style={{ background: '#fff', borderRadius: 14, padding: '12px 16px', boxShadow: '0 4px 20px rgba(0,0,0,0.1)', border: `1.5px solid ${OR}20`, maxWidth: '24vw', overflow: 'hidden' }}
+          initial={{ opacity: 0, y: 14 }}
+          animate={ph >= 3 ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: 0.55, ease: [0.34, 1.56, 0.64, 1] }}>
+          <AnimatePresence mode="wait">
+            <motion.div key={foodIdx}
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: -20 }}
+              transition={{ duration: 0.35, ease: EASE }}
+              style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+              <div style={{ width: '3.8vw', height: '3.8vw', minWidth: 42, minHeight: 42, borderRadius: 10, overflow: 'hidden', flexShrink: 0 }}>
+                <img src={`https://images.unsplash.com/${food.img}?w=200&q=80`} alt={food.name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+              </div>
+              <div>
+                <p style={{ fontFamily: OFT, fontWeight: 700, fontSize: '1vw', color: T1, lineHeight: 1.2 }}>{food.name}</p>
+                <p style={{ fontFamily: INT, fontSize: '0.8vw', color: T2, lineHeight: 1.4 }}>{food.place}</p>
+                <div style={{ display: 'flex', gap: 8, marginTop: 3 }}>
+                  <span style={{ fontFamily: INT, fontSize: '0.75vw', color: OR, fontWeight: 600 }}>⏱ {food.time}</span>
+                  <span style={{ fontFamily: INT, fontSize: '0.75vw', color: '#F59E0B', fontWeight: 600 }}>★ {food.rating}</span>
+                </div>
+              </div>
+            </motion.div>
+          </AnimatePresence>
+          <div style={{ display: 'flex', gap: 5, marginTop: 10, justifyContent: 'center' }}>
+            {FOOD_ITEMS.map((_, i) => (
+              <motion.div key={i}
+                style={{ height: 3, borderRadius: 2, background: i === foodIdx ? OR : `${OR}30` }}
+                animate={{ width: i === foodIdx ? 18 : 7 }}
+                transition={{ duration: 0.3 }}
+              />
+            ))}
+          </div>
+        </motion.div>
+
+        <motion.div
+          style={{ marginTop: '2.5vh', display: 'inline-flex', alignItems: 'center', gap: 9, padding: '9px 18px', borderRadius: 8, background: T1, color: '#fff', fontFamily: OFT, fontWeight: 700, fontSize: '1vw', width: 'fit-content', boxShadow: `0 6px 20px ${T1}30` }}
           initial={{ opacity: 0, y: 10 }}
-          animate={ph >= 5 ? { opacity: 0 } : ph >= 4 ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.55, ease: EASE }}>
-          🍱 Restaurants joining · Jammu
+          animate={ph >= 4 ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: 0.5, delay: 0.2, ease: [0.34, 1.56, 0.64, 1] }}>
+          <motion.span animate={{ scale: [1, 1.3, 1] }} transition={{ duration: 0.8, repeat: Infinity, repeatDelay: 2 }}>🔥</motion.span>
+          Hot & on time · Jammu
         </motion.div>
       </div>
 
-      {/* Left — Image */}
-      <div style={{ flex: '0 0 50%', position: 'relative', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-        {/* Rotating dashed ring */}
+      {/* Right — Pizza pull + food thumbnails */}
+      <div style={{ flex: '0 0 54%', position: 'relative', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: '2vh', padding: '2vh 5vw 2vh 1vw' }}>
+
+        {/* Pizza with cheese pull */}
         <motion.div
-          style={{ position: 'absolute', width: '32vw', height: '32vw', borderRadius: '26%', border: `2px dashed ${OR}25`, pointerEvents: 'none', zIndex: 3 }}
-          animate={{ rotate: -360 }}
-          transition={{ duration: 22, repeat: Infinity, ease: 'linear' }}
-        />
-        <div style={{ position: 'absolute', width: '36vw', height: '36vw', background: `radial-gradient(circle, ${OR}0C, transparent 70%)`, pointerEvents: 'none' }} />
-        <motion.div style={{ position: 'relative', zIndex: 10 }}
-          initial={{ opacity: 0, x: -40, scale: 0.88 }}
-          animate={ph >= 5 ? { opacity: 0 } : ph >= 2 ? { opacity: 1, x: 0, scale: 1 } : {}}
+          initial={{ opacity: 0, x: 50 }}
+          animate={ph >= 2 ? { opacity: 1, x: 0 } : {}}
           transition={{ duration: 0.85, ease: EASE }}>
-          <div style={{ width: '27vw', height: '27vw', borderRadius: '26%', overflow: 'hidden', boxShadow: `0 0 0 1px ${OR}20, 0 8px 32px rgba(0,0,0,0.1), 0 40px 80px rgba(0,0,0,0.08)` }}>
-            <img src="https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=700&q=85" alt="food" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-          </div>
-          <div style={{ position: 'absolute', inset: -6, borderRadius: '26%', border: `2px solid ${OR}22`, pointerEvents: 'none' }} />
-          {/* Hot badge */}
-          <motion.div
-            style={{ position: 'absolute', top: '6%', right: '-16%', background: '#fff', borderRadius: 10, padding: '8px 14px', boxShadow: '0 4px 20px rgba(0,0,0,0.12)', display: 'flex', alignItems: 'center', gap: 8, zIndex: 20, border: `1px solid ${OR}20` }}
-            initial={{ opacity: 0, y: -16, scale: 0.85 }}
-            animate={ph >= 3 ? { opacity: 1, y: 0, scale: 1 } : {}}
-            transition={{ duration: 0.55, ease: [0.34, 1.56, 0.64, 1] }}>
-            <span style={{ fontSize: '1.3vw' }}>🔥</span>
-            <div>
-              <p style={{ fontFamily: OFT, fontWeight: 800, fontSize: '1.1vw', color: T1, lineHeight: 1 }}>Hot & Fresh</p>
-              <p style={{ fontFamily: INT, fontSize: '0.85vw', color: T2, lineHeight: 1.3 }}>From local restaurants</p>
-            </div>
-          </motion.div>
+          <PizzaPull show={ph >= 2} />
         </motion.div>
-        <div style={{ position: 'absolute', inset: 0, background: `linear-gradient(to left, ${BG} 0%, transparent 12%)`, pointerEvents: 'none' }} />
+
+        {/* Food thumbnail strip */}
+        <motion.div
+          style={{ display: 'flex', gap: '1vw', zIndex: 10 }}
+          initial={{ opacity: 0, y: 20 }}
+          animate={ph >= 3 ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: 0.6, ease: EASE }}>
+          {[
+            { img: 'photo-1589302168068-964664d93dc0', label: 'Biryani' },
+            { img: 'photo-1568901346375-23c9450c58cd', label: 'Burger' },
+            { img: 'photo-1565299624946-b28f40a0ae38', label: 'Tandoori' },
+          ].map((f, i) => (
+            <motion.div key={i}
+              style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 5 }}
+              initial={{ opacity: 0, y: 16 }}
+              animate={ph >= 3 ? { opacity: 1, y: 0 } : {}}
+              transition={{ delay: 0.1 + i * 0.12, duration: 0.45, ease: [0.34, 1.56, 0.64, 1] }}>
+              <div style={{ width: '5.5vw', height: '5.5vw', minWidth: 52, minHeight: 52, borderRadius: 12, overflow: 'hidden', boxShadow: `0 3px 14px rgba(0,0,0,0.15), 0 0 0 2px ${OR}18` }}>
+                <img src={`https://images.unsplash.com/${f.img}?w=200&q=80`} alt={f.label} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+              </div>
+              <span style={{ fontFamily: INT, fontWeight: 600, fontSize: '0.7vw', color: T2 }}>{f.label}</span>
+            </motion.div>
+          ))}
+        </motion.div>
+
+        <div style={{ position: 'absolute', inset: 0, background: `linear-gradient(to left, ${BG} 0%, transparent 8%)`, pointerEvents: 'none' }} />
       </div>
     </motion.div>
   );
