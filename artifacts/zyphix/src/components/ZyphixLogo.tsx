@@ -168,7 +168,7 @@ function IxWord() {
       }
       onAnimationComplete={() => { if (!entered) setEntered(true); }}
       style={{
-        color: '#0A0F1A',
+        color: '#0DC268',
         fontStyle: 'normal',
         display: 'inline-block',
         willChange: 'transform',
