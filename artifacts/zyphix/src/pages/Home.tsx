@@ -110,6 +110,44 @@ function AnnoBar() {
   );
 }
 
+/* ═══════════════ ZYPHIX TAGLINE TICKER ═══════════════ */
+const ZYPHIX_ITEMS = [
+  { letter: 'Z', text: 'Zero surge' },
+  { letter: 'Y', text: 'Your neighbourhood' },
+  { letter: 'P', text: 'Proximity-powered' },
+  { letter: 'H', text: 'Hyperlocal' },
+  { letter: 'I', text: 'Instant delivery' },
+  { letter: 'X', text: 'Xtra savings' },
+];
+
+function ZyphixTaglineBar() {
+  return (
+    <div style={{ background: '#06090F', padding: '5.5px 0', overflow: 'hidden', borderBottom: '1px solid rgba(255,255,255,0.06)', position: 'relative' }}>
+      <style>{`@keyframes zyphixTicker { from { transform: translateX(0) } to { transform: translateX(-50%) } }`}</style>
+      {/* left/right fade masks */}
+      <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(90deg, #06090F 0%, transparent 6%, transparent 94%, #06090F 100%)', zIndex: 2, pointerEvents: 'none' }} />
+      <div
+        style={{ display: 'flex', width: 'max-content', animation: 'zyphixTicker 22s linear infinite', willChange: 'transform' }}
+        onMouseEnter={e => ((e.currentTarget as HTMLElement).style.animationPlayState = 'paused')}
+        onMouseLeave={e => ((e.currentTarget as HTMLElement).style.animationPlayState = 'running')}>
+        {[0, 1].map(copy => (
+          <span key={copy} style={{ display: 'inline-flex', alignItems: 'center', whiteSpace: 'nowrap' }}>
+            {ZYPHIX_ITEMS.map(({ letter, text }, idx) => (
+              <React.Fragment key={idx}>
+                <span style={{ display: 'inline-flex', alignItems: 'center', gap: 5, padding: '0 22px' }}>
+                  <span style={{ fontFamily: "'Outfit',sans-serif", fontWeight: 900, fontSize: 11, color: G, letterSpacing: '.05em' }}>{letter}</span>
+                  <span style={{ fontFamily: "'Inter',sans-serif", fontWeight: 500, fontSize: 11, color: 'rgba(255,255,255,0.52)', letterSpacing: '.01em' }}>{text}</span>
+                </span>
+                <span style={{ color: 'rgba(255,255,255,0.15)', fontSize: 10, userSelect: 'none' }}>·</span>
+              </React.Fragment>
+            ))}
+          </span>
+        ))}
+      </div>
+    </div>
+  );
+}
+
 /* ═══════════════ NAVBAR ═══════════════ */
 const SVCS = [
   { id: 'now' as TabId, name: 'Zyphix Now', tag: 'Grocery · 30 min', color: G, img: 'https://images.unsplash.com/photo-1542838132-92c53300491e?w=64&h=64&fit=crop&q=80' },
@@ -1921,6 +1959,7 @@ function VideoSection() {
 export function Home() {
   return (
     <div style={{ background: BG, minHeight: '100vh' }}>
+      <ZyphixTaglineBar />
       <AnnoBar />
       <Navbar />
       <WaitlistSection />
