@@ -399,71 +399,117 @@ function OperationsStep({ onNext, onBack }: { onNext: () => void; onBack: () => 
 function exportRestaurantPDF(restData: Record<string, string>, cuisines: Set<string>) {
   const ref = `ZYX-R-${Date.now()}`;
   const date = new Date().toLocaleDateString('en-IN', { day: '2-digit', month: 'long', year: 'numeric' });
-  const cuisineNames = [...cuisines].map(id => CUISINES.find(c => c.id === id)?.n).filter(Boolean).join(', ');
+  const cuisineList = [...cuisines].map(id => CUISINES.find(c => c.id === id)?.n).filter(Boolean);
+
+  const logoSVG = `<svg width="44" height="44" viewBox="0 0 44 44" xmlns="http://www.w3.org/2000/svg"><rect width="44" height="44" rx="10" fill="#0DA366"/><text x="22" y="30" text-anchor="middle" font-size="19" font-weight="900" font-style="italic" fill="white" letter-spacing="-1" font-family="Arial,sans-serif">//</text></svg>`;
+
+  const rows = [
+    ['Restaurant Name', restData.name || '—'],
+    ['Owner / Manager', restData.owner || '—'],
+    ['Mobile Number', restData.phone || '—'],
+    ['Area / Colony', restData.area || '—'],
+    ['Full Address', restData.address || '—'],
+    ['Restaurant Type', restData.type || '—'],
+    ...(restData.seating ? [['Seating Capacity', `${restData.seating} seats`]] : []),
+  ];
+
+  const tableRows = rows.map(([ label, val ], i) =>
+    `<tr style="background:${i%2===0?'#fff':'#F9FAFB'}">
+      <td style="padding:11px 16px;font-size:11px;font-weight:700;color:#6B7280;text-transform:uppercase;letter-spacing:.05em;width:38%;border-right:1px solid #F3F4F6;">${label}</td>
+      <td style="padding:11px 16px;font-size:13.5px;font-weight:600;color:#111827;">${val}</td>
+    </tr>`
+  ).join('');
+
+  const cuisineTags = cuisineList.map(n =>
+    `<span style="display:inline-block;background:#FFF1F2;border:1.5px solid #FECDD3;color:#9F1239;font-size:11px;font-weight:700;padding:4px 12px;border-radius:99px;margin:3px 4px 3px 0;">${n}</span>`
+  ).join('');
 
   const html = `<!DOCTYPE html><html><head><meta charset="utf-8"/>
-  <title>Restaurant Registration – ZYPHIX</title>
-  <style>
-    *{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',Arial,sans-serif;}
-    body{background:#fff;color:#111827;padding:40px;max-width:800px;margin:0 auto;}
-    .header{display:flex;align-items:center;justify-content:space-between;border-bottom:3px solid #E11D48;padding-bottom:18px;margin-bottom:28px;}
-    .logo-box{display:flex;align-items:center;gap:10px;}
-    .logo-icon{width:40px;height:40px;border-radius:10px;background:linear-gradient(148deg,#1AE082 0%,#0DC268 38%,#09A058 72%,#077A46 100%);display:flex;align-items:center;justify-content:center;font-size:18px;font-style:italic;font-weight:900;color:#fff;letter-spacing:-.05em;}
-    .logo-text{font-size:22px;font-weight:900;letter-spacing:-.04em;color:#111827;font-style:italic;}
-    .logo-text .zyph{background:linear-gradient(135deg,#18F590,#0DC268);-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
-    .logo-text .ix{color:#111827;font-style:normal;}
-    .badge{background:#FFF1F2;border:1.5px solid #FECDD3;color:#9F1239;font-size:12px;font-weight:700;padding:5px 14px;border-radius:99px;}
-    h1{font-size:22px;font-weight:900;color:#111827;margin-bottom:6px;}
-    .meta{font-size:13px;color:#6B7280;margin-bottom:20px;}
-    .ref{font-size:12px;font-weight:700;color:#E11D48;background:#FFF1F2;border:1px solid #FECDD3;padding:8px 16px;border-radius:8px;display:inline-block;margin-bottom:24px;}
-    .section{margin-bottom:24px;}
-    .section-title{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:#9CA3AF;margin-bottom:12px;}
-    table{width:100%;border-collapse:collapse;border:1px solid #E5E7EB;border-radius:10px;overflow:hidden;}
-    th{background:#F9FAFB;text-align:left;padding:10px 14px;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:#6B7280;border-bottom:1px solid #E5E7EB;}
-    td{padding:10px 14px;border-bottom:1px solid #F3F4F6;font-size:13px;}
-    .footer{margin-top:40px;border-top:1px solid #E5E7EB;padding-top:16px;font-size:11px;color:#9CA3AF;text-align:center;line-height:1.6;}
-    @media print{body{padding:20px;}@page{margin:15mm;}}
-  </style></head><body>
-  <div class="header">
-    <div class="logo-box">
-      <div class="logo-icon">//</div>
-      <div class="logo-text"><span class="zyph">ZYPH</span><span class="ix">IX</span></div>
+<title>Restaurant Registration – ZYPHIX</title>
+<style>
+  *{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',system-ui,Arial,sans-serif;}
+  body{background:#fff;color:#111827;max-width:820px;margin:0 auto;}
+  .banner{background:linear-gradient(135deg,#0A0E1A 0%,#101828 100%);padding:26px 36px;display:flex;align-items:center;justify-content:space-between;}
+  .logo-row{display:flex;align-items:center;gap:12px;}
+  .wordmark{font-size:28px;font-weight:900;letter-spacing:-.05em;line-height:1;}
+  .wordmark .g{color:#0DA366;font-style:italic;}
+  .wordmark .w{color:#ffffff;}
+  .doc-label{font-size:10.5px;color:rgba(255,255,255,.45);margin-top:4px;letter-spacing:.04em;text-transform:uppercase;}
+  .status-pill{background:#E11D48;color:#fff;font-size:11px;font-weight:800;padding:7px 18px;border-radius:99px;letter-spacing:.04em;}
+  .body{padding:32px 36px 28px;}
+  .title-row{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:6px;}
+  .doc-title{font-size:24px;font-weight:900;color:#111827;letter-spacing:-.03em;}
+  .submitted{font-size:12.5px;color:#6B7280;margin-bottom:18px;}
+  .ref-box{display:inline-flex;align-items:center;gap:10px;background:#FFF1F2;border:1.5px solid #FECDD3;border-radius:10px;padding:10px 18px;margin-bottom:28px;}
+  .ref-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:#9CA3AF;}
+  .ref-value{font-size:14px;font-weight:900;color:#E11D48;letter-spacing:.02em;}
+  .sec-head{font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.09em;color:#9CA3AF;border-top:1px solid #E5E7EB;padding-top:18px;margin-bottom:12px;}
+  .info-table{width:100%;border-collapse:collapse;border:1px solid #E5E7EB;border-radius:10px;overflow:hidden;margin-bottom:24px;}
+  .cuisine-wrap{margin-bottom:24px;padding:16px;background:#FAFAFA;border:1px solid #F3F4F6;border-radius:12px;}
+  .next-box{background:linear-gradient(135deg,#ECFDF5,#D1FAE5);border:1.5px solid #6EE7B7;border-radius:12px;padding:18px 20px;margin-bottom:24px;}
+  .next-title{font-size:12px;font-weight:800;color:#065F46;margin-bottom:12px;text-transform:uppercase;letter-spacing:.05em;}
+  .step{display:flex;align-items:flex-start;gap:12px;margin-bottom:10px;}
+  .step-num{width:22px;height:22px;border-radius:50%;background:#0DA366;color:#fff;font-size:10px;font-weight:900;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;}
+  .step-text{font-size:12.5px;color:#065F46;font-weight:600;line-height:1.5;}
+  .footer{border-top:1px solid #E5E7EB;padding:16px 36px;display:flex;align-items:center;justify-content:space-between;}
+  .footer-left{font-size:10.5px;color:#9CA3AF;line-height:1.65;}
+  .footer-right{font-size:10px;color:#D1D5DB;text-align:right;}
+  @media print{body{max-width:100%;}@page{margin:10mm 12mm;}}
+</style></head><body>
+
+<div class="banner">
+  <div class="logo-row">
+    ${logoSVG}
+    <div>
+      <div class="wordmark"><span class="g">ZYPH</span><span class="w">IX</span></div>
+      <div class="doc-label">Restaurant Partner Document</div>
     </div>
-    <span class="badge">Restaurant Registration Confirmation</span>
   </div>
-  <h1>Restaurant Registration</h1>
-  <p class="meta">Submitted on ${date} &nbsp;·&nbsp; Clavix Technologies Pvt. Ltd., Jammu, J&K</p>
-  <div class="ref">Reference: ${ref}</div>
+  <div class="status-pill">✓ Registration Received</div>
+</div>
 
-  <div class="section">
-    <div class="section-title">Restaurant Details</div>
-    <table>
-      <tr><th>Field</th><th>Details</th></tr>
-      <tr><td style="font-weight:600;">Restaurant Name</td><td>${restData.name || '—'}</td></tr>
-      <tr><td style="font-weight:600;">Owner / Manager</td><td>${restData.owner || '—'}</td></tr>
-      <tr><td style="font-weight:600;">Mobile</td><td>${restData.phone || '—'}</td></tr>
-      <tr><td style="font-weight:600;">Area / Colony</td><td>${restData.area || '—'}</td></tr>
-      <tr><td style="font-weight:600;">Full Address</td><td>${restData.address || '—'}</td></tr>
-      <tr><td style="font-weight:600;">Restaurant Type</td><td>${restData.type || '—'}</td></tr>
-      ${restData.seating ? `<tr><td style="font-weight:600;">Seating Capacity</td><td>${restData.seating} seats</td></tr>` : ''}
-    </table>
+<div class="body">
+  <div class="title-row">
+    <div>
+      <div class="doc-title">Restaurant Registration</div>
+      <div class="submitted">Submitted on ${date} &nbsp;·&nbsp; Clavix Technologies Pvt. Ltd., Jammu, J&K</div>
+    </div>
   </div>
 
-  ${cuisines.size > 0 ? `
-  <div class="section">
-    <div class="section-title">Cuisine Types (${cuisines.size})</div>
-    <table>
-      <tr><th>Selected Cuisines</th></tr>
-      <tr><td>${cuisineNames}</td></tr>
-    </table>
-  </div>` : ''}
+  <div class="ref-box">
+    <div>
+      <div class="ref-label">Reference Number</div>
+      <div class="ref-value">${ref}</div>
+    </div>
+  </div>
 
-  <div class="footer">
+  <div class="sec-head">Restaurant Details</div>
+  <table class="info-table">
+    ${tableRows}
+  </table>
+
+  ${cuisineList.length > 0 ? `
+  <div class="sec-head">Cuisine Types &amp; Menu (${cuisineList.length} selected)</div>
+  <div class="cuisine-wrap">${cuisineTags}</div>` : ''}
+
+  <div class="next-box">
+    <div class="next-title">What Happens Next</div>
+    <div class="step"><div class="step-num">1</div><div class="step-text">Our team will call you on <strong>${restData.phone || 'your number'}</strong> within 24 hours to verify your restaurant</div></div>
+    <div class="step"><div class="step-num">2</div><div class="step-text">We'll help you upload your menu, photos, and pricing on ZyphixEats</div></div>
+    <div class="step"><div class="step-num">3</div><div class="step-text">Your restaurant goes live and starts receiving orders from Jammu customers!</div></div>
+  </div>
+</div>
+
+<div class="footer">
+  <div class="footer-left">
     This is an auto-generated registration confirmation. Keep it for your records.<br/>
-    Zyphix is a product of Clavix Technologies Pvt. Ltd. · Jammu, J&K · wa.me/919682394363
+    Zyphix · Clavix Technologies Pvt. Ltd. · Jammu, J&K · <strong>wa.me/919682394363</strong>
   </div>
-  <script>window.onload=()=>{window.print();}</script>
-  </body></html>`;
+  <div class="footer-right">ZyphixEats Partner Program<br/>${date}</div>
+</div>
+
+<script>window.onload=()=>{window.print();}</script>
+</body></html>`;
 
   const win = window.open('', '_blank');
   if (win) { win.document.write(html); win.document.close(); }

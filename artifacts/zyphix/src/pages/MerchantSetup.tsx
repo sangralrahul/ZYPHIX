@@ -599,64 +599,108 @@ function exportMerchantPDF(storeData: Record<string,string>, categories: Set<str
       </tr>`;
   }).join('');
 
-  const html = `<!DOCTYPE html><html><head><meta charset="utf-8"/>
-  <title>Store Registration – ZYPHIX</title>
-  <style>
-    *{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',Arial,sans-serif;}
-    body{background:#fff;color:#111827;padding:40px;max-width:800px;margin:0 auto;}
-    .header{display:flex;align-items:center;justify-content:space-between;border-bottom:3px solid #0DA366;padding-bottom:18px;margin-bottom:28px;}
-    .logo{font-size:26px;font-weight:900;letter-spacing:-.04em;color:#111827;}
-    .logo span{color:#0DA366;}
-    .badge{background:#ECFDF5;border:1.5px solid #6EE7B7;color:#065F46;font-size:12px;font-weight:700;padding:5px 14px;border-radius:99px;}
-    h1{font-size:22px;font-weight:900;color:#111827;margin-bottom:6px;}
-    .meta{font-size:13px;color:#6B7280;margin-bottom:28px;}
-    .ref{font-size:12px;font-weight:700;color:#0DA366;background:#ECFDF5;border:1px solid #A7F3D0;padding:8px 16px;border-radius:8px;display:inline-block;margin-bottom:28px;}
-    .section{margin-bottom:26px;}
-    .section-title{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:#9CA3AF;margin-bottom:12px;}
-    table{width:100%;border-collapse:collapse;border:1px solid #E5E7EB;border-radius:10px;overflow:hidden;}
-    th{background:#F9FAFB;text-align:left;padding:10px 14px;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:#6B7280;border-bottom:1px solid #E5E7EB;}
-    .footer{margin-top:40px;border-top:1px solid #E5E7EB;padding-top:16px;font-size:11px;color:#9CA3AF;text-align:center;line-height:1.6;}
-    @media print{body{padding:20px;}@page{margin:15mm;}}
-  </style></head><body>
-  <div class="header">
-    <div style="display:flex;align-items:center;gap:10px;">
-      <div style="width:40px;height:40px;border-radius:10px;background:linear-gradient(148deg,#1AE082 0%,#0DC268 38%,#09A058 72%,#077A46 100%);display:flex;align-items:center;justify-content:center;font-size:18px;font-style:italic;font-weight:900;color:#fff;letter-spacing:-.05em;">//</div>
-      <div style="font-size:24px;font-weight:900;letter-spacing:-.04em;color:#111827;"><span style="font-style:italic;color:#0DA366;">ZYPH</span><span>IX</span></div>
-    </div>
-    <span class="badge">Store Registration Confirmation</span>
-  </div>
-  <h1>Store Registration</h1>
-  <p class="meta">Submitted on ${date} &nbsp;·&nbsp; Clavix Technologies Pvt. Ltd., Jammu, J&K</p>
-  <div class="ref">Reference: ${ref}</div>
+  const logoSVG = `<svg width="44" height="44" viewBox="0 0 44 44" xmlns="http://www.w3.org/2000/svg"><rect width="44" height="44" rx="10" fill="#0DA366"/><text x="22" y="30" text-anchor="middle" font-size="19" font-weight="900" font-style="italic" fill="white" letter-spacing="-1" font-family="Arial,sans-serif">//</text></svg>`;
 
-  <div class="section">
-    <div class="section-title">Store Details</div>
-    <table>
-      <tr><th>Field</th><th>Details</th></tr>
-      <tr><td style="padding:10px 14px;border-bottom:1px solid #E5E7EB;font-weight:600;">Store Name</td><td style="padding:10px 14px;border-bottom:1px solid #E5E7EB;">${storeData.name || '—'}</td></tr>
-      <tr><td style="padding:10px 14px;border-bottom:1px solid #E5E7EB;font-weight:600;">Owner Name</td><td style="padding:10px 14px;border-bottom:1px solid #E5E7EB;">${storeData.owner || '—'}</td></tr>
-      <tr><td style="padding:10px 14px;border-bottom:1px solid #E5E7EB;font-weight:600;">Mobile</td><td style="padding:10px 14px;border-bottom:1px solid #E5E7EB;">${storeData.phone || '—'}</td></tr>
-      <tr><td style="padding:10px 14px;border-bottom:1px solid #E5E7EB;font-weight:600;">Area / Colony</td><td style="padding:10px 14px;border-bottom:1px solid #E5E7EB;">${storeData.area || '—'}</td></tr>
-      <tr><td style="padding:10px 14px;border-bottom:1px solid #E5E7EB;font-weight:600;">Full Address</td><td style="padding:10px 14px;border-bottom:1px solid #E5E7EB;">${storeData.address || '—'}</td></tr>
-      <tr><td style="padding:10px 14px;font-weight:600;">Store Type</td><td style="padding:10px 14px;">${storeData.type || '—'}</td></tr>
-    </table>
+  const storeRows = [
+    ['Store Name',   storeData.name  || '—'],
+    ['Owner Name',   storeData.owner || '—'],
+    ['Mobile',       storeData.phone || '—'],
+    ['Area / Colony',storeData.area  || '—'],
+    ['Full Address', storeData.address || '—'],
+    ['Store Type',   storeData.type  || '—'],
+  ].map(([label, val], i) =>
+    `<tr style="background:${i%2===0?'#fff':'#F9FAFB'}">
+      <td style="padding:11px 16px;font-size:11px;font-weight:700;color:#6B7280;text-transform:uppercase;letter-spacing:.05em;width:38%;border-right:1px solid #F3F4F6;">${label}</td>
+      <td style="padding:11px 16px;font-size:13.5px;font-weight:600;color:#111827;">${val}</td>
+    </tr>`
+  ).join('');
+
+  const html = `<!DOCTYPE html><html><head><meta charset="utf-8"/>
+<title>Store Registration – ZYPHIX</title>
+<style>
+  *{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',system-ui,Arial,sans-serif;}
+  body{background:#fff;color:#111827;max-width:820px;margin:0 auto;}
+  .banner{background:linear-gradient(135deg,#0A0E1A 0%,#101828 100%);padding:26px 36px;display:flex;align-items:center;justify-content:space-between;}
+  .logo-row{display:flex;align-items:center;gap:12px;}
+  .wordmark{font-size:28px;font-weight:900;letter-spacing:-.05em;line-height:1;}
+  .wordmark .g{color:#0DA366;font-style:italic;}
+  .wordmark .w{color:#ffffff;}
+  .doc-label{font-size:10.5px;color:rgba(255,255,255,.45);margin-top:4px;letter-spacing:.04em;text-transform:uppercase;}
+  .status-pill{background:#0DA366;color:#fff;font-size:11px;font-weight:800;padding:7px 18px;border-radius:99px;letter-spacing:.04em;}
+  .body{padding:32px 36px 28px;}
+  .doc-title{font-size:24px;font-weight:900;color:#111827;letter-spacing:-.03em;margin-bottom:4px;}
+  .submitted{font-size:12.5px;color:#6B7280;margin-bottom:18px;}
+  .ref-box{display:inline-flex;align-items:center;gap:10px;background:#ECFDF5;border:1.5px solid #6EE7B7;border-radius:10px;padding:10px 18px;margin-bottom:28px;}
+  .ref-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:#9CA3AF;}
+  .ref-value{font-size:14px;font-weight:900;color:#0DA366;letter-spacing:.02em;}
+  .sec-head{font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.09em;color:#9CA3AF;border-top:1px solid #E5E7EB;padding-top:18px;margin-bottom:12px;}
+  .info-table{width:100%;border-collapse:collapse;border:1px solid #E5E7EB;overflow:hidden;margin-bottom:24px;}
+  .cat-table{width:100%;border-collapse:collapse;border:1px solid #E5E7EB;overflow:hidden;margin-bottom:24px;}
+  .cat-table th{background:#F9FAFB;text-align:left;padding:10px 16px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:#6B7280;border-bottom:1px solid #E5E7EB;}
+  .cat-table td{padding:10px 16px;border-bottom:1px solid #F3F4F6;font-size:12.5px;vertical-align:top;}
+  .cat-table td:first-child{font-weight:700;color:#111827;width:32%;background:#FAFAFA;}
+  .cat-table td:last-child{color:#4B5563;}
+  .next-box{background:linear-gradient(135deg,#ECFDF5,#D1FAE5);border:1.5px solid #6EE7B7;border-radius:12px;padding:18px 20px;margin-bottom:24px;}
+  .next-title{font-size:12px;font-weight:800;color:#065F46;margin-bottom:12px;text-transform:uppercase;letter-spacing:.05em;}
+  .step{display:flex;align-items:flex-start;gap:12px;margin-bottom:10px;}
+  .step-num{width:22px;height:22px;border-radius:50%;background:#0DA366;color:#fff;font-size:10px;font-weight:900;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;}
+  .step-text{font-size:12.5px;color:#065F46;font-weight:600;line-height:1.5;}
+  .footer{border-top:1px solid #E5E7EB;padding:16px 36px;display:flex;align-items:center;justify-content:space-between;}
+  .footer-left{font-size:10.5px;color:#9CA3AF;line-height:1.65;}
+  .footer-right{font-size:10px;color:#D1D5DB;text-align:right;}
+  @media print{body{max-width:100%;}@page{margin:10mm 12mm;}}
+</style></head><body>
+
+<div class="banner">
+  <div class="logo-row">
+    ${logoSVG}
+    <div>
+      <div class="wordmark"><span class="g">ZYPH</span><span class="w">IX</span></div>
+      <div class="doc-label">Merchant Partner Document</div>
+    </div>
   </div>
+  <div class="status-pill">✓ Registration Received</div>
+</div>
+
+<div class="body">
+  <div class="doc-title">Store Registration</div>
+  <div class="submitted">Submitted on ${date} &nbsp;·&nbsp; Clavix Technologies Pvt. Ltd., Jammu, J&K</div>
+
+  <div class="ref-box">
+    <div>
+      <div class="ref-label">Reference Number</div>
+      <div class="ref-value">${ref}</div>
+    </div>
+  </div>
+
+  <div class="sec-head">Store Details</div>
+  <table class="info-table">${storeRows}</table>
 
   ${categories.size > 0 ? `
-  <div class="section">
-    <div class="section-title">Categories &amp; Items (${categories.size} categories)</div>
-    <table>
-      <tr><th>Category</th><th>Selected Items</th></tr>
-      ${catRows}
-    </table>
-  </div>` : ''}
+  <div class="sec-head">Categories &amp; Items (${categories.size} categories)</div>
+  <table class="cat-table">
+    <tr><th>Category</th><th>Selected Items</th></tr>
+    ${catRows}
+  </table>` : ''}
 
-  <div class="footer">
-    This is an auto-generated registration confirmation. Keep it for your records.<br/>
-    Zyphix is a product of Clavix Technologies Pvt. Ltd. · Jammu, J&K · wa.me/919682394363
+  <div class="next-box">
+    <div class="next-title">What Happens Next</div>
+    <div class="step"><div class="step-num">1</div><div class="step-text">Our team verifies your store and calls you on <strong>${storeData.phone || 'your number'}</strong> within 24-48 hours</div></div>
+    <div class="step"><div class="step-num">2</div><div class="step-text">We help you set up your product catalogue with photos and pricing</div></div>
+    <div class="step"><div class="step-num">3</div><div class="step-text">Your store goes live on ZyphixNow and starts receiving delivery orders!</div></div>
   </div>
-  <script>window.onload=()=>{window.print();}</script>
-  </body></html>`;
+</div>
+
+<div class="footer">
+  <div class="footer-left">
+    This is an auto-generated registration confirmation. Keep it for your records.<br/>
+    Zyphix · Clavix Technologies Pvt. Ltd. · Jammu, J&K · <strong>wa.me/919682394363</strong>
+  </div>
+  <div class="footer-right">ZyphixNow Merchant Program<br/>${date}</div>
+</div>
+
+<script>window.onload=()=>{window.print();}</script>
+</body></html>`;
 
   const win = window.open('', '_blank');
   if (win) { win.document.write(html); win.document.close(); }
