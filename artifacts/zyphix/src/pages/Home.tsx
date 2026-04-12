@@ -6,7 +6,8 @@ import {
   Search, MapPin, ChevronDown, ShoppingCart, User, LogOut,
   Plus, Minus, Star, Clock, ChevronRight, ChevronLeft,
   Shield, Package, Truck, Zap, Check, Copy, ArrowRight,
-  Phone, Instagram, Twitter, Linkedin, PlayCircle
+  Phone, Instagram, Twitter, Linkedin, PlayCircle,
+  Gift, Crown, BadgeCheck, Users, TrendingUp
 } from 'lucide-react';
 import { products, categories, restaurants, foodCategories, promoCodes, stores } from '@/data/mockData';
 import { useAuth } from '@/context/AuthContext';
@@ -1613,10 +1614,10 @@ function KiranaCTA() {
 
 /* ═══════════════ WAITLIST SECTION ═══════════════ */
 const WLIST_BENEFITS = [
-  { e: '🎁', title: 'FREE DELIVERY', sub: 'Upto 10 orders free', grad: 'linear-gradient(140deg,#ECFDF5 0%,#D1FAE5 100%)', bd: '#6EE7B7', tc: '#065F46', glow: '#059669' },
-  { e: '₹125', title: 'LAUNCH CREDIT', sub: 'Code: ZYPHIX125', grad: 'linear-gradient(140deg,#FFFBEB 0%,#FEF3C7 100%)', bd: '#FCD34D', tc: '#92400E', glow: '#D97706', big: true },
-  { e: '🥇', title: 'PRIORITY ACCESS', sub: 'First in line, always', grad: 'linear-gradient(140deg,#EFF6FF 0%,#DBEAFE 100%)', bd: '#93C5FD', tc: '#1E40AF', glow: '#3B82F6' },
-  { e: '⚡', title: 'FIRST TO ORDER', sub: 'In Jammu & beyond', grad: 'linear-gradient(140deg,#FFF7ED 0%,#FFEDD5 100%)', bd: '#FDBA74', tc: '#9A3412', glow: '#EA580C' },
+  { Icon: Truck,       title: 'Free Delivery',   sub: 'Up to 10 orders, no charge',  accent: '#0DA366', iconBg: '#ECFDF5' },
+  { Icon: Gift,        title: '₹125 Credit',     sub: 'Code ZYPHIX125 at checkout',  accent: '#D97706', iconBg: '#FFFBEB' },
+  { Icon: Crown,       title: 'Priority Access', sub: 'First in line when we launch', accent: '#7C3AED', iconBg: '#F5F3FF' },
+  { Icon: Zap,         title: 'First to Order',  sub: 'In Jammu & beyond',            accent: '#EA580C', iconBg: '#FFF7ED' },
 ];
 const WLIST_ROLES = [
   { v: 'restaurant', e: '🍽️', l: 'Restaurant',       bg: '#FFF7ED', bd: '#FED7AA', ac: '#EA580C', tc: '#9A3412' },
@@ -1747,64 +1748,55 @@ function WaitlistSection() {
 
             {/* Badge */}
             <motion.div initial={{ opacity:0, y:-12 }} whileInView={{ opacity:1, y:0 }} viewport={{ once:true }}>
-              <span style={{ display:'inline-flex', alignItems:'center', gap:7, background:`${G}12`, border:`1px solid ${G}35`, color:G, fontSize:12, fontWeight:700, padding:'6px 16px', borderRadius:99, marginBottom:20 }}>
-                <motion.span animate={{ scale:[1,1.35,1] }} transition={{ repeat:Infinity, duration:1.6 }}>🚀</motion.span>
-                Now accepting early access
+              <span style={{ display:'inline-flex', alignItems:'center', gap:8, background:'#F0FDF9', border:'1px solid #A7F3D0', color:'#065F46', fontSize:12.5, fontWeight:700, padding:'7px 18px', borderRadius:99, marginBottom:22, letterSpacing:'.01em' }}>
+                <motion.span style={{ width:7, height:7, borderRadius:'50%', background:G, display:'inline-block', flexShrink:0 }} animate={{ opacity:[1,0.35,1], scale:[1,1.4,1] }} transition={{ repeat:Infinity, duration:1.6 }} />
+                Early Access Open · Jammu, J&K
               </span>
             </motion.div>
 
             {/* Headline */}
             <motion.h2 initial={{ opacity:0, y:22 }} whileInView={{ opacity:1, y:0 }} viewport={{ once:true }} transition={{ delay:.08 }}
-              style={{ fontFamily:"'Outfit',sans-serif", fontWeight:900, fontSize:'clamp(1.75rem,4vw,2.55rem)', color:T1, letterSpacing:'-.04em', lineHeight:1.1, marginBottom:13 }}>
+              style={{ fontFamily:"'Outfit',sans-serif", fontWeight:900, fontSize:'clamp(2rem,4.5vw,3rem)', color:T1, letterSpacing:'-.045em', lineHeight:1.06, marginBottom:16 }}>
               Zyphix is launching<br /><span style={{ color:G }}>in Jammu, J&K</span>
             </motion.h2>
 
             <motion.p initial={{ opacity:0 }} whileInView={{ opacity:1 }} viewport={{ once:true }} transition={{ delay:.16 }}
-              style={{ fontSize:14.5, color:T2, lineHeight:1.72, marginBottom:26 }}>
-              Be among the first to experience hyperlocal delivery from your own kirana stores. Claim your perks before we launch.
+              style={{ fontSize:15, color:T2, lineHeight:1.7, marginBottom:28, maxWidth:420 }}>
+              Be among the first to experience hyperlocal delivery from your neighbourhood kirana stores. Claim your launch perks now.
             </motion.p>
 
             {/* Benefit tiles */}
-            <div style={{ display:'grid', gridTemplateColumns:'repeat(2,1fr)', gap:12, marginBottom:28 }}>
-              {WLIST_BENEFITS.map(({ e, title, sub, grad, bd, tc, glow, big }, i) => (
+            <div style={{ display:'grid', gridTemplateColumns:'repeat(2,1fr)', gap:10, marginBottom:28 }}>
+              {WLIST_BENEFITS.map(({ Icon, title, sub, accent, iconBg }, i) => (
                 <motion.div key={title}
-                  initial={{ opacity:0, y:18, scale:.9 }} whileInView={{ opacity:1, y:0, scale:1 }} viewport={{ once:true }}
-                  transition={{ delay:.15 + i*.1, type:'spring', stiffness:220, damping:16 }}
-                  whileHover={{ scale:1.06, y:-7 }}
-                  style={{ padding:'20px 14px 18px', borderRadius:18, background:grad, border:`2px solid ${bd}`, textAlign:'center', cursor:'default', position:'relative', overflow:'hidden', boxShadow:`0 4px 16px ${glow}20`, transition:'box-shadow .2s' }}
-                  onHoverStart={(e: MouseEvent) => { (e.target as HTMLElement).style.boxShadow = `0 14px 36px ${glow}40`; }}
-                  onHoverEnd={(e: MouseEvent) => { (e.target as HTMLElement).style.boxShadow = `0 4px 16px ${glow}20`; }}>
-                  {/* top glow */}
-                  <div style={{ position:'absolute', inset:0, background:`radial-gradient(circle at 50% -10%, ${glow}28 0%, transparent 60%)`, pointerEvents:'none' }} />
-                  {/* YOURS badge */}
-                  {big && <div style={{ position:'absolute', top:10, right:10, background:glow, color:'#fff', fontSize:9.5, fontWeight:900, padding:'3px 9px', borderRadius:99, letterSpacing:'.06em', boxShadow:`0 2px 8px ${glow}55` }}>YOURS</div>}
-                  {/* Icon */}
-                  <motion.div
-                    animate={{ y:[0,-3,0], scale:[1,1.04,1] }}
-                    transition={{ repeat:Infinity, duration:2.4 + i*0.5, ease:'easeInOut' }}
-                    style={{ fontSize: big ? 30 : 38, fontWeight: big ? 900 : 400, color: big ? tc : undefined, lineHeight:1, marginBottom:9 }}>
-                    {e}
-                  </motion.div>
-                  <p style={{ fontSize:11.5, fontWeight:900, color:tc, letterSpacing:'.06em', marginBottom:4, textTransform:'uppercase' as const }}>{title}</p>
-                  <p style={{ fontSize:11, color:`${tc}BB`, fontWeight:500, lineHeight:1.4 }}>{sub}</p>
+                  initial={{ opacity:0, y:14 }} whileInView={{ opacity:1, y:0 }} viewport={{ once:true }}
+                  transition={{ delay:.15 + i*.07, type:'spring', stiffness:260, damping:22 }}
+                  style={{ display:'flex', alignItems:'flex-start', gap:12, padding:'14px 14px', borderRadius:14, background:W, border:`1.5px solid ${BD}`, boxShadow:'0 1px 6px rgba(0,0,0,.05)' }}>
+                  <div style={{ width:38, height:38, borderRadius:11, background:iconBg, display:'flex', alignItems:'center', justifyContent:'center', flexShrink:0 }}>
+                    <Icon size={18} color={accent} strokeWidth={2.2} />
+                  </div>
+                  <div>
+                    <p style={{ fontSize:13, fontWeight:800, color:T1, marginBottom:3, letterSpacing:'-.01em' }}>{title}</p>
+                    <p style={{ fontSize:11.5, color:T2, lineHeight:1.45, fontWeight:500 }}>{sub}</p>
+                  </div>
                 </motion.div>
               ))}
             </div>
 
             {/* Social proof counter */}
             <motion.div initial={{ opacity:0, y:10 }} whileInView={{ opacity:1, y:0 }} viewport={{ once:true }} transition={{ delay:.52 }}
-              style={{ display:'flex', alignItems:'center', gap:12, padding:'14px 18px', background:W, borderRadius:14, border:`1px solid ${BD}`, boxShadow:'0 1px 4px rgba(0,0,0,.06)' }}>
-              <div style={{ display:'flex' }}>
-                {['🤩','😄','😃','🙂','😊'].map((em, i) => (
-                  <motion.span key={i} initial={{ x:-10, opacity:0 }} whileInView={{ x:0, opacity:1 }} viewport={{ once:true }}
+              style={{ display:'flex', alignItems:'center', gap:14, padding:'14px 18px', background:W, borderRadius:14, border:`1px solid ${BD}`, boxShadow:'0 1px 6px rgba(0,0,0,.06)' }}>
+              <div style={{ display:'flex', flexShrink:0 }}>
+                {[['R','#0DA366'],['A','#059669'],['S','#16A34A'],['P','#22C55E'],['K','#4ADE80']].map(([l,bg], i) => (
+                  <motion.div key={i} initial={{ x:-8, opacity:0 }} whileInView={{ x:0, opacity:1 }} viewport={{ once:true }}
                     transition={{ delay:.55 + i*.06 }}
-                    style={{ fontSize:22, marginLeft: i ? -7 : 0, filter:'drop-shadow(0 1px 2px rgba(0,0,0,.12))' }}>{em}</motion.span>
+                    style={{ width:30, height:30, borderRadius:'50%', background:bg, color:'#fff', display:'flex', alignItems:'center', justifyContent:'center', fontSize:11, fontWeight:900, marginLeft: i ? -9 : 0, border:'2.5px solid #fff', boxShadow:'0 1px 4px rgba(0,0,0,.12)', flexShrink:0 }}>{l}</motion.div>
                 ))}
               </div>
               <div>
-                <motion.p style={{ fontSize:14, fontWeight:800, color:T1, lineHeight:1.2 }}>
-                  <motion.span animate={{ color:[G, '#059669', G] }} transition={{ repeat:Infinity, duration:2.5 }}>{dispCount}+</motion.span> people waiting
-                </motion.p>
+                <p style={{ fontSize:13.5, fontWeight:800, color:T1, lineHeight:1.2 }}>
+                  <motion.span style={{ color:G }} animate={{ opacity:[1,0.7,1] }} transition={{ repeat:Infinity, duration:2.5 }}>{dispCount}+</motion.span> on the waitlist
+                </p>
                 <p style={{ fontSize:11.5, color:T3, marginTop:2 }}>Jammu · Srinagar · Chandigarh</p>
               </div>
             </motion.div>
@@ -1814,7 +1806,9 @@ function WaitlistSection() {
           <motion.div initial={{ opacity:0, x:32 }} whileInView={{ opacity:1, x:0 }} viewport={{ once:true }}
             transition={{ delay:.22, type:'spring', stiffness:90, damping:18 }}
             style={{ flex:'1 1 390px', minWidth:0 }}>
-            <div style={{ background:W, borderRadius:22, padding:'32px 28px', boxShadow:SH2, border:`1px solid ${BD}` }}>
+            <div style={{ background:W, borderRadius:24, padding:'32px 30px', boxShadow:'0 8px 40px rgba(0,0,0,.1), 0 1px 4px rgba(0,0,0,.06)', border:`1px solid ${BD}`, position:'relative', overflow:'hidden' }}>
+              {/* green top accent line */}
+              <div style={{ position:'absolute', top:0, left:0, right:0, height:3, background:`linear-gradient(90deg, ${G} 0%, #22C55E 100%)` }} />
 
               {submitted ? (
                 <motion.div initial={{ scale:.8, opacity:0 }} animate={{ scale:1, opacity:1 }} transition={{ type:'spring', stiffness:200 }}
@@ -1830,9 +1824,12 @@ function WaitlistSection() {
                 </motion.div>
               ) : (
                 <div style={{ display:'flex', flexDirection:'column', gap:15 }}>
-                  <div style={{ marginBottom:2 }}>
-                    <h3 style={{ fontFamily:"'Outfit',sans-serif", fontWeight:900, fontSize:'1.2rem', color:T1, marginBottom:3 }}>Reserve your spot</h3>
-                    <p style={{ fontSize:12.5, color:T3 }}>⏱ Takes 30 seconds · Free forever</p>
+                  <div style={{ marginBottom:4, paddingBottom:18, borderBottom:`1px solid ${BD}` }}>
+                    <div style={{ display:'flex', alignItems:'center', gap:10, marginBottom:6 }}>
+                      <div style={{ width:4, height:30, borderRadius:3, background:`linear-gradient(to bottom, ${G}, #059669)`, flexShrink:0 }} />
+                      <h3 style={{ fontFamily:"'Outfit',sans-serif", fontWeight:900, fontSize:'clamp(1.2rem,2vw,1.5rem)', color:T1, letterSpacing:'-.03em', lineHeight:1 }}>Reserve your spot</h3>
+                    </div>
+                    <p style={{ fontSize:12.5, color:T3, paddingLeft:14 }}>Takes 30 seconds · Free forever</p>
                   </div>
 
                   {/* Name */}
