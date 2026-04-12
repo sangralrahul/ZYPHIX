@@ -10,6 +10,11 @@ import {
 import { products, categories, restaurants, foodCategories, promoCodes, stores } from '@/data/mockData';
 import { useAuth } from '@/context/AuthContext';
 import { ZyphixLogo } from '../components/ZyphixLogo';
+import {
+  CategoryGrid, SavingsCalculator, ReceiptComparison,
+  HowItWorksSimple, WhyKirana, LiveCounter, KiranaQuotes,
+  AppPreviewMockup, ReferAndEarn, TrustMediaBar,
+} from '../components/HomeSections';
 
 type TabId = 'now' | 'eats' | 'map' | 'offers';
 
@@ -1772,7 +1777,7 @@ export function Home() {
       <DualHeroBanners setTab={setTab} />
       <WhyZyphixStrip />
       <Trust />
-      <BrandsMarquee />
+      <CategoryGrid />
 
       <div id="tab-content" style={{ maxWidth: 1320, margin: '0 auto', padding: '44px 24px 80px' }}>
         <AnimatePresence mode="wait">
@@ -1782,9 +1787,18 @@ export function Home() {
         </AnimatePresence>
       </div>
 
+      <SavingsCalculator />
+      <ReceiptComparison />
+      <HowItWorksSimple />
+      <WhyKirana />
+      <LiveCounter />
+      <KiranaQuotes />
+      <AppPreviewMockup />
+      <ReferAndEarn />
       <HowItWorks />
       <SocialProof />
       <AppDownload />
+      <TrustMediaBar />
       <Footer />
     </div>
   );
