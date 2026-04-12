@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useLocation } from 'wouter';
+import { SplashVideoCore } from './SplashVideo';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   Search, MapPin, ChevronDown, ShoppingCart, User, LogOut,
@@ -1850,10 +1851,58 @@ function WaitlistSection() {
   );
 }
 
+/* ═══════════════ INTRO SPLASH ═══════════════ */
+function IntroSplash() {
+  const [visible, setVisible] = useState(() => {
+    try { return !sessionStorage.getItem('zyphix_intro_seen'); } catch { return false; }
+  });
+  const [exiting, setExiting] = useState(false);
+
+  const dismiss = () => {
+    setExiting(true);
+    setTimeout(() => {
+      try { sessionStorage.setItem('zyphix_intro_seen', '1'); } catch {}
+      setVisible(false);
+    }, 700);
+  };
+
+  if (!visible) return null;
+
+  return (
+    <AnimatePresence>
+      {!exiting ? (
+        <motion.div
+          key="intro-splash"
+          style={{ position: 'fixed', inset: 0, zIndex: 9999, background: W }}
+          initial={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          transition={{ duration: 0.65, ease: [0.25, 0.46, 0.45, 0.94] }}>
+          {/* Skip button */}
+          <button
+            onClick={dismiss}
+            style={{ position: 'absolute', top: 20, left: 20, zIndex: 10001, padding: '8px 18px', borderRadius: 7, background: 'rgba(0,0,0,0.04)', border: '1px solid rgba(0,0,0,0.09)', color: T2, fontFamily: "'Inter',sans-serif", fontSize: 13, fontWeight: 500, cursor: 'pointer' }}>
+            ← Skip intro
+          </button>
+          <SplashVideoCore onDone={dismiss} />
+        </motion.div>
+      ) : (
+        <motion.div
+          key="intro-exit"
+          style={{ position: 'fixed', inset: 0, zIndex: 9999, background: W }}
+          initial={{ opacity: 1 }}
+          animate={{ opacity: 0 }}
+          transition={{ duration: 0.65, ease: [0.25, 0.46, 0.45, 0.94] }}
+        />
+      )}
+    </AnimatePresence>
+  );
+}
+
 /* ═══════════════ ROOT ═══════════════ */
 export function Home() {
   return (
     <div style={{ background: BG, minHeight: '100vh' }}>
+      <IntroSplash />
       <AnnoBar />
       <Navbar />
       <WaitlistSection />
@@ -1866,7 +1915,6 @@ export function Home() {
       <SocialProof />
       <AppDownload />
       <Footer />
-
     </div>
   );
 }
