@@ -241,7 +241,7 @@ export function AuthModal() {
               <div style={{ position: 'absolute', inset: 0, backgroundImage: 'radial-gradient(circle at 80% 10%, rgba(13,163,102,.25) 0%, transparent 60%), radial-gradient(circle at 10% 90%, rgba(6,95,70,.4) 0%, transparent 55%)', pointerEvents: 'none' }} />
 
               <div style={{ marginBottom: 40, position: 'relative' }}>
-                <ZyphixLogo size={38} wordmarkColor="#ffffff" wordmarkHighlight="#34D399" />
+                <ZyphixLogo size={38} ixColor="#ffffff" />
               </div>
 
               <div style={{ position: 'relative', flex: 1 }}>
@@ -335,9 +335,9 @@ export function AuthModal() {
                             <div style={{ display: 'flex', gap: 0, border: `1.5px solid ${errors.phone ? ERR + '80' : BD}`, borderRadius: 10, overflow: 'hidden', background: W, transition: 'all .18s' }}
                               onFocusCapture={e => { (e.currentTarget as HTMLElement).style.borderColor = G; (e.currentTarget as HTMLElement).style.boxShadow = `0 0 0 3px ${G}18`; }}
                               onBlurCapture={e => { (e.currentTarget as HTMLElement).style.borderColor = errors.phone ? ERR + '80' : BD; (e.currentTarget as HTMLElement).style.boxShadow = 'none'; }}>
-                              <div style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '11px 14px', borderRight: `1.5px solid ${BD}`, background: BG, flexShrink: 0 }}>
-                                <span style={{ fontSize: 16 }}>🇮🇳</span>
-                                <span style={{ fontSize: 14, fontWeight: 700, color: T1 }}>+91</span>
+                              <div style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '11px 14px', borderRight: `1.5px solid ${BD}`, background: BG, flexShrink: 0 }}>
+                                <span style={{ fontSize: 11, fontWeight: 700, color: T2, letterSpacing: '.04em' }}>IN</span>
+                                <span style={{ fontSize: 13, fontWeight: 800, color: T1 }}>+91</span>
                               </div>
                               <input type="tel" value={phoneNum} onChange={e => setPhoneNum(e.target.value.replace(/[^\d\s\-]/g, ''))}
                                 placeholder="98765 43210" maxLength={13}
