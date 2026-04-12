@@ -348,11 +348,11 @@ function Navbar({ tab = 'now', setTab }: { tab?: TabId; setTab?: (t: TabId) => v
         </div>
 
         <div style={{ width: 1, height: 28, background: BD }} />
-        <div style={{ flex: 1, position: 'relative', maxWidth: 500 }}>
-          <Search size={14} style={{ position: 'absolute', left: 13, top: '50%', transform: 'translateY(-50%)', color: focus ? (active?.color ?? G) : T3, transition: 'color .15s' }} />
+        <div style={{ flex: 1, position: 'relative', maxWidth: 340 }}>
+          <Search size={13} style={{ position: 'absolute', left: 11, top: '50%', transform: 'translateY(-50%)', color: focus ? (active?.color ?? G) : T3, transition: 'color .15s' }} />
           <input value={q} onChange={e => setQ(e.target.value)} onFocus={() => setFocus(true)} onBlur={() => setFocus(false)}
             placeholder={`Search ${tab === 'now' ? 'groceries, brands' : tab === 'eats' ? 'dishes, restaurants' : 'stores, offers'}...`}
-            style={{ width: '100%', paddingLeft: 40, paddingRight: 14, paddingTop: 10, paddingBottom: 10, borderRadius: 10, background: BG, border: `1.5px solid ${focus ? (active?.color ?? G) + '66' : BD}`, fontSize: 13, color: T1, fontFamily: 'inherit', fontWeight: 500, outline: 'none', transition: 'all .18s', boxShadow: focus ? `0 0 0 3px ${(active?.color ?? G)}14` : 'none' }} />
+            style={{ width: '100%', paddingLeft: 34, paddingRight: 12, paddingTop: 8, paddingBottom: 8, borderRadius: 9, background: BG, border: `1.5px solid ${focus ? (active?.color ?? G) + '66' : BD}`, fontSize: 12.5, color: T1, fontFamily: 'inherit', fontWeight: 500, outline: 'none', transition: 'all .18s', boxShadow: focus ? `0 0 0 3px ${(active?.color ?? G)}14` : 'none' }} />
         </div>
         <div style={{ display: 'flex', gap: 8, marginLeft: 'auto', flexShrink: 0, position: 'relative' }}>
           {user ? (
@@ -1364,57 +1364,106 @@ function TabMarquee({ logos, items, label }: {
 /* ═══════════════ HOW IT WORKS ═══════════════ */
 function HowItWorks() {
   const steps = [
-    { n: '01', title: 'Set your location', desc: 'Enter your address or allow GPS. We find verified stores, restaurants, and service pros near you instantly.', icon: <MapPin size={22} color={G} />, img: 'https://images.unsplash.com/photo-1512291313931-d4291048e7b6?w=400&h=280&fit=crop&q=80' },
-    { n: '02', title: 'Browse & order', desc: 'Pick from 1,000+ grocery items, local restaurants, or book a certified professional — all in one app.', icon: <ShoppingCart size={22} color={G} />, img: 'https://images.unsplash.com/photo-1608198093002-ad4e005484ec?w=400&h=280&fit=crop&q=80' },
-    { n: '03', title: 'Delivered in 30 min', desc: 'Track live on a map. Our delivery partners reach you in under 30 minutes — no surge pricing, ever.', icon: <Truck size={22} color={G} />, img: 'https://images.unsplash.com/photo-1526367790999-0150786686a2?w=400&h=280&fit=crop&q=80' },
+    {
+      n: '01', title: 'Set your location',
+      desc: 'Enter your address or allow GPS. We instantly surface verified kirana stores, restaurants and pharmacies within your delivery radius.',
+      icon: <MapPin size={20} color={G} />,
+      img: 'https://images.unsplash.com/photo-1512291313931-d4291048e7b6?w=480&h=300&fit=crop&q=85',
+    },
+    {
+      n: '02', title: 'Browse & place order',
+      desc: 'Choose from 1,000+ grocery items, local restaurants or neighbourhood pharmacies — all in one unified app with real-time stock.',
+      icon: <ShoppingCart size={20} color={G} />,
+      img: 'https://images.unsplash.com/photo-1608198093002-ad4e005484ec?w=480&h=300&fit=crop&q=85',
+    },
+    {
+      n: '03', title: 'Delivered in under 30 minutes',
+      desc: 'Track your order live. Our hyperlocal riders pick up from the nearest partner store and reach your door — guaranteed no surge pricing, ever.',
+      icon: <Zap size={20} color='#fff' />,
+      img: 'https://images.unsplash.com/photo-1526367790999-0150786686a2?w=480&h=300&fit=crop&q=85',
+      highlight: true,
+    },
   ];
   return (
-    <div style={{ background: BG, borderTop: `1px solid ${BD}`, padding: '64px 0' }}>
-      <div style={{ maxWidth: 1320, margin: '0 auto', padding: '0 24px' }}>
-        <div style={{ textAlign: 'center', marginBottom: 48 }}>
-          <div style={{ display: 'inline-flex', alignItems: 'center', gap: 7, background: 'rgba(13,163,102,.07)', border: '1px solid rgba(13,163,102,.18)', borderRadius: 999, padding: '4px 14px', marginBottom: 14 }}>
-            <span style={{ fontSize: 11, fontWeight: 700, color: G, letterSpacing: '.07em', textTransform: 'uppercase' }}>Simple as 1-2-3</span>
+    <div style={{ background: W, borderTop: `1px solid ${BD}`, padding: '80px 0' }}>
+      <div style={{ maxWidth: 1200, margin: '0 auto', padding: '0 24px' }}>
+
+        {/* Section header */}
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr auto', alignItems: 'flex-end', gap: 24, marginBottom: 52 }}>
+          <div>
+            <div style={{ display: 'inline-flex', alignItems: 'center', gap: 6, background: '#ECFDF5', border: '1px solid #A7F3D0', borderRadius: 999, padding: '4px 12px', marginBottom: 16 }}>
+              <Zap size={11} color={G} fill={G} />
+              <span style={{ fontSize: 11, fontWeight: 700, color: G, letterSpacing: '.08em', textTransform: 'uppercase' }}>How it works</span>
+            </div>
+            <h2 style={{ fontFamily: "'Outfit',sans-serif", fontWeight: 900, fontSize: 'clamp(2rem,4vw,3rem)', color: T1, letterSpacing: '-.05em', lineHeight: 1.05, margin: 0 }}>
+              Order to doorstep<br />
+              <span style={{ color: G }}>in under 30 minutes.</span>
+            </h2>
           </div>
-          <h2 style={{ fontFamily: "'Outfit',sans-serif", fontWeight: 900, fontSize: 'clamp(1.8rem,3.5vw,2.7rem)', color: T1, letterSpacing: '-.04em', lineHeight: 1.08, marginBottom: 10 }}>
-            How Zyphix works
-          </h2>
-          <p style={{ fontSize: 15, color: T2, maxWidth: 420, margin: '0 auto' }}>From order to doorstep in three simple steps</p>
+          <p style={{ fontSize: 14, color: T2, maxWidth: 260, lineHeight: 1.7, marginBottom: 4, textAlign: 'right' }}>
+            Three steps. Zero complexity.<br />Hyperlocal delivery built for Jammu.
+          </p>
         </div>
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 20 }}>
+
+        {/* Step cards */}
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 18, marginBottom: 48 }}>
           {steps.map((s, i) => (
-            <motion.div key={i} initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.12 }}>
-              <div style={{ background: W, border: `1px solid ${BD}`, borderRadius: 22, overflow: 'hidden', boxShadow: SH, transition: 'all .22s' }}
-                onMouseEnter={e => { (e.currentTarget as HTMLElement).style.boxShadow = SH2; (e.currentTarget as HTMLElement).style.transform = 'translateY(-4px)'; }}
-                onMouseLeave={e => { (e.currentTarget as HTMLElement).style.boxShadow = SH; (e.currentTarget as HTMLElement).style.transform = 'none'; }}>
-                <div style={{ height: 180, overflow: 'hidden', position: 'relative', background: BG }}>
-                  <img src={s.img} alt={s.title} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-                  <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to top, rgba(255,255,255,.6) 0%, transparent 60%)' }} />
-                  <div style={{ position: 'absolute', top: 16, left: 16, width: 42, height: 42, borderRadius: 13, background: 'rgba(255,255,255,.92)', backdropFilter: 'blur(8px)', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: SH }}>
+            <motion.div key={i} initial={{ opacity: 0, y: 24 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.13, duration: 0.42 }}>
+              <div
+                style={{
+                  borderRadius: 24, overflow: 'hidden', height: '100%',
+                  background: s.highlight ? `linear-gradient(145deg, #065F46 0%, ${G} 100%)` : W,
+                  border: s.highlight ? 'none' : `1px solid ${BD}`,
+                  boxShadow: s.highlight ? '0 16px 48px rgba(13,163,102,.25)' : SH,
+                  transition: 'transform .22s, box-shadow .22s',
+                }}
+                onMouseEnter={e => { (e.currentTarget as HTMLElement).style.transform = 'translateY(-5px)'; (e.currentTarget as HTMLElement).style.boxShadow = s.highlight ? '0 24px 64px rgba(13,163,102,.35)' : SH2; }}
+                onMouseLeave={e => { (e.currentTarget as HTMLElement).style.transform = 'none'; (e.currentTarget as HTMLElement).style.boxShadow = s.highlight ? '0 16px 48px rgba(13,163,102,.25)' : SH; }}
+              >
+                {/* Image */}
+                <div style={{ height: 188, overflow: 'hidden', position: 'relative' }}>
+                  <img src={s.img} alt={s.title} style={{ width: '100%', height: '100%', objectFit: 'cover', transition: 'transform .4s' }} />
+                  <div style={{ position: 'absolute', inset: 0, background: s.highlight ? 'rgba(6,95,70,.45)' : 'linear-gradient(180deg,transparent 50%,rgba(0,0,0,.18) 100%)' }} />
+                  {/* Step number */}
+                  <div style={{ position: 'absolute', top: 16, left: 16, fontFamily: "'Outfit',sans-serif", fontWeight: 900, fontSize: '2.4rem', color: s.highlight ? 'rgba(255,255,255,.3)' : 'rgba(255,255,255,.55)', letterSpacing: '-.04em', lineHeight: 1, textShadow: '0 2px 10px rgba(0,0,0,.25)' }}>{s.n}</div>
+                  {/* Icon badge */}
+                  <div style={{ position: 'absolute', bottom: 16, right: 16, width: 40, height: 40, borderRadius: 12, background: s.highlight ? G : 'rgba(255,255,255,.92)', backdropFilter: 'blur(8px)', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 4px 14px rgba(0,0,0,.15)' }}>
                     {s.icon}
                   </div>
-                  <div style={{ position: 'absolute', top: 16, right: 16, fontFamily: "'Outfit',sans-serif", fontWeight: 900, fontSize: '1.5rem', color: 'rgba(255,255,255,.85)', letterSpacing: '-.03em', lineHeight: 1, textShadow: '0 2px 8px rgba(0,0,0,.3)' }}>{s.n}</div>
                 </div>
-                <div style={{ padding: '20px 22px 24px' }}>
-                  <h3 style={{ fontWeight: 800, color: T1, fontSize: 16, marginBottom: 8, letterSpacing: '-.02em' }}>{s.title}</h3>
-                  <p style={{ fontSize: 13.5, color: T2, lineHeight: 1.65 }}>{s.desc}</p>
+                {/* Body */}
+                <div style={{ padding: '22px 24px 28px' }}>
+                  <h3 style={{ fontFamily: "'Outfit',sans-serif", fontWeight: 800, fontSize: 16.5, letterSpacing: '-.025em', color: s.highlight ? '#fff' : T1, marginBottom: 10, lineHeight: 1.25 }}>{s.title}</h3>
+                  <p style={{ fontSize: 13.5, color: s.highlight ? 'rgba(255,255,255,.75)' : T2, lineHeight: 1.7, margin: 0 }}>{s.desc}</p>
+                  {s.highlight && (
+                    <div style={{ display: 'inline-flex', alignItems: 'center', gap: 6, marginTop: 18, background: 'rgba(255,255,255,.12)', borderRadius: 999, padding: '5px 12px', border: '1px solid rgba(255,255,255,.2)' }}>
+                      <Check size={11} color='#fff' />
+                      <span style={{ fontSize: 11.5, fontWeight: 700, color: '#fff', letterSpacing: '.04em' }}>Zero surge pricing · Always</span>
+                    </div>
+                  )}
                 </div>
               </div>
             </motion.div>
           ))}
         </div>
 
-        {/* Stats row */}
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 16, marginTop: 40 }}>
+        {/* Stats bar */}
+        <div style={{ background: T1, borderRadius: 22, padding: '32px 40px', display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 0 }}>
           {[
-            { v: '5,00,000+', l: 'Orders delivered', color: G },
-            { v: '150+', l: 'Cities across India', color: '#EA580C' },
-            { v: '4.8 ★', l: 'Average app rating', color: '#7C3AED' },
-            { v: '< 30 min', l: 'Average delivery time', color: G },
-          ].map(({ v, l, color }, i) => (
-            <motion.div key={i} initial={{ opacity: 0, y: 12 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: i * .08 }}>
-              <div style={{ background: W, border: `1px solid ${BD}`, borderRadius: 18, padding: '24px 22px', textAlign: 'center', boxShadow: SH }}>
-                <p style={{ fontFamily: "'Outfit',sans-serif", fontWeight: 900, fontSize: 'clamp(1.5rem,2.8vw,2rem)', color, letterSpacing: '-.04em', lineHeight: 1, marginBottom: 6 }}>{v}</p>
-                <p style={{ fontSize: 12.5, color: T3, fontWeight: 500 }}>{l}</p>
+            { v: '< 30 min', l: 'Guaranteed delivery time', icon: <Zap size={16} color={G} fill={G} />, accent: G },
+            { v: '4.8 / 5', l: 'Average customer rating', icon: <Star size={16} color='#F59E0B' fill='#F59E0B' />, accent: '#F59E0B' },
+            { v: '200+', l: 'Partner stores in Jammu', icon: <Package size={16} color='#60A5FA' />, accent: '#60A5FA' },
+            { v: '₹0', l: 'Surge pricing — ever', icon: <Shield size={16} color='#A78BFA' />, accent: '#A78BFA' },
+          ].map(({ v, l, icon, accent }, i) => (
+            <motion.div key={i} initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }} transition={{ delay: i * .07 }}>
+              <div style={{ padding: '0 28px', borderLeft: i > 0 ? '1px solid rgba(255,255,255,.08)' : 'none', textAlign: 'center' }}>
+                <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 10 }}>
+                  <div style={{ width: 34, height: 34, borderRadius: 10, background: `${accent}18`, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                    {icon}
+                  </div>
+                </div>
+                <p style={{ fontFamily: "'Outfit',sans-serif", fontWeight: 900, fontSize: 'clamp(1.4rem,2.5vw,1.75rem)', color: accent, letterSpacing: '-.04em', lineHeight: 1, marginBottom: 6 }}>{v}</p>
+                <p style={{ fontSize: 12, color: 'rgba(255,255,255,.45)', fontWeight: 500, lineHeight: 1.4 }}>{l}</p>
               </div>
             </motion.div>
           ))}
