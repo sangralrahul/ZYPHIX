@@ -1532,9 +1532,9 @@ const WLIST_BENEFITS = [
   { e: '⚡', title: 'FIRST TO ORDER', sub: 'In Jammu & beyond', grad: 'linear-gradient(140deg,#FFF7ED 0%,#FFEDD5 100%)', bd: '#FDBA74', tc: '#9A3412', glow: '#EA580C' },
 ];
 const WLIST_ROLES = [
-  { v: 'customer', e: '🛒', l: 'Customer',        bg: '#ECFDF5', bd: '#A7F3D0', ac: G,        tc: '#065F46' },
-  { v: 'merchant', e: '🏪', l: 'Merchant',        bg: '#FFF7ED', bd: '#FED7AA', ac: '#EA580C', tc: '#9A3412' },
-  { v: 'delivery', e: '🛵', l: 'Delivery\nPartner',bg: '#F0F9FF', bd: '#BAE6FD', ac: '#2563EB', tc: '#1E40AF' },
+  { v: 'restaurant', e: '🍽️', l: 'Restaurant',      bg: '#FFF1F2', bd: '#FECDD3', ac: '#E11D48', tc: '#9F1239' },
+  { v: 'merchant',   e: '🏪', l: 'Merchant',        bg: '#FFF7ED', bd: '#FED7AA', ac: '#EA580C', tc: '#9A3412' },
+  { v: 'delivery',   e: '🛵', l: 'Delivery\nPartner',bg: '#F0F9FF', bd: '#BAE6FD', ac: '#2563EB', tc: '#1E40AF' },
 ];
 
 function WaitlistSection() {
@@ -1579,8 +1579,9 @@ function WaitlistSection() {
       const newCount = 500 + stored.length;
       setCount(newCount); setDispCount(newCount);
     } catch {}
-    if (form.role === 'merchant') { setTimeout(() => setLoc('/merchant-setup'), 300); return; }
-    if (form.role === 'delivery') { setTimeout(() => setLoc('/delivery-setup'), 300); return; }
+    if (form.role === 'restaurant') { setTimeout(() => setLoc('/restaurant-setup'), 300); return; }
+    if (form.role === 'merchant')  { setTimeout(() => setLoc('/merchant-setup'),  300); return; }
+    if (form.role === 'delivery')  { setTimeout(() => setLoc('/delivery-setup'),  300); return; }
     setSubmitted(true);
   };
 

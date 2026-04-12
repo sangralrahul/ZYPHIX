@@ -11,6 +11,7 @@ import { About } from "@/pages/About";
 import { Contact } from "@/pages/Contact";
 import { MerchantSetup } from "@/pages/MerchantSetup";
 import { DeliverySetup } from "@/pages/DeliverySetup";
+import { RestaurantSetup } from "@/pages/RestaurantSetup";
 import { AuthProvider } from "@/context/AuthContext";
 import { AuthModal } from "@/components/AuthModal";
 
@@ -26,6 +27,7 @@ function Router() {
       <Route path="/contact" component={Contact} />
       <Route path="/merchant-setup" component={MerchantSetup} />
       <Route path="/delivery-setup" component={DeliverySetup} />
+      <Route path="/restaurant-setup" component={RestaurantSetup} />
       <Route component={NotFound} />
     </Switch>
   );

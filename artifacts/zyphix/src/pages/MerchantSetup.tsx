@@ -619,7 +619,10 @@ function exportMerchantPDF(storeData: Record<string,string>, categories: Set<str
     @media print{body{padding:20px;}@page{margin:15mm;}}
   </style></head><body>
   <div class="header">
-    <div class="logo">ZYPH<span style="font-weight:300;opacity:.75;">/</span><span>X</span></div>
+    <div style="display:flex;align-items:center;gap:10px;">
+      <div style="width:40px;height:40px;border-radius:10px;background:linear-gradient(148deg,#1AE082 0%,#0DC268 38%,#09A058 72%,#077A46 100%);display:flex;align-items:center;justify-content:center;font-size:18px;font-style:italic;font-weight:900;color:#fff;letter-spacing:-.05em;">//</div>
+      <div style="font-size:24px;font-weight:900;letter-spacing:-.04em;color:#111827;"><span style="font-style:italic;color:#0DA366;">ZYPH</span><span>IX</span></div>
+    </div>
     <span class="badge">Store Registration Confirmation</span>
   </div>
   <h1>Store Registration</h1>
@@ -691,6 +694,26 @@ function SuccessStep({ storeData, categories, selectedSubs }: { storeData: Recor
           </div>
         </div>
       )}
+
+      {/* How Zyphix helps merchants grow */}
+      <div style={{ background:'linear-gradient(135deg,#0A0E1A,#0D1520)', borderRadius:20, padding:'22px 22px', marginBottom:20, textAlign:'left' }}>
+        <p style={{ fontSize:13, fontWeight:800, color:'#fff', marginBottom:14, textAlign:'center' }}>🚀 How Zyphix grows your kirana business</p>
+        <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:10 }}>
+          {[
+            { icon:'📈', title:'3× More Sales',   desc:'Reach customers who can\'t visit your store — online orders add 30–60% revenue' },
+            { icon:'💰', title:'₹0 Setup Cost',   desc:'No monthly fee, no listing charge. We earn only when you earn — tiny commission per order' },
+            { icon:'⚡', title:'Live in 24 Hours', desc:'Once verified, your store is searchable on Zyphix and begins receiving orders' },
+            { icon:'📦', title:'Delivery Handled', desc:'Our fleet covers your area — you focus on the store, we handle the last mile' },
+          ].map(({ icon, title, desc }) => (
+            <motion.div key={title} initial={{ opacity:0, y:10 }} animate={{ opacity:1, y:0 }}
+              style={{ background:'rgba(255,255,255,.05)', border:'1px solid rgba(255,255,255,.08)', borderRadius:13, padding:'13px 13px' }}>
+              <div style={{ fontSize:22, marginBottom:6 }}>{icon}</div>
+              <p style={{ fontWeight:800, color:'#fff', fontSize:12.5, marginBottom:4 }}>{title}</p>
+              <p style={{ fontSize:11, color:'rgba(255,255,255,.48)', lineHeight:1.55 }}>{desc}</p>
+            </motion.div>
+          ))}
+        </div>
+      </div>
 
       <div style={{ background:`${G}0C`, border:`1.5px solid ${G}30`, borderRadius:14, padding:'16px 20px', marginBottom:24 }}>
         <p style={{ fontSize:13, color:G, fontWeight:700, marginBottom:8 }}>⏱ What happens next?</p>
