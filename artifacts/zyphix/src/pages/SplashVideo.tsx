@@ -218,20 +218,23 @@ function GroceryCard({ item, delay, show }: { item: typeof GROCERIES[0]; delay: 
   );
 }
 
-/* ── Scene 1.5 — ZYPHIX Full Form ───────────────────────── */
-const ZYPHIX_FORM = [
-  { letter: 'Z', word: 'Zero surge',          desc: 'No surge pricing. Ever.',                  color: G,  bg: `${G}12`  },
-  { letter: 'Y', word: 'Your neighbourhood',  desc: 'Delivered from stores around you.',         color: G,  bg: `${G}0E`  },
-  { letter: 'P', word: 'Proximity-powered',   desc: 'The closer the store, the faster it is.',   color: G,  bg: `${G}0C`  },
-  { letter: 'H', word: 'Hyperlocal',          desc: 'Your block, not the city.',                 color: OR, bg: `${OR}10` },
-  { letter: 'I', word: 'Instant delivery',    desc: '30 minutes or less, guaranteed.',           color: G,  bg: `${G}0E`  },
-  { letter: 'X', word: 'Xtra savings',        desc: 'More value on every single order.',         color: OR, bg: `${OR}0C` },
+/* ── Scene 1.5 — ZYPHIX Full Form (Investor Pitch) ──────── */
+const ZF_DARK  = '#06080E';
+const ZF_GRID  = 'rgba(255,255,255,0.028)';
+const ZF_ITEMS = [
+  { letter: 'Z', line1: 'Zero',        line2: 'Surge',        color: G  },
+  { letter: 'Y', line1: 'Your',        line2: 'Neighbourhood',color: G  },
+  { letter: 'P', line1: 'Proximity',   line2: 'Powered',      color: G  },
+  { letter: 'H', line1: 'Hyper',       line2: 'Local',        color: OR },
+  { letter: 'I', line1: 'Instant',     line2: 'Delivery',     color: G  },
+  { letter: 'X', line1: 'Xtra',        line2: 'Savings',      color: OR },
 ];
 
 function SceneZyphixForm() {
   const [ph, setPh] = useState(0);
   useEffect(() => {
-    const ts = [180, 400, 620, 840, 1060, 1280, 1500, 1900, 2700, 3600].map((d, i) =>
+    /* ph1=eyebrow, ph2-7=columns, ph8=tagline, ph9=progress */
+    const ts = [300, 520, 700, 880, 1060, 1240, 1420, 2100, 3200].map((d, i) =>
       setTimeout(() => setPh(i + 1), d)
     );
     return () => ts.forEach(clearTimeout);
@@ -239,105 +242,127 @@ function SceneZyphixForm() {
 
   return (
     <motion.div
-      style={{ position: 'absolute', inset: 0, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', background: BG, overflow: 'hidden' }}
+      style={{ position: 'absolute', inset: 0, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', background: ZF_DARK, overflow: 'hidden' }}
       initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-      transition={{ duration: 0.55 }}>
-      <Grid />
-      <Blob x="-6%" y="-12%" size="44vw" color={`${G}0A`} delay={0} />
-      <Blob x="60%" y="52%" size="36vw" color={`${OR}08`} delay={2.5} />
+      transition={{ duration: 0.65 }}>
 
-      <div style={{ width: '100%', maxWidth: 760, padding: '0 5vw', position: 'relative', zIndex: 5 }}>
+      {/* Fine grid */}
+      <div style={{ position: 'absolute', inset: 0, pointerEvents: 'none',
+        backgroundImage: `linear-gradient(${ZF_GRID} 1px,transparent 1px),linear-gradient(90deg,${ZF_GRID} 1px,transparent 1px)`,
+        backgroundSize: '80px 80px' }} />
 
-        {/* Header label */}
-        <motion.div
-          initial={{ opacity: 0, y: -18 }} animate={ph >= 1 ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.48, ease: EASE }}
-          style={{ textAlign: 'center', marginBottom: '3vh' }}>
-          <span style={{ fontFamily: INT, fontSize: 11.5, fontWeight: 700, letterSpacing: '.16em', textTransform: 'uppercase' as const, color: T2 }}>
-            Every letter has a promise
-          </span>
-        </motion.div>
+      {/* Center radial glow */}
+      <div style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%,-50%)',
+        width: '90vw', height: '70vh', borderRadius: '50%',
+        background: `radial-gradient(ellipse,rgba(13,163,102,0.07) 0%,transparent 68%)`,
+        pointerEvents: 'none' }} />
 
-        {/* Six rows */}
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '1.2vh' }}>
-          {ZYPHIX_FORM.map(({ letter, word, desc, color, bg }, i) => (
-            <motion.div key={letter}
-              initial={{ opacity: 0, x: -50 }}
-              animate={ph >= i + 2 ? { opacity: 1, x: 0 } : {}}
-              transition={{ type: 'spring', stiffness: 320, damping: 26 }}
-              style={{ display: 'flex', alignItems: 'center', gap: '1.8vw', padding: '1.3vh 1.6vw', borderRadius: 16, background: bg, border: `1.5px solid ${color}28` }}>
+      {/* Thin top rule */}
+      <motion.div
+        initial={{ scaleX: 0 }} animate={ph >= 1 ? { scaleX: 1 } : {}}
+        transition={{ duration: 0.9, ease: EASE }}
+        style={{ position: 'absolute', top: '18%', left: '8%', right: '8%', height: '1px',
+          background: 'linear-gradient(90deg,transparent,rgba(255,255,255,0.1),transparent)',
+          transformOrigin: 'left', zIndex: 4 }} />
 
-              {/* Animated letter badge */}
-              <motion.div
-                initial={{ scale: 0, rotate: -20 }}
-                animate={ph >= i + 2 ? { scale: 1, rotate: 0 } : {}}
-                transition={{ type: 'spring', stiffness: 450, damping: 20, delay: 0.06 }}
-                style={{ width: 48, height: 48, borderRadius: 13, background: color, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, boxShadow: `0 4px 18px ${color}45` }}>
-                <span style={{ fontFamily: OFT, fontWeight: 900, fontSize: 22, color: '#fff' }}>{letter}</span>
-              </motion.div>
+      {/* Eyebrow */}
+      <motion.p
+        initial={{ opacity: 0, letterSpacing: '0.3em' }}
+        animate={ph >= 1 ? { opacity: 1, letterSpacing: '0.22em' } : {}}
+        transition={{ duration: 0.7, ease: EASE }}
+        style={{ position: 'relative', zIndex: 5, fontFamily: INT, fontWeight: 600, fontSize: 10.5,
+          letterSpacing: '0.22em', textTransform: 'uppercase' as const,
+          color: 'rgba(255,255,255,0.28)', marginBottom: '5.5vh' }}>
+        Every letter is a promise
+      </motion.p>
 
-              {/* Word + description */}
-              <div style={{ flex: 1, minWidth: 0 }}>
-                <motion.p
-                  initial={{ opacity: 0, y: 5 }}
-                  animate={ph >= i + 2 ? { opacity: 1, y: 0 } : {}}
-                  transition={{ delay: 0.1, duration: 0.3 }}
-                  style={{ fontFamily: OFT, fontWeight: 800, fontSize: 'clamp(0.88rem,1.5vw,1.08rem)', color: T1, marginBottom: 2, lineHeight: 1.2 }}>
-                  {word}
-                </motion.p>
-                <motion.p
-                  initial={{ opacity: 0 }}
-                  animate={ph >= i + 2 ? { opacity: 1 } : {}}
-                  transition={{ delay: 0.2 }}
-                  style={{ fontFamily: INT, fontSize: 'clamp(0.68rem,1vw,0.8rem)', color: T2, fontWeight: 450, lineHeight: 1.35 }}>
-                  {desc}
-                </motion.p>
-              </div>
+      {/* ── 6-column letter grid ── */}
+      <div style={{ display: 'flex', gap: 'clamp(0px,2.8vw,44px)', alignItems: 'flex-start',
+        position: 'relative', zIndex: 5, padding: '0 5vw' }}>
+        {ZF_ITEMS.map(({ letter, line1, line2, color }, i) => (
+          <motion.div key={letter}
+            initial={{ opacity: 0, y: 56 }}
+            animate={ph >= i + 2 ? { opacity: 1, y: 0 } : {}}
+            transition={{ type: 'spring', stiffness: 240, damping: 22 }}
+            style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', minWidth: 0, flex: 1 }}>
 
-              {/* Glowing dot */}
-              <motion.div
-                initial={{ scale: 0 }}
-                animate={ph >= i + 2 ? { scale: [0, 1.4, 1] } : {}}
-                transition={{ delay: 0.28, duration: 0.4 }}
-                style={{ width: 9, height: 9, borderRadius: '50%', background: color, flexShrink: 0, boxShadow: `0 0 8px ${color}` }} />
+            {/* Large letter */}
+            <motion.div
+              animate={ph >= i + 2
+                ? { textShadow: [`0 0 0px ${color}00`, `0 0 50px ${color}70`, `0 0 28px ${color}45`] }
+                : { textShadow: `0 0 0px ${color}00` }}
+              transition={{ delay: 0.18, duration: 1.1, ease: 'easeOut' }}
+              style={{ fontFamily: OFT, fontWeight: 900,
+                fontSize: 'clamp(3.2rem,7.5vw,5.8rem)',
+                color, lineHeight: 1, letterSpacing: '-0.04em', userSelect: 'none' }}>
+              {letter}
             </motion.div>
-          ))}
-        </div>
 
-        {/* Assembled ZYPHIX word */}
-        <motion.div
-          initial={{ opacity: 0, y: 16 }}
-          animate={ph >= 9 ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.5, ease: EASE }}
-          style={{ textAlign: 'center', marginTop: '2.8vh', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 14 }}>
-          <div style={{ display: 'flex', gap: 1 }}>
-            {'ZYPHIX'.split('').map((ch, i) => (
-              <motion.span key={i}
-                initial={{ opacity: 0, y: 12, scale: 0.6 }}
-                animate={ph >= 8 ? { opacity: 1, y: 0, scale: 1 } : {}}
-                transition={{ delay: i * 0.08, type: 'spring', stiffness: 500, damping: 22 }}
-                style={{ fontFamily: OFT, fontWeight: 900, fontSize: 'clamp(1.3rem,2.8vw,1.7rem)', letterSpacing: '-0.02em', color: i % 2 === 0 ? G : OR }}>
-                {ch}
-              </motion.span>
-            ))}
-          </div>
-          <motion.span
-            initial={{ opacity: 0 }}
-            animate={ph >= 9 ? { opacity: 1 } : {}}
-            transition={{ delay: 0.3 }}
-            style={{ fontFamily: INT, fontSize: 'clamp(0.68rem,1.1vw,0.82rem)', color: T2, fontWeight: 500, letterSpacing: '.01em' }}>
-            India's SuperLocal App
-          </motion.span>
-        </motion.div>
+            {/* Horizontal rule */}
+            <motion.div
+              initial={{ scaleX: 0 }}
+              animate={ph >= i + 2 ? { scaleX: 1 } : {}}
+              transition={{ delay: 0.2, duration: 0.4, ease: EASE }}
+              style={{ width: '100%', height: 1, background: `linear-gradient(90deg,transparent,${color}80,transparent)`,
+                margin: '1.4vh 0', transformOrigin: 'center' }} />
+
+            {/* Word (two lines) */}
+            <div style={{ textAlign: 'center' }}>
+              <motion.p
+                initial={{ opacity: 0, y: 6 }}
+                animate={ph >= i + 2 ? { opacity: 1, y: 0 } : {}}
+                transition={{ delay: 0.3, duration: 0.38 }}
+                style={{ fontFamily: OFT, fontWeight: 800,
+                  fontSize: 'clamp(0.58rem,1.05vw,0.78rem)',
+                  color: 'rgba(255,255,255,0.88)',
+                  letterSpacing: '0.06em', textTransform: 'uppercase' as const, lineHeight: 1.25 }}>
+                {line1}
+              </motion.p>
+              <motion.p
+                initial={{ opacity: 0 }}
+                animate={ph >= i + 2 ? { opacity: 1 } : {}}
+                transition={{ delay: 0.42, duration: 0.35 }}
+                style={{ fontFamily: INT, fontWeight: 400,
+                  fontSize: 'clamp(0.5rem,0.88vw,0.66rem)',
+                  color: 'rgba(255,255,255,0.32)',
+                  letterSpacing: '0.05em', textTransform: 'uppercase' as const, lineHeight: 1.4 }}>
+                {line2}
+              </motion.p>
+            </div>
+          </motion.div>
+        ))}
       </div>
 
+      {/* Thin bottom rule */}
+      <motion.div
+        initial={{ scaleX: 0 }} animate={ph >= 7 ? { scaleX: 1 } : {}}
+        transition={{ duration: 0.9, ease: EASE, delay: 0.2 }}
+        style={{ position: 'absolute', bottom: '20%', left: '8%', right: '8%', height: '1px',
+          background: 'linear-gradient(90deg,transparent,rgba(255,255,255,0.1),transparent)',
+          transformOrigin: 'left', zIndex: 4 }} />
+
+      {/* Tagline */}
+      <motion.div
+        initial={{ opacity: 0, y: 14 }}
+        animate={ph >= 8 ? { opacity: 1, y: 0 } : {}}
+        transition={{ duration: 0.55, ease: EASE }}
+        style={{ position: 'relative', zIndex: 5, marginTop: '5.5vh', display: 'flex', alignItems: 'center', gap: 20 }}>
+        <span style={{ display: 'block', width: 28, height: 1, background: 'rgba(255,255,255,0.18)' }} />
+        <span style={{ fontFamily: INT, fontWeight: 500, fontSize: 11,
+          letterSpacing: '0.14em', textTransform: 'uppercase' as const,
+          color: 'rgba(255,255,255,0.22)' }}>
+          India's SuperLocal App &nbsp;·&nbsp; Clavix Technologies Pvt. Ltd.
+        </span>
+        <span style={{ display: 'block', width: 28, height: 1, background: 'rgba(255,255,255,0.18)' }} />
+      </motion.div>
+
       {/* Progress bar */}
-      <motion.div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, height: 2.5, background: BD, zIndex: 10 }}
-        initial={{ opacity: 0 }} animate={ph >= 10 ? { opacity: 1 } : {}}>
-        <motion.div style={{ height: '100%', background: GD }}
+      <motion.div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, height: 2, background: 'rgba(255,255,255,0.05)', zIndex: 10 }}
+        initial={{ opacity: 0 }} animate={ph >= 9 ? { opacity: 1 } : {}}>
+        <motion.div style={{ height: '100%', background: `linear-gradient(90deg,${G},${OR})` }}
           initial={{ width: '0%' }}
-          animate={ph >= 10 ? { width: '100%' } : {}}
-          transition={{ duration: 2.2, ease: 'linear' }} />
+          animate={ph >= 9 ? { width: '100%' } : {}}
+          transition={{ duration: 2.4, ease: 'linear' }} />
       </motion.div>
     </motion.div>
   );
