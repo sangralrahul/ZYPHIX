@@ -16,7 +16,7 @@ const BD   = 'rgba(0,0,0,0.07)';
 const OFT  = "'Outfit', sans-serif";
 const INT  = "'Inter', sans-serif";
 const EASE: [number,number,number,number] = [0.25, 0.46, 0.45, 0.94];
-const DURATIONS = [4200, 5200, 5000, 5000, 4800, 6000];
+const DURATIONS = [4200, 5000, 5000, 4800, 6000];
 
 function useAutoAdvance(total: number, onDone?: () => void) {
   const [scene, setScene] = useState(0);
@@ -94,6 +94,7 @@ function Scene1() {
       initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
       transition={{ duration: 0.55 }}>
       <Grid />
+      <ZyphixBg />
 
       {/* Animated background blobs */}
       <Blob x="-8%" y="-12%" size="45vw" color={`${G}0D`} delay={0} />
@@ -218,184 +219,43 @@ function GroceryCard({ item, delay, show }: { item: typeof GROCERIES[0]; delay: 
   );
 }
 
-/* ── Scene 1.5 — ZYPHIX Full Form (Investor Pitch) ──────── */
-const ZF_BG = '#030912';
-const EXPO: [number,number,number,number] = [0.76, 0, 0.24, 1];
+/* ── Shared: ZYPHIX letter watermark strip — appears on every scene ── */
 const ZF_ROWS = [
-  { n:'01', letter:'Z', full:'Zero Surge',          note:'No hidden fees. No surge pricing. Ever.'    },
-  { n:'02', letter:'Y', full:'Your Neighbourhood',  note:'Delivered from the kirana store next door.' },
-  { n:'03', letter:'P', full:'Proximity Powered',   note:'Closer stores mean faster delivery.'        },
-  { n:'04', letter:'H', full:'Hyperlocal',          note:'Your block. Not the whole city.'            },
-  { n:'05', letter:'I', full:'Instant Delivery',    note:'30 minutes or less — guaranteed.'           },
-  { n:'06', letter:'X', full:'Xtra Savings',        note:'More value on every single order.'          },
+  { letter: 'Z', full: 'Zero Surge'         },
+  { letter: 'Y', full: 'Your Neighbourhood' },
+  { letter: 'P', full: 'Proximity Powered'  },
+  { letter: 'H', full: 'Hyperlocal'         },
+  { letter: 'I', full: 'Instant Delivery'   },
+  { letter: 'X', full: 'Xtra Savings'       },
 ];
 
-/* Masked text reveal — text slides up from behind an invisible wall */
-function MaskReveal({ show, delay = 0, children, style = {} }: {
-  show: boolean; delay?: number; children: ReactNode; style?: CSSProperties;
-}) {
+function ZyphixBg() {
   return (
-    <div style={{ overflow: 'hidden', ...style }}>
-      <motion.div
-        initial={{ y: '105%' }}
-        animate={show ? { y: '0%' } : { y: '105%' }}
-        transition={{ duration: 0.72, ease: EXPO, delay }}>
-        {children}
-      </motion.div>
+    <div style={{
+      position: 'absolute', bottom: 0, left: 0, right: 0,
+      display: 'flex', alignItems: 'flex-end', justifyContent: 'center',
+      gap: 'clamp(1.2vw, 4vw, 6.5vw)',
+      padding: '0 7vw 3.2vh',
+      pointerEvents: 'none', zIndex: 2,
+    }}>
+      {ZF_ROWS.map(({ letter, full }) => (
+        <div key={letter} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 5 }}>
+          <span style={{
+            fontFamily: OFT, fontWeight: 900,
+            fontSize: 'clamp(1.5rem, 3.5vw, 2.6rem)',
+            color: T1, opacity: 0.06,
+            lineHeight: 1, letterSpacing: '-0.04em', userSelect: 'none',
+          }}>{letter}</span>
+          <span style={{
+            fontFamily: INT, fontWeight: 500,
+            fontSize: 'clamp(0.38rem, 0.62vw, 0.52rem)',
+            color: T1, opacity: 0.13,
+            letterSpacing: '0.08em', textTransform: 'uppercase' as const,
+            whiteSpace: 'nowrap', userSelect: 'none',
+          }}>{full}</span>
+        </div>
+      ))}
     </div>
-  );
-}
-
-function SceneZyphixForm() {
-  const [ph, setPh] = useState(0);
-  useEffect(() => {
-    /* ph1=header line, ph2-7=rows, ph8=footer */
-    const ts = [350, 560, 720, 880, 1040, 1200, 1360, 2000, 3100].map((d, i) =>
-      setTimeout(() => setPh(i + 1), d)
-    );
-    return () => ts.forEach(clearTimeout);
-  }, []);
-
-  return (
-    <motion.div
-      style={{ position: 'absolute', inset: 0, display: 'flex', flexDirection: 'column',
-        justifyContent: 'center', background: ZF_BG, overflow: 'hidden' }}
-      initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-      transition={{ duration: 0.6 }}>
-
-      {/* Vignette edges */}
-      <div style={{ position: 'absolute', inset: 0, pointerEvents: 'none',
-        background: 'radial-gradient(ellipse 100% 100% at 50% 50%, transparent 55%, rgba(3,9,18,0.7) 100%)' }} />
-
-      {/* Accent glow behind center */}
-      <div style={{ position: 'absolute', top: '50%', left: '14%', transform: 'translateY(-50%)',
-        width: 320, height: 320, borderRadius: '50%',
-        background: `radial-gradient(circle, ${G}12 0%, transparent 65%)`,
-        filter: 'blur(40px)', pointerEvents: 'none' }} />
-
-      {/* ── Content wrapper ── */}
-      <div style={{ padding: '0 8vw', position: 'relative', zIndex: 5 }}>
-
-        {/* Header row */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: 16, marginBottom: '4.5vh', overflow: 'hidden' }}>
-          <motion.div
-            initial={{ scaleX: 0 }} animate={ph >= 1 ? { scaleX: 1 } : {}}
-            transition={{ duration: 0.8, ease: EXPO }}
-            style={{ height: 1, width: 40, background: `${G}90`, transformOrigin: 'left', flexShrink: 0 }} />
-          <MaskReveal show={ph >= 1}>
-            <span style={{ fontFamily: INT, fontWeight: 600, fontSize: 10, letterSpacing: '0.22em',
-              textTransform: 'uppercase' as const, color: 'rgba(255,255,255,0.3)', whiteSpace: 'nowrap' }}>
-              Every letter is a promise
-            </span>
-          </MaskReveal>
-        </div>
-
-        {/* ── Six rows ── */}
-        <div style={{ display: 'flex', flexDirection: 'column' }}>
-          {ZF_ROWS.map(({ n, letter, full, note }, i) => (
-            <div key={letter}>
-              {/* Separator */}
-              <motion.div
-                initial={{ scaleX: 0 }}
-                animate={ph >= i + 2 ? { scaleX: 1 } : {}}
-                transition={{ duration: 0.55, ease: EXPO }}
-                style={{ height: 1, background: 'rgba(255,255,255,0.06)', transformOrigin: 'left' }} />
-
-              <div style={{ display: 'flex', alignItems: 'center', gap: '3.5vw', padding: '1.55vh 0' }}>
-
-                {/* Index number */}
-                <div style={{ overflow: 'hidden', width: 28, flexShrink: 0 }}>
-                  <motion.span
-                    initial={{ y: '110%' }}
-                    animate={ph >= i + 2 ? { y: '0%' } : { y: '110%' }}
-                    transition={{ duration: 0.6, ease: EXPO, delay: 0.05 }}
-                    style={{ display: 'block', fontFamily: INT, fontWeight: 500, fontSize: 9.5,
-                      letterSpacing: '0.12em', color: `${G}70` }}>
-                    {n}
-                  </motion.span>
-                </div>
-
-                {/* Large letter */}
-                <div style={{ overflow: 'hidden', width: 'clamp(2.4rem,5vw,3.8rem)', flexShrink: 0 }}>
-                  <motion.span
-                    initial={{ y: '110%' }}
-                    animate={ph >= i + 2 ? { y: '0%' } : { y: '110%' }}
-                    transition={{ duration: 0.65, ease: EXPO }}
-                    style={{ display: 'block', fontFamily: OFT, fontWeight: 900,
-                      fontSize: 'clamp(2.2rem,4.8vw,3.6rem)',
-                      color: G, lineHeight: 1, letterSpacing: '-0.04em' }}>
-                    {letter}
-                  </motion.span>
-                </div>
-
-                {/* Full form */}
-                <div style={{ flex: 1, overflow: 'hidden' }}>
-                  <motion.p
-                    initial={{ y: '110%' }}
-                    animate={ph >= i + 2 ? { y: '0%' } : { y: '110%' }}
-                    transition={{ duration: 0.65, ease: EXPO, delay: 0.06 }}
-                    style={{ fontFamily: OFT, fontWeight: 700,
-                      fontSize: 'clamp(1rem,2.2vw,1.65rem)',
-                      color: '#fff', letterSpacing: '-0.01em', lineHeight: 1 }}>
-                    {full}
-                  </motion.p>
-                </div>
-
-                {/* Note right-aligned */}
-                <motion.p
-                  initial={{ opacity: 0 }}
-                  animate={ph >= i + 2 ? { opacity: 1 } : { opacity: 0 }}
-                  transition={{ duration: 0.55, delay: 0.32 }}
-                  style={{ fontFamily: INT, fontWeight: 400,
-                    fontSize: 'clamp(0.58rem,0.92vw,0.74rem)',
-                    color: 'rgba(255,255,255,0.26)', letterSpacing: '0.01em',
-                    textAlign: 'right' as const, lineHeight: 1.5,
-                    maxWidth: '28%', flexShrink: 0 }}>
-                  {note}
-                </motion.p>
-              </div>
-            </div>
-          ))}
-          {/* Final separator */}
-          <motion.div
-            initial={{ scaleX: 0 }}
-            animate={ph >= 7 ? { scaleX: 1 } : {}}
-            transition={{ duration: 0.55, ease: EXPO }}
-            style={{ height: 1, background: 'rgba(255,255,255,0.06)', transformOrigin: 'left' }} />
-        </div>
-
-        {/* Footer */}
-        <motion.div
-          initial={{ opacity: 0 }} animate={ph >= 8 ? { opacity: 1 } : {}}
-          transition={{ duration: 0.6 }}
-          style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginTop: '3.5vh' }}>
-          <span style={{ fontFamily: INT, fontWeight: 500, fontSize: 10,
-            letterSpacing: '0.18em', textTransform: 'uppercase' as const,
-            color: 'rgba(255,255,255,0.16)' }}>
-            Clavix Technologies Pvt. Ltd.
-          </span>
-          <span style={{ fontFamily: OFT, fontWeight: 800, fontSize: 12,
-            letterSpacing: '0.08em', color: `${G}70` }}>
-            ZYPHIX
-          </span>
-          <span style={{ fontFamily: INT, fontWeight: 500, fontSize: 10,
-            letterSpacing: '0.18em', textTransform: 'uppercase' as const,
-            color: 'rgba(255,255,255,0.16)' }}>
-            India's SuperLocal App
-          </span>
-        </motion.div>
-      </div>
-
-      {/* Progress bar */}
-      <motion.div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, height: 1.5,
-        background: 'rgba(255,255,255,0.04)', zIndex: 10 }}
-        initial={{ opacity: 0 }} animate={ph >= 9 ? { opacity: 1 } : {}}>
-        <motion.div style={{ height: '100%', background: G }}
-          initial={{ width: '0%' }}
-          animate={ph >= 9 ? { width: '100%' } : {}}
-          transition={{ duration: 2.5, ease: 'linear' }} />
-      </motion.div>
-    </motion.div>
   );
 }
 
@@ -420,6 +280,7 @@ function Scene2() {
       initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
       transition={{ duration: 0.55 }}>
       <Grid />
+      <ZyphixBg />
       <Blob x="-8%" y="20%" size="34vw" color={`${G}0B`} delay={0} />
       <Blob x="52%" y="-8%" size="26vw" color={`${G}07`} delay={2} />
 
@@ -622,6 +483,7 @@ function Scene3() {
       initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
       transition={{ duration: 0.55 }}>
       <Grid />
+      <ZyphixBg />
       <Blob x="55%" y="35%" size="38vw" color={`${OR}0A`} delay={0} />
       <Blob x="2%" y="5%"  size="22vw" color={`${OR}07`} delay={2} />
 
@@ -767,6 +629,7 @@ function Scene4() {
       initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
       transition={{ duration: 0.85 }}>
       <Grid />
+      <ZyphixBg />
 
       {/* Blobs */}
       <Blob x="30%" y="-20%" size="50vw" color={`${G}07`} delay={0} />
@@ -862,6 +725,7 @@ function Scene5({ onDone }: { onDone?: () => void }) {
       initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ scale: 1.03, opacity: 0 }}
       transition={{ duration: 0.75 }}>
       <Grid />
+      <ZyphixBg />
 
       {/* Blobs */}
       <Blob x="-10%" y="-10%" size="40vw" color={`${G}08`} delay={0} />
@@ -992,13 +856,13 @@ function Scene5({ onDone }: { onDone?: () => void }) {
 
 /* ── SplashVideoCore — embeddable, no nav ───────────────── */
 export function SplashVideoCore({ onDone }: { onDone?: () => void }) {
-  const { scene, go } = useAutoAdvance(6, onDone);
+  const { scene, go } = useAutoAdvance(5, onDone);
 
   return (
     <div style={{ width: '100%', height: '100%', overflow: 'hidden', position: 'relative', background: BG }}>
       {/* Scene dots — top right */}
       <div style={{ position: 'absolute', top: 20, right: 20, zIndex: 100, display: 'flex', alignItems: 'center', gap: 5 }}>
-        {[0, 1, 2, 3, 4, 5].map(i => (
+        {[0, 1, 2, 3, 4].map(i => (
           <motion.button key={i} onClick={() => go(i)}
             style={{ height: 3, borderRadius: 3, background: i === scene ? G : 'rgba(0,0,0,0.15)', border: 'none', cursor: 'pointer', padding: 0, display: 'block' }}
             animate={{ width: i === scene ? 24 : 8, opacity: i === scene ? 1 : 0.45 }}
@@ -1009,11 +873,10 @@ export function SplashVideoCore({ onDone }: { onDone?: () => void }) {
       <div style={{ position: 'relative', zIndex: 20, width: '100%', height: '100%' }}>
         <AnimatePresence mode="sync">
           {scene === 0 && <Scene1 key="s1" />}
-          {scene === 1 && <SceneZyphixForm key="sz" />}
-          {scene === 2 && <Scene2 key="s2" />}
-          {scene === 3 && <Scene3 key="s3" />}
-          {scene === 4 && <Scene4 key="s4" />}
-          {scene === 5 && <Scene5 key="s5" onDone={onDone} />}
+          {scene === 1 && <Scene2 key="s2" />}
+          {scene === 2 && <Scene3 key="s3" />}
+          {scene === 3 && <Scene4 key="s4" />}
+          {scene === 4 && <Scene5 key="s5" onDone={onDone} />}
         </AnimatePresence>
       </div>
     </div>
