@@ -22,8 +22,12 @@ function useAutoAdvance(total: number, onDone?: () => void) {
   const [scene, setScene] = useState(0);
   useEffect(() => {
     const id = setTimeout(() => {
-      if (scene >= total - 1) { onDone?.(); return; }
-      setScene(s => s + 1);
+      if (scene >= total - 1) {
+        onDone?.();
+        setScene(0);
+      } else {
+        setScene(s => s + 1);
+      }
     }, DURATIONS[scene]);
     return () => clearTimeout(id);
   }, [scene, total, onDone]);
