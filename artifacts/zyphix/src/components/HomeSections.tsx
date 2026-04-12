@@ -404,46 +404,60 @@ export function LiveCounter() {
   ];
 
   return (
-    <div ref={sectionRef} style={{ background: '#0A0E1A', borderTop: `1px solid rgba(255,255,255,.06)`, padding: '64px 24px' }}>
-      <div style={{ maxWidth: 640, margin: '0 auto', textAlign: 'center' }}>
-        <p style={{ fontSize: 12, fontWeight: 700, color: G, letterSpacing: '.1em', textTransform: 'uppercase', marginBottom: 16 }}>Live Counter</p>
-        <h2 style={{ fontFamily: "'Outfit',sans-serif", fontWeight: 900, fontSize: 'clamp(1.5rem,3vw,2rem)', color: '#fff', letterSpacing: '-.035em', marginBottom: 28 }}>
+    <div ref={sectionRef} style={{ background: BG, borderTop: `1px solid ${BD}`, padding: '72px 24px' }}>
+      <div style={{ maxWidth: 600, margin: '0 auto', textAlign: 'center' }}>
+
+        {/* Badge */}
+        <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6, background: '#ECFDF5', border: `1px solid #A7F3D0`, borderRadius: 999, padding: '5px 14px', fontSize: 11.5, fontWeight: 700, color: '#065F46', letterSpacing: '.07em', textTransform: 'uppercase', marginBottom: 18 }}>
+          🔴 Live Counter
+        </span>
+
+        <h2 style={{ fontFamily: "'Outfit',sans-serif", fontWeight: 900, fontSize: 'clamp(1.5rem,3vw,2.1rem)', color: T1, letterSpacing: '-.04em', lineHeight: 1.15, marginBottom: 24 }}>
           Your neighbours are already waiting
         </h2>
-        <div style={{ marginBottom: 8 }}>
-          <span style={{ fontFamily: "'Outfit',sans-serif", fontWeight: 900, fontSize: 'clamp(3rem,8vw,5rem)', color: G, letterSpacing: '-.05em', lineHeight: 1 }}>
+
+        {/* Big number */}
+        <div style={{ marginBottom: 6 }}>
+          <span style={{ fontFamily: "'Outfit',sans-serif", fontWeight: 900, fontSize: 'clamp(3.2rem,9vw,5.5rem)', color: G, letterSpacing: '-.05em', lineHeight: 1 }}>
             {display.toLocaleString('en-IN')}
           </span>
         </div>
-        <p style={{ fontSize: 15, color: 'rgba(255,255,255,.5)', marginBottom: 40 }}>people have joined the Zyphix waitlist</p>
+        <p style={{ fontSize: 15, color: T2, marginBottom: 40, lineHeight: 1.6 }}>people have joined the Zyphix waitlist</p>
 
-        <div style={{ background: 'rgba(255,255,255,.04)', border: '1px solid rgba(255,255,255,.08)', borderRadius: 18, padding: '24px 28px', marginBottom: 32, textAlign: 'left' }}>
-          {cities.map(({ name, pct }) => {
+        {/* City breakdown card */}
+        <div style={{ background: W, border: `1.5px solid ${BD}`, borderRadius: 20, padding: '28px 32px', marginBottom: 32, textAlign: 'left', boxShadow: '0 2px 12px rgba(0,0,0,.06)' }}>
+          {cities.map(({ name, pct }, i) => {
             const cityCount = Math.round((pct / 100) * count);
             return (
-              <div key={name} style={{ marginBottom: 18 }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 7 }}>
-                  <span style={{ fontSize: 13.5, fontWeight: 600, color: '#fff' }}>{name}</span>
-                  <span style={{ fontSize: 13.5, fontWeight: 700, color: G }}>{cityCount.toLocaleString('en-IN')}</span>
+              <div key={name} style={{ marginBottom: i < cities.length - 1 ? 22 : 10 }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
+                  <span style={{ fontSize: 14, fontWeight: 700, color: T1 }}>{name}</span>
+                  <span style={{ fontSize: 14, fontWeight: 800, color: G }}>{cityCount.toLocaleString('en-IN')}</span>
                 </div>
-                <div style={{ height: 8, background: 'rgba(255,255,255,.07)', borderRadius: 99, overflow: 'hidden' }}>
-                  <motion.div initial={{ width: 0 }} whileInView={{ width: `${pct}%` }} viewport={{ once: true }} transition={{ duration: 1.2, delay: 0.3, ease: 'easeOut' }}
+                <div style={{ height: 8, background: BD, borderRadius: 99, overflow: 'hidden' }}>
+                  <motion.div
+                    initial={{ width: 0 }}
+                    whileInView={{ width: `${pct}%` }}
+                    viewport={{ once: true }}
+                    transition={{ duration: 1.2, delay: 0.2 + i * 0.15, ease: 'easeOut' }}
                     style={{ height: '100%', background: `linear-gradient(90deg, ${G}, #10B981)`, borderRadius: 99 }} />
                 </div>
               </div>
             );
           })}
-          <p style={{ fontSize: 11.5, color: 'rgba(255,255,255,.3)', marginTop: 6 }}>
+          <p style={{ fontSize: 12, color: T3, marginTop: 14, paddingTop: 14, borderTop: `1px solid ${BD}`, fontWeight: 500 }}>
             Launching first in Jammu, J&K · Srinagar &amp; Chandigarh coming soon
           </p>
         </div>
 
+        {/* CTA */}
         <button onClick={scrollToWaitlist}
-          style={{ display: 'inline-flex', alignItems: 'center', gap: 8, background: G, color: '#fff', fontSize: 15, fontWeight: 800, padding: '15px 32px', borderRadius: 13, border: 'none', cursor: 'pointer', boxShadow: '0 8px 28px rgba(13,163,102,.4)', transition: 'filter .15s' }}
-          onMouseEnter={e => (e.currentTarget as HTMLElement).style.filter = 'brightness(1.12)'}
-          onMouseLeave={e => (e.currentTarget as HTMLElement).style.filter = 'brightness(1)'}>
+          style={{ display: 'inline-flex', alignItems: 'center', gap: 8, background: G, color: '#fff', fontSize: 15, fontWeight: 800, padding: '15px 34px', borderRadius: 13, border: 'none', cursor: 'pointer', boxShadow: '0 6px 24px rgba(13,163,102,.35)', transition: 'filter .15s, transform .15s' }}
+          onMouseEnter={e => { const el = e.currentTarget as HTMLElement; el.style.filter='brightness(1.1)'; el.style.transform='translateY(-1px)'; }}
+          onMouseLeave={e => { const el = e.currentTarget as HTMLElement; el.style.filter='brightness(1)'; el.style.transform='translateY(0)'; }}>
           Secure your spot now →
         </button>
+
       </div>
     </div>
   );
