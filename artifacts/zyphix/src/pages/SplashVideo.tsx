@@ -255,8 +255,8 @@ function DropColumn({ letter, full, idx }: { letter: string; full: string; idx: 
     <div style={{
       position: 'relative',
       display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'flex-end',
-      minHeight: 'clamp(3.2rem, 6.5vw, 5.2rem)',
-      minWidth:  'clamp(3.2rem, 7vw,   5.6rem)',
+      minHeight: 'clamp(4.8rem, 9vw, 7.2rem)',
+      minWidth:  'clamp(4.5rem, 9vw, 7.2rem)',
     }}>
 
       {/* Full-form word */}
@@ -270,9 +270,9 @@ function DropColumn({ letter, full, idx }: { letter: string; full: string; idx: 
       >
         <span style={{
           fontFamily: INT, fontWeight: 700,
-          fontSize: 'clamp(0.32rem, 0.56vw, 0.46rem)',
+          fontSize: 'clamp(0.68rem, 1.05vw, 0.84rem)',
           color: T1,
-          letterSpacing: '0.1em', textTransform: 'uppercase' as const,
+          letterSpacing: '0.06em', textTransform: 'uppercase' as const,
           whiteSpace: 'nowrap', userSelect: 'none', lineHeight: 1.2,
         }}>{full}</span>
 
@@ -289,7 +289,7 @@ function DropColumn({ letter, full, idx }: { letter: string; full: string; idx: 
         style={{
           position: 'absolute', bottom: 0,
           fontFamily: OFT, fontWeight: 900,
-          fontSize: 'clamp(1.5rem, 3.5vw, 2.6rem)',
+          fontSize: 'clamp(2.4rem, 5.5vw, 4.2rem)',
           color: T1, lineHeight: 1, letterSpacing: '-0.04em', userSelect: 'none',
         }}
         animate={{ scale: letScale, opacity: letOp, y: letY }}
@@ -891,14 +891,6 @@ function Scene5({ onDone }: { onDone?: () => void }) {
           </motion.button>
         </Link>
       </motion.div>
-
-      {/* Footer */}
-      <motion.p style={{ position: 'absolute', bottom: 24, fontFamily: INT, fontSize: '1vw', color: 'rgba(0,0,0,0.22)', fontWeight: 400 }}
-        initial={{ opacity: 0 }}
-        animate={ph >= 4 ? { opacity: 1 } : {}}
-        transition={{ duration: 0.7, ease: EASE }}>
-        Clavix Technologies Pvt. Ltd.
-      </motion.p>
 
       {/* Bottom progress line */}
       <motion.div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, height: 2.5, background: BD, zIndex: 10 }}
