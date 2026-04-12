@@ -114,7 +114,7 @@ const SVCS = [
   { id: 'eats' as TabId, name: 'Zyphix Eats', tag: 'Food delivery', color: '#EA580C', img: 'https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=64&h=64&fit=crop&q=80' },
 ];
 
-function Navbar({ tab, setTab }: { tab: TabId; setTab: (t: TabId) => void }) {
+function Navbar({ tab = 'now', setTab }: { tab?: TabId; setTab?: (t: TabId) => void }) {
   const [scrolled, setScrolled] = useState(false);
   const [q, setQ] = useState('');
   const [focus, setFocus] = useState(false);
@@ -222,7 +222,7 @@ const HERO_DATA: Record<string, { name: string; headline: string; sub: string; c
 };
 
 /* ═══════════════ DUAL HERO BANNERS ═══════════════ */
-function DualHeroBanners({ setTab }: { setTab: (t: TabId) => void }) {
+function DualHeroBanners() {
   const [hovNow, setHovNow] = useState(false);
   const [hovEats, setHovEats] = useState(false);
   const scrollToWaitlist = () => document.getElementById('waitlist')?.scrollIntoView({ behavior: 'smooth' });
@@ -259,7 +259,7 @@ function DualHeroBanners({ setTab }: { setTab: (t: TabId) => void }) {
           className="hero-panel"
           style={{ position: 'relative', height: 480, borderRadius: 26, overflow: 'hidden', cursor: 'pointer', boxShadow: hovNow ? '0 24px 64px rgba(6,95,70,.38)' : SH2, transition: 'box-shadow .28s, transform .28s', transform: hovNow ? 'translateY(-5px)' : 'none' }}
           onMouseEnter={() => setHovNow(true)} onMouseLeave={() => setHovNow(false)}
-          onClick={() => setTab('now')}
+          onClick={() => scrollToWaitlist()}
         >
           <div className="kb-now" style={{ position: 'absolute', inset: '-8%', backgroundImage: 'url(https://images.unsplash.com/photo-1542838132-92c53300491e?w=1600&h=1100&fit=crop&q=85)', backgroundSize: 'cover', backgroundPosition: 'center' }} />
           <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(175deg, rgba(3,32,18,.2) 0%, rgba(4,58,34,.68) 45%, rgba(2,26,14,.98) 100%)' }} />
@@ -301,7 +301,7 @@ function DualHeroBanners({ setTab }: { setTab: (t: TabId) => void }) {
           className="hero-panel"
           style={{ position: 'relative', height: 480, borderRadius: 26, overflow: 'hidden', cursor: 'pointer', boxShadow: hovEats ? '0 24px 64px rgba(154,52,18,.38)' : SH2, transition: 'box-shadow .28s, transform .28s', transform: hovEats ? 'translateY(-5px)' : 'none' }}
           onMouseEnter={() => setHovEats(true)} onMouseLeave={() => setHovEats(false)}
-          onClick={() => setTab('eats')}
+          onClick={() => scrollToWaitlist()}
         >
           <div className="kb-eats" style={{ position: 'absolute', inset: '-8%', backgroundImage: 'url(https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=1600&h=1100&fit=crop&q=85)', backgroundSize: 'cover', backgroundPosition: 'center' }} />
           <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(175deg, rgba(50,10,5,.15) 0%, rgba(100,22,5,.65) 45%, rgba(40,4,0,.98) 100%)' }} />
@@ -1396,14 +1396,10 @@ const FOOD_CATS = [
   { e: tw('🌮'), n: 'Street Food',    bg: '#FFFBEB', bd: '#FDE68A', tc: '#78350F' },
 ];
 
-function QuickBrowse({ setTab }: { setTab: (t: TabId) => void }) {
-  const scrollToTab = (t: TabId) => {
-    setTab(t);
-    setTimeout(() => document.getElementById('tab-content')?.scrollIntoView({ behavior: 'smooth', block: 'start' }), 60);
-  };
-  const Tile = ({ e, n, bg, bd, tc, tab }: { e: string; n: string; bg: string; bd: string; tc: string; tab: TabId }) => (
+function QuickBrowse({ setTab }: { setTab?: (t: TabId) => void }) {
+  const Tile = ({ e, n, bg, bd, tc }: { e: string; n: string; bg: string; bd: string; tc: string; tab?: TabId }) => (
     <motion.button
-      onClick={() => scrollToTab(tab)}
+      onClick={() => document.getElementById('waitlist')?.scrollIntoView({ behavior: 'smooth' })}
       whileHover={{ scale: 1.05, y: -3 }}
       whileTap={{ scale: 0.97 }}
       style={{ padding: '14px 6px 12px', borderRadius: 14, background: bg, border: `1.5px solid ${bd}`, cursor: 'pointer', textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 6, boxShadow: '0 1px 5px rgba(0,0,0,.05)', transition: 'box-shadow .15s', minWidth: 0 }}
@@ -1426,12 +1422,12 @@ function QuickBrowse({ setTab }: { setTab: (t: TabId) => void }) {
                 Shop Groceries
                 <span style={{ fontSize: 11.5, fontWeight: 600, color: T3, background: BG, padding: '2px 9px', borderRadius: 99, border: `1px solid ${BD}` }}>30 min</span>
               </span>
-              <button onClick={() => scrollToTab('now')} style={{ fontSize: 12.5, fontWeight: 700, color: G, background: 'none', border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 2 }}>
+              <button onClick={() => document.getElementById('waitlist')?.scrollIntoView({ behavior: 'smooth' })} style={{ fontSize: 12.5, fontWeight: 700, color: G, background: 'none', border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 2 }}>
                 See all <ChevronRight size={13} />
               </button>
             </div>
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 10 }}>
-              {GROC_CATS.map(c => <Tile key={c.n} {...c} tab="now" />)}
+              {GROC_CATS.map(c => <Tile key={c.n} {...c} />)}
             </div>
           </div>
 
@@ -1442,12 +1438,12 @@ function QuickBrowse({ setTab }: { setTab: (t: TabId) => void }) {
                 <span style={{ width: 9, height: 9, borderRadius: '50%', background: '#EA580C', display: 'inline-block', boxShadow: '0 0 0 3px rgba(234,88,12,.14)' }} />
                 Order Food
               </span>
-              <button onClick={() => scrollToTab('eats')} style={{ fontSize: 12.5, fontWeight: 700, color: '#EA580C', background: 'none', border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 2 }}>
+              <button onClick={() => document.getElementById('waitlist')?.scrollIntoView({ behavior: 'smooth' })} style={{ fontSize: 12.5, fontWeight: 700, color: '#EA580C', background: 'none', border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 2 }}>
                 See all <ChevronRight size={13} />
               </button>
             </div>
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 10 }}>
-              {FOOD_CATS.map(c => <Tile key={c.n} {...c} tab="eats" />)}
+              {FOOD_CATS.map(c => <Tile key={c.n} {...c} />)}
             </div>
           </div>
 
@@ -1457,68 +1453,144 @@ function QuickBrowse({ setTab }: { setTab: (t: TabId) => void }) {
   );
 }
 
-/* ═══════════════ WHY ZYPHIX STRIP ═══════════════ */
+/* ═══════════════ STATS STRIP (7 items matching reference) ═══════════════ */
 function WhyZyphixStrip() {
   const ITEMS = [
-    {
-      icon: (
-        <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
-          <rect width="28" height="28" rx="8" fill="rgba(0,201,167,.15)" />
-          <path d="M7 10h14M7 14h9M7 18h6" stroke="#00C9A7" strokeWidth="2" strokeLinecap="round"/>
-          <circle cx="20" cy="17" r="4" fill="#00C9A7" opacity=".2"/>
-          <path d="M18.5 17l1 1 2-2" stroke="#00C9A7" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-        </svg>
-      ),
-      title: 'Real Kirana Partners',
-      sub: 'No dark warehouses — your local stores',
-    },
-    {
-      icon: (
-        <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
-          <rect width="28" height="28" rx="8" fill="rgba(0,201,167,.15)" />
-          <path d="M14 7v2M14 19v2M9.5 9.5l1.4 1.4M17.1 17.1l1.4 1.4M7 14h2M19 14h2M9.5 18.5l1.4-1.4M17.1 10.9l1.4-1.4" stroke="#00C9A7" strokeWidth="1.5" strokeLinecap="round"/>
-          <circle cx="14" cy="14" r="3.5" stroke="#00C9A7" strokeWidth="1.5"/>
-        </svg>
-      ),
-      title: 'Zero Extra Charges',
-      sub: 'Lower commission than Swiggy / Zomato',
-    },
-    {
-      icon: (
-        <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
-          <rect width="28" height="28" rx="8" fill="rgba(0,201,167,.15)" />
-          <path d="M14 7C10.7 7 8 9.7 8 13c0 4.3 6 10 6 10s6-5.7 6-10c0-3.3-2.7-6-6-6z" stroke="#00C9A7" strokeWidth="1.5" fill="none"/>
-          <circle cx="14" cy="13" r="2" fill="#00C9A7"/>
-        </svg>
-      ),
-      title: 'Built for J&K',
-      sub: 'Your neighbourhood, now digital',
-    },
+    { title: 'Real Kirana Partners',  sub: 'No dark warehouses — your local stores',      em: '🏪' },
+    { title: 'Zero Extra Charges',    sub: 'Lower commission than Swiggy / Zomato',        em: '💸' },
+    { title: 'Built for J&K',         sub: 'Your neighbourhood, now digital',              em: '📍' },
+    { title: '30 Min',                sub: 'Guaranteed delivery',                          em: '⚡' },
+    { title: 'Jammu First',           sub: 'Launching in J&K',                             em: '🚀' },
+    { title: 'Tier 2 India',          sub: 'Built for Bharat',                             em: '🇮🇳' },
+    { title: '₹0 Surge',              sub: 'Always fair pricing',                          em: '✅' },
   ];
-
   return (
-    <div style={{ background: 'linear-gradient(135deg, #0B1829 0%, #131D30 60%, #0D2040 100%)', borderTop: '1px solid rgba(255,255,255,.07)', borderBottom: '1px solid rgba(255,255,255,.07)', overflow: 'hidden', position: 'relative' }}>
-      <div style={{ position: 'absolute', inset: 0, background: 'radial-gradient(ellipse at 50% 50%, rgba(0,201,167,.07) 0%, transparent 70%)', pointerEvents: 'none' }} />
-      <div style={{ maxWidth: 1100, margin: '0 auto', padding: '20px 24px', display: 'flex', flexWrap: 'wrap', gap: 0, alignItems: 'stretch' }}>
-        {ITEMS.map(({ icon, title, sub }, i) => (
+    <div style={{ background: 'linear-gradient(135deg, #0B1829 0%, #131D30 60%, #0D2040 100%)', borderTop: '1px solid rgba(255,255,255,.07)', borderBottom: '1px solid rgba(255,255,255,.07)', overflow: 'hidden' }}>
+      <div style={{ maxWidth: 1320, margin: '0 auto', padding: '0 24px', display: 'flex', flexWrap: 'wrap', alignItems: 'stretch' }}>
+        {ITEMS.map(({ em, title, sub }, i) => (
           <React.Fragment key={title}>
             <motion.div
-              initial={{ opacity: 0, y: 12 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}
-              transition={{ delay: i * 0.1, duration: 0.4 }}
-              style={{ flex: '1 1 240px', display: 'flex', alignItems: 'center', gap: 14, padding: '10px 28px', minWidth: 0 }}>
-              <motion.div whileHover={{ rotate: [0, -8, 8, 0], scale: 1.1 }} transition={{ duration: .4 }}>
-                {icon}
-              </motion.div>
+              initial={{ opacity: 0, y: 8 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}
+              transition={{ delay: i * 0.07, duration: 0.35 }}
+              style={{ flex: '1 1 160px', display: 'flex', alignItems: 'center', gap: 10, padding: '18px 20px', minWidth: 0 }}>
+              <span style={{ fontSize: 20, flexShrink: 0 }}>{em}</span>
               <div>
-                <p style={{ fontFamily: "'Outfit',sans-serif", fontWeight: 800, fontSize: 13.5, color: '#fff', letterSpacing: '-.01em', marginBottom: 2 }}>{title}</p>
-                <p style={{ fontSize: 12, color: 'rgba(0,201,167,.75)', fontWeight: 500, lineHeight: 1.4 }}>{sub}</p>
+                <p style={{ fontFamily: "'Outfit',sans-serif", fontWeight: 800, fontSize: 13, color: '#fff', letterSpacing: '-.01em', marginBottom: 1 }}>{title}</p>
+                <p style={{ fontSize: 11, color: 'rgba(0,201,167,.75)', fontWeight: 500, lineHeight: 1.4 }}>{sub}</p>
               </div>
             </motion.div>
-            {i < 2 && (
-              <div style={{ width: 2, alignSelf: 'stretch', margin: '10px 0', background: 'linear-gradient(to bottom, transparent 0%, rgba(0,201,167,.55) 30%, rgba(0,201,167,.55) 70%, transparent 100%)', borderRadius: 99, flexShrink: 0 }} />
+            {i < ITEMS.length - 1 && (
+              <div style={{ width: 1, alignSelf: 'stretch', margin: '12px 0', background: 'rgba(255,255,255,.08)', flexShrink: 0 }} />
             )}
           </React.Fragment>
         ))}
+      </div>
+    </div>
+  );
+}
+
+/* ═══════════════ BRAND MARQUEE (main page) ═══════════════ */
+const KIRANA_BRANDS = [
+  'Amul','Tata','Nestlé','Britannia','ITC','Haldirams','Dabur','Patanjali','P&G','HUL','MDH','Fortune','Mother Dairy','Godrej','Marico',
+];
+function BrandMarqueeMain() {
+  const doubled = [...KIRANA_BRANDS, ...KIRANA_BRANDS];
+  const ref = useRef<HTMLDivElement>(null);
+  return (
+    <div style={{ background: W, borderTop: `1px solid ${BD}`, borderBottom: `1px solid ${BD}`, padding: '0' }}>
+      <style>{`@keyframes marqueeL{from{transform:translateX(0)}to{transform:translateX(-50%)}}@keyframes marqueeR{from{transform:translateX(-50%)}to{transform:translateX(0)}}`}</style>
+      <div style={{ display: 'flex', alignItems: 'center' }}>
+        <div style={{ flexShrink: 0, padding: '16px 20px 16px 24px', borderRight: `1px solid ${BD}` }}>
+          <p style={{ fontSize: 9, fontWeight: 800, color: T3, letterSpacing: '.12em', textTransform: 'uppercase', whiteSpace: 'nowrap', lineHeight: 1.4 }}>Partner<br />Brands</p>
+        </div>
+        <div style={{ overflow: 'hidden', flex: 1, maskImage: 'linear-gradient(to right,transparent,black 40px,black calc(100% - 40px),transparent)', WebkitMaskImage: 'linear-gradient(to right,transparent,black 40px,black calc(100% - 40px),transparent)' }}>
+          <div ref={ref} style={{ display: 'flex', animation: 'marqueeL 28s linear infinite', width: 'max-content' }}
+            onMouseEnter={() => { if (ref.current) ref.current.style.animationPlayState = 'paused'; }}
+            onMouseLeave={() => { if (ref.current) ref.current.style.animationPlayState = 'running'; }}>
+            {doubled.map((b, i) => (
+              <div key={i} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '14px 24px', borderRight: `1px solid ${BD}`, flexShrink: 0, whiteSpace: 'nowrap' }}>
+                <span style={{ fontSize: 13.5, fontWeight: 800, color: T2, letterSpacing: '-.01em', filter: 'grayscale(1) opacity(0.5)', transition: 'filter .2s' }}
+                  onMouseEnter={e => (e.currentTarget as HTMLElement).style.filter = 'none'}
+                  onMouseLeave={e => (e.currentTarget as HTMLElement).style.filter = 'grayscale(1) opacity(0.5)'}>{b}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/* ═══════════════ OFFER CARDS (3 image cards) ═══════════════ */
+function OfferCards() {
+  const [copied, setCopied] = useState(false);
+  const copy = () => { navigator.clipboard.writeText('ZYPHIX50'); setCopied(true); setTimeout(() => setCopied(false), 2500); };
+  const cards = [
+    { tag: 'New User Offer', h: '50% off your first order', sub: 'Code ZYPHIX50 · Max ₹100 off', code: 'ZYPHIX50', img: 'https://images.unsplash.com/photo-1543168256-418811576931?w=900&h=380&fit=crop&q=85' },
+    { tag: 'Partner Stores', h: '200+ partner stores in Jammu', sub: 'Zero surge pricing · Always fresh', code: '', img: 'https://images.unsplash.com/photo-1604719312566-8912e9227c6a?w=900&h=380&fit=crop&q=85' },
+    { tag: 'Pharmacy', h: 'Medicines delivered fast', sub: 'Prescription & OTC · All brands', code: '', img: 'https://images.unsplash.com/photo-1585435557343-3b092031a831?w=900&h=380&fit=crop&q=85' },
+  ];
+  return (
+    <div style={{ background: BG, borderTop: `1px solid ${BD}`, padding: '40px 24px' }}>
+      <div style={{ maxWidth: 1320, margin: '0 auto', display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: 16 }}>
+        {cards.map((b, i) => (
+          <motion.div key={i} initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.1 }}>
+            <div
+              onMouseEnter={e => (e.currentTarget as HTMLElement).style.transform = 'translateY(-4px)'}
+              onMouseLeave={e => (e.currentTarget as HTMLElement).style.transform = 'none'}
+              style={{ height: 210, borderRadius: 20, overflow: 'hidden', position: 'relative', background: '#111', boxShadow: SH2, cursor: 'pointer', transition: 'transform .22s' }}>
+              <img src={b.img} alt="" style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover', opacity: .35 }} />
+              <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(100deg,rgba(0,0,0,.92) 42%,rgba(0,0,0,.15))' }} />
+              <div style={{ position: 'absolute', inset: 0, padding: '22px 26px', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
+                <span style={{ display: 'inline-block', background: 'rgba(255,255,255,.14)', backdropFilter: 'blur(6px)', color: '#fff', fontSize: 10.5, fontWeight: 700, padding: '3px 10px', borderRadius: 7, border: '1px solid rgba(255,255,255,.2)', width: 'fit-content' }}>{b.tag}</span>
+                <div>
+                  <p style={{ fontFamily: "'Outfit',sans-serif", fontWeight: 900, color: '#fff', fontSize: 'clamp(1.1rem,2.2vw,1.45rem)', lineHeight: 1.15, marginBottom: 5, letterSpacing: '-.03em' }}>{b.h}</p>
+                  <p style={{ fontSize: 12, color: 'rgba(255,255,255,.6)', marginBottom: b.code ? 12 : 0 }}>{b.sub}</p>
+                  {b.code && (
+                    <button onClick={copy} style={{ display: 'inline-flex', alignItems: 'center', gap: 8, fontWeight: 800, fontSize: 12.5, letterSpacing: '.08em', color: '#fff', background: 'rgba(255,255,255,.12)', border: '1.5px dashed rgba(255,255,255,.4)', padding: '5px 13px', borderRadius: 8, cursor: 'pointer' }}>
+                      {b.code}
+                      {copied ? <Check size={12} color="#6EE7B7" /> : <Copy size={11} color="rgba(255,255,255,.6)" />}
+                    </button>
+                  )}
+                </div>
+              </div>
+            </div>
+          </motion.div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+/* ═══════════════ KIRANA CTA ═══════════════ */
+function KiranaCTA() {
+  const chips = ['🥬 Fruits & Veg','🥛 Dairy','💊 Pharmacy','🍿 Snacks','🌾 Grains & Dal','🧹 Household'];
+  return (
+    <div style={{ background: W, borderTop: `1px solid ${BD}`, padding: '64px 24px' }}>
+      <div style={{ maxWidth: 760, margin: '0 auto', textAlign: 'center' }}>
+        <motion.div initial={{ opacity: 0, y: 12 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}>
+          <div style={{ display: 'inline-flex', alignItems: 'center', gap: 7, background: `${G}10`, border: `1px solid ${G}30`, borderRadius: 999, padding: '5px 16px', marginBottom: 18 }}>
+            <span style={{ fontSize: 13 }}>🚀</span>
+            <span style={{ fontSize: 11.5, fontWeight: 700, color: G, letterSpacing: '.05em' }}>Launching in Jammu — Be first to shop</span>
+          </div>
+          <h2 style={{ fontFamily: "'Outfit',sans-serif", fontWeight: 900, fontSize: 'clamp(1.8rem,3.5vw,2.7rem)', color: T1, letterSpacing: '-.04em', lineHeight: 1.1, marginBottom: 16 }}>
+            Groceries from your<br /><span style={{ color: G }}>local kirana stores</span>
+          </h2>
+          <p style={{ fontSize: 15, color: T2, lineHeight: 1.7, marginBottom: 28, maxWidth: 560, margin: '0 auto 28px' }}>
+            We're onboarding stores in Jammu right now. Join the waitlist to shop 200+ categories — fresh produce, dairy, snacks, pharmacy and more — delivered in 30 minutes.
+          </p>
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8, justifyContent: 'center', marginBottom: 32 }}>
+            {chips.map(c => (
+              <span key={c} style={{ padding: '8px 16px', background: BG, border: `1.5px solid ${BD}`, borderRadius: 99, fontSize: 13.5, fontWeight: 600, color: T1 }}>{c}</span>
+            ))}
+            <span style={{ padding: '8px 16px', background: BG, border: `1.5px solid ${BD}`, borderRadius: 99, fontSize: 13.5, fontWeight: 600, color: T3 }}>+ more</span>
+          </div>
+          <button onClick={() => document.getElementById('waitlist')?.scrollIntoView({ behavior: 'smooth' })}
+            style={{ display: 'inline-flex', alignItems: 'center', gap: 10, background: BG, border: `2px solid ${BD}`, borderRadius: 14, padding: '16px 28px', cursor: 'pointer', fontSize: 15, fontWeight: 800, color: T2 }}>
+            <span style={{ fontSize: 22 }}>🛒</span>
+            <span>COMING SOON</span>
+          </button>
+        </motion.div>
       </div>
     </div>
   );
@@ -1546,18 +1618,19 @@ function WaitlistSection() {
   const [dispCount, setDispCount] = useState(500);
 
   useEffect(() => {
+    let t: ReturnType<typeof setInterval> | undefined;
     try {
       const real = 500 + (JSON.parse(localStorage.getItem('zyphix_waitlist') || '[]') as unknown[]).length;
       setCount(real);
       let cur = 500;
       const step = Math.max(1, Math.ceil((real - 500) / 25));
-      const t = setInterval(() => {
+      t = setInterval(() => {
         cur = Math.min(cur + step, real);
         setDispCount(cur);
         if (cur >= real) clearInterval(t);
       }, 40);
-      return () => clearInterval(t);
     } catch {}
+    return () => { if (t) clearInterval(t); };
   }, []);
 
   const validate = () => {
@@ -1765,61 +1838,20 @@ function WaitlistSection() {
 
 /* ═══════════════ ROOT ═══════════════ */
 export function Home() {
-  const [tab, setTab] = useState<TabId>('now');
-  const CONTENT: Record<TabId, React.ReactNode> = {
-    now: <NowTab />, eats: <EatsTab />, map: <MapTab />, offers: <OffersTab />
-  };
   return (
     <div style={{ background: BG, minHeight: '100vh' }}>
       <AnnoBar />
-      <Navbar tab={tab} setTab={setTab} />
+      <Navbar />
       <WaitlistSection />
-      <QuickBrowse setTab={setTab} />
-      <DualHeroBanners setTab={setTab} />
+      <QuickBrowse />
+      <DualHeroBanners />
       <WhyZyphixStrip />
-      <Trust />
-      <CategoryGrid />
-
-      {/* ── Merchant Value Strip ── */}
-      <div style={{ background: 'linear-gradient(135deg,#0A0E1A 0%,#0D1520 100%)', padding: '36px 24px' }}>
-        <div style={{ maxWidth: 1100, margin: '0 auto', display: 'flex', flexWrap: 'wrap', alignItems: 'center', justifyContent: 'space-between', gap: 20 }}>
-          <div>
-            <p style={{ fontSize: 11, fontWeight: 700, color: G, textTransform: 'uppercase', letterSpacing: '.1em', marginBottom: 7 }}>For Kirana Store Owners</p>
-            <h3 style={{ fontFamily: "'Outfit',sans-serif", fontWeight: 900, fontSize: 'clamp(1.25rem,2.5vw,1.7rem)', color: '#fff', letterSpacing: '-.03em', marginBottom: 8 }}>
-              Are you a kirana store owner?
-            </h3>
-            <p style={{ fontSize: 14, color: 'rgba(255,255,255,.55)', lineHeight: 1.65, maxWidth: 520 }}>
-              List your shop free. Get digital orders. Daily payouts. Join 200+ Jammu merchants already waitlisted.
-            </p>
-          </div>
-          <a href="/merchant-setup" style={{ display: 'inline-flex', alignItems: 'center', gap: 9, background: G, color: '#fff', fontSize: 15, fontWeight: 800, padding: '14px 28px', borderRadius: 13, boxShadow: `0 8px 28px rgba(13,163,102,.45)`, border: 'none', cursor: 'pointer', textDecoration: 'none', whiteSpace: 'nowrap', transition: 'filter .15s' }}
-            onMouseEnter={e => (e.currentTarget as HTMLElement).style.filter = 'brightness(1.1)'}
-            onMouseLeave={e => (e.currentTarget as HTMLElement).style.filter = 'brightness(1)'}>
-            Register Your Store <ArrowRight size={16} />
-          </a>
-        </div>
-      </div>
-
-      <div id="tab-content" style={{ maxWidth: 1320, margin: '0 auto', padding: '44px 24px 80px' }}>
-        <AnimatePresence mode="wait">
-          <motion.div key={tab} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} transition={{ duration: .18 }}>
-            {CONTENT[tab]}
-          </motion.div>
-        </AnimatePresence>
-      </div>
-
-      <SavingsCalculator />
-      <ReceiptComparison />
-      <HowItWorksSimple />
-      <WhyKirana />
-      <LiveCounter />
-      <KiranaQuotes />
-      <AppPreviewMockup />
-      <ReferAndEarn />
+      <BrandMarqueeMain />
+      <OfferCards />
+      <KiranaCTA />
       <HowItWorks />
       <SocialProof />
       <AppDownload />
-      <TrustMediaBar />
       <Footer />
 
       {/* ── WhatsApp Floating Button ── */}
