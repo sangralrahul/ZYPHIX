@@ -1853,31 +1853,19 @@ function WaitlistSection() {
 
 /* ═══════════════ INTRO SPLASH ═══════════════ */
 function IntroSplash() {
-  const [visible, setVisible] = useState(() => {
-    try { return !sessionStorage.getItem('zyphix_intro_seen'); } catch { return false; }
-  });
-  const [exiting, setExiting] = useState(false);
+  const [visible, setVisible] = useState(true);
 
-  const dismiss = () => {
-    setExiting(true);
-    setTimeout(() => {
-      try { sessionStorage.setItem('zyphix_intro_seen', '1'); } catch {}
-      setVisible(false);
-    }, 700);
-  };
-
-  if (!visible) return null;
+  const dismiss = () => setVisible(false);
 
   return (
     <AnimatePresence>
-      {!exiting ? (
+      {visible && (
         <motion.div
           key="intro-splash"
           style={{ position: 'fixed', inset: 0, zIndex: 9999, background: W }}
           initial={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          transition={{ duration: 0.65, ease: [0.25, 0.46, 0.45, 0.94] }}>
-          {/* Skip button */}
+          transition={{ duration: 0.7, ease: [0.25, 0.46, 0.45, 0.94] }}>
           <button
             onClick={dismiss}
             style={{ position: 'absolute', top: 20, left: 20, zIndex: 10001, padding: '8px 18px', borderRadius: 7, background: 'rgba(0,0,0,0.04)', border: '1px solid rgba(0,0,0,0.09)', color: T2, fontFamily: "'Inter',sans-serif", fontSize: 13, fontWeight: 500, cursor: 'pointer' }}>
@@ -1885,14 +1873,6 @@ function IntroSplash() {
           </button>
           <SplashVideoCore onDone={dismiss} />
         </motion.div>
-      ) : (
-        <motion.div
-          key="intro-exit"
-          style={{ position: 'fixed', inset: 0, zIndex: 9999, background: W }}
-          initial={{ opacity: 1 }}
-          animate={{ opacity: 0 }}
-          transition={{ duration: 0.65, ease: [0.25, 0.46, 0.45, 0.94] }}
-        />
       )}
     </AnimatePresence>
   );
