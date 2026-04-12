@@ -1669,31 +1669,33 @@ function QuickBrowse({ setTab }: { setTab?: (t: TabId) => void }) {
 /* ═══════════════ STATS STRIP (7 items matching reference) ═══════════════ */
 function WhyZyphixStrip() {
   const ITEMS = [
-    { title: 'Real Kirana Partners',  sub: 'No dark warehouses — your local stores',      em: '🏪' },
-    { title: 'Zero Extra Charges',    sub: 'Lower commission than Swiggy / Zomato',        em: '💸' },
-    { title: 'Built for J&K',         sub: 'Your neighbourhood, now digital',              em: '📍' },
-    { title: '30 Min',                sub: 'Guaranteed delivery',                          em: '⚡' },
-    { title: 'Jammu First',           sub: 'Launching in J&K',                             em: '🚀' },
-    { title: 'Tier 2 India',          sub: 'Built for Bharat',                             em: '🇮🇳' },
-    { title: '₹0 Surge',              sub: 'Always fair pricing',                          em: '✅' },
+    { Icon: Package,    title: 'Real Kirana Partners', sub: 'No dark warehouses',            color: G,         iconBg: '#ECFDF5' },
+    { Icon: BadgeCheck, title: 'Zero Extra Charges',   sub: 'Less than Swiggy / Zomato',     color: '#16A34A', iconBg: '#F0FDF4' },
+    { Icon: MapPin,     title: 'Built for J&K',        sub: 'Your neighbourhood, digital',   color: '#7C3AED', iconBg: '#F5F3FF' },
+    { Icon: Zap,        title: '30 Min Delivery',      sub: 'Guaranteed every time',         color: G,         iconBg: '#ECFDF5', highlight: true },
+    { Icon: Star,       title: 'Jammu First',          sub: 'Launching in J&K',              color: '#EA580C', iconBg: '#FFF7ED' },
+    { Icon: TrendingUp, title: 'Tier 2 India',         sub: 'Built for Bharat',              color: '#2563EB', iconBg: '#EFF6FF' },
+    { Icon: Shield,     title: '₹0 Surge Pricing',     sub: 'Always fair, always honest',    color: G,         iconBg: '#ECFDF5' },
   ];
   return (
-    <div style={{ background: 'linear-gradient(135deg, #0B1829 0%, #131D30 60%, #0D2040 100%)', borderTop: '1px solid rgba(255,255,255,.07)', borderBottom: '1px solid rgba(255,255,255,.07)', overflow: 'hidden' }}>
+    <div style={{ background: W, borderTop: `1px solid ${BD}`, borderBottom: `1px solid ${BD}` }}>
       <div style={{ maxWidth: 1320, margin: '0 auto', padding: '0 24px', display: 'flex', flexWrap: 'wrap', alignItems: 'stretch' }}>
-        {ITEMS.map(({ em, title, sub }, i) => (
+        {ITEMS.map(({ Icon, title, sub, color, iconBg, highlight }, i) => (
           <React.Fragment key={title}>
             <motion.div
               initial={{ opacity: 0, y: 8 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}
-              transition={{ delay: i * 0.07, duration: 0.35 }}
-              style={{ flex: '1 1 160px', display: 'flex', alignItems: 'center', gap: 10, padding: '18px 20px', minWidth: 0 }}>
-              <span style={{ fontSize: 20, flexShrink: 0 }}>{em}</span>
-              <div>
-                <p style={{ fontFamily: "'Outfit',sans-serif", fontWeight: 800, fontSize: 13, color: '#fff', letterSpacing: '-.01em', marginBottom: 1 }}>{title}</p>
-                <p style={{ fontSize: 11, color: 'rgba(0,201,167,.75)', fontWeight: 500, lineHeight: 1.4 }}>{sub}</p>
+              transition={{ delay: i * 0.06, duration: 0.3 }}
+              style={{ flex: '1 1 148px', display: 'flex', alignItems: 'center', gap: 12, padding: '20px 18px', minWidth: 0, background: highlight ? `${G}07` : 'transparent' }}>
+              <div style={{ width: 38, height: 38, borderRadius: 11, background: iconBg, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                <Icon size={17} color={color} strokeWidth={2.2} />
+              </div>
+              <div style={{ minWidth: 0 }}>
+                <p style={{ fontFamily: "'Outfit',sans-serif", fontWeight: 800, fontSize: 13, color: T1, letterSpacing: '-.015em', marginBottom: 2, lineHeight: 1.2 }}>{title}</p>
+                <p style={{ fontSize: 11.5, color: T2, fontWeight: 500, lineHeight: 1.35 }}>{sub}</p>
               </div>
             </motion.div>
             {i < ITEMS.length - 1 && (
-              <div style={{ width: 1, alignSelf: 'stretch', margin: '12px 0', background: 'rgba(255,255,255,.08)', flexShrink: 0 }} />
+              <div style={{ width: 1, alignSelf: 'stretch', margin: '10px 0', background: BD, flexShrink: 0 }} />
             )}
           </React.Fragment>
         ))}
