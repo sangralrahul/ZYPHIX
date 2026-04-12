@@ -213,108 +213,88 @@ function Navbar({ tab = 'now', setTab }: { tab?: TabId; setTab?: (t: TabId) => v
     : 'Select Location';
 
   return (
-    <div className="sticky top-0 z-50" style={{ background: W, borderBottom: `1px solid ${BD}`, boxShadow: scrolled ? SH : 'none', transition: 'box-shadow .2s' }}>
-      {/* Top row */}
-      <div style={{ maxWidth: 1320, margin: '0 auto', padding: '0 24px', height: 64, display: 'flex', alignItems: 'center', gap: 14, borderBottom: `1px solid ${BD}` }}>
-        <a href="/" style={{ textDecoration: 'none' }}>
-          <LogoMark size={32} />
+    <div className="sticky top-0 z-50" style={{ background: W, borderBottom: `1px solid ${BD}`, boxShadow: scrolled ? '0 1px 8px rgba(0,0,0,.06)' : 'none', transition: 'box-shadow .2s' }}>
+      <div style={{ maxWidth: 1280, margin: '0 auto', padding: '0 20px', height: 68, display: 'flex', alignItems: 'center', gap: 12 }}>
+
+        {/* Logo */}
+        <a href="/" style={{ textDecoration: 'none', flexShrink: 0 }}>
+          <LogoMark size={30} />
         </a>
-        <div style={{ width: 1, height: 28, background: BD }} />
 
         {/* ── Location picker ── */}
         <div ref={locRef} style={{ position: 'relative', flexShrink: 0 }}>
           <button onClick={() => { setLocOpen(o => !o); setLocSearch(''); }}
-            style={{ display: 'flex', alignItems: 'center', gap: 8, background: 'transparent', border: 'none', cursor: 'pointer', padding: '4px 0', minWidth: 0 }}>
-            <motion.div animate={{ color: locVal ? G : T3 }} transition={{ duration: .25 }}>
-              <MapPin size={16} color={locVal ? G : T3} />
-            </motion.div>
-            <div style={{ textAlign: 'left', minWidth: 0 }}>
-              <AnimatePresence mode="wait">
-                {delivMins ? (
-                  <motion.div key="with-loc" initial={{ opacity: 0, y: -6 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: 6 }} transition={{ duration: .2 }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
-                      <Zap size={11} color={G} strokeWidth={2.5} style={{ flexShrink: 0 }} />
-                      <span style={{ fontSize: 9, fontWeight: 700, color: G, textTransform: 'uppercase', letterSpacing: '.06em' }}>Delivery in</span>
-                    </div>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: 4, marginTop: 1 }}>
-                      <span style={{ fontWeight: 900, color: T1, fontSize: 16, letterSpacing: '-.03em', lineHeight: 1 }}>{delivMins}</span>
-                      <motion.span animate={{ rotate: locOpen ? 180 : 0 }} transition={{ duration: .18 }} style={{ flexShrink: 0, marginTop: 1 }}>
-                        <ChevronDown size={12} color={T3} />
-                      </motion.span>
-                    </div>
-                    <p style={{ fontSize: 10.5, color: T2, marginTop: 2, maxWidth: 130, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', lineHeight: 1 }}>{areaLabel}</p>
-                  </motion.div>
-                ) : (
-                  <motion.div key="no-loc" initial={{ opacity: 0, y: -6 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: 6 }} transition={{ duration: .2 }}>
-                    <p style={{ fontSize: 8.5, fontWeight: 600, color: T3, textTransform: 'uppercase', letterSpacing: '.07em', lineHeight: 1 }}>Deliver to</p>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: 3, marginTop: 2 }}>
-                      <span style={{ fontWeight: 700, color: T3, fontSize: 13 }}>Select Location</span>
-                      <motion.span animate={{ rotate: locOpen ? 180 : 0 }} transition={{ duration: .18 }}>
-                        <ChevronDown size={11} color={T3} />
-                      </motion.span>
-                    </div>
-                  </motion.div>
-                )}
-              </AnimatePresence>
+            style={{ display: 'flex', alignItems: 'center', gap: 6, background: 'transparent', border: 'none', cursor: 'pointer', padding: '6px 10px 6px 8px', borderRadius: 10, transition: 'background .12s' }}
+            onMouseEnter={e => (e.currentTarget.style.background = BG)}
+            onMouseLeave={e => (e.currentTarget.style.background = 'transparent')}>
+            <div style={{ position: 'relative', flexShrink: 0 }}>
+              <MapPin size={17} color={locVal ? G : T3} strokeWidth={2.2} />
+              {locVal && (
+                <span style={{ position: 'absolute', top: -2, right: -2, width: 7, height: 7, borderRadius: '50%', background: G, border: '1.5px solid #fff' }} />
+              )}
+            </div>
+            <div style={{ textAlign: 'left', minWidth: 0, maxWidth: 148 }}>
+              <p style={{ fontSize: 10, fontWeight: 600, color: T3, lineHeight: 1, marginBottom: 2, textTransform: 'uppercase', letterSpacing: '.04em' }}>
+                {locVal ? (delivMins ? `In ${delivMins}` : 'Delivering to') : 'Deliver to'}
+              </p>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 3 }}>
+                <span style={{ fontSize: 13, fontWeight: 700, color: T1, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                  {locVal ? areaLabel : 'Select Location'}
+                </span>
+                <motion.span animate={{ rotate: locOpen ? 180 : 0 }} transition={{ duration: .18 }} style={{ flexShrink: 0 }}>
+                  <ChevronDown size={12} color={T3} />
+                </motion.span>
+              </div>
             </div>
           </button>
 
+          {/* Location dropdown */}
           <AnimatePresence>
             {locOpen && (
-              <motion.div initial={{ opacity: 0, y: 8, scale: .97 }} animate={{ opacity: 1, y: 0, scale: 1 }} exit={{ opacity: 0, y: 8, scale: .97 }} transition={{ duration: .15 }}
-                style={{ position: 'absolute', top: 'calc(100% + 14px)', left: 0, width: 308, background: W, border: `1px solid ${BD}`, borderRadius: 18, boxShadow: SH2, zIndex: 300, overflow: 'hidden' }}>
-
-                {/* GPS row */}
+              <motion.div initial={{ opacity: 0, y: 6, scale: .97 }} animate={{ opacity: 1, y: 0, scale: 1 }} exit={{ opacity: 0, y: 6, scale: .97 }} transition={{ duration: .14 }}
+                style={{ position: 'absolute', top: 'calc(100% + 10px)', left: 0, width: 316, background: W, border: `1px solid ${BD}`, borderRadius: 16, boxShadow: '0 8px 32px rgba(0,0,0,.1)', zIndex: 400, overflow: 'hidden' }}>
                 <button onClick={detectGPS} disabled={locating}
-                  style={{ width: '100%', display: 'flex', alignItems: 'center', gap: 12, padding: '14px 16px', borderTop: 'none', borderLeft: 'none', borderRight: 'none', borderBottom: `1px solid ${BD}`, background: '#F0FDF9', cursor: 'pointer', transition: 'background .12s' }}
+                  style={{ width: '100%', display: 'flex', alignItems: 'center', gap: 12, padding: '12px 14px', border: 'none', borderBottom: `1px solid ${BD}`, background: '#F0FDF9', cursor: 'pointer', transition: 'background .12s' }}
                   onMouseEnter={e => (e.currentTarget.style.background = '#DCFCE7')}
                   onMouseLeave={e => (e.currentTarget.style.background = '#F0FDF9')}>
-                  <div style={{ width: 34, height: 34, borderRadius: 10, background: locating ? T3 : G, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, transition: 'background .2s' }}>
-                    <LocateFixed size={16} color="#fff" />
+                  <div style={{ width: 32, height: 32, borderRadius: 9, background: locating ? T3 : G, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                    <LocateFixed size={15} color="#fff" />
                   </div>
                   <div style={{ textAlign: 'left' }}>
-                    <p style={{ fontSize: 13, fontWeight: 700, color: T1 }}>{locating ? 'Detecting location…' : 'Use current location'}</p>
-                    <p style={{ fontSize: 11, color: T3, marginTop: 1 }}>Via GPS · Accurate delivery</p>
+                    <p style={{ fontSize: 13, fontWeight: 700, color: T1 }}>{locating ? 'Detecting…' : 'Use current location'}</p>
+                    <p style={{ fontSize: 11, color: T3, marginTop: 1 }}>GPS · Accurate delivery</p>
                   </div>
                 </button>
-
-                {/* Search input */}
-                <div style={{ padding: '10px 12px', borderBottom: `1px solid ${BD}` }}>
+                <div style={{ padding: '8px 12px', borderBottom: `1px solid ${BD}` }}>
                   <div style={{ position: 'relative' }}>
-                    <Search size={13} style={{ position: 'absolute', left: 11, top: '50%', transform: 'translateY(-50%)', color: T3 }} />
-                    <input value={locSearch} onChange={e => setLocSearch(e.target.value)}
-                      placeholder="Search area or colony…" autoFocus
-                      style={{ width: '100%', paddingLeft: 32, paddingRight: locSearch ? 30 : 12, paddingTop: 9, paddingBottom: 9, borderRadius: 9, border: `1.5px solid ${BD}`, fontSize: 13, color: T1, outline: 'none', boxSizing: 'border-box', fontFamily: 'inherit', background: BG }}
-                      onFocus={e => { e.target.style.borderColor = G; e.target.style.boxShadow = `0 0 0 3px ${G}18`; e.target.style.background = W; }}
-                      onBlur={e => { e.target.style.borderColor = BD; e.target.style.boxShadow = 'none'; e.target.style.background = BG; }}
-                    />
+                    <Search size={12} style={{ position: 'absolute', left: 10, top: '50%', transform: 'translateY(-50%)', color: T3 }} />
+                    <input value={locSearch} onChange={e => setLocSearch(e.target.value)} placeholder="Search area or colony…" autoFocus
+                      style={{ width: '100%', paddingLeft: 30, paddingRight: locSearch ? 28 : 10, paddingTop: 8, paddingBottom: 8, borderRadius: 8, border: `1.5px solid ${BD}`, fontSize: 13, color: T1, outline: 'none', boxSizing: 'border-box', fontFamily: 'inherit', background: BG }}
+                      onFocus={e => { e.target.style.borderColor = G; e.target.style.background = W; }}
+                      onBlur={e => { e.target.style.borderColor = BD; e.target.style.background = BG; }} />
                     {locSearch && (
-                      <button onClick={() => setLocSearch('')} style={{ position: 'absolute', right: 8, top: '50%', transform: 'translateY(-50%)', background: 'transparent', border: 'none', cursor: 'pointer', color: T3, display: 'flex', padding: 2 }}>
-                        <X size={12} />
+                      <button onClick={() => setLocSearch('')} style={{ position: 'absolute', right: 7, top: '50%', transform: 'translateY(-50%)', background: 'transparent', border: 'none', cursor: 'pointer', color: T3, display: 'flex', padding: 2 }}>
+                        <X size={11} />
                       </button>
                     )}
                   </div>
                 </div>
-
-                {/* Area chips */}
-                <div style={{ maxHeight: 256, overflowY: 'auto', padding: '10px 12px 14px' }}>
+                <div style={{ maxHeight: 240, overflowY: 'auto', padding: '8px 12px 12px' }}>
                   {Object.entries(LOC_AREAS).map(([city, areas]) => {
-                    const filtered = locSearch
-                      ? areas.filter(a => a.toLowerCase().includes(locSearch.toLowerCase()))
-                      : areas;
+                    const filtered = locSearch ? areas.filter(a => a.toLowerCase().includes(locSearch.toLowerCase())) : areas;
                     if (!filtered.length) return null;
                     return (
-                      <div key={city} style={{ marginBottom: 12 }}>
-                        <p style={{ fontSize: 10, fontWeight: 800, color: T3, letterSpacing: '.08em', textTransform: 'uppercase', marginBottom: 7, paddingLeft: 2 }}>{city}</p>
-                        <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
+                      <div key={city} style={{ marginBottom: 10 }}>
+                        <p style={{ fontSize: 9.5, fontWeight: 800, color: T3, letterSpacing: '.08em', textTransform: 'uppercase', marginBottom: 6, paddingLeft: 2 }}>{city}</p>
+                        <div style={{ display: 'flex', flexWrap: 'wrap', gap: 5 }}>
                           {filtered.map(area => {
                             const fullName = `${area}, ${city}`;
-                            const active = locVal === fullName;
+                            const isActive = locVal === fullName;
                             return (
                               <button key={area} onClick={() => saveLocation(fullName)}
-                                style={{ padding: '5px 13px', borderRadius: 20, border: `1.5px solid ${active ? G : BD}`, background: active ? `${G}12` : W, fontSize: 12.5, fontWeight: active ? 700 : 500, color: active ? G : T2, cursor: 'pointer', transition: 'all .12s' }}
-                                onMouseEnter={e => { if (!active) { e.currentTarget.style.borderColor = `${G}66`; e.currentTarget.style.background = `${G}08`; e.currentTarget.style.color = G; } }}
-                                onMouseLeave={e => { if (!active) { e.currentTarget.style.borderColor = BD; e.currentTarget.style.background = W; e.currentTarget.style.color = T2; } }}>
+                                style={{ padding: '4px 11px', borderRadius: 20, border: `1.5px solid ${isActive ? G : BD}`, background: isActive ? `${G}12` : W, fontSize: 12, fontWeight: isActive ? 700 : 500, color: isActive ? G : T2, cursor: 'pointer', transition: 'all .1s' }}
+                                onMouseEnter={e => { if (!isActive) { e.currentTarget.style.borderColor = `${G}66`; e.currentTarget.style.color = G; e.currentTarget.style.background = `${G}08`; } }}
+                                onMouseLeave={e => { if (!isActive) { e.currentTarget.style.borderColor = BD; e.currentTarget.style.color = T2; e.currentTarget.style.background = W; } }}>
                                 {area}
                               </button>
                             );
@@ -323,19 +303,15 @@ function Navbar({ tab = 'now', setTab }: { tab?: TabId; setTab?: (t: TabId) => v
                       </div>
                     );
                   })}
-
-                  {/* Custom location from search */}
                   {locSearch && !allAreas.some(a => a.toLowerCase().includes(locSearch.toLowerCase())) && (
                     <button onClick={() => saveLocation(locSearch)}
-                      style={{ width: '100%', padding: '10px 14px', borderRadius: 11, border: `1.5px dashed ${G}66`, background: `${G}08`, fontSize: 13, fontWeight: 600, color: G, cursor: 'pointer', textAlign: 'left', display: 'flex', alignItems: 'center', gap: 8 }}>
-                      <MapPin size={13} /> Set "{locSearch}" as delivery location
+                      style={{ width: '100%', padding: '9px 12px', borderRadius: 10, border: `1.5px dashed ${G}66`, background: `${G}06`, fontSize: 12.5, fontWeight: 600, color: G, cursor: 'pointer', textAlign: 'left', display: 'flex', alignItems: 'center', gap: 7 }}>
+                      <MapPin size={12} /> Set "{locSearch}" as location
                     </button>
                   )}
-
-                  {/* Clear saved */}
                   {locVal && !locSearch && (
                     <button onClick={() => { try { localStorage.removeItem('zyphix_loc'); } catch {} setLocVal(''); setLocOpen(false); }}
-                      style={{ width: '100%', marginTop: 6, padding: '8px 14px', borderRadius: 9, border: `1px solid ${BD}`, background: W, fontSize: 12, fontWeight: 500, color: T3, cursor: 'pointer', transition: 'background .12s' }}
+                      style={{ width: '100%', marginTop: 4, padding: '7px 12px', borderRadius: 8, border: `1px solid ${BD}`, background: W, fontSize: 12, fontWeight: 500, color: T3, cursor: 'pointer' }}
                       onMouseEnter={e => (e.currentTarget.style.background = BG)}
                       onMouseLeave={e => (e.currentTarget.style.background = W)}>
                       Clear saved location
@@ -347,47 +323,69 @@ function Navbar({ tab = 'now', setTab }: { tab?: TabId; setTab?: (t: TabId) => v
           </AnimatePresence>
         </div>
 
-        <div style={{ width: 1, height: 28, background: BD }} />
-        <div style={{ flex: 1, position: 'relative', maxWidth: 340 }}>
-          <Search size={13} style={{ position: 'absolute', left: 11, top: '50%', transform: 'translateY(-50%)', color: focus ? (active?.color ?? G) : T3, transition: 'color .15s' }} />
-          <input value={q} onChange={e => setQ(e.target.value)} onFocus={() => setFocus(true)} onBlur={() => setFocus(false)}
-            placeholder={`Search ${tab === 'now' ? 'groceries, brands' : tab === 'eats' ? 'dishes, restaurants' : 'stores, offers'}...`}
-            style={{ width: '100%', paddingLeft: 34, paddingRight: 12, paddingTop: 8, paddingBottom: 8, borderRadius: 9, background: BG, border: `1.5px solid ${focus ? (active?.color ?? G) + '66' : BD}`, fontSize: 12.5, color: T1, fontFamily: 'inherit', fontWeight: 500, outline: 'none', transition: 'all .18s', boxShadow: focus ? `0 0 0 3px ${(active?.color ?? G)}14` : 'none' }} />
+        {/* ── Search bar (Zepto-style pill, dominant center) ── */}
+        <div style={{ flex: 1, position: 'relative', minWidth: 0 }}>
+          <Search size={16} style={{ position: 'absolute', left: 16, top: '50%', transform: 'translateY(-50%)', color: focus ? G : '#9CA3AF', transition: 'color .15s', pointerEvents: 'none' }} />
+          <input
+            value={q}
+            onChange={e => setQ(e.target.value)}
+            onFocus={() => setFocus(true)}
+            onBlur={() => setFocus(false)}
+            placeholder={`Search for ${tab === 'now' ? 'groceries, brands and more' : tab === 'eats' ? 'dishes, restaurants and more' : 'stores, offers and more'}`}
+            style={{
+              width: '100%',
+              paddingLeft: 46,
+              paddingRight: 20,
+              paddingTop: 11,
+              paddingBottom: 11,
+              borderRadius: 999,
+              background: focus ? W : '#F4F4F5',
+              border: `1.5px solid ${focus ? G + '55' : 'transparent'}`,
+              fontSize: 13.5,
+              color: T1,
+              fontFamily: 'inherit',
+              fontWeight: 500,
+              outline: 'none',
+              transition: 'all .18s',
+              boxShadow: focus ? `0 0 0 3px ${G}14` : 'none',
+              boxSizing: 'border-box',
+            }}
+          />
         </div>
-        <div style={{ display: 'flex', gap: 8, marginLeft: 'auto', flexShrink: 0, position: 'relative' }}>
+
+        {/* ── Right actions ── */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexShrink: 0 }}>
           {user ? (
             <div style={{ position: 'relative' }}>
               <button onClick={() => setUserMenuOpen(o => !o)}
-                style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '7px 12px', borderRadius: 10, border: `1.5px solid ${BD}`, fontSize: 13, fontWeight: 600, color: T1, background: W, transition: 'all .15s', cursor: 'pointer' }}>
-                <div style={{ width: 26, height: 26, borderRadius: '50%', background: G, color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 11, fontWeight: 900 }}>
+                style={{ display: 'flex', alignItems: 'center', gap: 7, padding: '8px 14px', borderRadius: 10, border: `1.5px solid ${BD}`, fontSize: 13, fontWeight: 600, color: T1, background: W, cursor: 'pointer', transition: 'all .13s' }}
+                onMouseEnter={e => { (e.currentTarget as HTMLElement).style.borderColor = G + '44'; }}
+                onMouseLeave={e => { (e.currentTarget as HTMLElement).style.borderColor = BD; }}>
+                <div style={{ width: 24, height: 24, borderRadius: '50%', background: G, color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 10.5, fontWeight: 900 }}>
                   {user.name[0].toUpperCase()}
                 </div>
-                <span className="hidden lg:inline">{user.name.split(' ')[0]}</span>
+                <span>{user.name.split(' ')[0]}</span>
                 <ChevronDown size={11} color={T3} />
               </button>
               <AnimatePresence>
                 {userMenuOpen && (
-                  <motion.div initial={{ opacity: 0, y: 6, scale: .96 }} animate={{ opacity: 1, y: 0, scale: 1 }} exit={{ opacity: 0, y: 6, scale: .96 }} transition={{ duration: .14 }}
-                    style={{ position: 'absolute', top: 'calc(100% + 8px)', right: 0, background: W, border: `1px solid ${BD}`, borderRadius: 14, width: 200, boxShadow: SH2, zIndex: 100, overflow: 'hidden' }}
+                  <motion.div initial={{ opacity: 0, y: 6, scale: .96 }} animate={{ opacity: 1, y: 0, scale: 1 }} exit={{ opacity: 0, y: 6, scale: .96 }} transition={{ duration: .13 }}
+                    style={{ position: 'absolute', top: 'calc(100% + 8px)', right: 0, background: W, border: `1px solid ${BD}`, borderRadius: 14, width: 196, boxShadow: '0 8px 28px rgba(0,0,0,.09)', zIndex: 400, overflow: 'hidden' }}
                     onMouseLeave={() => setUserMenuOpen(false)}>
-                    <div style={{ padding: '12px 14px', borderBottom: `1px solid ${BD}`, background: BG }}>
+                    <div style={{ padding: '11px 14px', borderBottom: `1px solid ${BD}`, background: BG }}>
                       <p style={{ fontWeight: 700, fontSize: 13, color: T1 }}>{user.name}</p>
-                      <p style={{ fontSize: 11, color: T3, marginTop: 2 }}>{user.email}</p>
+                      <p style={{ fontSize: 11, color: T3, marginTop: 1 }}>{user.email}</p>
                     </div>
-                    {[
-                      { l: 'My Orders', href: '#' },
-                      { l: 'Account Settings', href: '#' },
-                      { l: 'Saved Addresses', href: '#' },
-                    ].map(({ l, href }) => (
-                      <a key={l} href={href} style={{ display: 'block', padding: '10px 14px', fontSize: 13, color: T2, fontWeight: 500, transition: 'background .12s' }}
+                    {[{ l: 'My Orders', href: '#' }, { l: 'Account Settings', href: '#' }, { l: 'Saved Addresses', href: '#' }].map(({ l, href }) => (
+                      <a key={l} href={href} style={{ display: 'block', padding: '9px 14px', fontSize: 13, color: T2, fontWeight: 500, transition: 'background .1s' }}
                         onMouseEnter={e => (e.currentTarget as HTMLElement).style.background = BG}
                         onMouseLeave={e => (e.currentTarget as HTMLElement).style.background = W}>{l}</a>
                     ))}
                     <div style={{ borderTop: `1px solid ${BD}` }}>
                       <button onClick={() => { logout(); setUserMenuOpen(false); }}
-                        style={{ width: '100%', display: 'flex', alignItems: 'center', gap: 8, padding: '10px 14px', fontSize: 13, color: '#EF4444', fontWeight: 600, transition: 'background .12s', textAlign: 'left' }}
+                        style={{ width: '100%', display: 'flex', alignItems: 'center', gap: 8, padding: '9px 14px', fontSize: 13, color: '#EF4444', fontWeight: 600, transition: 'background .1s', textAlign: 'left', background: 'transparent', border: 'none', cursor: 'pointer' }}
                         onMouseEnter={e => (e.currentTarget as HTMLElement).style.background = '#FFF5F5'}
-                        onMouseLeave={e => (e.currentTarget as HTMLElement).style.background = W}>
+                        onMouseLeave={e => (e.currentTarget as HTMLElement).style.background = 'transparent'}>
                         <LogOut size={13} /> Sign out
                       </button>
                     </div>
@@ -397,19 +395,22 @@ function Navbar({ tab = 'now', setTab }: { tab?: TabId; setTab?: (t: TabId) => v
             </div>
           ) : (
             <button onClick={openModal}
-              style={{ display: 'flex', alignItems: 'center', gap: 7, padding: '9px 16px', borderRadius: 10, border: `1.5px solid ${BD}`, fontSize: 13, fontWeight: 600, color: T2, background: W, transition: 'all .15s', cursor: 'pointer' }}
-              onMouseEnter={e => { (e.currentTarget as HTMLElement).style.borderColor = G + '55'; (e.currentTarget as HTMLElement).style.color = G; }}
-              onMouseLeave={e => { (e.currentTarget as HTMLElement).style.borderColor = BD; (e.currentTarget as HTMLElement).style.color = T2; }}>
-              <User size={14} /><span className="hidden lg:inline">Sign in</span>
+              style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '9px 18px', borderRadius: 10, border: `1.5px solid ${BD}`, fontSize: 13, fontWeight: 700, color: T1, background: W, cursor: 'pointer', transition: 'all .13s', whiteSpace: 'nowrap' }}
+              onMouseEnter={e => { (e.currentTarget as HTMLElement).style.borderColor = G; (e.currentTarget as HTMLElement).style.color = G; }}
+              onMouseLeave={e => { (e.currentTarget as HTMLElement).style.borderColor = BD; (e.currentTarget as HTMLElement).style.color = T1; }}>
+              <User size={14} /> Login
             </button>
           )}
-          <button className="relative" style={{ display: 'flex', alignItems: 'center', gap: 7, padding: '9px 18px', borderRadius: 10, background: G, fontSize: 13, fontWeight: 800, color: '#fff', boxShadow: `0 2px 12px rgba(13,163,102,.3)`, transition: 'background .15s' }}
+          <button
+            style={{ position: 'relative', display: 'flex', alignItems: 'center', gap: 7, padding: '9px 20px', borderRadius: 10, background: G, fontSize: 13.5, fontWeight: 700, color: '#fff', border: 'none', cursor: 'pointer', transition: 'background .13s', boxShadow: `0 2px 10px rgba(13,163,102,.28)`, whiteSpace: 'nowrap' }}
             onMouseEnter={e => (e.currentTarget as HTMLElement).style.background = G2}
             onMouseLeave={e => (e.currentTarget as HTMLElement).style.background = G}>
-            <ShoppingCart size={14} /><span className="hidden sm:inline">Cart</span>
-            <span style={{ position: 'absolute', top: -7, right: -7, width: 18, height: 18, borderRadius: '50%', background: '#EF4444', color: '#fff', fontSize: 9.5, fontWeight: 900, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>3</span>
+            <ShoppingCart size={15} />
+            <span>Cart</span>
+            <span style={{ position: 'absolute', top: -6, right: -6, width: 18, height: 18, borderRadius: '50%', background: '#EF4444', color: '#fff', fontSize: 9.5, fontWeight: 900, display: 'flex', alignItems: 'center', justifyContent: 'center', border: '2px solid #fff' }}>3</span>
           </button>
         </div>
+
       </div>
     </div>
   );
