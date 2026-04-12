@@ -8,7 +8,29 @@ const G = '#0DA366'; const T1 = '#111827'; const T2 = '#6B7280';
 const T3 = '#9CA3AF'; const BD = '#E5E7EB'; const W = '#FFFFFF'; const BG = '#F8F9FA';
 const SH = '0 2px 8px rgba(0,0,0,.07)'; const SH2 = '0 4px 24px rgba(0,0,0,.10)';
 
-const AREAS = ['Gandhinagar','Trikuta Nagar','Gandhi Nagar','Bakshi Nagar','Nawabad','Channi Himmat','Sainik Colony','Talab Tillo','Janipur','Bathindi','Sarwal','Nardni','Sidhra','Canal Road','Other'];
+const AREAS_BY_DISTRICT = [
+  { d: 'Jammu District', areas: [
+    'Raghunath Bazaar','Gandhi Chowk','Gole Market','Old City','Parade Ground',
+    'Gandhinagar','Gandhi Nagar','Bakshi Nagar','Nawabad','Nanak Nagar','Karan Nagar',
+    'Patel Nagar','Shastri Nagar','Bhagwati Nagar','Sainik Colony','Rehari Colony',
+    'New Rehari','Officers Colony','New Plot',
+    'Trikuta Nagar','Janipur','Bantalab','Channi Himmat','Channi Rama',
+    'Bahu Fort Area','Lower Bahu',
+    'Amphalla','Dogra Chowk','Vikram Chowk','Rail Head Complex','Subash Nagar',
+    'Talab Tillo','Sarwal','Bathindi','Sidhra','Narwal','Canal Road',
+    'Kunjwani','Chowadhi','Gangyal','Transport Nagar','SICOP Area',
+    'Muthi','Nagrota','Bishnah','Arnia','Suchetgarh','RS Pura','Akhnoor',
+    'Toph Sherkhania','Miran Sahib','Digiana','Udheywala','Chak Bhalwal',
+  ]},
+  { d: 'Samba District', areas: [
+    'Samba','Vijaypur','Ghagwal','Ramgarh','Bari Brahmana','Sumb','Birpur',
+    'Treva','Purmandal','Deva Vatala','Rajpura','Gho Manhasan',
+  ]},
+  { d: 'Kathua District', areas: [
+    'Kathua','Hiranagar','Billawar','Basohli','Bani','Dinga Amb','Mahanpur',
+    'Lakhanpur','Marheen','Nagri','Bandralta','Jasrota','Malhar',
+  ]},
+];
 
 const inp = (err?: string): React.CSSProperties => ({
   width:'100%', padding:'12px 14px', borderRadius:10,
@@ -101,8 +123,12 @@ function PersonalStep({ onNext }: { onNext:(d:object)=>void }) {
               <label style={{ fontSize:12,fontWeight:700,color:T2,textTransform:'uppercase',letterSpacing:'.04em',display:'block',marginBottom:5 }}>Area / Colony</label>
               <select value={form.area} onChange={e=>f('area',e.target.value)}
                 style={{...inp(errors.area),appearance:'none',cursor:'pointer',color:form.area?T1:T3}}>
-                <option value="">Select area</option>
-                {AREAS.map(a=><option key={a} value={a}>{a}</option>)}
+                <option value="">Select district & locality</option>
+                {AREAS_BY_DISTRICT.map(d=>(
+                  <optgroup key={d.d} label={`── ${d.d} ──`}>
+                    {d.areas.map(a=><option key={a} value={a}>{a}</option>)}
+                  </optgroup>
+                ))}
               </select>
               {errors.area && <p style={{fontSize:11.5,color:'#EF4444',marginTop:4}}>{errors.area}</p>}
             </div>
