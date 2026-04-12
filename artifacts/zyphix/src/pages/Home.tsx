@@ -40,7 +40,7 @@ function LogoMark({ size = 32, dark = false }: { size?: number; dark?: boolean }
       size={size}
       wordmarkColor={dark ? '#ffffff' : T1}
       wordmarkHighlight={dark ? '#34D399' : G}
-      ixColor={dark ? '#0DC268' : '#0A0F1A'}
+      ixColor={dark ? 'rgba(255,255,255,.82)' : '#0A0F1A'}
     />
   );
 }
@@ -1532,6 +1532,39 @@ function AppDownload() {
 
 /* ═══════════════ FOOTER ═══════════════ */
 function Footer() {
+  const scroll = (id: string) => document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
+  const FOOTER_COLS = [
+    {
+      t: 'Services',
+      links: [
+        { l: 'Zyphix Now',      onClick: () => scroll('quick-browse') },
+        { l: 'Zyphix Eats',     onClick: () => scroll('quick-browse') },
+        { l: 'Stores Near Me',  onClick: () => scroll('stores') },
+        { l: 'Offers',          onClick: () => scroll('offers') },
+      ],
+    },
+    {
+      t: 'Company',
+      links: [
+        { l: 'About Us',   onClick: () => scroll('waitlist') },
+        { l: 'Careers',    href: 'https://wa.me/919682394363?text=Hi%2C%20I%27m%20interested%20in%20career%20opportunities%20at%20Zyphix%20%2F%20Clavix%20Technologies.', ext: true },
+        { l: 'Press Kit',  href: 'https://wa.me/919682394363?text=Hi%2C%20I%27d%20like%20to%20request%20the%20Zyphix%20Press%20Kit.', ext: true },
+        { l: 'Blog',       onClick: () => scroll('waitlist') },
+        { l: 'Investors',  onClick: () => scroll('waitlist') },
+      ],
+    },
+    {
+      t: 'Support',
+      links: [
+        { l: 'Help Center',       href: 'https://wa.me/919682394363?text=Hi%2C%20I%20need%20help%20with%20Zyphix.', ext: true },
+        { l: 'Contact Us',        href: 'https://wa.me/919682394363', ext: true },
+        { l: 'Refund Policy',     onClick: () => scroll('waitlist') },
+        { l: 'Privacy Policy',    onClick: () => scroll('waitlist') },
+        { l: 'Terms of Service',  onClick: () => scroll('waitlist') },
+      ],
+    },
+  ] as const;
+
   return (
     <footer style={{ background: T1 }}>
       <div style={{ maxWidth: 1320, margin: '0 auto', padding: '52px 24px 32px' }}>
@@ -1544,12 +1577,13 @@ function Footer() {
             <p style={{ fontSize: 12, color: 'rgba(255,255,255,.28)', lineHeight: 1.6, marginBottom: 22, maxWidth: 260 }}>Currently launching in Jammu, J&K · Expanding to Srinagar &amp; Chandigarh in 2025</p>
             <div style={{ display: 'flex', gap: 8, marginBottom: 24 }}>
               {([
-                { ic: <Twitter size={14} />, href: '#' },
-                { ic: <Instagram size={14} />, href: '#' },
-                { ic: <Linkedin size={14} />, href: 'https://linkedin.com/in/rahulsangral' },
-                { ic: <Phone size={14} />, href: 'https://wa.me/919682394363' },
+                { ic: <Twitter size={14} />,   href: 'https://twitter.com/zyphixin' },
+                { ic: <Instagram size={14} />, href: 'https://instagram.com/zyphixin' },
+                { ic: <Linkedin size={14} />,  href: 'https://linkedin.com/in/rahulsangral' },
+                { ic: <Phone size={14} />,     href: 'https://wa.me/919682394363' },
               ] as { ic: React.ReactNode; href: string }[]).map(({ ic, href }, i) => (
-                <a key={i} href={href} target="_blank" rel="noopener noreferrer" style={{ width: 36, height: 36, borderRadius: 9, background: 'rgba(255,255,255,.07)', border: '1px solid rgba(255,255,255,.1)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'rgba(255,255,255,.4)', transition: 'all .15s' }}
+                <a key={i} href={href} target="_blank" rel="noopener noreferrer"
+                  style={{ width: 36, height: 36, borderRadius: 9, background: 'rgba(255,255,255,.07)', border: '1px solid rgba(255,255,255,.1)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'rgba(255,255,255,.4)', transition: 'all .15s', textDecoration: 'none' }}
                   onMouseEnter={e => { (e.currentTarget as HTMLElement).style.background = 'rgba(255,255,255,.14)'; (e.currentTarget as HTMLElement).style.color = '#fff'; }}
                   onMouseLeave={e => { (e.currentTarget as HTMLElement).style.background = 'rgba(255,255,255,.07)'; (e.currentTarget as HTMLElement).style.color = 'rgba(255,255,255,.4)'; }}>
                   {ic}
@@ -1557,21 +1591,44 @@ function Footer() {
               ))}
             </div>
           </div>
-          {[
-            { t: 'Services', links: [{ l: 'Zyphix Now', h: '#' }, { l: 'Zyphix Eats', h: '#' }, { l: 'Stores Near Me', h: '#' }, { l: 'Offers', h: '#' }] },
-            { t: 'Company', links: [{ l: 'About Us', h: '/about' }, { l: 'Careers', h: '#' }, { l: 'Press Kit', h: '#' }, { l: 'Blog', h: '#' }, { l: 'Investors', h: '#' }] },
-            { t: 'Support', links: [{ l: 'Help Center', h: '#' }, { l: 'Contact Us', h: '/contact' }, { l: 'Refund Policy', h: '/terms' }, { l: 'Privacy Policy', h: '/privacy' }, { l: 'Terms of Service', h: '/terms' }] },
-          ].map(({ t, links }) => (
+          {FOOTER_COLS.map(({ t, links }) => (
             <div key={t}>
               <p style={{ fontWeight: 700, color: '#fff', fontSize: 13, marginBottom: 16 }}>{t}</p>
               <ul style={{ display: 'flex', flexDirection: 'column', gap: 11 }}>
-                {links.map(({ l, h }) => <li key={l}><a href={h} style={{ fontSize: 13, color: 'rgba(255,255,255,.38)', transition: 'color .15s' }} onMouseEnter={e => (e.currentTarget as HTMLElement).style.color = 'rgba(255,255,255,.75)'} onMouseLeave={e => (e.currentTarget as HTMLElement).style.color = 'rgba(255,255,255,.38)'}>{l}</a></li>)}
+                {links.map(item => (
+                  <li key={item.l}>
+                    {'href' in item ? (
+                      <a href={item.href} target="_blank" rel="noopener noreferrer"
+                        style={{ fontSize: 13, color: 'rgba(255,255,255,.38)', transition: 'color .15s', textDecoration: 'none', cursor: 'pointer' }}
+                        onMouseEnter={e => (e.currentTarget as HTMLElement).style.color = 'rgba(255,255,255,.8)'}
+                        onMouseLeave={e => (e.currentTarget as HTMLElement).style.color = 'rgba(255,255,255,.38)'}>
+                        {item.l}
+                      </a>
+                    ) : (
+                      <button onClick={item.onClick}
+                        style={{ fontSize: 13, color: 'rgba(255,255,255,.38)', transition: 'color .15s', background: 'none', border: 'none', cursor: 'pointer', padding: 0, fontFamily: 'inherit' }}
+                        onMouseEnter={e => (e.currentTarget as HTMLElement).style.color = 'rgba(255,255,255,.8)'}
+                        onMouseLeave={e => (e.currentTarget as HTMLElement).style.color = 'rgba(255,255,255,.38)'}>
+                        {item.l}
+                      </button>
+                    )}
+                  </li>
+                ))}
               </ul>
             </div>
           ))}
         </div>
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 10, paddingTop: 24, borderTop: '1px solid rgba(255,255,255,.07)' }}>
-          <p style={{ fontSize: 12, color: 'rgba(255,255,255,.28)' }}>© 2026 Clavix Technologies Pvt. Ltd. · All rights reserved</p>
+          <p style={{ fontSize: 12, color: 'rgba(255,255,255,.28)' }}>
+            © 2026{' '}
+            <a href="https://clavix.in" target="_blank" rel="noopener noreferrer"
+              style={{ color: 'rgba(255,255,255,.42)', textDecoration: 'none', borderBottom: '1px solid rgba(255,255,255,.18)', paddingBottom: 1, transition: 'color .15s' }}
+              onMouseEnter={e => (e.currentTarget as HTMLElement).style.color = 'rgba(255,255,255,.75)'}
+              onMouseLeave={e => (e.currentTarget as HTMLElement).style.color = 'rgba(255,255,255,.42)'}>
+              Clavix Technologies Pvt. Ltd.
+            </a>
+            {' '}· All rights reserved
+          </p>
           <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
             <span style={{ width: 7, height: 7, borderRadius: '50%', background: G, display: 'block' }} />
             <p style={{ fontSize: 12, fontWeight: 600, color: G }}>All systems operational</p>
@@ -2127,11 +2184,11 @@ export function Home() {
       <Navbar />
       <WaitlistSection />
       <VideoSection />
-      <QuickBrowse />
+      <div id="quick-browse"><QuickBrowse /></div>
       <DualHeroBanners />
       <WhyZyphixStrip />
-      <OfferCards />
-      <KiranaCTA />
+      <div id="offers"><OfferCards /></div>
+      <div id="stores"><KiranaCTA /></div>
       <HowItWorks />
       <SocialProof />
       <AppDownload />
