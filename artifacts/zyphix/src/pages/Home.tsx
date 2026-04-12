@@ -1681,8 +1681,65 @@ function WaitlistSection() {
   });
 
   return (
-    <div id="waitlist" style={{ background: BG, padding: '52px 24px 64px', borderBottom: `1px solid ${BD}` }}>
-      <div style={{ maxWidth: 1100, margin: '0 auto' }}>
+    <div id="waitlist" style={{ background: BG, padding: '52px 24px 64px', borderBottom: `1px solid ${BD}`, position: 'relative', overflow: 'hidden' }}>
+
+      {/* ── Animated background ── */}
+      <div style={{ position: 'absolute', inset: 0, pointerEvents: 'none', zIndex: 0 }}>
+
+        {/* Green orb — top-left */}
+        <motion.div
+          style={{ position: 'absolute', top: '-12%', left: '-10%', width: 560, height: 560, borderRadius: '50%',
+            background: 'radial-gradient(circle, rgba(13,163,102,0.18) 0%, transparent 68%)', filter: 'blur(48px)' }}
+          animate={{ x: [0, 36, 0], y: [0, 24, 0], scale: [1, 1.12, 1] }}
+          transition={{ duration: 9, repeat: Infinity, ease: 'easeInOut' }} />
+
+        {/* Orange orb — bottom-right */}
+        <motion.div
+          style={{ position: 'absolute', bottom: '-18%', right: '-8%', width: 480, height: 480, borderRadius: '50%',
+            background: 'radial-gradient(circle, rgba(234,88,12,0.14) 0%, transparent 68%)', filter: 'blur(52px)' }}
+          animate={{ x: [0, -28, 0], y: [0, -18, 0], scale: [1, 1.1, 1] }}
+          transition={{ duration: 11, repeat: Infinity, ease: 'easeInOut', delay: 2 }} />
+
+        {/* Small green orb — top-right */}
+        <motion.div
+          style={{ position: 'absolute', top: '15%', right: '10%', width: 260, height: 260, borderRadius: '50%',
+            background: 'radial-gradient(circle, rgba(13,163,102,0.1) 0%, transparent 70%)', filter: 'blur(32px)' }}
+          animate={{ x: [0, 18, 0], y: [0, -22, 0], scale: [1, 1.18, 1] }}
+          transition={{ duration: 7, repeat: Infinity, ease: 'easeInOut', delay: 1 }} />
+
+        {/* Subtle orange orb — left-centre */}
+        <motion.div
+          style={{ position: 'absolute', top: '45%', left: '5%', width: 200, height: 200, borderRadius: '50%',
+            background: 'radial-gradient(circle, rgba(234,88,12,0.09) 0%, transparent 70%)', filter: 'blur(28px)' }}
+          animate={{ x: [0, 22, 0], y: [0, 16, 0], scale: [1, 1.14, 1] }}
+          transition={{ duration: 8.5, repeat: Infinity, ease: 'easeInOut', delay: 3.5 }} />
+
+        {/* Floating particles */}
+        {[
+          { x:'12%', y:'22%', s:6,  c:`rgba(13,163,102,0.55)`,  d:0    },
+          { x:'28%', y:'68%', s:4,  c:`rgba(234,88,12,0.45)`,   d:0.7  },
+          { x:'55%', y:'14%', s:5,  c:`rgba(13,163,102,0.4)`,   d:1.2  },
+          { x:'70%', y:'75%', s:7,  c:`rgba(234,88,12,0.35)`,   d:0.4  },
+          { x:'85%', y:'30%', s:4,  c:`rgba(13,163,102,0.5)`,   d:1.8  },
+          { x:'42%', y:'82%', s:5,  c:`rgba(234,88,12,0.4)`,    d:2.1  },
+          { x:'18%', y:'50%', s:3,  c:`rgba(13,163,102,0.35)`,  d:0.9  },
+          { x:'92%', y:'55%', s:6,  c:`rgba(234,88,12,0.3)`,    d:1.5  },
+        ].map(({ x, y, s, c, d }, i) => (
+          <motion.div key={i}
+            style={{ position: 'absolute', left: x, top: y, width: s, height: s, borderRadius: '50%', background: c }}
+            animate={{ y: [-10, 10, -10], x: [-5, 5, -5], opacity: [0.4, 1, 0.4], scale: [0.8, 1.2, 0.8] }}
+            transition={{ duration: 3.2 + i * 0.6, repeat: Infinity, ease: 'easeInOut', delay: d }} />
+        ))}
+
+        {/* Soft grid overlay */}
+        <div style={{
+          position: 'absolute', inset: 0,
+          backgroundImage: `linear-gradient(rgba(13,163,102,0.04) 1px, transparent 1px), linear-gradient(90deg, rgba(13,163,102,0.04) 1px, transparent 1px)`,
+          backgroundSize: '60px 60px',
+        }} />
+      </div>
+
+      <div style={{ maxWidth: 1100, margin: '0 auto', position: 'relative', zIndex: 1 }}>
         <div style={{ display: 'flex', flexWrap: 'wrap', gap: 48, alignItems: 'flex-start' }}>
 
           {/* ── LEFT: value prop ── */}
