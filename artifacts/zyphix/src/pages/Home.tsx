@@ -122,23 +122,23 @@ const ZYPHIX_ITEMS = [
 
 function ZyphixTaglineBar() {
   return (
-    <div style={{ background: '#06090F', padding: '5.5px 0', overflow: 'hidden', borderBottom: '1px solid rgba(255,255,255,0.06)', position: 'relative' }}>
+    <div style={{ background: '#0A1A12', padding: '9px 0', overflow: 'hidden', borderBottom: '1px solid rgba(13,163,102,0.18)', position: 'relative' }}>
       <style>{`@keyframes zyphixTicker { from { transform: translateX(0) } to { transform: translateX(-50%) } }`}</style>
       {/* left/right fade masks */}
-      <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(90deg, #06090F 0%, transparent 6%, transparent 94%, #06090F 100%)', zIndex: 2, pointerEvents: 'none' }} />
+      <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(90deg, #0A1A12 0%, transparent 8%, transparent 92%, #0A1A12 100%)', zIndex: 2, pointerEvents: 'none' }} />
       <div
-        style={{ display: 'flex', width: 'max-content', animation: 'zyphixTicker 22s linear infinite', willChange: 'transform' }}
+        style={{ display: 'flex', width: 'max-content', animation: 'zyphixTicker 26s linear infinite', willChange: 'transform' }}
         onMouseEnter={e => ((e.currentTarget as HTMLElement).style.animationPlayState = 'paused')}
         onMouseLeave={e => ((e.currentTarget as HTMLElement).style.animationPlayState = 'running')}>
         {[0, 1].map(copy => (
           <span key={copy} style={{ display: 'inline-flex', alignItems: 'center', whiteSpace: 'nowrap' }}>
             {ZYPHIX_ITEMS.map(({ letter, text }, idx) => (
               <React.Fragment key={idx}>
-                <span style={{ display: 'inline-flex', alignItems: 'center', gap: 5, padding: '0 22px' }}>
-                  <span style={{ fontFamily: "'Outfit',sans-serif", fontWeight: 900, fontSize: 11, color: G, letterSpacing: '.05em' }}>{letter}</span>
-                  <span style={{ fontFamily: "'Inter',sans-serif", fontWeight: 500, fontSize: 11, color: 'rgba(255,255,255,0.52)', letterSpacing: '.01em' }}>{text}</span>
+                <span style={{ display: 'inline-flex', alignItems: 'center', gap: 7, padding: '0 28px' }}>
+                  <span style={{ fontFamily: "'Outfit',sans-serif", fontWeight: 900, fontSize: 13.5, color: G, letterSpacing: '.06em', textShadow: `0 0 12px ${G}88` }}>{letter}</span>
+                  <span style={{ fontFamily: "'Inter',sans-serif", fontWeight: 500, fontSize: 12.5, color: 'rgba(255,255,255,0.78)', letterSpacing: '.01em' }}>{text}</span>
                 </span>
-                <span style={{ color: 'rgba(255,255,255,0.15)', fontSize: 10, userSelect: 'none' }}>·</span>
+                <span style={{ color: `${G}55`, fontSize: 11, userSelect: 'none' }}>✦</span>
               </React.Fragment>
             ))}
           </span>
