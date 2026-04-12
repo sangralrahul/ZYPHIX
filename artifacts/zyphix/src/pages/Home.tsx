@@ -99,7 +99,7 @@ function Nav() {
         {/* Right actions */}
         <div style={{ display: 'flex', gap: 8, alignItems: 'center', marginLeft: 'auto' }} className="hidden md:flex">
           {/* Light theme toggle */}
-          <button onClick={() => nav('/light')} title="Light mode"
+          <button onClick={() => nav('/')} title="Light mode"
             style={{ width: 34, height: 34, borderRadius: 8, border: `1px solid ${BD2}`, background: CARD, display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', color: T3, transition: 'all 0.15s' }}
             onMouseEnter={e => { (e.currentTarget as HTMLElement).style.borderColor = G; (e.currentTarget as HTMLElement).style.color = G; }}
             onMouseLeave={e => { (e.currentTarget as HTMLElement).style.borderColor = BD2; (e.currentTarget as HTMLElement).style.color = T3; }}>
