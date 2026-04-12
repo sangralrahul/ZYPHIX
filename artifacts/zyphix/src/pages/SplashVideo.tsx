@@ -2,529 +2,414 @@ import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Link } from 'wouter';
 
-const SCENE_DURATIONS = {
-  intro: 4000,
-  now: 4500,
-  eats: 4500,
-  jammu: 4000,
-  outro: 4000,
-};
+const T1 = '#0A0F1A';
+const G  = '#0DA366';
+const G2 = '#065F46';
+const OR = '#EA580C';
+const W  = '#FFFFFF';
+const OUTFIT = "'Outfit', sans-serif";
+const INTER  = "'Inter', sans-serif";
 
-function useVideoPlayer() {
-  const [currentScene, setCurrentScene] = useState(0);
-  const durations = Object.values(SCENE_DURATIONS);
+const DURATIONS = [4000, 4500, 4500, 4500, 5000];
 
+function useAutoAdvance(total: number) {
+  const [scene, setScene] = useState(0);
   useEffect(() => {
-    let timeoutId: ReturnType<typeof setTimeout>;
-    const advance = (idx: number) => {
-      timeoutId = setTimeout(() => {
-        const next = (idx + 1) % durations.length;
-        setCurrentScene(next);
-        advance(next);
-      }, durations[idx]);
-    };
-    advance(0);
-    return () => clearTimeout(timeoutId);
-  }, []);
-
-  return { currentScene };
+    const id = setTimeout(() => setScene(s => (s + 1) % total), DURATIONS[scene]);
+    return () => clearTimeout(id);
+  }, [scene, total]);
+  return { scene, setScene };
 }
 
+/* ── Scene 1 — Intro ─────────────────────────────────────── */
 function Scene1() {
-  const [phase, setPhase] = useState(0);
+  const [ph, setPh] = useState(0);
   useEffect(() => {
-    const timers = [
-      setTimeout(() => setPhase(1), 400),
-      setTimeout(() => setPhase(2), 1200),
-      setTimeout(() => setPhase(3), 2000),
-      setTimeout(() => setPhase(4), 3200),
-    ];
-    return () => timers.forEach(t => clearTimeout(t));
+    const ts = [300, 900, 1700, 3000].map((d, i) => setTimeout(() => setPh(i + 1), d));
+    return () => ts.forEach(clearTimeout);
   }, []);
 
-  const textVariants = {
-    hidden: { opacity: 0, y: 50, rotateX: -40 as number, scale: 0.9 },
-    visible: { opacity: 1, y: 0, rotateX: 0 as number, scale: 1 },
-    exit: { opacity: 0, y: -50, scale: 1.1, filter: 'blur(10px)' },
-  };
-
   return (
-    <motion.div
-      className="absolute inset-0 flex flex-col items-center justify-center"
-      initial={{ opacity: 0, scale: 1.1 }}
-      animate={{ opacity: 1, scale: 1 }}
-      exit={{ opacity: 0, filter: 'blur(20px)' }}
-      transition={{ duration: 0.8 }}
-    >
-      <motion.div
-        className="absolute inset-0 bg-[#111827]"
-        initial={{ scaleY: 1, originY: 1 }}
-        animate={{ scaleY: 0 }}
-        transition={{ duration: 1.2, ease: [0.22, 1, 0.36, 1], delay: 0.2 }}
-      />
-      <div className="text-center relative z-10 pt-[15vh]">
-        <motion.h1
-          className="text-[12vw] font-black tracking-tighter leading-[0.9] uppercase"
-          style={{ WebkitTextStroke: '2px #111827', color: 'transparent' }}
-          animate={phase >= 1 ? { color: '#111827', WebkitTextStroke: '0px' } : {}}
-          transition={{ duration: 0.5 }}
-        >
-          {'ZYPHIX'.split('').map((char, i) => (
-            <motion.span
-              key={i}
-              className="inline-block"
-              initial="hidden"
-              variants={textVariants}
-              animate={phase >= 4 ? 'exit' : phase >= 1 ? 'visible' : 'hidden'}
-              transition={{
-                type: 'spring',
-                stiffness: 300,
-                damping: 20,
-                delay: phase >= 4 ? i * 0.05 : i * 0.08,
-              }}
-            >
-              {char}
-            </motion.span>
-          ))}
-        </motion.h1>
+    <motion.div className="absolute inset-0 flex flex-col items-center justify-center"
+      style={{ background: T1 }}
+      initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0, scale: 1.06 }}
+      transition={{ duration: 0.7 }}>
 
-        <div className="mt-[2vh] overflow-hidden">
-          <motion.p
-            className="text-[2.5vw] font-bold text-[#0DA366] tracking-widest uppercase bg-white px-6 py-2 rounded-full inline-block shadow-lg border-2 border-[#0DA366]"
-            initial={{ y: '100%', opacity: 0 }}
-            animate={
-              phase >= 4
-                ? { y: '-100%', opacity: 0 }
-                : phase >= 2
-                ? { y: 0, opacity: 1 }
-                : { y: '100%', opacity: 0 }
-            }
-            transition={{ type: 'spring', stiffness: 400, damping: 30 }}
-          >
-            India's SuperLocal App
-          </motion.p>
+      <motion.div className="absolute rounded-full blur-3xl pointer-events-none"
+        style={{ width: '65vw', height: '65vw', background: `radial-gradient(circle, ${G}1E, transparent 70%)` }}
+        animate={{ scale: [1, 1.18, 1], opacity: [0.5, 1, 0.5] }}
+        transition={{ duration: 5, repeat: Infinity }} />
+
+      <motion.div className="relative z-10 mb-6"
+        initial={{ scale: 0, opacity: 0 }}
+        animate={ph >= 1 ? { scale: 1, opacity: 1 } : {}}
+        transition={{ type: 'spring', stiffness: 260, damping: 20 }}>
+        <div style={{ width: '10vw', height: '10vw', minWidth: 80, minHeight: 80, borderRadius: '24%', background: G, display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: `0 12px 50px ${G}55` }}>
+          <span style={{ fontFamily: OUTFIT, fontWeight: 900, fontStyle: 'italic', fontSize: '4.5vw', color: W, lineHeight: 1, letterSpacing: '-0.04em' }}>//</span>
         </div>
-      </div>
+      </motion.div>
 
-      <motion.div
-        className="absolute bottom-10 left-10 w-32 h-32 border-l-4 border-b-4 border-[#111827]"
-        initial={{ opacity: 0, x: -20, y: 20 }}
-        animate={phase >= 3 ? { opacity: 0.2, x: 0, y: 0 } : { opacity: 0, x: -20, y: 20 }}
-        transition={{ duration: 0.8 }}
-      />
-      <motion.div
-        className="absolute top-10 right-10 w-32 h-32 border-r-4 border-t-4 border-[#0DA366]"
-        initial={{ opacity: 0, x: 20, y: -20 }}
-        animate={phase >= 3 ? { opacity: 0.5, x: 0, y: 0 } : { opacity: 0, x: 20, y: -20 }}
-        transition={{ duration: 0.8 }}
-      />
+      <motion.div className="relative z-10 flex items-baseline"
+        initial={{ opacity: 0, y: 30 }}
+        animate={ph >= 2 ? { opacity: 1, y: 0 } : {}}
+        transition={{ type: 'spring', stiffness: 240, damping: 22 }}>
+        <span style={{ fontFamily: OUTFIT, fontWeight: 900, fontSize: '13vw', color: W, lineHeight: 0.88, letterSpacing: '-0.05em' }}>ZYPH</span>
+        <span style={{ fontFamily: OUTFIT, fontWeight: 900, fontSize: '13vw', color: G, lineHeight: 0.88, letterSpacing: '-0.05em' }}>IX</span>
+      </motion.div>
+
+      <motion.p className="relative z-10"
+        style={{ fontFamily: INTER, fontSize: '2vw', fontWeight: 600, color: 'rgba(255,255,255,0.45)', letterSpacing: '0.22em', textTransform: 'uppercase', marginTop: '2.5vh' }}
+        initial={{ opacity: 0 }}
+        animate={ph >= 3 ? { opacity: 1 } : {}}
+        transition={{ duration: 0.9 }}>
+        India's SuperLocal App
+      </motion.p>
+
+      <motion.div className="relative z-10"
+        style={{ marginTop: '3vh', padding: '9px 26px', borderRadius: 50, border: `1.5px solid ${G}45`, background: `${G}0D` }}
+        initial={{ opacity: 0, y: 12 }}
+        animate={ph >= 4 ? { opacity: 1, y: 0 } : {}}
+        transition={{ duration: 0.6 }}>
+        <span style={{ fontFamily: INTER, fontSize: '1.4vw', color: G, fontWeight: 700 }}>Launching in Jammu, J&amp;K</span>
+      </motion.div>
     </motion.div>
   );
 }
 
+/* ── Scene 2 — ZyphixNow ─────────────────────────────────── */
 function Scene2() {
-  const [phase, setPhase] = useState(0);
+  const [ph, setPh] = useState(0);
   useEffect(() => {
-    const timers = [
-      setTimeout(() => setPhase(1), 200),
-      setTimeout(() => setPhase(2), 800),
-      setTimeout(() => setPhase(3), 1500),
-      setTimeout(() => setPhase(4), 2200),
-      setTimeout(() => setPhase(5), 3500),
-    ];
-    return () => timers.forEach(t => clearTimeout(t));
+    const ts = [200, 700, 1300, 2100, 3900].map((d, i) => setTimeout(() => setPh(i + 1), d));
+    return () => ts.forEach(clearTimeout);
   }, []);
 
   return (
-    <motion.div
-      className="absolute inset-0 flex flex-row items-center justify-between px-[10vw]"
-      initial={{ x: '100%', skewX: -10 }}
-      animate={{ x: 0, skewX: 0 }}
-      exit={{ x: '-100%', skewX: 10 }}
-      transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
-    >
-      <div className="w-1/2 relative z-10">
-        <motion.div
-          initial={{ width: 0 }}
-          animate={phase >= 1 ? { width: '8vw' } : { width: 0 }}
-          transition={{ duration: 0.6, ease: 'easeOut' }}
-          className="h-[0.5vw] bg-[#0DA366] mb-[2vh]"
-        />
+    <motion.div className="absolute inset-0 flex items-center justify-between overflow-hidden"
+      style={{ background: T1, padding: '0 10vw' }}
+      initial={{ x: '100%' }} animate={{ x: 0 }} exit={{ x: '-100%' }}
+      transition={{ duration: 0.75, ease: [0.22, 1, 0.36, 1] }}>
+
+      <motion.div className="absolute inset-y-0 left-0"
+        style={{ width: 3, background: `linear-gradient(to bottom, transparent, ${G}, transparent)` }}
+        initial={{ scaleY: 0 }} animate={ph >= 1 ? { scaleY: 1 } : {}} transition={{ duration: 0.9 }} />
+
+      <div className="z-10 w-1/2">
+        <motion.div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: '2.5vh' }}
+          initial={{ opacity: 0, x: -25 }}
+          animate={ph >= 5 ? { opacity: 0 } : ph >= 1 ? { opacity: 1, x: 0 } : {}}
+          transition={{ duration: 0.5 }}>
+          <div style={{ width: 34, height: 34, borderRadius: 9, background: G, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            <span style={{ fontFamily: OUTFIT, fontWeight: 900, fontStyle: 'italic', fontSize: 16, color: W }}>//</span>
+          </div>
+          <span style={{ fontFamily: OUTFIT, fontWeight: 700, fontSize: '1.4vw', color: 'rgba(255,255,255,0.45)', letterSpacing: '0.14em', textTransform: 'uppercase' }}>Zyphix Now</span>
+        </motion.div>
+
         <motion.h2
-          className="text-[6vw] font-black text-[#111827] leading-[1.1] mb-[2vh]"
-          initial={{ opacity: 0, x: -50 }}
-          animate={phase >= 5 ? { opacity: 0, x: -50 } : phase >= 2 ? { opacity: 1, x: 0 } : { opacity: 0, x: -50 }}
-          transition={{ type: 'spring', stiffness: 300, damping: 25 }}
-        >
-          Zyphix<span className="text-[#0DA366]">Now</span>
+          style={{ fontFamily: OUTFIT, fontWeight: 900, fontSize: '7.5vw', lineHeight: 0.92, letterSpacing: '-0.04em', marginBottom: '2.5vh' }}
+          initial={{ opacity: 0, y: 40 }}
+          animate={ph >= 5 ? { opacity: 0 } : ph >= 2 ? { opacity: 1, y: 0 } : {}}
+          transition={{ type: 'spring', stiffness: 240, damping: 22 }}>
+          <span style={{ color: W }}>Grocery</span><br />
+          <span style={{ color: G }}>in 30 mins.</span>
         </motion.h2>
+
+        <motion.p style={{ fontFamily: INTER, fontSize: '1.7vw', color: 'rgba(255,255,255,0.5)', fontWeight: 500, lineHeight: 1.65, marginBottom: '3.5vh' }}
+          initial={{ opacity: 0 }}
+          animate={ph >= 5 ? { opacity: 0 } : ph >= 3 ? { opacity: 1 } : {}}
+          transition={{ duration: 0.7 }}>
+          From your local kirana store<br />to your doorstep.
+        </motion.p>
+
         <motion.div
-          className="text-[3vw] font-bold text-[#111827]/80 leading-tight"
-          initial={{ opacity: 0, y: 30 }}
-          animate={phase >= 5 ? { opacity: 0, y: 30 } : phase >= 3 ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
-          transition={{ duration: 0.6 }}
-        >
-          Groceries in
-          <motion.span
-            className="block text-[5vw] text-[#0DA366]"
-            initial={{ scale: 0.5, opacity: 0 }}
-            animate={phase >= 5 ? { scale: 0.5, opacity: 0 } : phase >= 4 ? { scale: 1, opacity: 1 } : { scale: 0.5, opacity: 0 }}
-            transition={{ type: 'spring', stiffness: 400, damping: 15 }}
-          >
-            30 Mins
-          </motion.span>
+          style={{ display: 'inline-flex', alignItems: 'center', gap: 8, padding: '10px 22px', borderRadius: 50, background: G, color: W, fontFamily: INTER, fontWeight: 700, fontSize: '1.2vw', boxShadow: `0 6px 28px ${G}50` }}
+          initial={{ scale: 0 }}
+          animate={ph >= 5 ? { scale: 0 } : ph >= 4 ? { scale: 1 } : {}}
+          transition={{ type: 'spring', stiffness: 380, damping: 18 }}>
+          🏪 Kirana Partners in Jammu
         </motion.div>
       </div>
 
-      <div className="w-1/2 h-full flex justify-center items-center relative">
-        <motion.div
-          className="absolute w-[40vw] h-[40vw] bg-white rounded-full shadow-2xl border-4 border-[#0DA366]/20"
-          initial={{ scale: 0, rotate: -90 }}
-          animate={phase >= 5 ? { scale: 0, rotate: 90 } : phase >= 2 ? { scale: 1, rotate: 0 } : { scale: 0, rotate: -90 }}
-          transition={{ type: 'spring', stiffness: 200, damping: 20 }}
-        />
+      <div className="w-1/2 h-full flex items-center justify-center relative">
+        <motion.div style={{ position: 'absolute', width: '36vw', height: '36vw', borderRadius: '30%', background: `${G}14`, border: `1.5px solid ${G}28` }}
+          initial={{ scale: 0, rotate: -45 }}
+          animate={ph >= 5 ? { scale: 0 } : ph >= 2 ? { scale: 1, rotate: 0 } : {}}
+          transition={{ type: 'spring', stiffness: 170, damping: 20 }} />
         <motion.img
-          src={`${import.meta.env.BASE_URL}images/groceries.png`}
-          className="absolute w-[35vw] h-[35vw] object-contain drop-shadow-2xl z-20"
-          initial={{ y: 100, opacity: 0, rotate: 15 }}
-          animate={phase >= 5 ? { y: -100, opacity: 0 } : phase >= 3 ? { y: 0, opacity: 1, rotate: 0 } : { y: 100, opacity: 0, rotate: 15 }}
-          transition={{ type: 'spring', stiffness: 300, damping: 25 }}
-        />
-        <motion.div
-          className="absolute bottom-[20%] right-[10%] bg-[#111827] text-white px-6 py-3 rounded-2xl font-bold text-[1.5vw] shadow-xl z-30"
-          initial={{ scale: 0, x: 50 }}
-          animate={phase >= 5 ? { scale: 0 } : phase >= 4 ? { scale: 1, x: 0 } : { scale: 0, x: 50 }}
-          transition={{ type: 'spring', stiffness: 400, damping: 20 }}
-        >
-          From your local Kirana 🏪
-        </motion.div>
+          src="https://images.unsplash.com/photo-1542838132-92c53300491e?w=600&q=80"
+          alt="groceries"
+          style={{ position: 'absolute', width: '30vw', height: '30vw', objectFit: 'cover', borderRadius: '50%', zIndex: 20, boxShadow: `0 24px 64px ${G}45` }}
+          initial={{ y: 80, opacity: 0 }}
+          animate={ph >= 5 ? { y: -60, opacity: 0 } : ph >= 3 ? { y: 0, opacity: 1 } : {}}
+          transition={{ type: 'spring', stiffness: 240, damping: 25 }} />
       </div>
     </motion.div>
   );
 }
 
+/* ── Scene 3 — ZyphixEats ────────────────────────────────── */
 function Scene3() {
-  const [phase, setPhase] = useState(0);
+  const [ph, setPh] = useState(0);
   useEffect(() => {
-    const timers = [
-      setTimeout(() => setPhase(1), 200),
-      setTimeout(() => setPhase(2), 800),
-      setTimeout(() => setPhase(3), 1400),
-      setTimeout(() => setPhase(4), 2000),
-      setTimeout(() => setPhase(5), 3500),
-    ];
-    return () => timers.forEach(t => clearTimeout(t));
+    const ts = [200, 700, 1300, 2100, 3900].map((d, i) => setTimeout(() => setPh(i + 1), d));
+    return () => ts.forEach(clearTimeout);
   }, []);
 
   return (
-    <motion.div
-      className="absolute inset-0 flex flex-row-reverse items-center justify-between px-[10vw]"
-      initial={{ y: '100%' }}
-      animate={{ y: 0 }}
-      exit={{ y: '-100%' }}
-      transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
-    >
-      <div className="w-1/2 relative z-10 pl-[5vw]">
-        <motion.div
-          initial={{ width: 0 }}
-          animate={phase >= 1 ? { width: '8vw' } : { width: 0 }}
-          transition={{ duration: 0.6, ease: 'easeOut' }}
-          className="h-[0.5vw] bg-[#111827] mb-[2vh]"
-        />
+    <motion.div className="absolute inset-0 flex flex-row-reverse items-center justify-between overflow-hidden"
+      style={{ background: T1, padding: '0 10vw' }}
+      initial={{ y: '100%' }} animate={{ y: 0 }} exit={{ y: '-100%' }}
+      transition={{ duration: 0.75, ease: [0.22, 1, 0.36, 1] }}>
+
+      <motion.div className="absolute inset-y-0 right-0"
+        style={{ width: 3, background: `linear-gradient(to bottom, transparent, ${OR}, transparent)` }}
+        initial={{ scaleY: 0 }} animate={ph >= 1 ? { scaleY: 1 } : {}} transition={{ duration: 0.9 }} />
+
+      <div className="z-10 w-1/2 pl-[4vw]">
+        <motion.div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: '2.5vh' }}
+          initial={{ opacity: 0, x: 25 }}
+          animate={ph >= 5 ? { opacity: 0 } : ph >= 1 ? { opacity: 1, x: 0 } : {}}
+          transition={{ duration: 0.5 }}>
+          <div style={{ width: 34, height: 34, borderRadius: 9, background: OR, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            <span style={{ fontFamily: OUTFIT, fontWeight: 900, fontStyle: 'italic', fontSize: 16, color: W }}>//</span>
+          </div>
+          <span style={{ fontFamily: OUTFIT, fontWeight: 700, fontSize: '1.4vw', color: 'rgba(255,255,255,0.45)', letterSpacing: '0.14em', textTransform: 'uppercase' }}>Zyphix Eats</span>
+        </motion.div>
+
         <motion.h2
-          className="text-[6vw] font-black text-[#111827] leading-[1.1] mb-[2vh]"
-          initial={{ opacity: 0, x: 50 }}
-          animate={phase >= 5 ? { opacity: 0, x: 50 } : phase >= 2 ? { opacity: 1, x: 0 } : { opacity: 0, x: 50 }}
-          transition={{ type: 'spring', stiffness: 300, damping: 25 }}
-        >
-          Zyphix<span className="text-[#0DA366]">Eats</span>
+          style={{ fontFamily: OUTFIT, fontWeight: 900, fontSize: '7.5vw', lineHeight: 0.92, letterSpacing: '-0.04em', marginBottom: '2.5vh' }}
+          initial={{ opacity: 0, y: 40 }}
+          animate={ph >= 5 ? { opacity: 0 } : ph >= 2 ? { opacity: 1, y: 0 } : {}}
+          transition={{ type: 'spring', stiffness: 240, damping: 22 }}>
+          <span style={{ color: W }}>Food</span><br />
+          <span style={{ color: OR }}>Superfast.</span>
         </motion.h2>
+
+        <motion.p style={{ fontFamily: INTER, fontSize: '1.7vw', color: 'rgba(255,255,255,0.5)', fontWeight: 500, lineHeight: 1.65, marginBottom: '3.5vh' }}
+          initial={{ opacity: 0 }}
+          animate={ph >= 5 ? { opacity: 0 } : ph >= 3 ? { opacity: 1 } : {}}
+          transition={{ duration: 0.7 }}>
+          Restaurants near you,<br />delivered to your door.
+        </motion.p>
+
         <motion.div
-          className="text-[3vw] font-bold text-[#111827]/80 leading-tight"
-          initial={{ opacity: 0, y: 30 }}
-          animate={phase >= 5 ? { opacity: 0, y: 30 } : phase >= 3 ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
-          transition={{ duration: 0.6 }}
-        >
-          Cravings delivered
-          <motion.span
-            className="block text-[4vw] text-[#111827]"
-            initial={{ scale: 0.8, opacity: 0 }}
-            animate={phase >= 5 ? { scale: 0.8, opacity: 0 } : phase >= 4 ? { scale: 1, opacity: 1 } : { scale: 0.8, opacity: 0 }}
-            transition={{ type: 'spring', stiffness: 400, damping: 15 }}
-          >
-            Super Fast 🛵
-          </motion.span>
+          style={{ display: 'inline-flex', alignItems: 'center', gap: 8, padding: '10px 22px', borderRadius: 50, background: OR, color: W, fontFamily: INTER, fontWeight: 700, fontSize: '1.2vw', boxShadow: `0 6px 28px ${OR}55` }}
+          initial={{ scale: 0 }}
+          animate={ph >= 5 ? { scale: 0 } : ph >= 4 ? { scale: 1 } : {}}
+          transition={{ type: 'spring', stiffness: 380, damping: 18 }}>
+          🍱 Restaurants joining in Jammu
         </motion.div>
       </div>
 
-      <div className="w-1/2 h-full flex justify-center items-center relative">
+      <div className="w-1/2 h-full flex items-center justify-center relative">
         <motion.div
-          className="absolute w-[40vw] h-[40vw] bg-[#0DA366] rounded-[4vw] rotate-12 shadow-2xl"
+          style={{ position: 'absolute', width: '36vw', height: '36vw', borderRadius: '30%', background: `${OR}14`, border: `1.5px solid ${OR}28` }}
           initial={{ scale: 0, rotate: 0 }}
-          animate={phase >= 5 ? { scale: 0, rotate: -45 } : phase >= 2 ? { scale: 1, rotate: 12 } : { scale: 0, rotate: 0 }}
-          transition={{ type: 'spring', stiffness: 200, damping: 20 }}
-        />
+          animate={ph >= 5 ? { scale: 0 } : ph >= 2 ? { scale: 1, rotate: 12 } : {}}
+          transition={{ type: 'spring', stiffness: 170, damping: 20 }} />
         <motion.img
-          src={`${import.meta.env.BASE_URL}images/food.png`}
-          className="absolute w-[45vw] h-[45vw] object-contain z-20"
-          style={{ filter: 'drop-shadow(0 20px 50px rgba(0,0,0,0.5))' }}
-          initial={{ scale: 0.5, opacity: 0, rotate: -20 }}
-          animate={phase >= 5 ? { scale: 1.5, opacity: 0 } : phase >= 3 ? { scale: 1, opacity: 1, rotate: 0 } : { scale: 0.5, opacity: 0, rotate: -20 }}
-          transition={{ type: 'spring', stiffness: 300, damping: 25 }}
-        />
-        <motion.img
-          src={`${import.meta.env.BASE_URL}images/scooter.png`}
-          className="absolute bottom-[10%] left-[10%] w-[15vw] h-[15vw] object-contain drop-shadow-xl z-30"
-          initial={{ x: -100, opacity: 0 }}
-          animate={phase >= 5 ? { x: 200, opacity: 0 } : phase >= 4 ? { x: 0, opacity: 1 } : { x: -100, opacity: 0 }}
-          transition={{ type: 'spring', stiffness: 200, damping: 20 }}
-        />
+          src="https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=600&q=80"
+          alt="food"
+          style={{ position: 'absolute', width: '30vw', height: '30vw', objectFit: 'cover', borderRadius: '40%', zIndex: 20, boxShadow: `0 24px 64px ${OR}55` }}
+          initial={{ y: 80, opacity: 0, rotate: -15 }}
+          animate={ph >= 5 ? { y: -60, opacity: 0, rotate: 0 } : ph >= 3 ? { y: 0, opacity: 1, rotate: 0 } : {}}
+          transition={{ type: 'spring', stiffness: 240, damping: 25 }} />
       </div>
     </motion.div>
   );
 }
 
+/* ── Scene 4 — Jammu ─────────────────────────────────────── */
 function Scene4() {
-  const [phase, setPhase] = useState(0);
+  const [ph, setPh] = useState(0);
   useEffect(() => {
-    const timers = [
-      setTimeout(() => setPhase(1), 200),
-      setTimeout(() => setPhase(2), 800),
-      setTimeout(() => setPhase(3), 1400),
-      setTimeout(() => setPhase(4), 3000),
-    ];
-    return () => timers.forEach(t => clearTimeout(t));
+    const ts = [300, 900, 1600, 2800].map((d, i) => setTimeout(() => setPh(i + 1), d));
+    return () => ts.forEach(clearTimeout);
   }, []);
 
   return (
-    <motion.div
-      className="absolute inset-0 flex items-center justify-center overflow-hidden bg-[#111827]"
+    <motion.div className="absolute inset-0 flex items-center justify-center overflow-hidden"
+      style={{ background: T1 }}
       initial={{ clipPath: 'circle(0% at 50% 50%)' }}
       animate={{ clipPath: 'circle(150% at 50% 50%)' }}
       exit={{ clipPath: 'circle(0% at 50% 50%)' }}
-      transition={{ duration: 1, ease: [0.22, 1, 0.36, 1] }}
-    >
+      transition={{ duration: 0.95, ease: [0.22, 1, 0.36, 1] }}>
+
       <motion.img
-        src={`${import.meta.env.BASE_URL}images/jammu-bg.png`}
-        className="absolute inset-0 w-full h-full object-cover opacity-60"
-        initial={{ scale: 1.2 }}
-        animate={{ scale: 1 }}
-        transition={{ duration: 8, ease: 'easeOut' }}
-      />
+        src="https://images.unsplash.com/photo-1609180947982-0e2a63bf2c0f?w=1800&q=80"
+        alt="Jammu landscape"
+        className="absolute inset-0 w-full h-full object-cover"
+        style={{ opacity: 0.28 }}
+        initial={{ scale: 1.2 }} animate={{ scale: 1 }} transition={{ duration: 9, ease: 'easeOut' }} />
+
+      <div className="absolute inset-0" style={{ background: `linear-gradient(to top, ${T1} 0%, ${T1}CC 25%, transparent 65%)` }} />
+
       <div className="relative z-10 text-center flex flex-col items-center">
         <motion.div
-          className="bg-[#0DA366] text-white px-8 py-3 rounded-full font-bold text-[2vw] mb-[4vh] shadow-xl"
-          initial={{ y: -50, opacity: 0 }}
-          animate={phase >= 1 ? { y: 0, opacity: 1 } : { y: -50, opacity: 0 }}
-          transition={{ type: 'spring', stiffness: 300, damping: 20 }}
-        >
-          📍 Proudly Born In
+          style={{ display: 'inline-flex', alignItems: 'center', gap: 8, padding: '8px 22px', borderRadius: 50, background: G, color: W, fontFamily: INTER, fontWeight: 700, fontSize: '1.4vw', marginBottom: '3vh', boxShadow: `0 6px 24px ${G}50` }}
+          initial={{ y: -30, opacity: 0 }}
+          animate={ph >= 1 ? { y: 0, opacity: 1 } : {}}
+          transition={{ type: 'spring', stiffness: 280, damping: 20 }}>
+          📍 Proudly born in
         </motion.div>
+
         <motion.h2
-          className="text-[10vw] font-black text-white leading-none uppercase tracking-widest"
-          style={{ filter: phase >= 2 ? 'drop-shadow(0 4px 20px rgba(0,0,0,0.8))' : 'none' }}
-          initial={{ scale: 0.8, opacity: 0, filter: 'blur(10px)' }}
-          animate={
-            phase >= 2
-              ? { scale: 1, opacity: 1, filter: 'blur(0px)' }
-              : { scale: 0.8, opacity: 0, filter: 'blur(10px)' }
-          }
-          transition={{ duration: 0.8, ease: 'easeOut' }}
-        >
+          style={{ fontFamily: OUTFIT, fontWeight: 900, fontSize: '15vw', color: W, lineHeight: 0.85, letterSpacing: '-0.04em', textTransform: 'uppercase' }}
+          initial={{ scale: 0.75, opacity: 0, filter: 'blur(18px)' }}
+          animate={ph >= 2 ? { scale: 1, opacity: 1, filter: 'blur(0px)' } : {}}
+          transition={{ duration: 0.9, ease: 'easeOut' }}>
           Jammu
         </motion.h2>
+
+        <motion.p
+          style={{ fontFamily: INTER, fontSize: '2vw', color: 'rgba(255,255,255,0.55)', fontWeight: 500, marginTop: '3vh' }}
+          initial={{ opacity: 0, y: 18 }}
+          animate={ph >= 3 ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: 0.7 }}>
+          J&amp;K — Building for the Himalayas &amp; beyond.
+        </motion.p>
+
         <motion.div
-          className="mt-[4vh] text-[3vw] text-white/90 font-medium"
-          initial={{ opacity: 0, y: 30 }}
-          animate={phase >= 3 ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
-          transition={{ duration: 0.6 }}
-        >
-          Building for the Himalayas & Beyond
+          style={{ marginTop: '5vh', display: 'flex', gap: '4vw' }}
+          initial={{ opacity: 0 }}
+          animate={ph >= 4 ? { opacity: 1 } : {}}
+          transition={{ duration: 0.6 }}>
+          {[['5L+', 'Customers'], ['100+', 'Cities'], ['4.8★', 'Rating']].map(([v, l], i) => (
+            <motion.div key={i} style={{ textAlign: 'center' }}
+              initial={{ y: 20, opacity: 0 }}
+              animate={ph >= 4 ? { y: 0, opacity: 1 } : {}}
+              transition={{ delay: i * 0.12, duration: 0.5 }}>
+              <p style={{ fontFamily: OUTFIT, fontWeight: 900, fontSize: '4.5vw', color: W, lineHeight: 1 }}>{v}</p>
+              <p style={{ fontFamily: INTER, fontSize: '1.1vw', color: 'rgba(255,255,255,0.4)', marginTop: 4 }}>{l}</p>
+            </motion.div>
+          ))}
         </motion.div>
       </div>
-      <div className="absolute inset-0 bg-gradient-to-t from-[#111827] via-transparent to-transparent opacity-80" />
     </motion.div>
   );
 }
 
+/* ── Scene 5 — Outro / CTA ───────────────────────────────── */
 function Scene5() {
-  const [phase, setPhase] = useState(0);
+  const [ph, setPh] = useState(0);
   useEffect(() => {
-    const timers = [
-      setTimeout(() => setPhase(1), 200),
-      setTimeout(() => setPhase(2), 800),
-      setTimeout(() => setPhase(3), 1500),
-      setTimeout(() => setPhase(4), 3000),
-    ];
-    return () => timers.forEach(t => clearTimeout(t));
+    const ts = [300, 900, 1600, 2800, 4400].map((d, i) => setTimeout(() => setPh(i + 1), d));
+    return () => ts.forEach(clearTimeout);
   }, []);
 
   return (
-    <motion.div
-      className="absolute inset-0 flex flex-col items-center justify-center bg-[#F8F9FA]"
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      exit={{ scale: 1.5, opacity: 0 }}
-      transition={{ duration: 1 }}
-    >
-      <motion.div
-        className="flex items-center gap-[2vw] mb-[4vh] relative z-10"
-        initial={{ y: 50, opacity: 0 }}
-        animate={phase >= 4 ? { y: -50, opacity: 0 } : phase >= 1 ? { y: 0, opacity: 1 } : { y: 50, opacity: 0 }}
-        transition={{ type: 'spring', stiffness: 300, damping: 25 }}
-      >
-        <div className="w-[8vw] h-[8vw] rounded-2xl bg-[#0DA366] flex items-center justify-center shadow-xl">
-          <span
-            className="text-white font-black italic text-[4vw] leading-none tracking-tighter"
-            style={{ fontFamily: "'Outfit', sans-serif" }}
-          >
-            //
-          </span>
+    <motion.div className="absolute inset-0 flex flex-col items-center justify-center"
+      style={{ background: T1 }}
+      initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ scale: 1.08, opacity: 0 }}
+      transition={{ duration: 0.8 }}>
+
+      <motion.div className="absolute rounded-full blur-3xl pointer-events-none"
+        style={{ width: '75vw', height: '75vw', background: `radial-gradient(circle, ${G}17, transparent 68%)` }}
+        animate={{ scale: [1, 1.22, 1] }} transition={{ duration: 6, repeat: Infinity }} />
+
+      <div className="absolute inset-0 pointer-events-none" style={{ backgroundImage: `linear-gradient(${G}0C 1px, transparent 1px), linear-gradient(90deg, ${G}0C 1px, transparent 1px)`, backgroundSize: '5vw 5vw' }} />
+
+      <motion.div className="relative z-10 flex items-center gap-5 mb-6"
+        initial={{ scale: 0.85, opacity: 0 }}
+        animate={ph >= 1 ? { scale: 1, opacity: 1 } : {}}
+        transition={{ type: 'spring', stiffness: 240, damping: 22 }}>
+        <div style={{ width: '8.5vw', height: '8.5vw', minWidth: 68, minHeight: 68, borderRadius: '24%', background: G, display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: `0 12px 44px ${G}55` }}>
+          <span style={{ fontFamily: OUTFIT, fontWeight: 900, fontStyle: 'italic', fontSize: '4vw', color: W, lineHeight: 1, letterSpacing: '-0.04em' }}>//</span>
         </div>
-        <h1 className="text-[8vw] font-black text-[#111827] tracking-tight uppercase">ZYPHIX</h1>
+        <div style={{ display: 'flex', alignItems: 'baseline' }}>
+          <span style={{ fontFamily: OUTFIT, fontWeight: 900, fontSize: '11vw', color: W, lineHeight: 0.86, letterSpacing: '-0.05em' }}>ZYPH</span>
+          <span style={{ fontFamily: OUTFIT, fontWeight: 900, fontSize: '11vw', color: G, lineHeight: 0.86, letterSpacing: '-0.05em' }}>IX</span>
+        </div>
       </motion.div>
 
-      <motion.div className="flex gap-[4vw] text-[2.5vw] font-bold text-[#111827]/70 relative z-10">
-        <motion.span
-          initial={{ opacity: 0, x: -20 }}
-          animate={phase >= 4 ? { opacity: 0 } : phase >= 2 ? { opacity: 1, x: 0 } : { opacity: 0, x: -20 }}
-          transition={{ duration: 0.5 }}
-        >
-          Groceries
-        </motion.span>
-        <motion.span
-          className="text-[#0DA366]"
-          initial={{ opacity: 0, scale: 0.5 }}
-          animate={phase >= 4 ? { opacity: 0 } : phase >= 2 ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 0.5 }}
-          transition={{ duration: 0.5, delay: 0.1 }}
-        >
-          •
-        </motion.span>
-        <motion.span
-          initial={{ opacity: 0, x: 20 }}
-          animate={phase >= 4 ? { opacity: 0 } : phase >= 2 ? { opacity: 1, x: 0 } : { opacity: 0, x: 20 }}
-          transition={{ duration: 0.5, delay: 0.2 }}
-        >
-          Food
-        </motion.span>
+      <motion.div className="relative z-10 flex gap-[3vw] mb-5"
+        initial={{ opacity: 0, y: 16 }}
+        animate={ph >= 2 ? { opacity: 1, y: 0 } : {}}
+        transition={{ duration: 0.6 }}>
+        {[{ label: 'ZyphixNow', color: G }, { label: 'ZyphixEats', color: OR }].map(({ label, color }) => (
+          <div key={label} style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '8px 20px', borderRadius: 50, border: `1.5px solid ${color}50`, color: W, fontFamily: INTER, fontWeight: 600, fontSize: '1.4vw' }}>
+            <span style={{ width: 9, height: 9, borderRadius: '50%', background: color, display: 'inline-block', boxShadow: `0 0 8px ${color}` }} />
+            {label}
+          </div>
+        ))}
       </motion.div>
 
-      <motion.div
-        className="absolute bottom-[15vh] w-[60vw] h-[1vw] bg-gray-200 rounded-full overflow-hidden"
+      <motion.p className="relative z-10"
+        style={{ fontFamily: INTER, fontSize: '1.7vw', color: 'rgba(255,255,255,0.38)', fontWeight: 500, marginBottom: '4.5vh', letterSpacing: '0.2em', textTransform: 'uppercase' }}
         initial={{ opacity: 0 }}
-        animate={phase >= 4 ? { opacity: 0 } : phase >= 3 ? { opacity: 1 } : { opacity: 0 }}
-      >
-        <motion.div
-          className="h-full bg-[#0DA366]"
+        animate={ph >= 3 ? { opacity: 1 } : {}}
+        transition={{ duration: 0.8 }}>
+        India's SuperLocal App
+      </motion.p>
+
+      <motion.div className="relative z-10" style={{ width: '45vw', height: 3, background: 'rgba(255,255,255,0.08)', borderRadius: 4, overflow: 'hidden', marginBottom: '5vh' }}
+        initial={{ opacity: 0 }}
+        animate={ph >= 3 ? { opacity: 1 } : {}}>
+        <motion.div style={{ height: '100%', background: `linear-gradient(to right, ${G}, ${G2})`, borderRadius: 4 }}
           initial={{ width: '0%' }}
-          animate={phase >= 3 ? { width: '100%' } : { width: '0%' }}
-          transition={{ duration: 2, ease: 'linear' }}
-        />
+          animate={ph >= 3 ? { width: '100%' } : {}}
+          transition={{ duration: 2.6, ease: 'linear' }} />
       </motion.div>
 
-      <motion.div
-        className="absolute bottom-8 right-8 text-[1.5vw] text-[#9CA3AF] font-medium relative z-10"
-        initial={{ opacity: 0 }}
-        animate={phase >= 2 ? { opacity: 1 } : { opacity: 0 }}
-        transition={{ duration: 0.6 }}
-      >
-        Clavix Technologies Pvt. Ltd.
+      <motion.div className="relative z-10"
+        initial={{ opacity: 0, y: 18 }}
+        animate={ph >= 4 ? { opacity: 1, y: 0 } : {}}
+        transition={{ duration: 0.6 }}>
+        <Link href="/">
+          <motion.button
+            style={{ padding: '14px 44px', borderRadius: 50, background: G, color: W, fontFamily: OUTFIT, fontWeight: 800, fontSize: '1.6vw', cursor: 'pointer', border: 'none', boxShadow: `0 10px 36px ${G}55`, letterSpacing: '-0.01em' }}
+            whileHover={{ scale: 1.05, boxShadow: `0 14px 44px ${G}70` }}
+            whileTap={{ scale: 0.97 }}>
+            Join the Waitlist →
+          </motion.button>
+        </Link>
       </motion.div>
+
+      <motion.p className="absolute bottom-7"
+        style={{ fontFamily: INTER, fontSize: '1.1vw', color: 'rgba(255,255,255,0.25)', fontWeight: 500 }}
+        initial={{ opacity: 0 }}
+        animate={ph >= 5 ? { opacity: 1 } : {}}
+        transition={{ duration: 0.7 }}>
+        Clavix Technologies Pvt. Ltd.
+      </motion.p>
     </motion.div>
   );
 }
 
+/* ── SplashVideo ─────────────────────────────────────────── */
 export function SplashVideo() {
-  const { currentScene } = useVideoPlayer();
-  const sceneIndex = currentScene;
+  const { scene, setScene } = useAutoAdvance(5);
 
   return (
-    <div className="w-full h-screen overflow-hidden relative bg-[#F8F9FA]">
-      {/* Back link */}
+    <div className="w-full h-screen overflow-hidden relative" style={{ background: T1 }}>
+
       <Link href="/">
         <motion.button
-          className="absolute top-5 left-5 z-50 bg-white border border-[#E5E7EB] text-[#111827] text-sm font-semibold px-4 py-2 rounded-full shadow-sm hover:shadow-md transition-all"
-          whileHover={{ scale: 1.05 }}
-          whileTap={{ scale: 0.96 }}
-        >
+          className="absolute top-5 left-5 z-50 text-sm font-semibold px-4 py-2 rounded-full"
+          style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.1)', color: 'rgba(255,255,255,0.65)', fontFamily: INTER, backdropFilter: 'blur(10px)' }}
+          whileHover={{ scale: 1.05, background: 'rgba(255,255,255,0.11)' }}
+          whileTap={{ scale: 0.96 }}>
           ← Back to Site
         </motion.button>
       </Link>
 
-      {/* Floating background blobs */}
-      <div className="absolute inset-0 z-0">
-        <motion.div
-          className="absolute w-[80vw] h-[80vw] rounded-full opacity-20 blur-3xl"
-          style={{ background: 'radial-gradient(circle, #0DA366, transparent)' }}
-          animate={{ x: ['-20%', '50%', '10%'], y: ['-10%', '60%', '20%'], scale: [1, 1.5, 0.8] }}
-          transition={{ duration: 15, repeat: Infinity, ease: 'linear' }}
-        />
-        <motion.div
-          className="absolute w-[60vw] h-[60vw] rounded-full opacity-10 blur-3xl right-0 bottom-0"
-          style={{ background: 'radial-gradient(circle, #111827, transparent)' }}
-          animate={{ x: ['20%', '-40%', '0%'], y: ['10%', '-50%', '-10%'] }}
-          transition={{ duration: 12, repeat: Infinity, ease: 'linear' }}
-        />
+      <div className="absolute bottom-6 left-1/2 -translate-x-1/2 z-50 flex gap-2 items-center">
+        {[0, 1, 2, 3, 4].map(i => (
+          <motion.button key={i} onClick={() => setScene(i)}
+            style={{ height: 4, borderRadius: 4, background: i === scene ? G : 'rgba(255,255,255,0.18)', border: 'none', cursor: 'pointer', padding: 0 }}
+            animate={{ width: i === scene ? 28 : 8, opacity: i === scene ? 1 : 0.45 }}
+            transition={{ duration: 0.3 }} />
+        ))}
       </div>
 
-      {/* Floating ZYPHIX logo icon that moves between scenes */}
-      <motion.div
-        className="absolute z-10 w-[15vw] h-[15vw] rounded-3xl bg-[#0DA366] flex items-center justify-center shadow-2xl"
-        animate={{
-          top: ['50%', '15%', '15%', '80%', '50%'][sceneIndex],
-          left: ['50%', '85%', '15%', '15%', '50%'][sceneIndex],
-          x: '-50%',
-          y: '-50%',
-          scale: [1.5, 0.5, 0.5, 0.5, 1.5][sceneIndex],
-          rotate: [0, 90, 180, 270, 360][sceneIndex],
-          borderRadius: ['25%', '50%', '25%', '50%', '25%'][sceneIndex],
-        }}
-        transition={{ duration: 1.2, ease: [0.22, 1, 0.36, 1] }}
-      >
-        <span
-          className="text-white font-black italic text-[4vw] tracking-tighter leading-none"
-          style={{ fontFamily: "'Outfit', sans-serif" }}
-        >
-          //
-        </span>
-      </motion.div>
-
-      {/* Grid pattern */}
-      <motion.div
-        className="absolute inset-0 z-0"
-        style={{
-          backgroundImage:
-            'linear-gradient(#0DA366 1px, transparent 1px), linear-gradient(90deg, #0DA366 1px, transparent 1px)',
-          backgroundSize: '4vw 4vw',
-        }}
-        animate={{
-          opacity: [0.05, 0.1, 0.05, 0.15, 0.05][sceneIndex],
-          backgroundPosition: ['0vw 0vw', '2vw 2vw', '-2vw 0vw', '0vw -2vw', '0vw 0vw'][sceneIndex],
-        }}
-        transition={{ duration: 2, ease: 'easeInOut' }}
-      />
-
-      {/* Scene content */}
       <div className="relative z-20 w-full h-full">
         <AnimatePresence mode="popLayout">
-          {sceneIndex === 0 && <Scene1 key="intro" />}
-          {sceneIndex === 1 && <Scene2 key="now" />}
-          {sceneIndex === 2 && <Scene3 key="eats" />}
-          {sceneIndex === 3 && <Scene4 key="jammu" />}
-          {sceneIndex === 4 && <Scene5 key="outro" />}
+          {scene === 0 && <Scene1 key="intro" />}
+          {scene === 1 && <Scene2 key="now" />}
+          {scene === 2 && <Scene3 key="eats" />}
+          {scene === 3 && <Scene4 key="jammu" />}
+          {scene === 4 && <Scene5 key="outro" />}
         </AnimatePresence>
-      </div>
-
-      {/* Scene progress dots */}
-      <div className="absolute bottom-5 left-1/2 -translate-x-1/2 z-50 flex gap-2">
-        {Object.keys(SCENE_DURATIONS).map((_, i) => (
-          <motion.div
-            key={i}
-            className="h-1.5 rounded-full bg-[#0DA366]"
-            animate={{ width: sceneIndex === i ? 24 : 8, opacity: sceneIndex === i ? 1 : 0.35 }}
-            transition={{ duration: 0.3 }}
-          />
-        ))}
       </div>
     </div>
   );
