@@ -10,6 +10,8 @@ import { Privacy } from "@/pages/Privacy";
 import { Terms } from "@/pages/Terms";
 import { About } from "@/pages/About";
 import { Contact } from "@/pages/Contact";
+import { Blog } from "@/pages/Blog";
+import { Investors } from "@/pages/Investors";
 import { MerchantSetup } from "@/pages/MerchantSetup";
 import { DeliverySetup } from "@/pages/DeliverySetup";
 import { RestaurantSetup } from "@/pages/RestaurantSetup";
@@ -28,6 +30,8 @@ function Router() {
       <Route path="/terms" component={Terms} />
       <Route path="/about" component={About} />
       <Route path="/contact" component={Contact} />
+      <Route path="/blog" component={Blog} />
+      <Route path="/investors" component={Investors} />
       <Route path="/merchant-setup" component={MerchantSetup} />
       <Route path="/delivery-setup" component={DeliverySetup} />
       <Route path="/restaurant-setup" component={RestaurantSetup} />

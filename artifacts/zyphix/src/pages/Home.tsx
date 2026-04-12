@@ -1533,6 +1533,7 @@ function AppDownload() {
 /* ═══════════════ FOOTER ═══════════════ */
 function Footer() {
   const scroll = (id: string) => document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
+  const [, setLoc] = useLocation();
   const FOOTER_COLS = [
     {
       t: 'Services',
@@ -1546,21 +1547,21 @@ function Footer() {
     {
       t: 'Company',
       links: [
-        { l: 'About Us',   onClick: () => scroll('waitlist') },
+        { l: 'About Us',   href: '/about' },
         { l: 'Careers',    href: 'https://wa.me/919682394363?text=Hi%2C%20I%27m%20interested%20in%20career%20opportunities%20at%20Zyphix%20%2F%20Clavix%20Technologies.', ext: true },
         { l: 'Press Kit',  href: 'https://wa.me/919682394363?text=Hi%2C%20I%27d%20like%20to%20request%20the%20Zyphix%20Press%20Kit.', ext: true },
-        { l: 'Blog',       onClick: () => scroll('waitlist') },
-        { l: 'Investors',  onClick: () => scroll('waitlist') },
+        { l: 'Blog',       href: '/blog' },
+        { l: 'Investors',  href: '/investors' },
       ],
     },
     {
       t: 'Support',
       links: [
         { l: 'Help Center',       href: 'https://wa.me/919682394363?text=Hi%2C%20I%20need%20help%20with%20Zyphix.', ext: true },
-        { l: 'Contact Us',        href: 'https://wa.me/919682394363', ext: true },
-        { l: 'Refund Policy',     onClick: () => scroll('waitlist') },
-        { l: 'Privacy Policy',    onClick: () => scroll('waitlist') },
-        { l: 'Terms of Service',  onClick: () => scroll('waitlist') },
+        { l: 'Contact Us',        href: '/contact' },
+        { l: 'Refund Policy',     href: '/terms' },
+        { l: 'Privacy Policy',    href: '/privacy' },
+        { l: 'Terms of Service',  href: '/terms' },
       ],
     },
   ] as const;
@@ -1595,25 +1596,25 @@ function Footer() {
             <div key={t}>
               <p style={{ fontWeight: 700, color: '#fff', fontSize: 13, marginBottom: 16 }}>{t}</p>
               <ul style={{ display: 'flex', flexDirection: 'column', gap: 11 }}>
-                {links.map(item => (
-                  <li key={item.l}>
-                    {'href' in item ? (
-                      <a href={item.href} target="_blank" rel="noopener noreferrer"
-                        style={{ fontSize: 13, color: 'rgba(255,255,255,.38)', transition: 'color .15s', textDecoration: 'none', cursor: 'pointer' }}
-                        onMouseEnter={e => (e.currentTarget as HTMLElement).style.color = 'rgba(255,255,255,.8)'}
-                        onMouseLeave={e => (e.currentTarget as HTMLElement).style.color = 'rgba(255,255,255,.38)'}>
-                        {item.l}
-                      </a>
-                    ) : (
-                      <button onClick={item.onClick}
-                        style={{ fontSize: 13, color: 'rgba(255,255,255,.38)', transition: 'color .15s', background: 'none', border: 'none', cursor: 'pointer', padding: 0, fontFamily: 'inherit' }}
-                        onMouseEnter={e => (e.currentTarget as HTMLElement).style.color = 'rgba(255,255,255,.8)'}
-                        onMouseLeave={e => (e.currentTarget as HTMLElement).style.color = 'rgba(255,255,255,.38)'}>
-                        {item.l}
-                      </button>
-                    )}
-                  </li>
-                ))}
+                {links.map(item => {
+                  const btnStyle = { fontSize: 13, color: 'rgba(255,255,255,.38)', transition: 'color .15s', background: 'none', border: 'none', cursor: 'pointer', padding: 0, fontFamily: 'inherit', textAlign: 'left' as const };
+                  const aStyle = { fontSize: 13, color: 'rgba(255,255,255,.38)', transition: 'color .15s', textDecoration: 'none', cursor: 'pointer' };
+                  const hover = (e: React.MouseEvent, on: boolean) => (e.currentTarget as HTMLElement).style.color = on ? 'rgba(255,255,255,.8)' : 'rgba(255,255,255,.38)';
+                  return (
+                    <li key={item.l}>
+                      {'ext' in item && (item as any).ext ? (
+                        <a href={(item as any).href} target="_blank" rel="noopener noreferrer" style={aStyle}
+                          onMouseEnter={e => hover(e, true)} onMouseLeave={e => hover(e, false)}>{item.l}</a>
+                      ) : 'href' in item ? (
+                        <button onClick={() => setLoc((item as any).href)} style={btnStyle}
+                          onMouseEnter={e => hover(e, true)} onMouseLeave={e => hover(e, false)}>{item.l}</button>
+                      ) : (
+                        <button onClick={(item as any).onClick} style={btnStyle}
+                          onMouseEnter={e => hover(e, true)} onMouseLeave={e => hover(e, false)}>{item.l}</button>
+                      )}
+                    </li>
+                  );
+                })}
               </ul>
             </div>
           ))}
