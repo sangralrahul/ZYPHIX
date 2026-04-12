@@ -7,7 +7,8 @@ import {
   Plus, Minus, Star, Clock, ChevronRight, ChevronLeft,
   Shield, Package, Truck, Zap, Check, Copy, ArrowRight,
   Phone, Instagram, Twitter, Linkedin, PlayCircle,
-  Gift, Crown, BadgeCheck, Users, TrendingUp
+  Gift, Crown, BadgeCheck, Users, TrendingUp,
+  LocateFixed, X
 } from 'lucide-react';
 import { products, categories, restaurants, foodCategories, promoCodes, stores } from '@/data/mockData';
 import { useAuth } from '@/context/AuthContext';
@@ -112,6 +113,11 @@ function AnnoBar() {
 }
 
 /* ═══════════════ NAVBAR ═══════════════ */
+const LOC_AREAS: Record<string, string[]> = {
+  Jammu: ['Gandhi Nagar', 'Trikuta Nagar', 'Bakshi Nagar', 'Raghunath Bazaar', 'Canal Road', 'Talab Tillo', 'Sidhra', 'Residency Road', 'Ambphalla', 'Sarwal'],
+  Srinagar: ['Lal Chowk', 'Rajbagh', 'Hyderpora', 'Jawahar Nagar', 'Dalgate', 'Hazratbal'],
+};
+
 const SVCS = [
   { id: 'now' as TabId, name: 'Zyphix Now', tag: 'Grocery · 30 min', color: G, img: 'https://images.unsplash.com/photo-1542838132-92c53300491e?w=64&h=64&fit=crop&q=80' },
   { id: 'eats' as TabId, name: 'Zyphix Eats', tag: 'Food delivery', color: '#EA580C', img: 'https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=64&h=64&fit=crop&q=80' },
@@ -122,13 +128,53 @@ function Navbar({ tab = 'now', setTab }: { tab?: TabId; setTab?: (t: TabId) => v
   const [q, setQ] = useState('');
   const [focus, setFocus] = useState(false);
   const [userMenuOpen, setUserMenuOpen] = useState(false);
+  const [locOpen, setLocOpen] = useState(false);
+  const [locVal, setLocVal] = useState<string>(() => {
+    try { return localStorage.getItem('zyphix_loc') || ''; } catch { return ''; }
+  });
+  const [locSearch, setLocSearch] = useState('');
+  const [locating, setLocating] = useState(false);
+  const locRef = useRef<HTMLDivElement>(null);
   const { user, logout, openModal } = useAuth();
+
   useEffect(() => {
     const h = () => setScrolled(window.scrollY > 6);
     window.addEventListener('scroll', h, { passive: true });
     return () => window.removeEventListener('scroll', h);
   }, []);
+
+  useEffect(() => {
+    const h = (e: MouseEvent) => {
+      if (locRef.current && !locRef.current.contains(e.target as Node)) {
+        setLocOpen(false); setLocSearch('');
+      }
+    };
+    document.addEventListener('mousedown', h);
+    return () => document.removeEventListener('mousedown', h);
+  }, []);
+
+  const saveLocation = (val: string) => {
+    try { localStorage.setItem('zyphix_loc', val); } catch {}
+    setLocVal(val); setLocOpen(false); setLocSearch('');
+  };
+
+  const detectGPS = () => {
+    if (!navigator.geolocation) { saveLocation('Jammu, J&K'); return; }
+    setLocating(true);
+    navigator.geolocation.getCurrentPosition(
+      () => { setLocating(false); saveLocation('Current Location · Jammu'); },
+      () => { setLocating(false); saveLocation('Jammu, J&K'); },
+      { timeout: 7000 }
+    );
+  };
+
+  const allAreas = Object.values(LOC_AREAS).flat();
   const active = SVCS.find(s => s.id === tab);
+
+  const displayLoc = locVal
+    ? locVal.length > 18 ? locVal.slice(0, 17) + '…' : locVal
+    : 'Select Location';
+
   return (
     <div className="sticky top-0 z-50" style={{ background: W, borderBottom: `1px solid ${BD}`, boxShadow: scrolled ? SH : 'none', transition: 'box-shadow .2s' }}>
       {/* Top row */}
@@ -137,16 +183,111 @@ function Navbar({ tab = 'now', setTab }: { tab?: TabId; setTab?: (t: TabId) => v
           <LogoMark size={32} />
         </a>
         <div style={{ width: 1, height: 28, background: BD }} />
-        <button style={{ display: 'flex', alignItems: 'center', gap: 7, flexShrink: 0 }}>
-          <MapPin size={15} color={G} />
-          <div>
-            <p style={{ fontSize: 8.5, fontWeight: 600, color: T3, textTransform: 'uppercase', letterSpacing: '.07em' }}>Deliver to</p>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 3 }}>
-              <span style={{ fontWeight: 700, color: T1, fontSize: 13 }}>Select Location</span>
-              <ChevronDown size={11} color={T3} />
+
+        {/* ── Location picker ── */}
+        <div ref={locRef} style={{ position: 'relative', flexShrink: 0 }}>
+          <button onClick={() => { setLocOpen(o => !o); setLocSearch(''); }}
+            style={{ display: 'flex', alignItems: 'center', gap: 7, background: 'transparent', border: 'none', cursor: 'pointer', padding: '4px 0' }}>
+            <MapPin size={15} color={locVal ? G : T3} />
+            <div style={{ textAlign: 'left' }}>
+              <p style={{ fontSize: 8.5, fontWeight: 600, color: T3, textTransform: 'uppercase', letterSpacing: '.07em', lineHeight: 1 }}>Deliver to</p>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 3, marginTop: 2 }}>
+                <span style={{ fontWeight: 700, color: locVal ? T1 : T3, fontSize: 13 }}>{displayLoc}</span>
+                <motion.span animate={{ rotate: locOpen ? 180 : 0 }} transition={{ duration: .18 }}>
+                  <ChevronDown size={11} color={T3} />
+                </motion.span>
+              </div>
             </div>
-          </div>
-        </button>
+          </button>
+
+          <AnimatePresence>
+            {locOpen && (
+              <motion.div initial={{ opacity: 0, y: 8, scale: .97 }} animate={{ opacity: 1, y: 0, scale: 1 }} exit={{ opacity: 0, y: 8, scale: .97 }} transition={{ duration: .15 }}
+                style={{ position: 'absolute', top: 'calc(100% + 14px)', left: 0, width: 308, background: W, border: `1px solid ${BD}`, borderRadius: 18, boxShadow: SH2, zIndex: 300, overflow: 'hidden' }}>
+
+                {/* GPS row */}
+                <button onClick={detectGPS} disabled={locating}
+                  style={{ width: '100%', display: 'flex', alignItems: 'center', gap: 12, padding: '14px 16px', borderBottom: `1px solid ${BD}`, background: '#F0FDF9', cursor: 'pointer', transition: 'background .12s', border: 'none', borderBottom: `1px solid ${BD}` }}
+                  onMouseEnter={e => (e.currentTarget.style.background = '#DCFCE7')}
+                  onMouseLeave={e => (e.currentTarget.style.background = '#F0FDF9')}>
+                  <div style={{ width: 34, height: 34, borderRadius: 10, background: locating ? T3 : G, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, transition: 'background .2s' }}>
+                    <LocateFixed size={16} color="#fff" />
+                  </div>
+                  <div style={{ textAlign: 'left' }}>
+                    <p style={{ fontSize: 13, fontWeight: 700, color: T1 }}>{locating ? 'Detecting location…' : 'Use current location'}</p>
+                    <p style={{ fontSize: 11, color: T3, marginTop: 1 }}>Via GPS · Accurate delivery</p>
+                  </div>
+                </button>
+
+                {/* Search input */}
+                <div style={{ padding: '10px 12px', borderBottom: `1px solid ${BD}` }}>
+                  <div style={{ position: 'relative' }}>
+                    <Search size={13} style={{ position: 'absolute', left: 11, top: '50%', transform: 'translateY(-50%)', color: T3 }} />
+                    <input value={locSearch} onChange={e => setLocSearch(e.target.value)}
+                      placeholder="Search area or colony…" autoFocus
+                      style={{ width: '100%', paddingLeft: 32, paddingRight: locSearch ? 30 : 12, paddingTop: 9, paddingBottom: 9, borderRadius: 9, border: `1.5px solid ${BD}`, fontSize: 13, color: T1, outline: 'none', boxSizing: 'border-box', fontFamily: 'inherit', background: BG }}
+                      onFocus={e => { e.target.style.borderColor = G; e.target.style.boxShadow = `0 0 0 3px ${G}18`; e.target.style.background = W; }}
+                      onBlur={e => { e.target.style.borderColor = BD; e.target.style.boxShadow = 'none'; e.target.style.background = BG; }}
+                    />
+                    {locSearch && (
+                      <button onClick={() => setLocSearch('')} style={{ position: 'absolute', right: 8, top: '50%', transform: 'translateY(-50%)', background: 'transparent', border: 'none', cursor: 'pointer', color: T3, display: 'flex', padding: 2 }}>
+                        <X size={12} />
+                      </button>
+                    )}
+                  </div>
+                </div>
+
+                {/* Area chips */}
+                <div style={{ maxHeight: 256, overflowY: 'auto', padding: '10px 12px 14px' }}>
+                  {Object.entries(LOC_AREAS).map(([city, areas]) => {
+                    const filtered = locSearch
+                      ? areas.filter(a => a.toLowerCase().includes(locSearch.toLowerCase()))
+                      : areas;
+                    if (!filtered.length) return null;
+                    return (
+                      <div key={city} style={{ marginBottom: 12 }}>
+                        <p style={{ fontSize: 10, fontWeight: 800, color: T3, letterSpacing: '.08em', textTransform: 'uppercase', marginBottom: 7, paddingLeft: 2 }}>{city}</p>
+                        <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
+                          {filtered.map(area => {
+                            const fullName = `${area}, ${city}`;
+                            const active = locVal === fullName;
+                            return (
+                              <button key={area} onClick={() => saveLocation(fullName)}
+                                style={{ padding: '5px 13px', borderRadius: 20, border: `1.5px solid ${active ? G : BD}`, background: active ? `${G}12` : W, fontSize: 12.5, fontWeight: active ? 700 : 500, color: active ? G : T2, cursor: 'pointer', transition: 'all .12s' }}
+                                onMouseEnter={e => { if (!active) { e.currentTarget.style.borderColor = `${G}66`; e.currentTarget.style.background = `${G}08`; e.currentTarget.style.color = G; } }}
+                                onMouseLeave={e => { if (!active) { e.currentTarget.style.borderColor = BD; e.currentTarget.style.background = W; e.currentTarget.style.color = T2; } }}>
+                                {area}
+                              </button>
+                            );
+                          })}
+                        </div>
+                      </div>
+                    );
+                  })}
+
+                  {/* Custom location from search */}
+                  {locSearch && !allAreas.some(a => a.toLowerCase().includes(locSearch.toLowerCase())) && (
+                    <button onClick={() => saveLocation(locSearch)}
+                      style={{ width: '100%', padding: '10px 14px', borderRadius: 11, border: `1.5px dashed ${G}66`, background: `${G}08`, fontSize: 13, fontWeight: 600, color: G, cursor: 'pointer', textAlign: 'left', display: 'flex', alignItems: 'center', gap: 8 }}>
+                      <MapPin size={13} /> Set "{locSearch}" as delivery location
+                    </button>
+                  )}
+
+                  {/* Clear saved */}
+                  {locVal && !locSearch && (
+                    <button onClick={() => { try { localStorage.removeItem('zyphix_loc'); } catch {} setLocVal(''); setLocOpen(false); }}
+                      style={{ width: '100%', marginTop: 6, padding: '8px 14px', borderRadius: 9, border: `1px solid ${BD}`, background: W, fontSize: 12, fontWeight: 500, color: T3, cursor: 'pointer', transition: 'background .12s' }}
+                      onMouseEnter={e => (e.currentTarget.style.background = BG)}
+                      onMouseLeave={e => (e.currentTarget.style.background = W)}>
+                      Clear saved location
+                    </button>
+                  )}
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </div>
+
         <div style={{ width: 1, height: 28, background: BD }} />
         <div style={{ flex: 1, position: 'relative', maxWidth: 500 }}>
           <Search size={14} style={{ position: 'absolute', left: 13, top: '50%', transform: 'translateY(-50%)', color: focus ? (active?.color ?? G) : T3, transition: 'color .15s' }} />
