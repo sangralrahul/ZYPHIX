@@ -252,7 +252,7 @@ function Scene3() {
   );
 }
 
-/* ── Scene 4 — Jammu (dark cinematic) ───────────────────── */
+/* ── Scene 4 — Jammu (light theme) ──────────────────────── */
 function Scene4() {
   const [ph, setPh] = useState(0);
   useEffect(() => {
@@ -261,33 +261,41 @@ function Scene4() {
   }, []);
 
   return (
-    <motion.div className="absolute inset-0 flex items-end justify-start overflow-hidden"
-      style={{ background: '#07090C' }}
+    <motion.div className="absolute inset-0 flex items-center justify-start overflow-hidden"
+      style={{ background: BG }}
       initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
       transition={{ duration: 0.85 }}>
 
-      <motion.img src="https://images.unsplash.com/photo-1609180947982-0e2a63bf2c0f?w=1800&q=85"
-        alt="Jammu" style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover', opacity: 0.42 }}
-        initial={{ scale: 1.07 }} animate={{ scale: 1 }} transition={{ duration: 9, ease: 'linear' }} />
-      <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to top, #07090C 0%, rgba(7,9,12,0.75) 22%, rgba(7,9,12,0.35) 55%, transparent 100%)' }} />
-      <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to right, rgba(7,9,12,0.85) 0%, transparent 55%)' }} />
+      <Grid />
 
-      <div style={{ position: 'relative', zIndex: 10, padding: '0 0 8vh 8vw', maxWidth: '68vw' }}>
-        <motion.div style={{ display: 'inline-flex', alignItems: 'center', gap: 8, padding: '6px 16px', borderRadius: 50, background: G, color: '#fff', fontFamily: INT, fontWeight: 600, fontSize: '1.05vw', marginBottom: '2.5vh', boxShadow: `0 4px 18px ${G}50` }}
+      {/* Right side — city photo */}
+      <motion.div style={{ position: 'absolute', right: 0, top: 0, bottom: 0, width: '46%', overflow: 'hidden' }}
+        initial={{ opacity: 0, x: 60 }} animate={ph >= 1 ? { opacity: 1, x: 0 } : {}}
+        transition={{ duration: 1, ease: EASE }}>
+        <motion.img src="https://images.unsplash.com/photo-1609180947982-0e2a63bf2c0f?w=1200&q=85"
+          alt="Jammu" style={{ width: '100%', height: '100%', objectFit: 'cover', opacity: 0.22 }}
+          initial={{ scale: 1.06 }} animate={{ scale: 1 }} transition={{ duration: 8, ease: 'linear' }} />
+        {/* Fade left edge into white */}
+        <div style={{ position: 'absolute', inset: 0, background: `linear-gradient(to right, ${BG} 0%, transparent 30%)` }} />
+      </motion.div>
+
+      {/* Left side — text */}
+      <div style={{ position: 'relative', zIndex: 10, padding: '0 0 0 8vw', maxWidth: '60vw' }}>
+        <motion.div style={{ display: 'inline-flex', alignItems: 'center', gap: 8, padding: '6px 16px', borderRadius: 50, background: `${G}15`, border: `1.5px solid ${G}30`, color: G, fontFamily: INT, fontWeight: 600, fontSize: '1.05vw', marginBottom: '2.5vh' }}
           initial={{ opacity: 0, y: 10 }}
           animate={ph >= 1 ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.65, ease: EASE }}>
           📍 Proudly born in
         </motion.div>
 
-        <motion.h2 style={{ fontFamily: OFT, fontWeight: 900, fontSize: '13.5vw', color: '#fff', lineHeight: 0.85, letterSpacing: '-0.05em', textTransform: 'uppercase', display: 'block', marginBottom: '3.5vh' }}
+        <motion.h2 style={{ fontFamily: OFT, fontWeight: 900, fontSize: '13.5vw', color: T1, lineHeight: 0.85, letterSpacing: '-0.05em', textTransform: 'uppercase', display: 'block', marginBottom: '3.5vh' }}
           initial={{ opacity: 0, y: 36, filter: 'blur(10px)' }}
           animate={ph >= 2 ? { opacity: 1, y: 0, filter: 'blur(0px)' } : {}}
           transition={{ duration: 0.9, ease: EASE }}>
           Jammu
         </motion.h2>
 
-        <motion.p style={{ fontFamily: INT, fontSize: '1.65vw', color: 'rgba(255,255,255,0.5)', fontWeight: 400, lineHeight: 1.65, marginBottom: '4vh' }}
+        <motion.p style={{ fontFamily: INT, fontSize: '1.65vw', color: T2, fontWeight: 400, lineHeight: 1.65, marginBottom: '4vh' }}
           initial={{ opacity: 0 }}
           animate={ph >= 3 ? { opacity: 1 } : {}}
           transition={{ duration: 0.8, ease: EASE }}>
@@ -300,8 +308,8 @@ function Scene4() {
           transition={{ duration: 0.7, ease: EASE }}>
           {[['5L+', 'Customers'], ['100+', 'Cities'], ['4.8★', 'Rating']].map(([v, l], i) => (
             <motion.div key={i} initial={{ opacity: 0 }} animate={ph >= 4 ? { opacity: 1 } : {}} transition={{ delay: i * 0.1, duration: 0.5 }}>
-              <p style={{ fontFamily: OFT, fontWeight: 900, fontSize: '3.8vw', color: '#fff', lineHeight: 1, letterSpacing: '-0.03em' }}>{v}</p>
-              <p style={{ fontFamily: INT, fontSize: '1.05vw', color: 'rgba(255,255,255,0.38)', marginTop: 5 }}>{l}</p>
+              <p style={{ fontFamily: OFT, fontWeight: 900, fontSize: '3.8vw', color: T1, lineHeight: 1, letterSpacing: '-0.03em' }}>{v}</p>
+              <p style={{ fontFamily: INT, fontSize: '1.05vw', color: T2, marginTop: 5 }}>{l}</p>
             </motion.div>
           ))}
         </motion.div>
