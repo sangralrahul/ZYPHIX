@@ -9,6 +9,12 @@ const T3 = '#9CA3AF'; const BD = '#E5E7EB'; const W = '#FFFFFF'; const BG = '#F8
 const SH = '0 2px 8px rgba(0,0,0,.07)'; const SH2 = '0 4px 24px rgba(0,0,0,.10)';
 const RA = '#E11D48';
 
+const tw = (emoji: string) => {
+  const cp = [...emoji].map(c => c.codePointAt(0)!.toString(16))
+    .filter(h => parseInt(h, 16) !== 0xfe0f && parseInt(h, 16) !== 0x200d).join('_');
+  return `https://fonts.gstatic.com/s/e/notoemoji/latest/${cp}/512.png`;
+};
+
 const inp = (err?: string): React.CSSProperties => ({
   width: '100%', padding: '12px 14px', borderRadius: 10,
   border: `1.5px solid ${err ? '#EF4444' : BD}`, background: W,
@@ -28,21 +34,21 @@ const AREAS = ['Gandhinagar', 'Trikuta Nagar', 'Gandhi Nagar', 'Bakshi Nagar', '
   'Sarwal', 'Nardni', 'Sidhra', 'Canal Road', 'Raghunath Bazaar', 'Other'];
 
 const CUISINES = [
-  { id: 'north_indian', e: '🍛', n: 'North Indian', c: '#b45309', bg: '#FFFBEB' },
-  { id: 'mughlai',      e: '🫕', n: 'Mughlai',      c: '#9a3412', bg: '#FFF7ED' },
-  { id: 'chinese',      e: '🍜', n: 'Chinese',       c: '#0891b2', bg: '#ECFEFF' },
-  { id: 'fast_food',    e: '🍔', n: 'Fast Food',     c: '#dc2626', bg: '#FFF1F2' },
-  { id: 'pizza',        e: '🍕', n: 'Pizza',         c: '#9f1239', bg: '#FFF1F2' },
-  { id: 'biryani',      e: '🍚', n: 'Biryani',       c: '#78350f', bg: '#FFFBEB' },
-  { id: 'sweets',       e: '🍮', n: 'Sweets & Mithai', c: '#d97706', bg: '#FFFBEB' },
-  { id: 'snacks',       e: '🫙', n: 'Chaat & Snacks', c: '#c2410c', bg: '#FFF7ED' },
-  { id: 'continental',  e: '🥗', n: 'Continental',   c: '#16a34a', bg: '#ECFDF5' },
-  { id: 'south_indian', e: '🥘', n: 'South Indian',  c: '#7c3aed', bg: '#F5F3FF' },
-  { id: 'tandoor',      e: '🔥', n: 'Tandoor',       c: '#ea580c', bg: '#FFF7ED' },
-  { id: 'beverages',    e: '🥤', n: 'Beverages',      c: '#0284c7', bg: '#F0F9FF' },
-  { id: 'desserts',     e: '🍨', n: 'Desserts & Ice Cream', c: '#db2777', bg: '#FDF2F8' },
-  { id: 'bakes',        e: '🍞', n: 'Bakery & Bakes', c: '#b45309', bg: '#FFFBEB' },
-  { id: 'healthy',      e: '🥗', n: 'Healthy / Salads', c: '#16a34a', bg: '#ECFDF5' },
+  { id: 'north_indian', img: tw('🍛'), n: 'North Indian',       c: '#b45309', bg: '#FFFBEB' },
+  { id: 'mughlai',      img: tw('🫕'), n: 'Mughlai',            c: '#9a3412', bg: '#FFF7ED' },
+  { id: 'chinese',      img: tw('🍜'), n: 'Chinese',            c: '#0891b2', bg: '#ECFEFF' },
+  { id: 'fast_food',    img: tw('🍔'), n: 'Fast Food',          c: '#dc2626', bg: '#FFF1F2' },
+  { id: 'pizza',        img: tw('🍕'), n: 'Pizza',              c: '#9f1239', bg: '#FFF1F2' },
+  { id: 'biryani',      img: tw('🍲'), n: 'Biryani',            c: '#78350f', bg: '#FFFBEB' },
+  { id: 'sweets',       img: tw('🍮'), n: 'Sweets & Mithai',    c: '#d97706', bg: '#FFFBEB' },
+  { id: 'snacks',       img: tw('🌮'), n: 'Chaat & Snacks',     c: '#c2410c', bg: '#FFF7ED' },
+  { id: 'continental',  img: tw('🥗'), n: 'Continental',        c: '#16a34a', bg: '#ECFDF5' },
+  { id: 'south_indian', img: tw('🥘'), n: 'South Indian',       c: '#7c3aed', bg: '#F5F3FF' },
+  { id: 'tandoor',      img: tw('🔥'), n: 'Tandoor',            c: '#ea580c', bg: '#FFF7ED' },
+  { id: 'beverages',    img: tw('🥤'), n: 'Beverages',          c: '#0284c7', bg: '#F0F9FF' },
+  { id: 'desserts',     img: tw('🍨'), n: 'Desserts & Ice Cream', c: '#db2777', bg: '#FDF2F8' },
+  { id: 'bakes',        img: tw('🍞'), n: 'Bakery & Bakes',     c: '#b45309', bg: '#FFFBEB' },
+  { id: 'healthy',      img: tw('🥙'), n: 'Healthy / Salads',   c: '#16a34a', bg: '#ECFDF5' },
 ];
 
 const MENU_ITEMS: Record<string, string[]> = {
@@ -213,7 +219,7 @@ function MenuStep({ onNext, onBack }: { onNext: (cuisines: Set<string>, items: R
         </div>
 
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(5, 1fr)', gap: 10, marginBottom: 20, marginTop: 20 }}>
-          {CUISINES.map(({ id, e, n, c, bg }) => {
+          {CUISINES.map(({ id, img, n, c, bg }) => {
             const isSel = selected.has(id);
             const itemCount = selectedItems[id]?.size || 0;
             return (
@@ -222,7 +228,9 @@ function MenuStep({ onNext, onBack }: { onNext: (cuisines: Set<string>, items: R
                 {isSel && itemCount > 0 && (
                   <span style={{ position: 'absolute', top: -6, right: -6, width: 18, height: 18, borderRadius: '50%', background: c, color: '#fff', fontSize: 9, fontWeight: 900, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>{itemCount}</span>
                 )}
-                <div style={{ fontSize: 24, marginBottom: 6 }}>{e}</div>
+                <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 7 }}>
+                  <img src={img} alt={n} width={36} height={36} style={{ objectFit: 'contain', display: 'block' }} />
+                </div>
                 <div style={{ fontSize: 10.5, fontWeight: 700, color: isSel ? c : T2, lineHeight: 1.3 }}>{n}</div>
               </motion.button>
             );
@@ -493,8 +501,8 @@ function SuccessStep({ restData, cuisines }: { restData: Record<string, string>;
                 const c = CUISINES.find(x => x.id === id);
                 if (!c) return null;
                 return (
-                  <span key={id} style={{ display: 'inline-flex', alignItems: 'center', gap: 5, background: c.bg, border: `1px solid ${c.c}30`, color: c.c, fontSize: 12, fontWeight: 700, padding: '5px 11px', borderRadius: 99 }}>
-                    {c.e} {c.n}
+                  <span key={id} style={{ display: 'inline-flex', alignItems: 'center', gap: 6, background: c.bg, border: `1px solid ${c.c}30`, color: c.c, fontSize: 12, fontWeight: 700, padding: '5px 11px', borderRadius: 99 }}>
+                    <img src={c.img} alt={c.n} width={16} height={16} style={{ objectFit: 'contain' }} /> {c.n}
                   </span>
                 );
               })}
