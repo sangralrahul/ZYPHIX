@@ -229,31 +229,89 @@ const ZF_ROWS = [
   { letter: 'X', full: 'Xtra Savings'       },
 ];
 
+/* Drop-and-morph cycle timing (ms) */
+const ZFC = 4400; // total cycle duration per column
+
+function DropColumn({ letter, full, idx }: { letter: string; full: string; idx: number }) {
+  /* Evenly-distributed stagger so the wave stays permanent through every loop */
+  const delay = (idx * ZFC) / 6 / 1000;
+
+  /* ── Word: drops from above, lands, then fades out ── */
+  const wordY    = ['-72px', '-72px', '0px',  '0px',  '0px',  '8px' ];
+  const wordOp   = [0,        0,       0.13,   0.13,   0.06,   0     ];
+  const wordT    = [0,        0.05,    0.26,   0.50,   0.66,   0.74  ];
+  const wordEase = ['linear', [0.16,1,0.3,1], 'linear','linear','easeIn'] as const;
+
+  /* ── Impact ripple: brief scale-out line below the word ── */
+  const rippleT = [0, 0.23, 0.27, 0.34, 1];
+
+  /* ── Letter: materialises after word vanishes, then floats up & out ── */
+  const letScale = [1,   1,   1,  0.55, 1.08, 1,   1,   1,   0.85];
+  const letOp    = [0,   0,   0,   0,   0,    0.08, 0.08, 0.04, 0  ];
+  const letY     = [0,   0,   0,   0,   0,    0,    0,    -8,  -22 ];
+  const letT     = [0, 0.05, 0.50, 0.62, 0.74, 0.80, 0.90, 0.96, 1.0];
+
+  return (
+    <div style={{
+      position: 'relative',
+      display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'flex-end',
+      minHeight: 'clamp(3.2rem, 6.5vw, 5.2rem)',
+      minWidth:  'clamp(3.2rem, 7vw,   5.6rem)',
+    }}>
+
+      {/* Full-form word */}
+      <motion.div
+        style={{
+          position: 'absolute', bottom: '36%',
+          display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 3,
+        }}
+        animate={{ y: wordY, opacity: wordOp }}
+        transition={{ duration: ZFC / 1000, times: wordT, ease: wordEase as never, repeat: Infinity, delay }}
+      >
+        <span style={{
+          fontFamily: INT, fontWeight: 700,
+          fontSize: 'clamp(0.32rem, 0.56vw, 0.46rem)',
+          color: T1,
+          letterSpacing: '0.1em', textTransform: 'uppercase' as const,
+          whiteSpace: 'nowrap', userSelect: 'none', lineHeight: 1.2,
+        }}>{full}</span>
+
+        {/* Impact ripple line */}
+        <motion.div
+          animate={{ scaleX: [0,0,1.6,0,0], opacity: [0,0,0.35,0,0] }}
+          transition={{ duration: ZFC / 1000, times: rippleT, ease: 'linear', repeat: Infinity, delay }}
+          style={{ width: '100%', height: 1, background: `${G}70`, borderRadius: 1, transformOrigin: 'center' }}
+        />
+      </motion.div>
+
+      {/* Single letter — blooms up from where the word landed */}
+      <motion.span
+        style={{
+          position: 'absolute', bottom: 0,
+          fontFamily: OFT, fontWeight: 900,
+          fontSize: 'clamp(1.5rem, 3.5vw, 2.6rem)',
+          color: T1, lineHeight: 1, letterSpacing: '-0.04em', userSelect: 'none',
+        }}
+        animate={{ scale: letScale, opacity: letOp, y: letY }}
+        transition={{ duration: ZFC / 1000, times: letT, ease: 'linear', repeat: Infinity, delay }}
+      >
+        {letter}
+      </motion.span>
+    </div>
+  );
+}
+
 function ZyphixBg() {
   return (
     <div style={{
       position: 'absolute', bottom: 0, left: 0, right: 0,
       display: 'flex', alignItems: 'flex-end', justifyContent: 'center',
       gap: 'clamp(1.2vw, 4vw, 6.5vw)',
-      padding: '0 7vw 3.2vh',
+      padding: '0 7vw 3.5vh',
       pointerEvents: 'none', zIndex: 2,
     }}>
-      {ZF_ROWS.map(({ letter, full }) => (
-        <div key={letter} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 5 }}>
-          <span style={{
-            fontFamily: OFT, fontWeight: 900,
-            fontSize: 'clamp(1.5rem, 3.5vw, 2.6rem)',
-            color: T1, opacity: 0.06,
-            lineHeight: 1, letterSpacing: '-0.04em', userSelect: 'none',
-          }}>{letter}</span>
-          <span style={{
-            fontFamily: INT, fontWeight: 500,
-            fontSize: 'clamp(0.38rem, 0.62vw, 0.52rem)',
-            color: T1, opacity: 0.13,
-            letterSpacing: '0.08em', textTransform: 'uppercase' as const,
-            whiteSpace: 'nowrap', userSelect: 'none',
-          }}>{full}</span>
-        </div>
+      {ZF_ROWS.map(({ letter, full }, i) => (
+        <DropColumn key={letter} letter={letter} full={full} idx={i} />
       ))}
     </div>
   );
