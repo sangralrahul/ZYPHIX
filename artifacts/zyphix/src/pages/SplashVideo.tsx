@@ -826,7 +826,7 @@ export function SplashVideoCore({ onDone }: { onDone?: () => void }) {
       </div>
 
       <div style={{ position: 'relative', zIndex: 20, width: '100%', height: '100%' }}>
-        <AnimatePresence mode="popLayout">
+        <AnimatePresence mode="sync">
           {scene === 0 && <Scene1 key="s1" />}
           {scene === 1 && <Scene2 key="s2" />}
           {scene === 2 && <Scene3 key="s3" />}
