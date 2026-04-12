@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useLocation } from 'wouter';
-import { SplashVideoCore } from './SplashVideo';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   Search, MapPin, ChevronDown, ShoppingCart, User, LogOut,
@@ -2168,15 +2167,6 @@ function WaitlistSection() {
   );
 }
 
-/* ═══════════════ VIDEO SECTION ═══════════════ */
-function VideoSection() {
-  return (
-    <section style={{ width: '100%', height: '100vh', position: 'relative', background: W, overflow: 'hidden' }}>
-      <SplashVideoCore />
-    </section>
-  );
-}
-
 /* ═══════════════ ROOT ═══════════════ */
 export function Home() {
   return (
@@ -2184,7 +2174,6 @@ export function Home() {
       <AnnoBar />
       <Navbar />
       <WaitlistSection />
-      <VideoSection />
       <div id="quick-browse"><QuickBrowse /></div>
       <DualHeroBanners />
       <WhyZyphixStrip />
