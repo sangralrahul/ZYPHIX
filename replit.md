@@ -18,9 +18,11 @@ pnpm workspace monorepo using TypeScript. Contains the ZYPHIX superlocal app —
 - **Type**: React + Vite + TypeScript
 - **Preview path**: `/`
 - **Framework**: React 18 + Vite, Tailwind CSS v4, Framer Motion, Lucide React, Wouter routing
-- **Design**: Light theme with design tokens:
-  - BG `#F8F9FA`, G (green) `#0DA366`, T1 `#111827`, T2 `#6B7280`, T3 `#9CA3AF`, BD `#E5E7EB`, W `#FFFFFF`
-  - Restaurant accent: `#E11D48`
+- **Design**: Dark premium theme (world-class redesign, Zepto/Blinkit 2024 quality):
+  - BG `#060B12`, BG2 `#0A1222`, CARD `#0F1A2E`, CARD2 `#152035`
+  - G (green) `#00D97E`, G2 `#00B368`, ORG (Eats accent) `#FF6435`
+  - T1 `#FFFFFF`, T2 `rgba(255,255,255,0.6)`, T3 `rgba(255,255,255,0.32)`, BD `rgba(255,255,255,0.07)`
+  - Old light theme (`#F8F9FA`) preserved in HomeSections.tsx and git history
 - **Company**: Clavix Technologies Pvt. Ltd.
 - **Pages**:
   - `/` — Home (hero waitlist, services, savings calculator, live counter, kirana quotes, app preview)
