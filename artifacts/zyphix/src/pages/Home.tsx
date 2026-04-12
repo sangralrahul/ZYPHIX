@@ -8,7 +8,7 @@ import {
   Shield, Package, Truck, Zap, Check, Copy, ArrowRight,
   Phone, Instagram, Twitter, Linkedin, PlayCircle,
   Gift, Crown, BadgeCheck, Users, TrendingUp,
-  LocateFixed, X
+  LocateFixed, X, Utensils, Store, Bike, Megaphone, Tag
 } from 'lucide-react';
 import { products, categories, restaurants, foodCategories, promoCodes, stores } from '@/data/mockData';
 import { useAuth } from '@/context/AuthContext';
@@ -89,24 +89,28 @@ function Rat({ r }: { r: number }) {
 }
 
 /* ═══════════════ ANNOUNCEMENT ═══════════════ */
+const ANNO_MSGS = [
+  { Icon: Tag,       color: '#FCD34D', text: <>Use code <strong style={{color:'#fff'}}>ZYPHIX50</strong> — 50% off your first order</> },
+  { Icon: Zap,       color: '#6EE7B7', text: <>Zyphix is launching in <strong style={{color:'#fff'}}>Jammu, J&K</strong> — Join the waitlist</> },
+  { Icon: Store,     color: '#93C5FD', text: <><strong style={{color:'#fff'}}>Kirana store owner?</strong> List your shop for free</> },
+] as const;
 function AnnoBar() {
-  const msgs = [
-    '🎉 Use code ZYPHIX50 — 50% off your first order',
-    '🚀 Zyphix is launching in Jammu, J&K — Join the waitlist',
-    '🏪 Are you a kirana store owner? List for free → Register now',
-  ];
   const [i, setI] = useState(0);
-  useEffect(() => { const t = setInterval(() => setI(x => (x + 1) % msgs.length), 3500); return () => clearInterval(t); }, []);
+  useEffect(() => { const t = setInterval(() => setI(x => (x + 1) % ANNO_MSGS.length), 3500); return () => clearInterval(t); }, []);
+  const { Icon, color, text } = ANNO_MSGS[i];
   const scrollToWaitlist = () => document.getElementById('waitlist')?.scrollIntoView({ behavior: 'smooth' });
   return (
-    <div style={{ background: T1, padding: '8px 16px', textAlign: 'center', overflow: 'hidden' }}>
+    <div style={{ background: T1, padding: '8px 16px', overflow: 'hidden' }}>
       <AnimatePresence mode="wait">
-        <motion.p key={i} initial={{ y: 12, opacity: 0 }} animate={{ y: 0, opacity: 1 }} exit={{ y: -12, opacity: 0 }} transition={{ duration: .3 }}
-          style={{ fontSize: 12.5, fontWeight: 600, color: 'rgba(255,255,255,.85)', letterSpacing: '.01em' }}>
-          {i === 2 ? (
-            <>🏪 Are you a kirana store owner? List for free → <span onClick={scrollToWaitlist} style={{ textDecoration: 'underline', cursor: 'pointer', color: '#6EE7B7' }}>Register now</span></>
-          ) : msgs[i]}
-        </motion.p>
+        <motion.div key={i} initial={{ y: 10, opacity: 0 }} animate={{ y: 0, opacity: 1 }} exit={{ y: -10, opacity: 0 }} transition={{ duration: .28 }}
+          style={{ display:'flex', alignItems:'center', justifyContent:'center', gap:8 }}>
+          <div style={{ width:18, height:18, borderRadius:5, background:`${color}22`, display:'flex', alignItems:'center', justifyContent:'center', flexShrink:0 }}>
+            <Icon size={11} color={color} strokeWidth={2.5} />
+          </div>
+          <span style={{ fontSize: 12.5, fontWeight: 500, color: 'rgba(255,255,255,.8)', letterSpacing: '.01em' }}>
+            {text}{i === 2 && <>{' '}<span onClick={scrollToWaitlist} style={{ color:'#6EE7B7', textDecoration:'underline', cursor:'pointer', fontWeight:700, marginLeft:4 }}>Register now →</span></>}
+          </span>
+        </motion.div>
       </AnimatePresence>
     </div>
   );
@@ -1669,35 +1673,35 @@ function QuickBrowse({ setTab }: { setTab?: (t: TabId) => void }) {
 /* ═══════════════ STATS STRIP (7 items matching reference) ═══════════════ */
 function WhyZyphixStrip() {
   const ITEMS = [
-    { Icon: Package,    title: 'Real Kirana Partners', sub: 'No dark warehouses',            color: G,         iconBg: '#ECFDF5' },
-    { Icon: BadgeCheck, title: 'Zero Extra Charges',   sub: 'Less than Swiggy / Zomato',     color: '#16A34A', iconBg: '#F0FDF4' },
-    { Icon: MapPin,     title: 'Built for J&K',        sub: 'Your neighbourhood, digital',   color: '#7C3AED', iconBg: '#F5F3FF' },
-    { Icon: Zap,        title: '30 Min Delivery',      sub: 'Guaranteed every time',         color: G,         iconBg: '#ECFDF5', highlight: true },
-    { Icon: Star,       title: 'Jammu First',          sub: 'Launching in J&K',              color: '#EA580C', iconBg: '#FFF7ED' },
-    { Icon: TrendingUp, title: 'Tier 2 India',         sub: 'Built for Bharat',              color: '#2563EB', iconBg: '#EFF6FF' },
-    { Icon: Shield,     title: '₹0 Surge Pricing',     sub: 'Always fair, always honest',    color: G,         iconBg: '#ECFDF5' },
+    { Icon: Package,    title: 'Real Kirana Partners', sub: 'No dark warehouses',          color: G,         iconBg: '#ECFDF5' },
+    { Icon: BadgeCheck, title: 'Zero Extra Charges',   sub: 'Less than Swiggy / Zomato',   color: '#16A34A', iconBg: '#F0FDF4' },
+    { Icon: MapPin,     title: 'Built for J&K',        sub: 'Your neighbourhood, digital', color: '#7C3AED', iconBg: '#F5F3FF' },
+    { Icon: Zap,        title: '30 Min Delivery',      sub: 'Guaranteed every time',       color: G,         iconBg: '#ECFDF5' },
+    { Icon: Star,       title: 'Jammu First',          sub: 'Launching in J&K',            color: '#EA580C', iconBg: '#FFF7ED' },
+    { Icon: TrendingUp, title: 'Tier 2 India',         sub: 'Built for Bharat',            color: '#2563EB', iconBg: '#EFF6FF' },
+    { Icon: Shield,     title: '₹0 Surge Pricing',     sub: 'Always fair, always honest',  color: G,         iconBg: '#ECFDF5' },
   ];
+  const doubled = [...ITEMS, ...ITEMS];
+  const ref = useRef<HTMLDivElement>(null);
   return (
-    <div style={{ background: W, borderTop: `1px solid ${BD}`, borderBottom: `1px solid ${BD}` }}>
-      <div style={{ maxWidth: 1320, margin: '0 auto', padding: '0 24px', display: 'flex', flexWrap: 'wrap', alignItems: 'stretch' }}>
-        {ITEMS.map(({ Icon, title, sub, color, iconBg, highlight }, i) => (
-          <React.Fragment key={title}>
-            <motion.div
-              initial={{ opacity: 0, y: 8 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}
-              transition={{ delay: i * 0.06, duration: 0.3 }}
-              style={{ flex: '1 1 148px', display: 'flex', alignItems: 'center', gap: 12, padding: '20px 18px', minWidth: 0, background: highlight ? `${G}07` : 'transparent' }}>
-              <div style={{ width: 38, height: 38, borderRadius: 11, background: iconBg, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-                <Icon size={17} color={color} strokeWidth={2.2} />
-              </div>
-              <div style={{ minWidth: 0 }}>
-                <p style={{ fontFamily: "'Outfit',sans-serif", fontWeight: 800, fontSize: 13, color: T1, letterSpacing: '-.015em', marginBottom: 2, lineHeight: 1.2 }}>{title}</p>
-                <p style={{ fontSize: 11.5, color: T2, fontWeight: 500, lineHeight: 1.35 }}>{sub}</p>
-              </div>
-            </motion.div>
-            {i < ITEMS.length - 1 && (
-              <div style={{ width: 1, alignSelf: 'stretch', margin: '10px 0', background: BD, flexShrink: 0 }} />
-            )}
-          </React.Fragment>
+    <div style={{ background: W, borderTop: `1px solid ${BD}`, borderBottom: `1px solid ${BD}`, overflow: 'hidden' }}>
+      <style>{`@keyframes stripScroll{from{transform:translateX(0)}to{transform:translateX(-50%)}}`}</style>
+      <div
+        ref={ref}
+        style={{ display: 'flex', width: 'max-content', animation: 'stripScroll 32s linear infinite' }}
+        onMouseEnter={() => { if (ref.current) ref.current.style.animationPlayState = 'paused'; }}
+        onMouseLeave={() => { if (ref.current) ref.current.style.animationPlayState = 'running'; }}
+      >
+        {doubled.map(({ Icon, title, sub, color, iconBg }, i) => (
+          <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '18px 28px', borderRight: `1px solid ${BD}`, flexShrink: 0, whiteSpace: 'nowrap' }}>
+            <div style={{ width: 36, height: 36, borderRadius: 10, background: iconBg, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+              <Icon size={16} color={color} strokeWidth={2.2} />
+            </div>
+            <div>
+              <p style={{ fontFamily: "'Outfit',sans-serif", fontWeight: 800, fontSize: 13, color: T1, letterSpacing: '-.015em', marginBottom: 1, lineHeight: 1.2 }}>{title}</p>
+              <p style={{ fontSize: 11.5, color: T2, fontWeight: 500 }}>{sub}</p>
+            </div>
+          </div>
         ))}
       </div>
     </div>
@@ -1819,9 +1823,9 @@ const WLIST_BENEFITS = [
   { Icon: Zap,         title: 'First to Order',  sub: 'In Jammu & beyond',            accent: '#EA580C', iconBg: '#FFF7ED' },
 ];
 const WLIST_ROLES = [
-  { v: 'restaurant', e: '🍽️', l: 'Restaurant',       bg: '#FFF7ED', bd: '#FED7AA', ac: '#EA580C', tc: '#9A3412' },
-  { v: 'merchant',   e: '🏪', l: 'Merchant',         bg: '#ECFDF5', bd: '#A7F3D0', ac: '#16A34A', tc: '#065F46' },
-  { v: 'delivery',   e: '🛵', l: 'Delivery\nPartner',bg: '#F0F9FF', bd: '#BAE6FD', ac: '#2563EB', tc: '#1E40AF' },
+  { v: 'restaurant', Icon: Utensils, l: 'Restaurant',        bg: '#FFF7ED', ac: '#EA580C', tc: '#9A3412' },
+  { v: 'merchant',   Icon: Store,    l: 'Merchant',          bg: '#ECFDF5', ac: '#16A34A', tc: '#065F46' },
+  { v: 'delivery',   Icon: Bike,     l: 'Delivery\nPartner', bg: '#F0F9FF', ac: '#2563EB', tc: '#1E40AF' },
 ];
 
 function WaitlistSection() {
@@ -2068,11 +2072,13 @@ function WaitlistSection() {
                   <div>
                     <label style={{ fontSize:11.5, fontWeight:700, color:T2, marginBottom:8, display:'block', textTransform:'uppercase' as const, letterSpacing:'.04em' }}>I am a:</label>
                     <div style={{ display:'grid', gridTemplateColumns:'repeat(3,1fr)', gap:8 }}>
-                      {WLIST_ROLES.map(({ v, e, l, bg, bd, ac, tc }) => (
+                      {WLIST_ROLES.map(({ v, Icon, l, bg, ac, tc }) => (
                         <motion.button key={v} onClick={()=>{setForm(f=>({...f,role:v}));setErrors(x=>({...x,role:''}));}}
-                          whileHover={{ scale:1.06, y:-3 }} whileTap={{ scale:.95 }}
-                          style={{ padding:'13px 6px 11px', borderRadius:12, background:form.role===v?bg:W, border:`1.5px solid ${form.role===v?ac:BD}`, cursor:'pointer', textAlign:'center', display:'flex', flexDirection:'column', alignItems:'center', gap:4, boxShadow:form.role===v?`0 0 0 3px ${ac}20`:'0 1px 3px rgba(0,0,0,.05)', transition:'all .15s' }}>
-                          <span style={{ fontSize:22 }}>{e}</span>
+                          whileHover={{ scale:1.04, y:-2 }} whileTap={{ scale:.96 }}
+                          style={{ padding:'14px 6px 12px', borderRadius:13, background:form.role===v?bg:W, border:`1.5px solid ${form.role===v?ac:BD}`, cursor:'pointer', textAlign:'center', display:'flex', flexDirection:'column', alignItems:'center', gap:7, boxShadow:form.role===v?`0 0 0 3px ${ac}22`:'0 1px 3px rgba(0,0,0,.04)', transition:'all .15s' }}>
+                          <div style={{ width:34, height:34, borderRadius:10, background:form.role===v?`${ac}18`:'#F3F4F6', display:'flex', alignItems:'center', justifyContent:'center' }}>
+                            <Icon size={16} color={form.role===v?ac:T3} strokeWidth={2.1} />
+                          </div>
                           <span style={{ fontSize:10.5, fontWeight:700, color:form.role===v?tc:T2, lineHeight:1.3, whiteSpace:'pre-line' as const }}>{l}</span>
                         </motion.button>
                       ))}
