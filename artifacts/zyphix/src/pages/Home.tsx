@@ -1191,7 +1191,7 @@ function HowItWorks() {
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 16, marginTop: 40 }}>
           {[
             { v: '5,00,000+', l: 'Orders delivered', color: G },
-            { v: '100+', l: 'Cities across India', color: '#EA580C' },
+            { v: '150+', l: 'Cities across India', color: '#EA580C' },
             { v: '4.8 ★', l: 'Average app rating', color: '#7C3AED' },
             { v: '< 30 min', l: 'Average delivery time', color: G },
           ].map(({ v, l, color }, i) => (
@@ -1846,7 +1846,6 @@ export function Home() {
       <QuickBrowse />
       <DualHeroBanners />
       <WhyZyphixStrip />
-      <BrandMarqueeMain />
       <OfferCards />
       <KiranaCTA />
       <HowItWorks />
