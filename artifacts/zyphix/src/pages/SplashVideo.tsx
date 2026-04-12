@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, type ReactNode, type CSSProperties } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Link } from 'wouter';
 
@@ -219,22 +219,38 @@ function GroceryCard({ item, delay, show }: { item: typeof GROCERIES[0]; delay: 
 }
 
 /* ── Scene 1.5 — ZYPHIX Full Form (Investor Pitch) ──────── */
-const ZF_DARK  = '#06080E';
-const ZF_GRID  = 'rgba(255,255,255,0.028)';
-const ZF_ITEMS = [
-  { letter: 'Z', line1: 'Zero',        line2: 'Surge',        color: G  },
-  { letter: 'Y', line1: 'Your',        line2: 'Neighbourhood',color: G  },
-  { letter: 'P', line1: 'Proximity',   line2: 'Powered',      color: G  },
-  { letter: 'H', line1: 'Hyper',       line2: 'Local',        color: OR },
-  { letter: 'I', line1: 'Instant',     line2: 'Delivery',     color: G  },
-  { letter: 'X', line1: 'Xtra',        line2: 'Savings',      color: OR },
+const ZF_BG = '#030912';
+const EXPO: [number,number,number,number] = [0.76, 0, 0.24, 1];
+const ZF_ROWS = [
+  { n:'01', letter:'Z', full:'Zero Surge',          note:'No hidden fees. No surge pricing. Ever.'    },
+  { n:'02', letter:'Y', full:'Your Neighbourhood',  note:'Delivered from the kirana store next door.' },
+  { n:'03', letter:'P', full:'Proximity Powered',   note:'Closer stores mean faster delivery.'        },
+  { n:'04', letter:'H', full:'Hyperlocal',          note:'Your block. Not the whole city.'            },
+  { n:'05', letter:'I', full:'Instant Delivery',    note:'30 minutes or less — guaranteed.'           },
+  { n:'06', letter:'X', full:'Xtra Savings',        note:'More value on every single order.'          },
 ];
+
+/* Masked text reveal — text slides up from behind an invisible wall */
+function MaskReveal({ show, delay = 0, children, style = {} }: {
+  show: boolean; delay?: number; children: ReactNode; style?: CSSProperties;
+}) {
+  return (
+    <div style={{ overflow: 'hidden', ...style }}>
+      <motion.div
+        initial={{ y: '105%' }}
+        animate={show ? { y: '0%' } : { y: '105%' }}
+        transition={{ duration: 0.72, ease: EXPO, delay }}>
+        {children}
+      </motion.div>
+    </div>
+  );
+}
 
 function SceneZyphixForm() {
   const [ph, setPh] = useState(0);
   useEffect(() => {
-    /* ph1=eyebrow, ph2-7=columns, ph8=tagline, ph9=progress */
-    const ts = [300, 520, 700, 880, 1060, 1240, 1420, 2100, 3200].map((d, i) =>
+    /* ph1=header line, ph2-7=rows, ph8=footer */
+    const ts = [350, 560, 720, 880, 1040, 1200, 1360, 2000, 3100].map((d, i) =>
       setTimeout(() => setPh(i + 1), d)
     );
     return () => ts.forEach(clearTimeout);
@@ -242,127 +258,142 @@ function SceneZyphixForm() {
 
   return (
     <motion.div
-      style={{ position: 'absolute', inset: 0, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', background: ZF_DARK, overflow: 'hidden' }}
+      style={{ position: 'absolute', inset: 0, display: 'flex', flexDirection: 'column',
+        justifyContent: 'center', background: ZF_BG, overflow: 'hidden' }}
       initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-      transition={{ duration: 0.65 }}>
+      transition={{ duration: 0.6 }}>
 
-      {/* Fine grid */}
+      {/* Vignette edges */}
       <div style={{ position: 'absolute', inset: 0, pointerEvents: 'none',
-        backgroundImage: `linear-gradient(${ZF_GRID} 1px,transparent 1px),linear-gradient(90deg,${ZF_GRID} 1px,transparent 1px)`,
-        backgroundSize: '80px 80px' }} />
+        background: 'radial-gradient(ellipse 100% 100% at 50% 50%, transparent 55%, rgba(3,9,18,0.7) 100%)' }} />
 
-      {/* Center radial glow */}
-      <div style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%,-50%)',
-        width: '90vw', height: '70vh', borderRadius: '50%',
-        background: `radial-gradient(ellipse,rgba(13,163,102,0.07) 0%,transparent 68%)`,
-        pointerEvents: 'none' }} />
+      {/* Accent glow behind center */}
+      <div style={{ position: 'absolute', top: '50%', left: '14%', transform: 'translateY(-50%)',
+        width: 320, height: 320, borderRadius: '50%',
+        background: `radial-gradient(circle, ${G}12 0%, transparent 65%)`,
+        filter: 'blur(40px)', pointerEvents: 'none' }} />
 
-      {/* Thin top rule */}
-      <motion.div
-        initial={{ scaleX: 0 }} animate={ph >= 1 ? { scaleX: 1 } : {}}
-        transition={{ duration: 0.9, ease: EASE }}
-        style={{ position: 'absolute', top: '18%', left: '8%', right: '8%', height: '1px',
-          background: 'linear-gradient(90deg,transparent,rgba(255,255,255,0.1),transparent)',
-          transformOrigin: 'left', zIndex: 4 }} />
+      {/* ── Content wrapper ── */}
+      <div style={{ padding: '0 8vw', position: 'relative', zIndex: 5 }}>
 
-      {/* Eyebrow */}
-      <motion.p
-        initial={{ opacity: 0, letterSpacing: '0.3em' }}
-        animate={ph >= 1 ? { opacity: 1, letterSpacing: '0.22em' } : {}}
-        transition={{ duration: 0.7, ease: EASE }}
-        style={{ position: 'relative', zIndex: 5, fontFamily: INT, fontWeight: 600, fontSize: 10.5,
-          letterSpacing: '0.22em', textTransform: 'uppercase' as const,
-          color: 'rgba(255,255,255,0.28)', marginBottom: '5.5vh' }}>
-        Every letter is a promise
-      </motion.p>
+        {/* Header row */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: 16, marginBottom: '4.5vh', overflow: 'hidden' }}>
+          <motion.div
+            initial={{ scaleX: 0 }} animate={ph >= 1 ? { scaleX: 1 } : {}}
+            transition={{ duration: 0.8, ease: EXPO }}
+            style={{ height: 1, width: 40, background: `${G}90`, transformOrigin: 'left', flexShrink: 0 }} />
+          <MaskReveal show={ph >= 1}>
+            <span style={{ fontFamily: INT, fontWeight: 600, fontSize: 10, letterSpacing: '0.22em',
+              textTransform: 'uppercase' as const, color: 'rgba(255,255,255,0.3)', whiteSpace: 'nowrap' }}>
+              Every letter is a promise
+            </span>
+          </MaskReveal>
+        </div>
 
-      {/* ── 6-column letter grid ── */}
-      <div style={{ display: 'flex', gap: 'clamp(0px,2.8vw,44px)', alignItems: 'flex-start',
-        position: 'relative', zIndex: 5, padding: '0 5vw' }}>
-        {ZF_ITEMS.map(({ letter, line1, line2, color }, i) => (
-          <motion.div key={letter}
-            initial={{ opacity: 0, y: 56 }}
-            animate={ph >= i + 2 ? { opacity: 1, y: 0 } : {}}
-            transition={{ type: 'spring', stiffness: 240, damping: 22 }}
-            style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', minWidth: 0, flex: 1 }}>
+        {/* ── Six rows ── */}
+        <div style={{ display: 'flex', flexDirection: 'column' }}>
+          {ZF_ROWS.map(({ n, letter, full, note }, i) => (
+            <div key={letter}>
+              {/* Separator */}
+              <motion.div
+                initial={{ scaleX: 0 }}
+                animate={ph >= i + 2 ? { scaleX: 1 } : {}}
+                transition={{ duration: 0.55, ease: EXPO }}
+                style={{ height: 1, background: 'rgba(255,255,255,0.06)', transformOrigin: 'left' }} />
 
-            {/* Large letter */}
-            <motion.div
-              animate={ph >= i + 2
-                ? { textShadow: [`0 0 0px ${color}00`, `0 0 50px ${color}70`, `0 0 28px ${color}45`] }
-                : { textShadow: `0 0 0px ${color}00` }}
-              transition={{ delay: 0.18, duration: 1.1, ease: 'easeOut' }}
-              style={{ fontFamily: OFT, fontWeight: 900,
-                fontSize: 'clamp(3.2rem,7.5vw,5.8rem)',
-                color, lineHeight: 1, letterSpacing: '-0.04em', userSelect: 'none' }}>
-              {letter}
-            </motion.div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '3.5vw', padding: '1.55vh 0' }}>
 
-            {/* Horizontal rule */}
-            <motion.div
-              initial={{ scaleX: 0 }}
-              animate={ph >= i + 2 ? { scaleX: 1 } : {}}
-              transition={{ delay: 0.2, duration: 0.4, ease: EASE }}
-              style={{ width: '100%', height: 1, background: `linear-gradient(90deg,transparent,${color}80,transparent)`,
-                margin: '1.4vh 0', transformOrigin: 'center' }} />
+                {/* Index number */}
+                <div style={{ overflow: 'hidden', width: 28, flexShrink: 0 }}>
+                  <motion.span
+                    initial={{ y: '110%' }}
+                    animate={ph >= i + 2 ? { y: '0%' } : { y: '110%' }}
+                    transition={{ duration: 0.6, ease: EXPO, delay: 0.05 }}
+                    style={{ display: 'block', fontFamily: INT, fontWeight: 500, fontSize: 9.5,
+                      letterSpacing: '0.12em', color: `${G}70` }}>
+                    {n}
+                  </motion.span>
+                </div>
 
-            {/* Word (two lines) */}
-            <div style={{ textAlign: 'center' }}>
-              <motion.p
-                initial={{ opacity: 0, y: 6 }}
-                animate={ph >= i + 2 ? { opacity: 1, y: 0 } : {}}
-                transition={{ delay: 0.3, duration: 0.38 }}
-                style={{ fontFamily: OFT, fontWeight: 800,
-                  fontSize: 'clamp(0.58rem,1.05vw,0.78rem)',
-                  color: 'rgba(255,255,255,0.88)',
-                  letterSpacing: '0.06em', textTransform: 'uppercase' as const, lineHeight: 1.25 }}>
-                {line1}
-              </motion.p>
-              <motion.p
-                initial={{ opacity: 0 }}
-                animate={ph >= i + 2 ? { opacity: 1 } : {}}
-                transition={{ delay: 0.42, duration: 0.35 }}
-                style={{ fontFamily: INT, fontWeight: 400,
-                  fontSize: 'clamp(0.5rem,0.88vw,0.66rem)',
-                  color: 'rgba(255,255,255,0.32)',
-                  letterSpacing: '0.05em', textTransform: 'uppercase' as const, lineHeight: 1.4 }}>
-                {line2}
-              </motion.p>
+                {/* Large letter */}
+                <div style={{ overflow: 'hidden', width: 'clamp(2.4rem,5vw,3.8rem)', flexShrink: 0 }}>
+                  <motion.span
+                    initial={{ y: '110%' }}
+                    animate={ph >= i + 2 ? { y: '0%' } : { y: '110%' }}
+                    transition={{ duration: 0.65, ease: EXPO }}
+                    style={{ display: 'block', fontFamily: OFT, fontWeight: 900,
+                      fontSize: 'clamp(2.2rem,4.8vw,3.6rem)',
+                      color: G, lineHeight: 1, letterSpacing: '-0.04em' }}>
+                    {letter}
+                  </motion.span>
+                </div>
+
+                {/* Full form */}
+                <div style={{ flex: 1, overflow: 'hidden' }}>
+                  <motion.p
+                    initial={{ y: '110%' }}
+                    animate={ph >= i + 2 ? { y: '0%' } : { y: '110%' }}
+                    transition={{ duration: 0.65, ease: EXPO, delay: 0.06 }}
+                    style={{ fontFamily: OFT, fontWeight: 700,
+                      fontSize: 'clamp(1rem,2.2vw,1.65rem)',
+                      color: '#fff', letterSpacing: '-0.01em', lineHeight: 1 }}>
+                    {full}
+                  </motion.p>
+                </div>
+
+                {/* Note right-aligned */}
+                <motion.p
+                  initial={{ opacity: 0 }}
+                  animate={ph >= i + 2 ? { opacity: 1 } : { opacity: 0 }}
+                  transition={{ duration: 0.55, delay: 0.32 }}
+                  style={{ fontFamily: INT, fontWeight: 400,
+                    fontSize: 'clamp(0.58rem,0.92vw,0.74rem)',
+                    color: 'rgba(255,255,255,0.26)', letterSpacing: '0.01em',
+                    textAlign: 'right' as const, lineHeight: 1.5,
+                    maxWidth: '28%', flexShrink: 0 }}>
+                  {note}
+                </motion.p>
+              </div>
             </div>
-          </motion.div>
-        ))}
+          ))}
+          {/* Final separator */}
+          <motion.div
+            initial={{ scaleX: 0 }}
+            animate={ph >= 7 ? { scaleX: 1 } : {}}
+            transition={{ duration: 0.55, ease: EXPO }}
+            style={{ height: 1, background: 'rgba(255,255,255,0.06)', transformOrigin: 'left' }} />
+        </div>
+
+        {/* Footer */}
+        <motion.div
+          initial={{ opacity: 0 }} animate={ph >= 8 ? { opacity: 1 } : {}}
+          transition={{ duration: 0.6 }}
+          style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginTop: '3.5vh' }}>
+          <span style={{ fontFamily: INT, fontWeight: 500, fontSize: 10,
+            letterSpacing: '0.18em', textTransform: 'uppercase' as const,
+            color: 'rgba(255,255,255,0.16)' }}>
+            Clavix Technologies Pvt. Ltd.
+          </span>
+          <span style={{ fontFamily: OFT, fontWeight: 800, fontSize: 12,
+            letterSpacing: '0.08em', color: `${G}70` }}>
+            ZYPHIX
+          </span>
+          <span style={{ fontFamily: INT, fontWeight: 500, fontSize: 10,
+            letterSpacing: '0.18em', textTransform: 'uppercase' as const,
+            color: 'rgba(255,255,255,0.16)' }}>
+            India's SuperLocal App
+          </span>
+        </motion.div>
       </div>
 
-      {/* Thin bottom rule */}
-      <motion.div
-        initial={{ scaleX: 0 }} animate={ph >= 7 ? { scaleX: 1 } : {}}
-        transition={{ duration: 0.9, ease: EASE, delay: 0.2 }}
-        style={{ position: 'absolute', bottom: '20%', left: '8%', right: '8%', height: '1px',
-          background: 'linear-gradient(90deg,transparent,rgba(255,255,255,0.1),transparent)',
-          transformOrigin: 'left', zIndex: 4 }} />
-
-      {/* Tagline */}
-      <motion.div
-        initial={{ opacity: 0, y: 14 }}
-        animate={ph >= 8 ? { opacity: 1, y: 0 } : {}}
-        transition={{ duration: 0.55, ease: EASE }}
-        style={{ position: 'relative', zIndex: 5, marginTop: '5.5vh', display: 'flex', alignItems: 'center', gap: 20 }}>
-        <span style={{ display: 'block', width: 28, height: 1, background: 'rgba(255,255,255,0.18)' }} />
-        <span style={{ fontFamily: INT, fontWeight: 500, fontSize: 11,
-          letterSpacing: '0.14em', textTransform: 'uppercase' as const,
-          color: 'rgba(255,255,255,0.22)' }}>
-          India's SuperLocal App &nbsp;·&nbsp; Clavix Technologies Pvt. Ltd.
-        </span>
-        <span style={{ display: 'block', width: 28, height: 1, background: 'rgba(255,255,255,0.18)' }} />
-      </motion.div>
-
       {/* Progress bar */}
-      <motion.div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, height: 2, background: 'rgba(255,255,255,0.05)', zIndex: 10 }}
+      <motion.div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, height: 1.5,
+        background: 'rgba(255,255,255,0.04)', zIndex: 10 }}
         initial={{ opacity: 0 }} animate={ph >= 9 ? { opacity: 1 } : {}}>
-        <motion.div style={{ height: '100%', background: `linear-gradient(90deg,${G},${OR})` }}
+        <motion.div style={{ height: '100%', background: G }}
           initial={{ width: '0%' }}
           animate={ph >= 9 ? { width: '100%' } : {}}
-          transition={{ duration: 2.4, ease: 'linear' }} />
+          transition={{ duration: 2.5, ease: 'linear' }} />
       </motion.div>
     </motion.div>
   );
