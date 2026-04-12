@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'wouter';
+import { Link, useLocation } from 'wouter';
 import { Search, MapPin, ShoppingCart, User, ChevronDown, Menu, X } from 'lucide-react';
 import { ZyphixLogo } from '../ZyphixLogo';
 
 export function Navbar() {
+  const [location] = useLocation();
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [focused, setFocused] = useState(false);
@@ -29,7 +30,7 @@ export function Navbar() {
 
           {/* ── Logo ── */}
           <Link href="/" className="shrink-0 transition-opacity hover:opacity-90">
-            <ZyphixLogo size={34} wordmarkColor="#ffffff" wordmarkHighlight="#34D399" />
+            <ZyphixLogo key={location} size={34} wordmarkColor="#ffffff" wordmarkHighlight="#34D399" />
           </Link>
 
           {/* ── Location ── */}
