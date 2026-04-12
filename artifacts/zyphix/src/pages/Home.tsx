@@ -1851,30 +1851,12 @@ function WaitlistSection() {
   );
 }
 
-/* ═══════════════ INTRO SPLASH ═══════════════ */
-function IntroSplash() {
-  const [visible, setVisible] = useState(true);
-
-  const dismiss = () => setVisible(false);
-
+/* ═══════════════ VIDEO SECTION ═══════════════ */
+function VideoSection() {
   return (
-    <AnimatePresence>
-      {visible && (
-        <motion.div
-          key="intro-splash"
-          style={{ position: 'fixed', inset: 0, zIndex: 9999, background: W }}
-          initial={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          transition={{ duration: 0.7, ease: [0.25, 0.46, 0.45, 0.94] }}>
-          <button
-            onClick={dismiss}
-            style={{ position: 'absolute', top: 20, left: 20, zIndex: 10001, padding: '8px 18px', borderRadius: 7, background: 'rgba(0,0,0,0.04)', border: '1px solid rgba(0,0,0,0.09)', color: T2, fontFamily: "'Inter',sans-serif", fontSize: 13, fontWeight: 500, cursor: 'pointer' }}>
-            ← Skip intro
-          </button>
-          <SplashVideoCore onDone={dismiss} />
-        </motion.div>
-      )}
-    </AnimatePresence>
+    <section style={{ width: '100%', height: '100vh', position: 'relative', background: W, overflow: 'hidden' }}>
+      <SplashVideoCore />
+    </section>
   );
 }
 
@@ -1882,9 +1864,9 @@ function IntroSplash() {
 export function Home() {
   return (
     <div style={{ background: BG, minHeight: '100vh' }}>
-      <IntroSplash />
       <AnnoBar />
       <Navbar />
+      <VideoSection />
       <WaitlistSection />
       <QuickBrowse />
       <DualHeroBanners />
