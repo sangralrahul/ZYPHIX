@@ -1866,8 +1866,8 @@ export function Home() {
     <div style={{ background: BG, minHeight: '100vh' }}>
       <AnnoBar />
       <Navbar />
-      <VideoSection />
       <WaitlistSection />
+      <VideoSection />
       <QuickBrowse />
       <DualHeroBanners />
       <WhyZyphixStrip />
