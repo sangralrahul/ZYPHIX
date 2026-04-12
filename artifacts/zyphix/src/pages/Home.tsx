@@ -37,6 +37,7 @@ function LogoMark({ size = 32, dark = false }: { size?: number; dark?: boolean }
       size={size}
       wordmarkColor={dark ? '#ffffff' : T1}
       wordmarkHighlight={dark ? '#34D399' : G}
+      ixColor={dark ? '#0DC268' : '#0A0F1A'}
     />
   );
 }

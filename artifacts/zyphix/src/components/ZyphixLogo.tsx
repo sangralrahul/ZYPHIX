@@ -83,6 +83,7 @@ export function ZyphixLogo({
   showWordmark = true,
   gap = 9,
   fontSize,
+  ixColor = '#0A0F1A',
 }: {
   size?: number;
   wordmarkColor?: string;
@@ -91,6 +92,7 @@ export function ZyphixLogo({
   gap?: number;
   fontSize?: number;
   playAnimation?: boolean;
+  ixColor?: string;
 }) {
   const fs = fontSize ?? size * 0.6;
 
@@ -110,7 +112,7 @@ export function ZyphixLogo({
           alignItems: 'baseline',
         }}>
           <ZyphWord />
-          <IxWord />
+          <IxWord color={ixColor} />
         </span>
       )}
     </div>
@@ -150,7 +152,7 @@ function ZyphWord() {
   );
 }
 
-function IxWord() {
+function IxWord({ color = '#0A0F1A' }: { color?: string }) {
   const [entered, setEntered] = useState(false);
 
   return (
@@ -168,7 +170,7 @@ function IxWord() {
       }
       onAnimationComplete={() => { if (!entered) setEntered(true); }}
       style={{
-        color: '#0DC268',
+        color,
         fontStyle: 'normal',
         display: 'inline-block',
         willChange: 'transform',
