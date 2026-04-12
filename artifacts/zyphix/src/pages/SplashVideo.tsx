@@ -16,7 +16,7 @@ const BD   = 'rgba(0,0,0,0.07)';
 const OFT  = "'Outfit', sans-serif";
 const INT  = "'Inter', sans-serif";
 const EASE: [number,number,number,number] = [0.25, 0.46, 0.45, 0.94];
-const DURATIONS = [4200, 5000, 5000, 4800, 6000];
+const DURATIONS = [4200, 5200, 5000, 5000, 4800, 6000];
 
 function useAutoAdvance(total: number, onDone?: () => void) {
   const [scene, setScene] = useState(0);
@@ -214,6 +214,131 @@ function GroceryCard({ item, delay, show }: { item: typeof GROCERIES[0]; delay: 
       </div>
       <p style={{ fontFamily: OFT, fontWeight: 700, fontSize: '0.8vw', color: T1, textAlign: 'center', lineHeight: 1.2, marginBottom: '0.3vw' }}>{item.name}</p>
       <p style={{ fontFamily: INT, fontWeight: 700, fontSize: '0.72vw', color: CAT_COLOR[item.cat] ?? G }}>{item.price}</p>
+    </motion.div>
+  );
+}
+
+/* ── Scene 1.5 — ZYPHIX Full Form ───────────────────────── */
+const ZYPHIX_FORM = [
+  { letter: 'Z', word: 'Zero surge',          desc: 'No surge pricing. Ever.',                  color: G,  bg: `${G}12`  },
+  { letter: 'Y', word: 'Your neighbourhood',  desc: 'Delivered from stores around you.',         color: G,  bg: `${G}0E`  },
+  { letter: 'P', word: 'Proximity-powered',   desc: 'The closer the store, the faster it is.',   color: G,  bg: `${G}0C`  },
+  { letter: 'H', word: 'Hyperlocal',          desc: 'Your block, not the city.',                 color: OR, bg: `${OR}10` },
+  { letter: 'I', word: 'Instant delivery',    desc: '30 minutes or less, guaranteed.',           color: G,  bg: `${G}0E`  },
+  { letter: 'X', word: 'Xtra savings',        desc: 'More value on every single order.',         color: OR, bg: `${OR}0C` },
+];
+
+function SceneZyphixForm() {
+  const [ph, setPh] = useState(0);
+  useEffect(() => {
+    const ts = [180, 400, 620, 840, 1060, 1280, 1500, 1900, 2700, 3600].map((d, i) =>
+      setTimeout(() => setPh(i + 1), d)
+    );
+    return () => ts.forEach(clearTimeout);
+  }, []);
+
+  return (
+    <motion.div
+      style={{ position: 'absolute', inset: 0, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', background: BG, overflow: 'hidden' }}
+      initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+      transition={{ duration: 0.55 }}>
+      <Grid />
+      <Blob x="-6%" y="-12%" size="44vw" color={`${G}0A`} delay={0} />
+      <Blob x="60%" y="52%" size="36vw" color={`${OR}08`} delay={2.5} />
+
+      <div style={{ width: '100%', maxWidth: 760, padding: '0 5vw', position: 'relative', zIndex: 5 }}>
+
+        {/* Header label */}
+        <motion.div
+          initial={{ opacity: 0, y: -18 }} animate={ph >= 1 ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: 0.48, ease: EASE }}
+          style={{ textAlign: 'center', marginBottom: '3vh' }}>
+          <span style={{ fontFamily: INT, fontSize: 11.5, fontWeight: 700, letterSpacing: '.16em', textTransform: 'uppercase' as const, color: T2 }}>
+            Every letter has a promise
+          </span>
+        </motion.div>
+
+        {/* Six rows */}
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '1.2vh' }}>
+          {ZYPHIX_FORM.map(({ letter, word, desc, color, bg }, i) => (
+            <motion.div key={letter}
+              initial={{ opacity: 0, x: -50 }}
+              animate={ph >= i + 2 ? { opacity: 1, x: 0 } : {}}
+              transition={{ type: 'spring', stiffness: 320, damping: 26 }}
+              style={{ display: 'flex', alignItems: 'center', gap: '1.8vw', padding: '1.3vh 1.6vw', borderRadius: 16, background: bg, border: `1.5px solid ${color}28` }}>
+
+              {/* Animated letter badge */}
+              <motion.div
+                initial={{ scale: 0, rotate: -20 }}
+                animate={ph >= i + 2 ? { scale: 1, rotate: 0 } : {}}
+                transition={{ type: 'spring', stiffness: 450, damping: 20, delay: 0.06 }}
+                style={{ width: 48, height: 48, borderRadius: 13, background: color, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, boxShadow: `0 4px 18px ${color}45` }}>
+                <span style={{ fontFamily: OFT, fontWeight: 900, fontSize: 22, color: '#fff' }}>{letter}</span>
+              </motion.div>
+
+              {/* Word + description */}
+              <div style={{ flex: 1, minWidth: 0 }}>
+                <motion.p
+                  initial={{ opacity: 0, y: 5 }}
+                  animate={ph >= i + 2 ? { opacity: 1, y: 0 } : {}}
+                  transition={{ delay: 0.1, duration: 0.3 }}
+                  style={{ fontFamily: OFT, fontWeight: 800, fontSize: 'clamp(0.88rem,1.5vw,1.08rem)', color: T1, marginBottom: 2, lineHeight: 1.2 }}>
+                  {word}
+                </motion.p>
+                <motion.p
+                  initial={{ opacity: 0 }}
+                  animate={ph >= i + 2 ? { opacity: 1 } : {}}
+                  transition={{ delay: 0.2 }}
+                  style={{ fontFamily: INT, fontSize: 'clamp(0.68rem,1vw,0.8rem)', color: T2, fontWeight: 450, lineHeight: 1.35 }}>
+                  {desc}
+                </motion.p>
+              </div>
+
+              {/* Glowing dot */}
+              <motion.div
+                initial={{ scale: 0 }}
+                animate={ph >= i + 2 ? { scale: [0, 1.4, 1] } : {}}
+                transition={{ delay: 0.28, duration: 0.4 }}
+                style={{ width: 9, height: 9, borderRadius: '50%', background: color, flexShrink: 0, boxShadow: `0 0 8px ${color}` }} />
+            </motion.div>
+          ))}
+        </div>
+
+        {/* Assembled ZYPHIX word */}
+        <motion.div
+          initial={{ opacity: 0, y: 16 }}
+          animate={ph >= 9 ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: 0.5, ease: EASE }}
+          style={{ textAlign: 'center', marginTop: '2.8vh', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 14 }}>
+          <div style={{ display: 'flex', gap: 1 }}>
+            {'ZYPHIX'.split('').map((ch, i) => (
+              <motion.span key={i}
+                initial={{ opacity: 0, y: 12, scale: 0.6 }}
+                animate={ph >= 8 ? { opacity: 1, y: 0, scale: 1 } : {}}
+                transition={{ delay: i * 0.08, type: 'spring', stiffness: 500, damping: 22 }}
+                style={{ fontFamily: OFT, fontWeight: 900, fontSize: 'clamp(1.3rem,2.8vw,1.7rem)', letterSpacing: '-0.02em', color: i % 2 === 0 ? G : OR }}>
+                {ch}
+              </motion.span>
+            ))}
+          </div>
+          <motion.span
+            initial={{ opacity: 0 }}
+            animate={ph >= 9 ? { opacity: 1 } : {}}
+            transition={{ delay: 0.3 }}
+            style={{ fontFamily: INT, fontSize: 'clamp(0.68rem,1.1vw,0.82rem)', color: T2, fontWeight: 500, letterSpacing: '.01em' }}>
+            India's SuperLocal App
+          </motion.span>
+        </motion.div>
+      </div>
+
+      {/* Progress bar */}
+      <motion.div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, height: 2.5, background: BD, zIndex: 10 }}
+        initial={{ opacity: 0 }} animate={ph >= 10 ? { opacity: 1 } : {}}>
+        <motion.div style={{ height: '100%', background: GD }}
+          initial={{ width: '0%' }}
+          animate={ph >= 10 ? { width: '100%' } : {}}
+          transition={{ duration: 2.2, ease: 'linear' }} />
+      </motion.div>
     </motion.div>
   );
 }
@@ -811,13 +936,13 @@ function Scene5({ onDone }: { onDone?: () => void }) {
 
 /* ── SplashVideoCore — embeddable, no nav ───────────────── */
 export function SplashVideoCore({ onDone }: { onDone?: () => void }) {
-  const { scene, go } = useAutoAdvance(5, onDone);
+  const { scene, go } = useAutoAdvance(6, onDone);
 
   return (
     <div style={{ width: '100%', height: '100%', overflow: 'hidden', position: 'relative', background: BG }}>
       {/* Scene dots — top right */}
       <div style={{ position: 'absolute', top: 20, right: 20, zIndex: 100, display: 'flex', alignItems: 'center', gap: 5 }}>
-        {[0, 1, 2, 3, 4].map(i => (
+        {[0, 1, 2, 3, 4, 5].map(i => (
           <motion.button key={i} onClick={() => go(i)}
             style={{ height: 3, borderRadius: 3, background: i === scene ? G : 'rgba(0,0,0,0.15)', border: 'none', cursor: 'pointer', padding: 0, display: 'block' }}
             animate={{ width: i === scene ? 24 : 8, opacity: i === scene ? 1 : 0.45 }}
@@ -828,10 +953,11 @@ export function SplashVideoCore({ onDone }: { onDone?: () => void }) {
       <div style={{ position: 'relative', zIndex: 20, width: '100%', height: '100%' }}>
         <AnimatePresence mode="sync">
           {scene === 0 && <Scene1 key="s1" />}
-          {scene === 1 && <Scene2 key="s2" />}
-          {scene === 2 && <Scene3 key="s3" />}
-          {scene === 3 && <Scene4 key="s4" />}
-          {scene === 4 && <Scene5 key="s5" onDone={onDone} />}
+          {scene === 1 && <SceneZyphixForm key="sz" />}
+          {scene === 2 && <Scene2 key="s2" />}
+          {scene === 3 && <Scene3 key="s3" />}
+          {scene === 4 && <Scene4 key="s4" />}
+          {scene === 5 && <Scene5 key="s5" onDone={onDone} />}
         </AnimatePresence>
       </div>
     </div>
