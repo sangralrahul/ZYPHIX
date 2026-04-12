@@ -1,6 +1,8 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 
+const LOOP = 3.8;
+
 /* ─── Icon mark ─── */
 function PinMark({ size }: { size: number }) {
   const r  = Math.round(size * 0.265);
@@ -8,9 +10,18 @@ function PinMark({ size }: { size: number }) {
 
   return (
     <motion.div
-      initial={{ scale: 0.4, rotate: -18, opacity: 0 }}
-      animate={{ scale: 1,   rotate: 0,   opacity: 1 }}
-      transition={{ type: 'spring', stiffness: 420, damping: 17, delay: 0.04 }}
+      animate={{
+        scale:   [0.35, 1.08, 0.97, 1,  1,  1,  0.6, 0.35],
+        rotate:  [-18,  4,   -2,   0,  0,  0,  -8,  -18 ],
+        opacity: [0,    1,    1,   1,  1,  1,  0.4,  0   ],
+      }}
+      transition={{
+        duration: LOOP,
+        times:    [0, 0.12, 0.17, 0.20, 0.72, 0.80, 0.92, 1],
+        ease:     'easeOut',
+        repeat:   Infinity,
+        repeatDelay: 0.15,
+      }}
       whileHover={{ scale: 1.12, rotate: 7 }}
       whileTap={{ scale: 0.9 }}
       style={{
@@ -26,10 +37,19 @@ function PinMark({ size }: { size: number }) {
         cursor: 'pointer',
         willChange: 'transform',
       }}>
+      {/* // fades in slightly after the icon pops */}
       <motion.span
-        initial={{ opacity: 0, y: 5 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.26, duration: 0.28, ease: 'easeOut' }}
+        animate={{
+          opacity: [0, 0, 1, 1, 1, 0, 0],
+          y:       [6, 6, 0, 0, 0, 4, 6],
+        }}
+        transition={{
+          duration: LOOP,
+          times:    [0, 0.14, 0.22, 0.72, 0.80, 0.90, 1],
+          ease:     'easeOut',
+          repeat:   Infinity,
+          repeatDelay: 0.15,
+        }}
         style={{
           fontFamily: "'Outfit', sans-serif",
           fontWeight: 900,
@@ -81,11 +101,19 @@ export function ZyphixLogo({
           alignItems: 'baseline',
           overflow: 'hidden',
         }}>
-          {/* ZYPH slides in from left */}
+          {/* ZYPH slides in slightly after the icon */}
           <motion.span
-            initial={{ x: -24, opacity: 0 }}
-            animate={{ x: 0,   opacity: 1 }}
-            transition={{ delay: 0.18, duration: 0.38, ease: [0.22, 1, 0.36, 1] }}
+            animate={{
+              x:       [-26, -26, 0,  0,  0, -12, -26],
+              opacity: [0,   0,   1,  1,  1,  0,   0  ],
+            }}
+            transition={{
+              duration: LOOP,
+              times:    [0, 0.16, 0.24, 0.72, 0.80, 0.91, 1],
+              ease:     [0.22, 1, 0.36, 1],
+              repeat:   Infinity,
+              repeatDelay: 0.15,
+            }}
             style={{
               fontStyle: 'italic',
               background: 'linear-gradient(135deg, #18F590 0%, #0DC268 55%, #08924C 100%)',
@@ -98,11 +126,19 @@ export function ZyphixLogo({
             ZYPH
           </motion.span>
 
-          {/* IX slides in from left, slightly after */}
+          {/* IX slides in just after ZYPH */}
           <motion.span
-            initial={{ x: -20, opacity: 0 }}
-            animate={{ x: 0,   opacity: 1 }}
-            transition={{ delay: 0.30, duration: 0.38, ease: [0.22, 1, 0.36, 1] }}
+            animate={{
+              x:       [-20, -20, 0,  0,  0, -8, -20],
+              opacity: [0,   0,   1,  1,  1,  0,  0  ],
+            }}
+            transition={{
+              duration: LOOP,
+              times:    [0, 0.19, 0.28, 0.72, 0.80, 0.91, 1],
+              ease:     [0.22, 1, 0.36, 1],
+              repeat:   Infinity,
+              repeatDelay: 0.15,
+            }}
             style={{
               color: '#0A0F1A',
               fontStyle: 'normal',
@@ -118,5 +154,19 @@ export function ZyphixLogo({
 }
 
 export function ZMarkOnly({ size = 32 }: { size?: number }) {
-  return <PinMark size={size} />;
+  const r  = Math.round(size * 0.265);
+  const fs = Math.round(size * 0.46);
+  return (
+    <div style={{
+      width: size, height: size, borderRadius: r,
+      background: 'linear-gradient(148deg, #1AE082 0%, #0DC268 38%, #09A058 72%, #077A46 100%)',
+      display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0,
+      boxShadow: '0 5px 22px rgba(9,160,88,.52)',
+    }}>
+      <span style={{
+        fontFamily: "'Outfit', sans-serif", fontWeight: 900, fontStyle: 'italic',
+        fontSize: fs, color: '#fff', lineHeight: 1, letterSpacing: '-0.08em',
+      }}>//</span>
+    </div>
+  );
 }
