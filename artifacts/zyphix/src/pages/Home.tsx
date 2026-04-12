@@ -1,332 +1,398 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
-  Search, MapPin, ChevronDown, ShoppingCart, User, LogOut,
-  ArrowRight, Star, Check, Phone, Instagram, Twitter, Linkedin,
-  ChevronRight, Truck, Zap, Shield, Clock, Sun
+  ArrowRight, Check, MapPin, Phone, Instagram, Twitter, Linkedin,
+  ChevronRight, Sun, Star, Menu, X, User, LogOut
 } from 'lucide-react';
 import { useAuth } from '@/context/AuthContext';
 import { ZyphixLogo } from '../components/ZyphixLogo';
 import { useLocation } from 'wouter';
 
-/* ═══════ DARK PREMIUM DESIGN TOKENS ═══════ */
-const BG    = '#060B12';
-const BG2   = '#0A1222';
-const CARD  = '#0F1A2E';
-const CARD2 = '#152035';
-const G     = '#00D97E';
-const G2    = '#00B368';
-const ORG   = '#FF6435';
-const ORG2  = '#E8501E';
-const T1    = '#FFFFFF';
-const T2    = 'rgba(255,255,255,0.6)';
-const T3    = 'rgba(255,255,255,0.32)';
-const BD    = 'rgba(255,255,255,0.07)';
-const BD2   = 'rgba(255,255,255,0.14)';
-const SH    = '0 8px 32px rgba(0,0,0,.5)';
-const SH2   = '0 24px 64px rgba(0,0,0,.7)';
+/* ─────────────────────────────────────────────
+   DESIGN TOKENS — strict, consistent system
+───────────────────────────────────────────── */
+const BG      = '#0B0B0B';
+const SURF    = '#141414';
+const CARD    = '#1C1C1C';
+const CARD2   = '#222222';
+const BD      = 'rgba(255,255,255,0.07)';
+const BD2     = 'rgba(255,255,255,0.13)';
+const G       = '#22C55E';
+const G2      = '#16A34A';
+const G_GLOW  = 'rgba(34,197,94,0.18)';
+const ORG     = '#F97316';
+const T1      = '#FFFFFF';
+const T2      = 'rgba(255,255,255,0.52)';
+const T3      = 'rgba(255,255,255,0.26)';
+const SH_CARD = '0 1px 3px rgba(0,0,0,0.5), 0 8px 24px rgba(0,0,0,0.4)';
+const SH_UP   = '0 2px 8px rgba(0,0,0,0.6), 0 16px 48px rgba(0,0,0,0.5)';
 
-/* ═══════ ANNOUNCEMENT BAR ═══════ */
+type Role = 'customer' | 'restaurant' | 'merchant' | 'delivery';
+
+/* ─────────────────────────────────────────────
+   ANNOUNCEMENT BAR
+───────────────────────────────────────────── */
 function AnnoBar() {
   const msgs = [
-    '🎉 Use code ZYPHIX50 — 50% off your first order',
-    '🚀 Launching in Jammu, J&K — Join 500+ on the waitlist now',
-    '🏪 Kirana store owner? List your store free — Register today',
+    '🎉  Early access open — get ₹125 credit on your first order',
+    '🚀  Launching in Jammu, J&K — 500+ people already on the waitlist',
+    '🏪  Kirana store owner? List your store for free and grow your business',
   ];
-  const [i, setI] = useState(0);
+  const [idx, setIdx] = useState(0);
   useEffect(() => {
-    const t = setInterval(() => setI(x => (x + 1) % msgs.length), 3500);
+    const t = setInterval(() => setIdx(i => (i + 1) % msgs.length), 4000);
     return () => clearInterval(t);
   }, []);
   return (
-    <div style={{ background: `linear-gradient(90deg, #00533A 0%, #006B4A 50%, #00533A 100%)`, padding: '9px 16px', textAlign: 'center', overflow: 'hidden' }}>
+    <div style={{ background: '#052E16', borderBottom: '1px solid rgba(34,197,94,0.14)', padding: '10px 16px', textAlign: 'center', overflow: 'hidden' }}>
       <AnimatePresence mode="wait">
-        <motion.p key={i} initial={{ y: 10, opacity: 0 }} animate={{ y: 0, opacity: 1 }} exit={{ y: -10, opacity: 0 }} transition={{ duration: .28 }}
-          style={{ fontSize: 12.5, fontWeight: 600, color: 'rgba(255,255,255,.9)', letterSpacing: '.01em' }}>
-          {msgs[i]}
+        <motion.p key={idx}
+          initial={{ y: 8, opacity: 0 }} animate={{ y: 0, opacity: 1 }} exit={{ y: -8, opacity: 0 }}
+          transition={{ duration: 0.24 }}
+          style={{ fontSize: 13, fontWeight: 500, color: 'rgba(255,255,255,0.82)', lineHeight: 1 }}>
+          {msgs[idx]}
         </motion.p>
       </AnimatePresence>
     </div>
   );
 }
 
-/* ═══════ NAVBAR ═══════ */
-function Navbar() {
-  const [scrolled, setScrolled] = useState(false);
-  const [q, setQ] = useState('');
-  const [focus, setFocus] = useState(false);
-  const [menuOpen, setMenuOpen] = useState(false);
+/* ─────────────────────────────────────────────
+   NAVIGATION
+───────────────────────────────────────────── */
+function Nav() {
+  const [solid, setSolid] = useState(false);
+  const [mobileOpen, setMobileOpen] = useState(false);
   const { user, logout, openModal } = useAuth();
-  const [, navigate] = useLocation();
+  const [, nav] = useLocation();
 
   useEffect(() => {
-    const h = () => setScrolled(window.scrollY > 10);
+    const h = () => setSolid(window.scrollY > 24);
     window.addEventListener('scroll', h, { passive: true });
     return () => window.removeEventListener('scroll', h);
   }, []);
 
+  const scroll = (id: string) => {
+    setMobileOpen(false);
+    document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
+  };
+
   return (
-    <div className="sticky top-0 z-50" style={{
-      background: scrolled ? 'rgba(6,11,18,0.92)' : 'rgba(6,11,18,0.6)',
-      backdropFilter: 'blur(20px)',
-      WebkitBackdropFilter: 'blur(20px)',
-      borderBottom: `1px solid ${scrolled ? BD2 : BD}`,
-      transition: 'all .22s',
-    }}>
-      <div style={{ maxWidth: 1320, margin: '0 auto', padding: '0 24px', height: 64, display: 'flex', alignItems: 'center', gap: 16 }}>
-        <a href="/" style={{ textDecoration: 'none', flexShrink: 0 }}>
-          <ZyphixLogo size={32} />
-        </a>
+    <div className="sticky top-0 z-50"
+      style={{ background: solid ? 'rgba(11,11,11,0.95)' : 'rgba(11,11,11,0.7)', backdropFilter: 'blur(16px)', WebkitBackdropFilter: 'blur(16px)', borderBottom: `1px solid ${solid ? BD2 : BD}`, transition: 'all 0.2s' }}>
+      <div style={{ maxWidth: 1200, margin: '0 auto', padding: '0 24px', height: 64, display: 'flex', alignItems: 'center', gap: 32 }}>
+        {/* Logo */}
+        <a href="/" style={{ textDecoration: 'none', flexShrink: 0 }}><ZyphixLogo size={30} /></a>
 
-        <div style={{ width: 1, height: 26, background: BD2, flexShrink: 0 }} />
+        {/* Desktop nav links */}
+        <nav style={{ display: 'flex', gap: 4, marginRight: 'auto' }} className="hidden md:flex">
+          {[['ZyphixNow', () => scroll('services')], ['ZyphixEats', () => scroll('services')], ['How It Works', () => scroll('how')], ['About', () => { window.location.href = '/about'; }]].map(([label, fn]) => (
+            <button key={label as string} onClick={fn as () => void}
+              style={{ padding: '6px 12px', borderRadius: 8, fontSize: 13.5, fontWeight: 500, color: T2, background: 'transparent', border: 'none', cursor: 'pointer', transition: 'color 0.15s' }}
+              onMouseEnter={e => (e.currentTarget.style.color = T1)}
+              onMouseLeave={e => (e.currentTarget.style.color = T2)}>
+              {label as string}
+            </button>
+          ))}
+        </nav>
 
-        <button style={{ display: 'flex', alignItems: 'center', gap: 6, flexShrink: 0 }}>
-          <MapPin size={14} color={G} />
-          <div>
-            <p style={{ fontSize: 8, fontWeight: 700, color: T3, textTransform: 'uppercase', letterSpacing: '.08em' }}>Deliver to</p>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 3 }}>
-              <span style={{ fontWeight: 700, color: T1, fontSize: 12.5 }}>Select Location</span>
-              <ChevronDown size={10} color={T3} />
-            </div>
-          </div>
-        </button>
+        {/* Right actions */}
+        <div style={{ display: 'flex', gap: 8, alignItems: 'center', marginLeft: 'auto' }} className="hidden md:flex">
+          {/* Light theme toggle */}
+          <button onClick={() => nav('/light')} title="Light mode"
+            style={{ width: 34, height: 34, borderRadius: 8, border: `1px solid ${BD2}`, background: CARD, display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', color: T3, transition: 'all 0.15s' }}
+            onMouseEnter={e => { (e.currentTarget as HTMLElement).style.borderColor = G; (e.currentTarget as HTMLElement).style.color = G; }}
+            onMouseLeave={e => { (e.currentTarget as HTMLElement).style.borderColor = BD2; (e.currentTarget as HTMLElement).style.color = T3; }}>
+            <Sun size={15} />
+          </button>
 
-        <div style={{ flex: 1, position: 'relative', maxWidth: 480 }}>
-          <Search size={13} style={{ position: 'absolute', left: 12, top: '50%', transform: 'translateY(-50%)', color: focus ? G : T3, transition: 'color .15s' }} />
-          <input value={q} onChange={e => setQ(e.target.value)}
-            onFocus={() => setFocus(true)} onBlur={() => setFocus(false)}
-            placeholder="Search groceries, restaurants..."
-            style={{
-              width: '100%', paddingLeft: 36, paddingRight: 14, paddingTop: 10, paddingBottom: 10,
-              borderRadius: 10, background: CARD, border: `1.5px solid ${focus ? G + '55' : BD2}`,
-              fontSize: 13, color: T1, fontFamily: 'inherit', fontWeight: 500, outline: 'none',
-              transition: 'all .18s', boxShadow: focus ? `0 0 0 3px ${G}18` : 'none',
-            }} />
-        </div>
-
-        <div style={{ display: 'flex', gap: 8, marginLeft: 'auto', flexShrink: 0, alignItems: 'center' }}>
-          {/* Theme toggle: switch to light */}
-          <motion.button whileHover={{ scale: 1.08, rotate: 20 }} whileTap={{ scale: 0.93 }}
-            onClick={() => navigate('/light')}
-            title="Switch to Light Theme"
-            style={{ width: 36, height: 36, borderRadius: 10, border: `1.5px solid ${BD2}`, background: CARD, display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', color: T2 }}>
-            <Sun size={16} color={G} />
-          </motion.button>
           {user ? (
-            <button onClick={logout} style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '8px 14px', borderRadius: 10, border: `1px solid ${BD2}`, background: CARD, color: T2, fontSize: 13, fontWeight: 600, cursor: 'pointer' }}>
-              <div style={{ width: 24, height: 24, borderRadius: '50%', background: G, color: BG, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 11, fontWeight: 900 }}>{user.name[0]}</div>
-              <span className="hidden lg:inline">{user.name.split(' ')[0]}</span>
+            <button onClick={logout}
+              style={{ display: 'flex', alignItems: 'center', gap: 7, padding: '7px 13px', borderRadius: 8, border: `1px solid ${BD2}`, background: CARD, color: T2, fontSize: 13, fontWeight: 500, cursor: 'pointer' }}>
+              <div style={{ width: 20, height: 20, borderRadius: '50%', background: G, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 9, fontWeight: 800, color: BG }}>{user.name[0]}</div>
+              {user.name.split(' ')[0]}
             </button>
           ) : (
-            <button onClick={openModal} style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '8px 16px', borderRadius: 10, border: `1px solid ${BD2}`, background: CARD, color: T2, fontSize: 13, fontWeight: 600, cursor: 'pointer', transition: 'all .15s' }}
-              onMouseEnter={e => { (e.currentTarget as HTMLElement).style.borderColor = G + '44'; (e.currentTarget as HTMLElement).style.color = G; }}
-              onMouseLeave={e => { (e.currentTarget as HTMLElement).style.borderColor = BD2; (e.currentTarget as HTMLElement).style.color = T2; }}>
-              <User size={13} /><span className="hidden sm:inline">Sign in</span>
+            <button onClick={openModal}
+              style={{ padding: '7px 14px', borderRadius: 8, border: `1px solid ${BD2}`, background: 'transparent', color: T2, fontSize: 13, fontWeight: 500, cursor: 'pointer', transition: 'all 0.15s' }}
+              onMouseEnter={e => { (e.currentTarget.style.color = T1); (e.currentTarget.style.borderColor = BD2); }}
+              onMouseLeave={e => { (e.currentTarget.style.color = T2); }}>
+              Sign in
             </button>
           )}
-          <button style={{ display: 'flex', alignItems: 'center', gap: 7, padding: '8px 18px', borderRadius: 10, background: G, fontSize: 13, fontWeight: 800, color: BG, boxShadow: `0 4px 20px ${G}44`, transition: 'all .15s', position: 'relative' }}
-            onMouseEnter={e => (e.currentTarget as HTMLElement).style.background = G2}
-            onMouseLeave={e => (e.currentTarget as HTMLElement).style.background = G}>
-            <ShoppingCart size={13} /><span className="hidden sm:inline">Cart</span>
-            <span style={{ position: 'absolute', top: -7, right: -7, width: 18, height: 18, borderRadius: '50%', background: '#EF4444', color: '#fff', fontSize: 9, fontWeight: 900, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>3</span>
+          <button onClick={() => scroll('waitlist')}
+            style={{ padding: '8px 18px', borderRadius: 8, background: G, color: BG, fontSize: 13, fontWeight: 700, border: 'none', cursor: 'pointer', transition: 'background 0.15s' }}
+            onMouseEnter={e => (e.currentTarget.style.background = G2)}
+            onMouseLeave={e => (e.currentTarget.style.background = G)}>
+            Join Waitlist
           </button>
         </div>
-      </div>
-    </div>
-  );
-}
 
-/* ═══════ HERO ═══════ */
-function Hero() {
-  const scrollToWaitlist = () => document.getElementById('waitlist')?.scrollIntoView({ behavior: 'smooth' });
-
-  return (
-    <div style={{ background: BG, position: 'relative', overflow: 'hidden', minHeight: '92vh', display: 'flex', alignItems: 'center' }}>
-      {/* Background orbs */}
-      <div style={{ position: 'absolute', inset: 0, pointerEvents: 'none' }}>
-        <motion.div animate={{ scale: [1, 1.15, 1], opacity: [0.18, 0.28, 0.18] }} transition={{ duration: 8, repeat: Infinity, ease: 'easeInOut' }}
-          style={{ position: 'absolute', top: '10%', left: '-10%', width: '55vw', height: '55vw', borderRadius: '50%', background: `radial-gradient(circle, ${G}40 0%, transparent 70%)`, filter: 'blur(60px)' }} />
-        <motion.div animate={{ scale: [1.1, 1, 1.1], opacity: [0.12, 0.2, 0.12] }} transition={{ duration: 10, repeat: Infinity, ease: 'easeInOut', delay: 2 }}
-          style={{ position: 'absolute', bottom: '5%', right: '-5%', width: '45vw', height: '45vw', borderRadius: '50%', background: `radial-gradient(circle, ${ORG}30 0%, transparent 70%)`, filter: 'blur(80px)' }} />
-        <div style={{ position: 'absolute', inset: 0, backgroundImage: `radial-gradient(${BD2} 1px, transparent 1px)`, backgroundSize: '36px 36px', opacity: 0.6 }} />
+        {/* Mobile menu toggle */}
+        <button onClick={() => setMobileOpen(!mobileOpen)} className="md:hidden" style={{ marginLeft: 'auto', background: 'none', border: 'none', color: T1, cursor: 'pointer', padding: 4 }}>
+          {mobileOpen ? <X size={20} /> : <Menu size={20} />}
+        </button>
       </div>
 
-      <div style={{ maxWidth: 1320, margin: '0 auto', padding: '80px 24px', width: '100%', position: 'relative', zIndex: 1 }}>
-        {/* Location pill */}
-        <motion.div initial={{ opacity: 0, y: -16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: .5 }}
-          style={{ display: 'inline-flex', alignItems: 'center', gap: 6, background: CARD, border: `1px solid ${BD2}`, borderRadius: 99, padding: '6px 14px', marginBottom: 32 }}>
-          <MapPin size={12} color={G} />
-          <span style={{ fontSize: 12.5, fontWeight: 600, color: T2 }}>Launching in</span>
-          <span style={{ fontSize: 12.5, fontWeight: 800, color: G }}>Jammu, J&K</span>
-          <span style={{ width: 6, height: 6, borderRadius: '50%', background: G, animation: 'pulse 2s infinite', display: 'inline-block' }} />
-        </motion.div>
-
-        {/* Main wordmark */}
-        <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: .6, delay: .1 }}>
-          <h1 style={{ fontFamily: "'Outfit',sans-serif", fontWeight: 900, fontSize: 'clamp(3.8rem, 9vw, 8.5rem)', color: T1, lineHeight: .92, letterSpacing: '-.06em', marginBottom: 0 }}>
-            India's
-          </h1>
-          <h1 style={{ fontFamily: "'Outfit',sans-serif", fontWeight: 900, fontSize: 'clamp(3.8rem, 9vw, 8.5rem)', lineHeight: .92, letterSpacing: '-.06em', marginBottom: 24,
-            background: `linear-gradient(135deg, #1CF586 0%, ${G} 40%, #00B368 80%)`,
-            WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text', display: 'inline-block' }}>
-            SuperLocal App.
-          </h1>
-        </motion.div>
-
-        <motion.p initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: .6, delay: .22 }}
-          style={{ fontSize: 'clamp(1rem, 1.8vw, 1.25rem)', color: T2, maxWidth: 560, lineHeight: 1.65, marginBottom: 40 }}>
-          Groceries from your local kirana in <strong style={{ color: T1 }}>30 minutes</strong>. Food from your favourite restaurants. All in one app — built for Jammu.
-        </motion.p>
-
-        {/* Service pills */}
-        <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: .5, delay: .32 }}
-          style={{ display: 'flex', gap: 12, flexWrap: 'wrap', marginBottom: 44 }}>
-          {[
-            { icon: '⚡', label: 'ZyphixNow', sub: 'Grocery · 30 min', color: G, glow: G + '30' },
-            { icon: '🍱', label: 'ZyphixEats', sub: 'Restaurant food', color: ORG, glow: ORG + '30' },
-          ].map(s => (
-            <motion.button key={s.label} whileHover={{ scale: 1.04, y: -2 }} whileTap={{ scale: 0.97 }} onClick={scrollToWaitlist}
-              style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '12px 20px', borderRadius: 14, background: CARD, border: `1.5px solid ${s.color}33`, boxShadow: `0 4px 24px ${s.glow}`, cursor: 'pointer' }}>
-              <span style={{ fontSize: 22 }}>{s.icon}</span>
-              <div style={{ textAlign: 'left' }}>
-                <p style={{ fontSize: 14, fontWeight: 800, color: T1, lineHeight: 1.2 }}>{s.label}</p>
-                <p style={{ fontSize: 11.5, color: s.color, fontWeight: 600 }}>{s.sub}</p>
-              </div>
-              <ChevronRight size={14} color={T3} style={{ marginLeft: 4 }} />
-            </motion.button>
-          ))}
-        </motion.div>
-
-        {/* Primary CTA */}
-        <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: .5, delay: .42 }}
-          style={{ display: 'flex', alignItems: 'center', gap: 16, flexWrap: 'wrap' }}>
-          <motion.button whileHover={{ scale: 1.04, boxShadow: `0 12px 40px ${G}60` }} whileTap={{ scale: 0.97 }} onClick={scrollToWaitlist}
-            style={{ display: 'inline-flex', alignItems: 'center', gap: 10, background: G, color: BG, fontSize: 16, fontWeight: 900, padding: '16px 36px', borderRadius: 14, border: 'none', cursor: 'pointer', boxShadow: `0 8px 32px ${G}44`, letterSpacing: '-.01em' }}>
-            Join the Waitlist
-            <ArrowRight size={18} />
-          </motion.button>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-            <div style={{ display: 'flex' }}>
-              {['P','R','A','K','S'].map((l, i) => (
-                <div key={i} style={{ width: 30, height: 30, borderRadius: '50%', background: `hsl(${140 + i * 15}, 70%, ${45 + i * 3}%)`, border: `2px solid ${BG}`, marginLeft: i ? -10 : 0, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 10, fontWeight: 900, color: '#fff' }}>{l}</div>
+      {/* Mobile drawer */}
+      <AnimatePresence>
+        {mobileOpen && (
+          <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: 'auto', opacity: 1 }} exit={{ height: 0, opacity: 0 }}
+            style={{ borderTop: `1px solid ${BD}`, background: BG, overflow: 'hidden' }}>
+            <div style={{ padding: '16px 24px', display: 'flex', flexDirection: 'column', gap: 4 }}>
+              {[['ZyphixNow', 'services'], ['ZyphixEats', 'services'], ['How It Works', 'how'], ['Join Waitlist', 'waitlist']].map(([l, id]) => (
+                <button key={l} onClick={() => scroll(id)}
+                  style={{ padding: '11px 0', textAlign: 'left', background: 'none', border: 'none', color: l === 'Join Waitlist' ? G : T2, fontSize: 14, fontWeight: l === 'Join Waitlist' ? 700 : 500, cursor: 'pointer' }}>
+                  {l}
+                </button>
               ))}
             </div>
-            <div>
-              <p style={{ fontSize: 13, fontWeight: 700, color: T1 }}>500+ already joined</p>
-              <p style={{ fontSize: 11, color: T3 }}>Free · No credit card</p>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
+  );
+}
+
+/* ─────────────────────────────────────────────
+   HERO — two-column, balanced layout
+───────────────────────────────────────────── */
+function Hero() {
+  const scroll = (id: string) => document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
+
+  return (
+    <section style={{ background: BG, padding: '80px 24px 96px', position: 'relative', overflow: 'hidden' }}>
+      {/* Ambient glow — subtle */}
+      <div style={{ position: 'absolute', top: '40%', left: '55%', width: 480, height: 480, borderRadius: '50%', background: G_GLOW, filter: 'blur(80px)', pointerEvents: 'none', transform: 'translate(-50%,-50%)' }} />
+
+      <div style={{ maxWidth: 1200, margin: '0 auto', display: 'grid', gridTemplateColumns: '1fr 420px', gap: 64, alignItems: 'center' }}>
+        {/* ── Left: copy ── */}
+        <div>
+          {/* Launch badge */}
+          <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4 }}
+            style={{ display: 'inline-flex', alignItems: 'center', gap: 8, background: CARD, border: `1px solid ${BD2}`, borderRadius: 99, padding: '6px 14px 6px 8px', marginBottom: 28 }}>
+            <span style={{ background: G, color: BG, fontSize: 10, fontWeight: 700, padding: '3px 8px', borderRadius: 99, letterSpacing: '0.04em' }}>LAUNCHING</span>
+            <span style={{ fontSize: 13, color: T2, fontWeight: 500 }}>Jammu, J&K · 2025</span>
+          </motion.div>
+
+          {/* Headline */}
+          <motion.h1 initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.08 }}
+            style={{ fontFamily: "'Outfit', sans-serif", fontWeight: 800, fontSize: 'clamp(2.4rem, 4.2vw, 3.6rem)', color: T1, lineHeight: 1.12, letterSpacing: '-0.035em', marginBottom: 20 }}>
+            Groceries & food<br />
+            <span style={{ color: G }}>delivered in 30 minutes</span><br />
+            from your neighbourhood.
+          </motion.h1>
+
+          {/* Subtitle */}
+          <motion.p initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.45, delay: 0.16 }}
+            style={{ fontSize: 16, color: T2, lineHeight: 1.72, maxWidth: 480, marginBottom: 36 }}>
+            Zyphix connects you with local kirana stores and restaurants in Jammu — delivering at real store prices, powered by your neighbourhood, not dark warehouses.
+          </motion.p>
+
+          {/* CTAs */}
+          <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4, delay: 0.24 }}
+            style={{ display: 'flex', gap: 12, flexWrap: 'wrap', alignItems: 'center', marginBottom: 36 }}>
+            <motion.button whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.97 }}
+              onClick={() => scroll('waitlist')}
+              style={{ display: 'inline-flex', alignItems: 'center', gap: 8, background: G, color: BG, fontSize: 14.5, fontWeight: 700, padding: '13px 28px', borderRadius: 10, border: 'none', cursor: 'pointer', letterSpacing: '-0.01em' }}>
+              Join the Waitlist — Free
+              <ArrowRight size={16} />
+            </motion.button>
+            <button onClick={() => scroll('how')}
+              style={{ display: 'inline-flex', alignItems: 'center', gap: 6, background: 'none', border: 'none', color: T2, fontSize: 14, fontWeight: 500, cursor: 'pointer', transition: 'color 0.15s' }}
+              onMouseEnter={e => (e.currentTarget.style.color = T1)}
+              onMouseLeave={e => (e.currentTarget.style.color = T2)}>
+              How it works <ChevronRight size={14} />
+            </button>
+          </motion.div>
+
+          {/* Social proof */}
+          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.4, delay: 0.36 }}
+            style={{ display: 'flex', alignItems: 'center', gap: 16, flexWrap: 'wrap' }}>
+            <div style={{ display: 'flex' }}>
+              {['A','B','C','D','E'].map((l, i) => (
+                <div key={i} style={{ width: 28, height: 28, borderRadius: '50%', background: `hsl(${130 + i*18},55%,${40+i*4}%)`, border: `2px solid ${BG}`, marginLeft: i ? -10 : 0, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 10, fontWeight: 700, color: '#fff', flexShrink: 0 }}>{l}</div>
+              ))}
+            </div>
+            <div style={{ height: 20, width: 1, background: BD2 }} />
+            <p style={{ fontSize: 13.5, color: T2 }}><strong style={{ color: T1 }}>500+</strong> people on the waitlist</p>
+            <div style={{ height: 20, width: 1, background: BD2 }} />
+            <p style={{ fontSize: 13.5, color: T2 }}>Free forever</p>
+          </motion.div>
+        </div>
+
+        {/* ── Right: app preview card ── */}
+        <motion.div initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, delay: 0.2 }}
+          style={{ position: 'relative' }}>
+          {/* Main card */}
+          <div style={{ background: SURF, border: `1px solid ${BD2}`, borderRadius: 20, overflow: 'hidden', boxShadow: SH_UP }}>
+            {/* Card header */}
+            <div style={{ padding: '18px 20px', borderBottom: `1px solid ${BD}`, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                <div style={{ width: 8, height: 8, borderRadius: '50%', background: G }} />
+                <span style={{ fontSize: 12, fontWeight: 600, color: G }}>Live in Jammu</span>
+              </div>
+              <span style={{ fontSize: 11, color: T3 }}>Q2 2025</span>
+            </div>
+
+            {/* Service rows */}
+            <div style={{ padding: 20, display: 'flex', flexDirection: 'column', gap: 12 }}>
+              {/* ZyphixNow */}
+              <div style={{ background: CARD, border: `1px solid ${BD}`, borderRadius: 14, padding: '16px 18px' }}>
+                <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', marginBottom: 12 }}>
+                  <div>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 4 }}>
+                      <span style={{ fontSize: 14 }}>⚡</span>
+                      <span style={{ fontSize: 12, fontWeight: 700, color: G, letterSpacing: '0.04em' }}>ZYPHIXNOW</span>
+                    </div>
+                    <p style={{ fontSize: 15, fontWeight: 700, color: T1, letterSpacing: '-0.02em' }}>Grocery & essentials</p>
+                    <p style={{ fontSize: 12, color: T3, marginTop: 2 }}>From kirana stores near you</p>
+                  </div>
+                  <div style={{ background: `${G}15`, border: `1px solid ${G}25`, borderRadius: 8, padding: '6px 12px', textAlign: 'center' }}>
+                    <p style={{ fontSize: 13, fontWeight: 800, color: G, lineHeight: 1 }}>30</p>
+                    <p style={{ fontSize: 9, color: G, opacity: 0.7, fontWeight: 600 }}>MIN</p>
+                  </div>
+                </div>
+                <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
+                  {['Vegetables', 'Dairy', 'Pharmacy', 'Snacks'].map(t => (
+                    <span key={t} style={{ background: CARD2, border: `1px solid ${BD}`, borderRadius: 6, padding: '3px 9px', fontSize: 11, color: T3, fontWeight: 500 }}>{t}</span>
+                  ))}
+                </div>
+              </div>
+
+              {/* ZyphixEats */}
+              <div style={{ background: CARD, border: `1px solid ${BD}`, borderRadius: 14, padding: '16px 18px' }}>
+                <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', marginBottom: 12 }}>
+                  <div>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 4 }}>
+                      <span style={{ fontSize: 14 }}>🍱</span>
+                      <span style={{ fontSize: 12, fontWeight: 700, color: ORG, letterSpacing: '0.04em' }}>ZYPHIXEATS</span>
+                    </div>
+                    <p style={{ fontSize: 15, fontWeight: 700, color: T1, letterSpacing: '-0.02em' }}>Restaurants & dhabas</p>
+                    <p style={{ fontSize: 12, color: T3, marginTop: 2 }}>Local food, delivered fast</p>
+                  </div>
+                  <div style={{ background: `${ORG}15`, border: `1px solid ${ORG}25`, borderRadius: 8, padding: '6px 12px', textAlign: 'center' }}>
+                    <p style={{ fontSize: 13, fontWeight: 800, color: ORG, lineHeight: 1 }}>200+</p>
+                    <p style={{ fontSize: 9, color: ORG, opacity: 0.7, fontWeight: 600 }}>PLACES</p>
+                  </div>
+                </div>
+                <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
+                  {['Biryani', 'Pizza', 'Thali', 'Desserts'].map(t => (
+                    <span key={t} style={{ background: CARD2, border: `1px solid ${BD}`, borderRadius: 6, padding: '3px 9px', fontSize: 11, color: T3, fontWeight: 500 }}>{t}</span>
+                  ))}
+                </div>
+              </div>
+
+              {/* CTA inside card */}
+              <button onClick={() => scroll('waitlist')}
+                style={{ width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, background: G, color: BG, fontSize: 13.5, fontWeight: 700, padding: '13px', borderRadius: 12, border: 'none', cursor: 'pointer' }}>
+                Get early access · Free
+                <ArrowRight size={14} />
+              </button>
             </div>
           </div>
-        </motion.div>
-      </div>
 
-      {/* Bottom scroll indicator */}
-      <motion.div animate={{ y: [0, 8, 0] }} transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
-        style={{ position: 'absolute', bottom: 32, left: '50%', transform: 'translateX(-50%)', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 6, color: T3 }}>
-        <span style={{ fontSize: 11, fontWeight: 600, letterSpacing: '.08em', textTransform: 'uppercase' }}>Scroll</span>
-        <div style={{ width: 1, height: 32, background: `linear-gradient(to bottom, ${T3}, transparent)` }} />
-      </motion.div>
-
-      <style>{`@keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.5;transform:scale(1.4)} }`}</style>
-    </div>
-  );
-}
-
-/* ═══════ SERVICE SPLIT ═══════ */
-function ServiceSplit() {
-  const scrollToWaitlist = () => document.getElementById('waitlist')?.scrollIntoView({ behavior: 'smooth' });
-
-  const panels = [
-    {
-      id: 'now', label: 'ZyphixNow', emoji: '⚡',
-      headline: 'Groceries in\n30 minutes.',
-      sub: 'Fresh produce, dairy, snacks, pharmacy — all from kirana stores near you. No dark warehouses. Real local prices.',
-      tags: ['Vegetables', 'Dairy', 'Pharmacy', 'Snacks', 'Household'],
-      stat: '30 min', statLabel: 'Avg. delivery',
-      accent: G, accentDim: '#00533A', glow: G + '25',
-      img: 'https://images.unsplash.com/photo-1542838132-92c53300491e?w=1200&h=900&fit=crop&q=85',
-    },
-    {
-      id: 'eats', label: 'ZyphixEats', emoji: '🍱',
-      headline: 'Food from your\nfavourite places.',
-      sub: "Restaurants, dhabas, cloud kitchens — from the local gem that's not on Swiggy to your city's best biryani.",
-      tags: ['Biryani', 'Pizza', 'Burgers', 'Thali', 'Desserts'],
-      stat: '200+', statLabel: 'Partner restaurants',
-      accent: ORG, accentDim: '#7A2E0A', glow: ORG + '25',
-      img: 'https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=1200&h=900&fit=crop&q=85',
-    },
-  ];
-
-  return (
-    <div style={{ background: BG2 }}>
-      <style>{`@media(max-width:767px){.svc-grid{grid-template-columns:1fr!important}.svc-panel{min-height:440px!important}}`}</style>
-      <div className="svc-grid" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', maxWidth: 1320, margin: '0 auto' }}>
-        {panels.map((p, pi) => (
-          <motion.div key={p.id} className="svc-panel" initial={{ opacity: 0, y: 24 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: pi * .12 }}
-            style={{ position: 'relative', minHeight: 560, overflow: 'hidden', cursor: 'pointer', borderRight: pi === 0 ? `1px solid ${BD}` : 'none', borderBottom: `1px solid ${BD}` }}>
-            {/* Background image */}
-            <div style={{ position: 'absolute', inset: 0, backgroundImage: `url(${p.img})`, backgroundSize: 'cover', backgroundPosition: 'center', opacity: 0.22 }} />
-            {/* Gradient overlay */}
-            <div style={{ position: 'absolute', inset: 0, background: `linear-gradient(160deg, ${BG2}CC 0%, ${BG2}EE 60%, ${BG2} 100%)` }} />
-            {/* Glow */}
-            <div style={{ position: 'absolute', top: -80, right: -80, width: 320, height: 320, borderRadius: '50%', background: `radial-gradient(circle, ${p.glow}, transparent 70%)`, filter: 'blur(40px)' }} />
-
-            <div style={{ position: 'relative', zIndex: 1, padding: '52px 48px' }}>
-              {/* Badge */}
-              <div style={{ display: 'inline-flex', alignItems: 'center', gap: 7, background: p.accent + '18', border: `1px solid ${p.accent}33`, borderRadius: 99, padding: '6px 14px', marginBottom: 28 }}>
-                <span>{p.emoji}</span>
-                <span style={{ fontSize: 12, fontWeight: 700, color: p.accent, letterSpacing: '.05em' }}>{p.label}</span>
-              </div>
-
-              {/* Headline */}
-              <h2 style={{ fontFamily: "'Outfit',sans-serif", fontWeight: 900, fontSize: 'clamp(2rem, 3.5vw, 3rem)', color: T1, lineHeight: 1.04, letterSpacing: '-.04em', marginBottom: 16, whiteSpace: 'pre-line' }}>
-                {p.headline}
-              </h2>
-              <p style={{ fontSize: 14.5, color: T2, lineHeight: 1.7, marginBottom: 28, maxWidth: 380 }}>{p.sub}</p>
-
-              {/* Tags */}
-              <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', marginBottom: 36 }}>
-                {p.tags.map(t => (
-                  <span key={t} style={{ background: CARD2, border: `1px solid ${BD2}`, color: T2, fontSize: 12, fontWeight: 600, padding: '5px 13px', borderRadius: 8 }}>{t}</span>
-                ))}
-              </div>
-
-              {/* Stat + CTA */}
-              <div style={{ display: 'flex', alignItems: 'center', gap: 20, flexWrap: 'wrap' }}>
-                <div style={{ background: CARD, border: `1px solid ${p.accent}22`, borderRadius: 12, padding: '12px 18px' }}>
-                  <p style={{ fontFamily: "'Outfit',sans-serif", fontWeight: 900, fontSize: '1.5rem', color: p.accent, lineHeight: 1 }}>{p.stat}</p>
-                  <p style={{ fontSize: 11, color: T3, marginTop: 3, fontWeight: 500 }}>{p.statLabel}</p>
-                </div>
-                <motion.button whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.97 }} onClick={scrollToWaitlist}
-                  style={{ display: 'inline-flex', alignItems: 'center', gap: 8, background: p.accent, color: BG, fontSize: 14, fontWeight: 800, padding: '13px 26px', borderRadius: 12, border: 'none', cursor: 'pointer', boxShadow: `0 6px 24px ${p.glow}` }}>
-                  Join Waitlist <ArrowRight size={15} />
-                </motion.button>
-              </div>
+          {/* Floating badge */}
+          <motion.div animate={{ y: [0, -6, 0] }} transition={{ duration: 3.5, repeat: Infinity, ease: 'easeInOut' }}
+            style={{ position: 'absolute', bottom: -18, left: -18, background: CARD, border: `1px solid ${BD2}`, borderRadius: 12, padding: '12px 16px', boxShadow: SH_CARD, display: 'flex', alignItems: 'center', gap: 10 }}>
+            <div style={{ width: 36, height: 36, borderRadius: 10, background: `${G}15`, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 18 }}>🏪</div>
+            <div>
+              <p style={{ fontSize: 14, fontWeight: 700, color: T1, lineHeight: 1 }}>200+</p>
+              <p style={{ fontSize: 11, color: T3, marginTop: 3 }}>Partner stores ready</p>
             </div>
           </motion.div>
-        ))}
+        </motion.div>
       </div>
-    </div>
+    </section>
   );
 }
 
-/* ═══════ STATS STRIP ═══════ */
-function StatsStrip() {
+/* ─────────────────────────────────────────────
+   SERVICES
+───────────────────────────────────────────── */
+function Services() {
+  const scroll = () => document.getElementById('waitlist')?.scrollIntoView({ behavior: 'smooth' });
+  const cards = [
+    {
+      id: 'now', badge: '⚡ ZyphixNow', color: G, bg: `${G}0C`,
+      title: 'Your local kirana,\nnow supercharged.',
+      desc: 'Order from verified kirana stores near you. Same products, same prices — just delivered to your door in under 30 minutes.',
+      tags: ['Vegetables', 'Dairy & Eggs', 'Pharmacy', 'Household', 'Snacks'],
+      stat: '30 min', statSub: 'average delivery time',
+    },
+    {
+      id: 'eats', badge: '🍱 ZyphixEats', color: ORG, bg: `${ORG}0C`,
+      title: "Food from places\nyou actually love.",
+      desc: "Restaurants, dhabas, cloud kitchens — including the local gem that's not on Swiggy. Real food from your city's best.",
+      tags: ['Biryani', 'Pizza', 'Burgers', 'Thali', 'Chai & Snacks'],
+      stat: '200+', statSub: 'restaurant partners',
+    },
+  ];
+
+  return (
+    <section id="services" style={{ background: SURF, borderTop: `1px solid ${BD}`, padding: '88px 24px' }}>
+      <div style={{ maxWidth: 1200, margin: '0 auto' }}>
+        <div style={{ marginBottom: 48 }}>
+          <p style={{ fontSize: 12, fontWeight: 600, color: G, letterSpacing: '0.08em', textTransform: 'uppercase', marginBottom: 10 }}>Two services, one app</p>
+          <h2 style={{ fontFamily: "'Outfit', sans-serif", fontWeight: 800, fontSize: 'clamp(1.8rem, 3vw, 2.4rem)', color: T1, letterSpacing: '-0.03em', lineHeight: 1.14 }}>
+            Everything you need,<br />delivered from your neighbourhood.
+          </h2>
+        </div>
+
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16 }}>
+          {cards.map((c, i) => (
+            <motion.div key={c.id} initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.1 }}>
+              <div style={{ background: CARD, border: `1px solid ${BD2}`, borderRadius: 20, padding: '32px', height: '100%', display: 'flex', flexDirection: 'column', transition: 'border-color 0.2s' }}
+                onMouseEnter={e => (e.currentTarget.style.borderColor = c.color + '40')}
+                onMouseLeave={e => (e.currentTarget.style.borderColor = BD2)}>
+                <div style={{ display: 'inline-flex', alignItems: 'center', gap: 6, background: c.bg, border: `1px solid ${c.color}22`, borderRadius: 99, padding: '5px 12px', alignSelf: 'flex-start', marginBottom: 24 }}>
+                  <span style={{ fontSize: 13, fontWeight: 600, color: c.color }}>{c.badge}</span>
+                </div>
+                <h3 style={{ fontFamily: "'Outfit', sans-serif", fontWeight: 800, fontSize: 'clamp(1.5rem, 2.2vw, 1.9rem)', color: T1, letterSpacing: '-0.03em', lineHeight: 1.18, marginBottom: 14, whiteSpace: 'pre-line' }}>{c.title}</h3>
+                <p style={{ fontSize: 14.5, color: T2, lineHeight: 1.72, marginBottom: 24 }}>{c.desc}</p>
+                <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap', marginBottom: 28 }}>
+                  {c.tags.map(t => (
+                    <span key={t} style={{ background: SURF, border: `1px solid ${BD2}`, borderRadius: 6, padding: '4px 11px', fontSize: 12, color: T3, fontWeight: 500 }}>{t}</span>
+                  ))}
+                </div>
+                <div style={{ marginTop: 'auto', display: 'flex', alignItems: 'center', gap: 16 }}>
+                  <div style={{ background: SURF, border: `1px solid ${BD}`, borderRadius: 10, padding: '10px 16px' }}>
+                    <p style={{ fontFamily: "'Outfit', sans-serif", fontWeight: 800, fontSize: '1.4rem', color: c.color, lineHeight: 1 }}>{c.stat}</p>
+                    <p style={{ fontSize: 11, color: T3, marginTop: 3, fontWeight: 500 }}>{c.statSub}</p>
+                  </div>
+                  <button onClick={scroll} style={{ display: 'inline-flex', alignItems: 'center', gap: 6, background: c.color, color: BG, fontSize: 13, fontWeight: 700, padding: '10px 20px', borderRadius: 9, border: 'none', cursor: 'pointer', transition: 'opacity 0.15s' }}
+                    onMouseEnter={e => (e.currentTarget.style.opacity = '0.88')}
+                    onMouseLeave={e => (e.currentTarget.style.opacity = '1')}>
+                    Join Waitlist <ArrowRight size={14} />
+                  </button>
+                </div>
+              </div>
+            </motion.div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+/* ─────────────────────────────────────────────
+   STATS ROW
+───────────────────────────────────────────── */
+function StatsRow() {
   const stats = [
-    { v: '500+',    l: 'On the waitlist',     icon: '👥' },
-    { v: '200+',    l: 'Partner stores',       icon: '🏪' },
-    { v: '< 30 min',l: 'Avg. delivery time',  icon: '⚡' },
-    { v: '100%',    l: 'Free to join',         icon: '🎁' },
+    { v: '500+',     l: 'On the waitlist' },
+    { v: '200+',     l: 'Partner stores' },
+    { v: '< 30 min', l: 'Avg. delivery' },
+    { v: '₹0',       l: 'Platform fees' },
   ];
   return (
-    <div style={{ background: `linear-gradient(90deg, #003D28 0%, #004E33 50%, #003D28 100%)`, borderTop: `1px solid ${G}22`, borderBottom: `1px solid ${G}22`, padding: '36px 24px' }}>
-      <style>{`@media(max-width:640px){.stats-grid{grid-template-columns:1fr 1fr!important}}`}</style>
-      <div className="stats-grid" style={{ maxWidth: 1320, margin: '0 auto', display: 'grid', gridTemplateColumns: 'repeat(4,1fr)', gap: 24 }}>
+    <div style={{ background: '#0A1F0E', borderTop: `1px solid rgba(34,197,94,0.15)`, borderBottom: `1px solid rgba(34,197,94,0.15)`, padding: '40px 24px' }}>
+      <div style={{ maxWidth: 1200, margin: '0 auto', display: 'grid', gridTemplateColumns: 'repeat(4,1fr)', gap: 24 }}>
         {stats.map((s, i) => (
-          <motion.div key={i} initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: i * .08 }}
-            style={{ textAlign: 'center', padding: '8px 0' }}>
-            <p style={{ fontSize: 22, marginBottom: 6 }}>{s.icon}</p>
-            <p style={{ fontFamily: "'Outfit',sans-serif", fontWeight: 900, fontSize: 'clamp(1.8rem, 3vw, 2.4rem)', color: G, lineHeight: 1, letterSpacing: '-.04em', marginBottom: 6 }}>{s.v}</p>
-            <p style={{ fontSize: 13, color: 'rgba(255,255,255,.55)', fontWeight: 500 }}>{s.l}</p>
+          <motion.div key={i} initial={{ opacity: 0, y: 12 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.07 }}
+            style={{ textAlign: 'center' }}>
+            <p style={{ fontFamily: "'Outfit', sans-serif", fontWeight: 800, fontSize: 'clamp(1.7rem, 2.6vw, 2.2rem)', color: T1, lineHeight: 1, letterSpacing: '-0.04em', marginBottom: 6 }}>{s.v}</p>
+            <p style={{ fontSize: 13, color: 'rgba(255,255,255,0.45)', fontWeight: 500 }}>{s.l}</p>
           </motion.div>
         ))}
       </div>
@@ -334,9 +400,41 @@ function StatsStrip() {
   );
 }
 
-/* ═══════ WAITLIST SECTION ═══════ */
-type Role = 'customer' | 'restaurant' | 'merchant' | 'delivery';
+/* ─────────────────────────────────────────────
+   HOW IT WORKS
+───────────────────────────────────────────── */
+function HowItWorks() {
+  const steps = [
+    { n: '01', title: 'Set your location', desc: 'Allow GPS or enter your address. We instantly surface verified kirana stores and restaurants within your area.' },
+    { n: '02', title: 'Browse & place order', desc: "Choose from 1,000+ grocery items or local restaurants — all at the same price you'd pay at the store." },
+    { n: '03', title: 'Delivered in 30 min', desc: 'Track your order live. Our delivery partner picks up from the nearest store and reaches you in under 30 minutes.' },
+  ];
+  return (
+    <section id="how" style={{ background: BG, borderTop: `1px solid ${BD}`, padding: '88px 24px' }}>
+      <div style={{ maxWidth: 1200, margin: '0 auto' }}>
+        <div style={{ marginBottom: 48 }}>
+          <p style={{ fontSize: 12, fontWeight: 600, color: G, letterSpacing: '0.08em', textTransform: 'uppercase', marginBottom: 10 }}>Simple by design</p>
+          <h2 style={{ fontFamily: "'Outfit', sans-serif", fontWeight: 800, fontSize: 'clamp(1.8rem, 3vw, 2.4rem)', color: T1, letterSpacing: '-0.03em', lineHeight: 1.14 }}>How Zyphix works</h2>
+        </div>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: 1, background: BD }}>
+          {steps.map((s, i) => (
+            <motion.div key={i} initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.12 }}>
+              <div style={{ background: BG, padding: '36px 32px' }}>
+                <p style={{ fontFamily: "'Outfit', sans-serif", fontWeight: 800, fontSize: '2.6rem', color: CARD2, lineHeight: 1, marginBottom: 20, letterSpacing: '-0.04em' }}>{s.n}</p>
+                <h3 style={{ fontSize: 16, fontWeight: 700, color: T1, marginBottom: 10, letterSpacing: '-0.02em' }}>{s.title}</h3>
+                <p style={{ fontSize: 14, color: T2, lineHeight: 1.72 }}>{s.desc}</p>
+              </div>
+            </motion.div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
 
+/* ─────────────────────────────────────────────
+   WAITLIST FORM
+───────────────────────────────────────────── */
 function WaitlistSection() {
   const [name, setName] = useState('');
   const [phone, setPhone] = useState('');
@@ -354,324 +452,248 @@ function WaitlistSection() {
     e.preventDefault();
     if (!name || !phone || !city) return;
     const newPos = pos + Math.floor(Math.random() * 3) + 1;
-    const data = { name, phone, city, role, position: newPos, joinedAt: new Date().toISOString() };
-    localStorage.setItem('zyphix_waitlist', JSON.stringify(data));
+    localStorage.setItem('zyphix_waitlist', JSON.stringify({ name, phone, city, role, position: newPos, joinedAt: new Date().toISOString() }));
     setPos(newPos);
     setDone(true);
   };
 
-  const roles: { id: Role; label: string; emoji: string; desc: string }[] = [
-    { id: 'customer',  label: 'Customer',  emoji: '🛒', desc: 'I want to order' },
-    { id: 'restaurant',label: 'Restaurant', emoji: '🍽️', desc: 'List my restaurant' },
-    { id: 'merchant',  label: 'Merchant',  emoji: '🏪', desc: 'List my store' },
-    { id: 'delivery',  label: 'Delivery',  emoji: '🛵', desc: 'Deliver for Zyphix' },
+  const inputStyle = (focused = false) => ({
+    width: '100%', padding: '11px 14px', borderRadius: 9, background: CARD, border: `1px solid ${focused ? G + '55' : BD2}`,
+    color: T1, fontSize: 14, fontFamily: 'inherit', outline: 'none', boxSizing: 'border-box' as const, transition: 'border-color 0.15s',
+  });
+
+  const roles: { id: Role; label: string; em: string }[] = [
+    { id: 'customer', label: 'Customer', em: '🛒' },
+    { id: 'restaurant', label: 'Restaurant', em: '🍽️' },
+    { id: 'merchant', label: 'Merchant', em: '🏪' },
+    { id: 'delivery', label: 'Delivery', em: '🛵' },
   ];
 
-  const inp = (val: string, set: (v: string) => void, ph: string, type = 'text') => (
-    <input type={type} value={val} onChange={e => set(e.target.value)} placeholder={ph} required
-      style={{ width: '100%', padding: '13px 16px', borderRadius: 12, background: CARD2, border: `1.5px solid ${BD2}`, color: T1, fontSize: 14, fontFamily: 'inherit', outline: 'none', transition: 'all .18s', boxSizing: 'border-box' }}
-      onFocus={e => (e.currentTarget.style.borderColor = G + '66')}
-      onBlur={e => (e.currentTarget.style.borderColor = BD2)} />
-  );
+  const [foc, setFoc] = useState<string | null>(null);
 
   return (
-    <div id="waitlist" style={{ background: BG, padding: '96px 24px', position: 'relative', overflow: 'hidden' }}>
-      {/* Glow */}
-      <div style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%,-50%)', width: '60vw', height: '60vh', borderRadius: '50%', background: `radial-gradient(circle, ${G}10 0%, transparent 70%)`, filter: 'blur(60px)', pointerEvents: 'none' }} />
-
-      <div style={{ maxWidth: 560, margin: '0 auto', position: 'relative', zIndex: 1 }}>
-        <motion.div initial={{ opacity: 0, y: 24 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}>
-          {/* Badge */}
-          <div style={{ textAlign: 'center', marginBottom: 32 }}>
-            <div style={{ display: 'inline-flex', alignItems: 'center', gap: 7, background: G + '15', border: `1px solid ${G}30`, borderRadius: 99, padding: '6px 16px', marginBottom: 20 }}>
-              <span style={{ width: 7, height: 7, borderRadius: '50%', background: G, display: 'inline-block', animation: 'pulse 2s infinite' }} />
-              <span style={{ fontSize: 12, fontWeight: 700, color: G, letterSpacing: '.06em', textTransform: 'uppercase' }}>Early Access Open</span>
-            </div>
-            <h2 style={{ fontFamily: "'Outfit',sans-serif", fontWeight: 900, fontSize: 'clamp(2rem, 4vw, 2.8rem)', color: T1, letterSpacing: '-.04em', lineHeight: 1.08, marginBottom: 10 }}>
-              Reserve your spot.<br /><span style={{ color: G }}>Free, forever.</span>
-            </h2>
-            <p style={{ fontSize: 14.5, color: T2, lineHeight: 1.65 }}>Join {pos}+ people waiting for Zyphix to launch in Jammu. Get exclusive early access and launch credits.</p>
+    <section id="waitlist" style={{ background: SURF, borderTop: `1px solid ${BD}`, padding: '96px 24px' }}>
+      <div style={{ maxWidth: 520, margin: '0 auto' }}>
+        {/* Header */}
+        <div style={{ textAlign: 'center', marginBottom: 40 }}>
+          <div style={{ display: 'inline-flex', alignItems: 'center', gap: 6, background: `${G}12`, border: `1px solid ${G}28`, borderRadius: 99, padding: '5px 14px', marginBottom: 18 }}>
+            <span style={{ width: 6, height: 6, borderRadius: '50%', background: G, display: 'inline-block' }} />
+            <span style={{ fontSize: 12, fontWeight: 600, color: G, letterSpacing: '0.06em', textTransform: 'uppercase' }}>Early access open</span>
           </div>
-
-          {done ? (
-            <motion.div initial={{ scale: .9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }}
-              style={{ background: CARD, border: `1.5px solid ${G}44`, borderRadius: 20, padding: '44px 36px', textAlign: 'center' }}>
-              <div style={{ width: 64, height: 64, borderRadius: '50%', background: G + '18', border: `2px solid ${G}44`, display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 20px', fontSize: 28 }}>✓</div>
-              <h3 style={{ fontFamily: "'Outfit',sans-serif", fontWeight: 900, fontSize: '1.5rem', color: T1, marginBottom: 10 }}>You're on the list! 🎉</h3>
-              <p style={{ color: T2, fontSize: 14, marginBottom: 24, lineHeight: 1.6 }}>You're <strong style={{ color: G }}>#{pos}</strong> on the waitlist. We'll notify you the moment Zyphix launches in Jammu.</p>
-              <div style={{ display: 'flex', gap: 12, justifyContent: 'center', flexWrap: 'wrap' }}>
-                {[['🎁', '₹125 launch credit'], ['🚀', 'Priority access'], ['🆓', 'Free delivery × 10']].map(([e, l]) => (
-                  <div key={l} style={{ background: CARD2, border: `1px solid ${BD2}`, borderRadius: 10, padding: '8px 14px', display: 'flex', alignItems: 'center', gap: 6 }}>
-                    <span>{e}</span><span style={{ fontSize: 12, fontWeight: 600, color: T2 }}>{l}</span>
-                  </div>
-                ))}
-              </div>
-            </motion.div>
-          ) : (
-            <form onSubmit={submit}
-              style={{ background: CARD, border: `1px solid ${BD2}`, borderRadius: 20, padding: '36px', boxShadow: SH2 }}>
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12, marginBottom: 12 }}>
-                <div>{inp(name, setName, 'Your full name')}</div>
-                <div>{inp(phone, setPhone, '10-digit mobile', 'tel')}</div>
-              </div>
-              <div style={{ marginBottom: 20 }}>
-                <select value={city} onChange={e => setCity(e.target.value)} required
-                  style={{ width: '100%', padding: '13px 16px', borderRadius: 12, background: CARD2, border: `1.5px solid ${BD2}`, color: city ? T1 : T3, fontSize: 14, fontFamily: 'inherit', outline: 'none', appearance: 'none', cursor: 'pointer', boxSizing: 'border-box' }}>
-                  <option value="">Select your city</option>
-                  {['Jammu', 'Srinagar', 'Chandigarh', 'Delhi', 'Mumbai', 'Other'].map(c => <option key={c} value={c}>{c}</option>)}
-                </select>
-              </div>
-
-              <p style={{ fontSize: 11.5, fontWeight: 700, color: T3, textTransform: 'uppercase', letterSpacing: '.08em', marginBottom: 12 }}>I am a</p>
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 8, marginBottom: 24 }}>
-                {roles.map(r => (
-                  <button key={r.id} type="button" onClick={() => setRole(r.id)}
-                    style={{ padding: '12px 6px', borderRadius: 12, border: `1.5px solid ${role === r.id ? G : BD2}`, background: role === r.id ? G + '12' : CARD2, cursor: 'pointer', textAlign: 'center', transition: 'all .15s' }}>
-                    <div style={{ fontSize: 20, marginBottom: 4 }}>{r.emoji}</div>
-                    <p style={{ fontSize: 11, fontWeight: 700, color: role === r.id ? G : T2, lineHeight: 1.3 }}>{r.label}</p>
-                  </button>
-                ))}
-              </div>
-
-              <motion.button type="submit" whileHover={{ scale: 1.02, boxShadow: `0 12px 40px ${G}55` }} whileTap={{ scale: 0.97 }}
-                style={{ width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 10, background: G, color: BG, fontSize: 16, fontWeight: 900, padding: '16px', borderRadius: 13, border: 'none', cursor: 'pointer', letterSpacing: '-.01em', boxShadow: `0 6px 28px ${G}44` }}>
-                Join the Waitlist <ArrowRight size={18} />
-              </motion.button>
-              <p style={{ textAlign: 'center', fontSize: 12, color: T3, marginTop: 14 }}>
-                <Check size={10} style={{ display: 'inline', marginRight: 4 }} />Free forever · No credit card · Unsubscribe anytime
-              </p>
-            </form>
-          )}
-        </motion.div>
-      </div>
-    </div>
-  );
-}
-
-/* ═══════ HOW IT WORKS ═══════ */
-function HowItWorks() {
-  const steps = [
-    { n: '01', icon: '📍', title: 'Set your location', desc: 'Allow GPS or enter your address. We instantly map verified kirana stores, restaurants, and partner outlets near you.' },
-    { n: '02', icon: '🛒', title: 'Browse & order', desc: "Choose from 1,000+ grocery items or local restaurants — all at the same price you'd pay in-store." },
-    { n: '03', icon: '🏎', title: 'Delivered in 30 min', desc: 'Track your order live. Our partner delivers from your nearest store — no markups, no surge pricing.' },
-  ];
-  return (
-    <div style={{ background: BG2, borderTop: `1px solid ${BD}`, padding: '88px 24px' }}>
-      <style>{`@media(max-width:767px){.hw-grid{grid-template-columns:1fr!important}}`}</style>
-      <div style={{ maxWidth: 1320, margin: '0 auto' }}>
-        <div style={{ textAlign: 'center', marginBottom: 60 }}>
-          <p style={{ fontSize: 12, fontWeight: 700, color: G, letterSpacing: '.1em', textTransform: 'uppercase', marginBottom: 12 }}>Simple as 1-2-3</p>
-          <h2 style={{ fontFamily: "'Outfit',sans-serif", fontWeight: 900, fontSize: 'clamp(2rem, 4vw, 2.8rem)', color: T1, letterSpacing: '-.04em', lineHeight: 1.08 }}>How Zyphix works</h2>
-        </div>
-        <div className="hw-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: 24, position: 'relative' }}>
-          {/* Connector line */}
-          <div style={{ position: 'absolute', top: 52, left: '16.5%', right: '16.5%', height: 1, background: `linear-gradient(90deg, transparent, ${G}40, transparent)`, pointerEvents: 'none' }} className="hidden lg:block" />
-          {steps.map((s, i) => (
-            <motion.div key={i} initial={{ opacity: 0, y: 24 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: i * .15 }}>
-              <div style={{ background: CARD, border: `1px solid ${BD2}`, borderRadius: 20, padding: '32px 28px', height: '100%', position: 'relative', transition: 'all .22s' }}
-                onMouseEnter={e => { (e.currentTarget as HTMLElement).style.border = `1px solid ${G}33`; (e.currentTarget as HTMLElement).style.boxShadow = `0 12px 40px ${G}15`; }}
-                onMouseLeave={e => { (e.currentTarget as HTMLElement).style.border = `1px solid ${BD2}`; (e.currentTarget as HTMLElement).style.boxShadow = 'none'; }}>
-                <div style={{ width: 52, height: 52, borderRadius: 14, background: G + '15', border: `1px solid ${G}30`, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 24, marginBottom: 20 }}>
-                  {s.icon}
-                </div>
-                <p style={{ fontFamily: "'Outfit',sans-serif", fontWeight: 900, fontSize: '2.5rem', color: CARD2, lineHeight: 1, marginBottom: 12, letterSpacing: '-.04em', position: 'absolute', top: 24, right: 24 }}>{s.n}</p>
-                <h3 style={{ fontWeight: 800, fontSize: 17, color: T1, marginBottom: 10, letterSpacing: '-.02em' }}>{s.title}</h3>
-                <p style={{ fontSize: 14, color: T2, lineHeight: 1.7 }}>{s.desc}</p>
-              </div>
-            </motion.div>
-          ))}
-        </div>
-      </div>
-    </div>
-  );
-}
-
-/* ═══════ CATEGORIES ═══════ */
-function Categories() {
-  const cats = [
-    { emoji: '🥦', name: 'Vegetables' }, { emoji: '🥛', name: 'Dairy & Eggs' },
-    { emoji: '💊', name: 'Medicine' }, { emoji: '🫙', name: 'Snacks' },
-    { emoji: '🧹', name: 'Household' }, { emoji: '🍎', name: 'Fruits' },
-    { emoji: '🧴', name: 'Personal Care' }, { emoji: '🌾', name: 'Grains & Dal' },
-    { emoji: '💡', name: 'Electronics' }, { emoji: '🐕', name: 'Pet Care' },
-  ];
-  return (
-    <div style={{ background: BG, borderTop: `1px solid ${BD}`, padding: '80px 24px' }}>
-      <style>{`@media(max-width:640px){.cat-grid{grid-template-columns:repeat(3,1fr)!important}}`}</style>
-      <div style={{ maxWidth: 1100, margin: '0 auto' }}>
-        <div style={{ textAlign: 'center', marginBottom: 48 }}>
-          <p style={{ fontSize: 12, fontWeight: 700, color: G, letterSpacing: '.1em', textTransform: 'uppercase', marginBottom: 12 }}>ZyphixNow</p>
-          <h2 style={{ fontFamily: "'Outfit',sans-serif", fontWeight: 900, fontSize: 'clamp(1.8rem, 3.5vw, 2.6rem)', color: T1, letterSpacing: '-.04em', lineHeight: 1.08, marginBottom: 10 }}>
-            Everything your home needs —<br />from stores near you
+          <h2 style={{ fontFamily: "'Outfit', sans-serif", fontWeight: 800, fontSize: 'clamp(1.8rem, 3.5vw, 2.4rem)', color: T1, letterSpacing: '-0.03em', lineHeight: 1.14, marginBottom: 10 }}>
+            Reserve your spot.<br />It's completely free.
           </h2>
-          <p style={{ fontSize: 15, color: T2, maxWidth: 440, margin: '0 auto' }}>1,000+ products sourced directly from kirana stores in your neighbourhood</p>
+          <p style={{ fontSize: 15, color: T2, lineHeight: 1.65 }}>
+            You're joining <strong style={{ color: T1 }}>{pos}+</strong> early members. Get launch credits, priority access, and 10 free deliveries.
+          </p>
         </div>
-        <div className="cat-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(5, 1fr)', gap: 12 }}>
-          {cats.map(({ emoji, name }, i) => (
-            <motion.div key={name} initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: i * .04 }}
-              whileHover={{ y: -4, scale: 1.04 }}
-              style={{ background: CARD, border: `1.5px solid ${BD2}`, borderRadius: 16, padding: '20px 12px 16px', textAlign: 'center', cursor: 'default', transition: 'all .18s' }}
-              onHoverStart={() => {}} onHoverEnd={() => {}}>
-              <div style={{ width: 50, height: 50, borderRadius: 14, background: G + '12', border: `1px solid ${G}20`, display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 12px', fontSize: 24 }}>
-                {emoji}
-              </div>
-              <p style={{ fontSize: 12, fontWeight: 700, color: T2, lineHeight: 1.3 }}>{name}</p>
-            </motion.div>
-          ))}
-        </div>
+
+        {/* Form / Success */}
+        {done ? (
+          <motion.div initial={{ scale: 0.95, opacity: 0 }} animate={{ scale: 1, opacity: 1 }}
+            style={{ background: CARD, border: `1px solid ${G}44`, borderRadius: 18, padding: '40px 32px', textAlign: 'center' }}>
+            <div style={{ width: 56, height: 56, borderRadius: 16, background: `${G}14`, border: `1px solid ${G}33`, display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 18px', fontSize: 24 }}>✓</div>
+            <h3 style={{ fontFamily: "'Outfit', sans-serif", fontWeight: 800, fontSize: '1.4rem', color: T1, marginBottom: 8 }}>You're on the list</h3>
+            <p style={{ fontSize: 14, color: T2, lineHeight: 1.65, marginBottom: 24 }}>
+              You're <strong style={{ color: G }}>#{pos}</strong> on the waitlist. We'll notify you the moment Zyphix launches in your city.
+            </p>
+            <div style={{ display: 'flex', gap: 8, justifyContent: 'center', flexWrap: 'wrap' }}>
+              {[['🎁', '₹125 launch credit'], ['🚀', 'Priority access'], ['🆓', '10 free deliveries']].map(([em, l]) => (
+                <div key={l} style={{ background: SURF, border: `1px solid ${BD2}`, borderRadius: 8, padding: '7px 13px', display: 'flex', alignItems: 'center', gap: 6 }}>
+                  <span style={{ fontSize: 13 }}>{em}</span><span style={{ fontSize: 12, fontWeight: 500, color: T2 }}>{l}</span>
+                </div>
+              ))}
+            </div>
+          </motion.div>
+        ) : (
+          <form onSubmit={submit}
+            style={{ background: CARD, border: `1px solid ${BD2}`, borderRadius: 18, padding: '32px', boxShadow: SH_UP }}>
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10, marginBottom: 10 }}>
+              <input placeholder="Full name" value={name} onChange={e => setName(e.target.value)} required
+                style={inputStyle(foc === 'name')} onFocus={() => setFoc('name')} onBlur={() => setFoc(null)} />
+              <input placeholder="Mobile number" type="tel" value={phone} onChange={e => setPhone(e.target.value)} required
+                style={inputStyle(foc === 'phone')} onFocus={() => setFoc('phone')} onBlur={() => setFoc(null)} />
+            </div>
+            <select value={city} onChange={e => setCity(e.target.value)} required
+              style={{ ...inputStyle(), color: city ? T1 : T3, appearance: 'none', cursor: 'pointer', marginBottom: 20 }}>
+              <option value="">Select your city</option>
+              {['Jammu', 'Srinagar', 'Chandigarh', 'Delhi', 'Mumbai', 'Other'].map(c => <option key={c} value={c}>{c}</option>)}
+            </select>
+
+            <p style={{ fontSize: 11, fontWeight: 600, color: T3, textTransform: 'uppercase', letterSpacing: '0.07em', marginBottom: 10 }}>I am joining as a</p>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4,1fr)', gap: 8, marginBottom: 22 }}>
+              {roles.map(r => (
+                <button key={r.id} type="button" onClick={() => setRole(r.id)}
+                  style={{ padding: '11px 6px', borderRadius: 10, border: `1px solid ${role === r.id ? G : BD2}`, background: role === r.id ? `${G}0E` : SURF, cursor: 'pointer', transition: 'all 0.15s', textAlign: 'center' }}>
+                  <div style={{ fontSize: 18, marginBottom: 5 }}>{r.em}</div>
+                  <p style={{ fontSize: 11, fontWeight: 600, color: role === r.id ? G : T3, lineHeight: 1.2 }}>{r.label}</p>
+                </button>
+              ))}
+            </div>
+
+            <button type="submit"
+              style={{ width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, background: G, color: BG, fontSize: 14.5, fontWeight: 700, padding: '14px', borderRadius: 10, border: 'none', cursor: 'pointer', letterSpacing: '-0.01em' }}>
+              Join the Waitlist <ArrowRight size={16} />
+            </button>
+            <p style={{ textAlign: 'center', fontSize: 12, color: T3, marginTop: 12 }}>
+              <Check size={11} style={{ display: 'inline', marginRight: 4, verticalAlign: 'middle' }} />
+              Free forever · No credit card · Unsubscribe anytime
+            </p>
+          </form>
+        )}
       </div>
-    </div>
+    </section>
   );
 }
 
-/* ═══════ SOCIAL PROOF ═══════ */
-function SocialProof() {
+/* ─────────────────────────────────────────────
+   TESTIMONIALS
+───────────────────────────────────────────── */
+function Testimonials() {
   const reviews = [
-    { name: 'Aditya Sharma', city: 'Jammu', rating: 5, text: 'Finally an app that sources from my local kirana. Ordered at 11pm — arrived in 24 minutes. Prices are exactly the same as the store.' },
-    { name: 'Priya Gupta', city: 'Jammu', rating: 5, text: 'ZyphixEats found that small biryani place in Gandhi Nagar that is not on Swiggy at all. Love that they focus on local restaurants.' },
-    { name: 'Rohit Anand', city: 'Srinagar', rating: 5, text: 'Joined the waitlist and got a ₹125 credit. The team is responsive on WhatsApp. Really excited for the Srinagar launch.' },
+    { name: 'Aditya K.', city: 'Jammu', rating: 5, text: 'Finally an app that sources from my local kirana. Ordered at 11pm — arrived in 24 minutes. Prices are identical to the store.' },
+    { name: 'Priya G.', city: 'Jammu', rating: 5, text: 'ZyphixEats found that small biryani place in Gandhi Nagar that none of the other apps have. Love that they support local restaurants.' },
+    { name: 'Rohit A.', city: 'Srinagar', rating: 5, text: 'Joined the waitlist early and got a ₹125 credit. The team is genuinely responsive. Very excited for the Srinagar launch.' },
   ];
   return (
-    <div style={{ background: BG2, borderTop: `1px solid ${BD}`, padding: '80px 24px' }}>
-      <style>{`@media(max-width:767px){.rev-grid{grid-template-columns:1fr!important}}`}</style>
-      <div style={{ maxWidth: 1320, margin: '0 auto' }}>
-        <div style={{ textAlign: 'center', marginBottom: 52 }}>
-          <p style={{ fontSize: 12, fontWeight: 700, color: G, letterSpacing: '.1em', textTransform: 'uppercase', marginBottom: 12 }}>Community love</p>
-          <h2 style={{ fontFamily: "'Outfit',sans-serif", fontWeight: 900, fontSize: 'clamp(2rem, 4vw, 2.6rem)', color: T1, letterSpacing: '-.04em', lineHeight: 1.08 }}>What early members say</h2>
+    <section style={{ background: BG, borderTop: `1px solid ${BD}`, padding: '88px 24px' }}>
+      <div style={{ maxWidth: 1200, margin: '0 auto' }}>
+        <div style={{ marginBottom: 48 }}>
+          <p style={{ fontSize: 12, fontWeight: 600, color: G, letterSpacing: '0.08em', textTransform: 'uppercase', marginBottom: 10 }}>Early community</p>
+          <h2 style={{ fontFamily: "'Outfit', sans-serif", fontWeight: 800, fontSize: 'clamp(1.8rem, 3vw, 2.4rem)', color: T1, letterSpacing: '-0.03em', lineHeight: 1.14 }}>What early members say</h2>
         </div>
-        <div className="rev-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: 20 }}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: 16 }}>
           {reviews.map((r, i) => (
-            <motion.div key={i} initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: i * .12 }}>
-              <div style={{ background: CARD, border: `1px solid ${BD2}`, borderRadius: 20, padding: '28px', height: '100%', position: 'relative', overflow: 'hidden' }}>
-                <div style={{ position: 'absolute', top: -30, right: -20, fontSize: 80, opacity: .04, pointerEvents: 'none' }}>"</div>
-                <div style={{ display: 'flex', gap: 2, marginBottom: 16 }}>
-                  {Array.from({ length: r.rating }).map((_, j) => <Star key={j} size={13} fill="#D97706" color="#D97706" />)}
+            <motion.div key={i} initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.1 }}>
+              <div style={{ background: CARD, border: `1px solid ${BD2}`, borderRadius: 16, padding: '24px', height: '100%', transition: 'border-color 0.2s' }}
+                onMouseEnter={e => (e.currentTarget.style.borderColor = BD2 + 'aa')}
+                onMouseLeave={e => (e.currentTarget.style.borderColor = BD2)}>
+                <div style={{ display: 'flex', gap: 2, marginBottom: 14 }}>
+                  {Array.from({ length: r.rating }).map((_, j) => <Star key={j} size={12} fill="#EAB308" color="#EAB308" />)}
                 </div>
-                <p style={{ fontSize: 14, color: T2, lineHeight: 1.75, marginBottom: 24 }}>"{r.text}"</p>
-                <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-                  <div style={{ width: 36, height: 36, borderRadius: '50%', background: G + '18', border: `1px solid ${G}33`, display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 800, color: G, fontSize: 13 }}>{r.name[0]}</div>
+                <p style={{ fontSize: 14, color: T2, lineHeight: 1.72, marginBottom: 20 }}>"{r.text}"</p>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 9 }}>
+                  <div style={{ width: 32, height: 32, borderRadius: '50%', background: `${G}14`, border: `1px solid ${G}28`, display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 700, color: G, fontSize: 12 }}>{r.name[0]}</div>
                   <div>
-                    <p style={{ fontWeight: 700, color: T1, fontSize: 13 }}>{r.name}</p>
-                    <p style={{ fontSize: 11, color: T3 }}>{r.city} · Early member</p>
+                    <p style={{ fontWeight: 600, color: T1, fontSize: 13, lineHeight: 1 }}>{r.name}</p>
+                    <p style={{ fontSize: 11, color: T3, marginTop: 3 }}>{r.city} · Early member</p>
                   </div>
                 </div>
               </div>
             </motion.div>
           ))}
         </div>
-        {/* Media bar */}
-        <div style={{ marginTop: 48, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, flexWrap: 'wrap' }}>
-          <span style={{ fontSize: 11, fontWeight: 700, color: T3, marginRight: 8, letterSpacing: '.08em', textTransform: 'uppercase' }}>As featured in</span>
+        <div style={{ marginTop: 40, paddingTop: 40, borderTop: `1px solid ${BD}`, display: 'flex', alignItems: 'center', gap: 10, flexWrap: 'wrap' }}>
+          <span style={{ fontSize: 11, fontWeight: 600, color: T3, letterSpacing: '0.08em', textTransform: 'uppercase', marginRight: 4 }}>As featured in</span>
           {['The Hindu', 'Economic Times', 'YourStory', 'Inc42', 'Entrackr'].map(m => (
-            <span key={m} style={{ padding: '7px 16px', background: CARD, border: `1px solid ${BD2}`, borderRadius: 8, fontSize: 12, fontWeight: 700, color: T2 }}>{m}</span>
+            <span key={m} style={{ padding: '5px 13px', background: CARD, border: `1px solid ${BD2}`, borderRadius: 6, fontSize: 12, fontWeight: 500, color: T3 }}>{m}</span>
           ))}
         </div>
       </div>
-    </div>
+    </section>
   );
 }
 
-/* ═══════ TRUST / BORN IN JAMMU ═══════ */
+/* ─────────────────────────────────────────────
+   TRUST — built for Jammu
+───────────────────────────────────────────── */
 function TrustSection() {
   const pillars = [
-    { icon: '🏪', title: 'Kirana-first', desc: 'Every order goes through a real local store — not a dark warehouse. Same prices, better service.' },
-    { icon: '📍', title: 'Hyperlocal', desc: 'Built for Jammu, Srinagar, and Chandigarh — cities that big apps ignore. We know your streets.' },
-    { icon: '💰', title: 'No markups', desc: 'MRP is MRP. We never inflate prices or add platform fees on products. Delivery charges only.' },
-    { icon: '🤝', title: 'Partner-owned', desc: 'Every kirana and restaurant on Zyphix earns more per order than on any other platform.' },
+    { icon: '🏪', title: 'Kirana-first', desc: 'Every order supports a real local store — same prices you know, zero platform markup.' },
+    { icon: '📍', title: 'Hyperlocal', desc: 'Built specifically for Jammu & J&K. We know the streets, the neighbourhoods, the dhabas.' },
+    { icon: '💰', title: 'No price inflation', desc: 'MRP is MRP. We never inflate product prices. You pay what the store charges.' },
+    { icon: '🤝', title: 'Partner-first', desc: 'Kirana and restaurant partners earn more per order than on any other platform.' },
   ];
   return (
-    <div style={{ background: BG, borderTop: `1px solid ${BD}`, padding: '88px 24px' }}>
-      <style>{`@media(max-width:767px){.tp-grid{grid-template-columns:1fr 1fr!important}}`}</style>
-      <div style={{ maxWidth: 1320, margin: '0 auto', display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 64, alignItems: 'center' }}>
-        {/* Left: copy */}
-        <motion.div initial={{ opacity: 0, x: -24 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }}>
-          <p style={{ fontSize: 12, fontWeight: 700, color: G, letterSpacing: '.1em', textTransform: 'uppercase', marginBottom: 14 }}>Built different</p>
-          <h2 style={{ fontFamily: "'Outfit',sans-serif", fontWeight: 900, fontSize: 'clamp(2rem, 3.5vw, 2.8rem)', color: T1, letterSpacing: '-.04em', lineHeight: 1.08, marginBottom: 20 }}>
+    <section style={{ background: SURF, borderTop: `1px solid ${BD}`, padding: '88px 24px' }}>
+      <div style={{ maxWidth: 1200, margin: '0 auto', display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 72, alignItems: 'center' }}>
+        <motion.div initial={{ opacity: 0, x: -16 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }}>
+          <p style={{ fontSize: 12, fontWeight: 600, color: G, letterSpacing: '0.08em', textTransform: 'uppercase', marginBottom: 12 }}>Our philosophy</p>
+          <h2 style={{ fontFamily: "'Outfit', sans-serif", fontWeight: 800, fontSize: 'clamp(1.8rem, 3vw, 2.4rem)', color: T1, letterSpacing: '-0.03em', lineHeight: 1.14, marginBottom: 18 }}>
             Born in Jammu.<br />Built for India.
           </h2>
-          <p style={{ fontSize: 15, color: T2, lineHeight: 1.75, marginBottom: 32, maxWidth: 440 }}>
-            We started Zyphix because people in Jammu deserve the same world-class delivery experience as people in Delhi or Mumbai — from the kirana store they've trusted for years, not from a warehouse they've never heard of.
+          <p style={{ fontSize: 15, color: T2, lineHeight: 1.72, maxWidth: 420, marginBottom: 28 }}>
+            We started Zyphix because people in Jammu deserve the same fast, reliable delivery experience as people in Delhi or Mumbai — powered by the kirana stores they've trusted for decades.
           </p>
-          <div style={{ display: 'flex', gap: 12, alignItems: 'center' }}>
-            <div style={{ width: 48, height: 48, borderRadius: 14, background: G + '18', border: `1px solid ${G}30`, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 22 }}>👨‍💼</div>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '16px', background: CARD, border: `1px solid ${BD2}`, borderRadius: 12 }}>
+            <div style={{ width: 44, height: 44, borderRadius: 12, background: `${G}12`, border: `1px solid ${G}22`, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 20, flexShrink: 0 }}>👨‍💼</div>
             <div>
-              <p style={{ fontWeight: 800, color: T1, fontSize: 14 }}>Rahul</p>
-              <p style={{ fontSize: 12.5, color: T3 }}>Founder, Clavix Technologies Pvt. Ltd.</p>
+              <p style={{ fontWeight: 700, color: T1, fontSize: 14, lineHeight: 1 }}>Rahul</p>
+              <p style={{ fontSize: 12, color: T3, marginTop: 4 }}>Founder, Clavix Technologies Pvt. Ltd.</p>
             </div>
           </div>
         </motion.div>
-        {/* Right: pillars */}
-        <div className="tp-grid" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16 }}>
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
           {pillars.map((p, i) => (
-            <motion.div key={i} initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: i * .1 }}>
-              <div style={{ background: CARD, border: `1px solid ${BD2}`, borderRadius: 18, padding: '24px 20px', height: '100%' }}>
-                <div style={{ fontSize: 26, marginBottom: 12 }}>{p.icon}</div>
-                <h3 style={{ fontWeight: 800, color: T1, fontSize: 15, marginBottom: 8 }}>{p.title}</h3>
+            <motion.div key={i} initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.09 }}>
+              <div style={{ background: CARD, border: `1px solid ${BD2}`, borderRadius: 14, padding: '20px', height: '100%', transition: 'border-color 0.2s' }}
+                onMouseEnter={e => (e.currentTarget.style.borderColor = `${G}33`)}
+                onMouseLeave={e => (e.currentTarget.style.borderColor = BD2)}>
+                <div style={{ fontSize: 22, marginBottom: 10 }}>{p.icon}</div>
+                <h3 style={{ fontSize: 14.5, fontWeight: 700, color: T1, marginBottom: 7, letterSpacing: '-0.01em' }}>{p.title}</h3>
                 <p style={{ fontSize: 13, color: T2, lineHeight: 1.65 }}>{p.desc}</p>
               </div>
             </motion.div>
           ))}
         </div>
       </div>
-    </div>
+    </section>
   );
 }
 
-/* ═══════ BOTTOM CTA ═══════ */
-function BottomCTA() {
-  const scrollToWaitlist = () => document.getElementById('waitlist')?.scrollIntoView({ behavior: 'smooth' });
+/* ─────────────────────────────────────────────
+   BOTTOM CTA BANNER
+───────────────────────────────────────────── */
+function CtaBanner() {
+  const scroll = () => document.getElementById('waitlist')?.scrollIntoView({ behavior: 'smooth' });
   return (
-    <div style={{ background: BG2, borderTop: `1px solid ${BD}`, padding: '80px 24px' }}>
-      <div style={{ maxWidth: 800, margin: '0 auto', textAlign: 'center' }}>
-        <motion.div initial={{ opacity: 0, y: 24 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}>
-          <div style={{ display: 'inline-flex', alignItems: 'center', gap: 8, background: G + '12', border: `1px solid ${G}28`, borderRadius: 99, padding: '6px 16px', marginBottom: 24 }}>
-            <span style={{ fontSize: 14 }}>🚀</span>
-            <span style={{ fontSize: 12, fontWeight: 700, color: G, letterSpacing: '.06em', textTransform: 'uppercase' }}>Launching soon</span>
+    <section style={{ background: BG, borderTop: `1px solid ${BD}`, padding: '80px 24px' }}>
+      <div style={{ maxWidth: 1200, margin: '0 auto' }}>
+        <div style={{ background: 'linear-gradient(135deg, #052E16 0%, #064E3B 50%, #065F46 100%)', borderRadius: 20, padding: '56px 56px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 40, flexWrap: 'wrap', position: 'relative', overflow: 'hidden' }}>
+          <div style={{ position: 'absolute', top: -60, right: -60, width: 300, height: 300, borderRadius: '50%', background: 'rgba(255,255,255,0.03)', pointerEvents: 'none' }} />
+          <div style={{ maxWidth: 480, position: 'relative' }}>
+            <p style={{ fontSize: 12, fontWeight: 600, color: 'rgba(255,255,255,0.5)', letterSpacing: '0.08em', textTransform: 'uppercase', marginBottom: 12 }}>Launching soon</p>
+            <h2 style={{ fontFamily: "'Outfit', sans-serif", fontWeight: 800, fontSize: 'clamp(1.8rem, 3vw, 2.4rem)', color: '#fff', letterSpacing: '-0.03em', lineHeight: 1.12, marginBottom: 12 }}>Don't miss the launch.</h2>
+            <p style={{ fontSize: 15, color: 'rgba(255,255,255,0.55)', lineHeight: 1.65 }}>Join now for ₹125 launch credit, 10 free deliveries, and priority access the moment we go live in Jammu.</p>
           </div>
-          <h2 style={{ fontFamily: "'Outfit',sans-serif", fontWeight: 900, fontSize: 'clamp(2.2rem, 5vw, 3.6rem)', color: T1, letterSpacing: '-.05em', lineHeight: 1.04, marginBottom: 16 }}>
-            Don't miss the launch.
-          </h2>
-          <p style={{ fontSize: 16, color: T2, lineHeight: 1.65, marginBottom: 36, maxWidth: 500, margin: '0 auto 36px' }}>
-            Join now for a ₹125 launch credit, free delivery on your first 10 orders, and priority access the moment we go live.
-          </p>
-          <div style={{ display: 'flex', justifyContent: 'center', gap: 12, flexWrap: 'wrap' }}>
-            <motion.button whileHover={{ scale: 1.04, boxShadow: `0 16px 48px ${G}55` }} whileTap={{ scale: 0.96 }} onClick={scrollToWaitlist}
-              style={{ display: 'inline-flex', alignItems: 'center', gap: 10, background: G, color: BG, fontSize: 16, fontWeight: 900, padding: '17px 40px', borderRadius: 14, border: 'none', cursor: 'pointer', boxShadow: `0 8px 32px ${G}44`, letterSpacing: '-.01em' }}>
-              Join the Waitlist Free <ArrowRight size={18} />
-            </motion.button>
+          <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap', position: 'relative' }}>
+            <button onClick={scroll}
+              style={{ display: 'inline-flex', alignItems: 'center', gap: 8, background: '#fff', color: '#052E16', fontSize: 14, fontWeight: 700, padding: '13px 28px', borderRadius: 10, border: 'none', cursor: 'pointer' }}>
+              Join Waitlist — Free <ArrowRight size={15} />
+            </button>
             <a href="https://wa.me/919682394363" target="_blank" rel="noopener noreferrer"
-              style={{ display: 'inline-flex', alignItems: 'center', gap: 8, background: CARD, border: `1px solid ${BD2}`, color: T2, fontSize: 15, fontWeight: 700, padding: '17px 28px', borderRadius: 14, textDecoration: 'none', transition: 'all .15s' }}
-              onMouseEnter={e => { (e.currentTarget as HTMLElement).style.borderColor = '#25D366'; (e.currentTarget as HTMLElement).style.color = '#25D366'; }}
-              onMouseLeave={e => { (e.currentTarget as HTMLElement).style.borderColor = BD2; (e.currentTarget as HTMLElement).style.color = T2; }}>
-              <Phone size={15} /> Chat on WhatsApp
+              style={{ display: 'inline-flex', alignItems: 'center', gap: 8, background: 'rgba(255,255,255,0.1)', border: '1px solid rgba(255,255,255,0.2)', color: '#fff', fontSize: 14, fontWeight: 600, padding: '13px 24px', borderRadius: 10, textDecoration: 'none', transition: 'background 0.15s' }}
+              onMouseEnter={e => (e.currentTarget.style.background = 'rgba(255,255,255,0.18)' )}
+              onMouseLeave={e => (e.currentTarget.style.background = 'rgba(255,255,255,0.1)')}>
+              <Phone size={15} /> WhatsApp us
             </a>
           </div>
-        </motion.div>
+        </div>
       </div>
-    </div>
+    </section>
   );
 }
 
-/* ═══════ FOOTER ═══════ */
+/* ─────────────────────────────────────────────
+   FOOTER
+───────────────────────────────────────────── */
 function Footer() {
   return (
-    <footer style={{ background: '#030608', borderTop: `1px solid ${BD}` }}>
-      <div style={{ maxWidth: 1320, margin: '0 auto', padding: '56px 24px 32px' }}>
+    <footer style={{ background: '#050505', borderTop: `1px solid ${BD}` }}>
+      <div style={{ maxWidth: 1200, margin: '0 auto', padding: '56px 24px 32px' }}>
         <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr 1fr 1fr', gap: 48, marginBottom: 48 }}>
           <div>
-            <div style={{ marginBottom: 16 }}>
-              <ZyphixLogo size={30} />
-            </div>
-            <p style={{ fontSize: 13, color: T3, lineHeight: 1.7, marginBottom: 20, maxWidth: 260 }}>India's SuperLocal App — groceries & food from kirana stores near you. Launching in Jammu, J&K.</p>
+            <div style={{ marginBottom: 14 }}><ZyphixLogo size={28} /></div>
+            <p style={{ fontSize: 13, color: T3, lineHeight: 1.72, maxWidth: 260, marginBottom: 20 }}>India's SuperLocal App — groceries & food from kirana stores near you. Launching in Jammu, J&K.</p>
             <div style={{ display: 'flex', gap: 8 }}>
               {[
-                { ic: <Twitter size={14} />, href: '#' },
-                { ic: <Instagram size={14} />, href: '#' },
-                { ic: <Linkedin size={14} />, href: 'https://linkedin.com/in/rahulsangral' },
-                { ic: <Phone size={14} />, href: 'https://wa.me/919682394363' },
-              ].map(({ ic, href }, i) => (
-                <a key={i} href={href} target="_blank" rel="noopener noreferrer"
-                  style={{ width: 36, height: 36, borderRadius: 9, background: CARD, border: `1px solid ${BD2}`, display: 'flex', alignItems: 'center', justifyContent: 'center', color: T3, transition: 'all .15s' }}
+                { ic: <Twitter size={13} />, h: '#' },
+                { ic: <Instagram size={13} />, h: '#' },
+                { ic: <Linkedin size={13} />, h: 'https://linkedin.com/in/rahulsangral' },
+                { ic: <Phone size={13} />, h: 'https://wa.me/919682394363' },
+              ].map(({ ic, h }, i) => (
+                <a key={i} href={h} target="_blank" rel="noopener noreferrer"
+                  style={{ width: 32, height: 32, borderRadius: 8, background: CARD, border: `1px solid ${BD2}`, display: 'flex', alignItems: 'center', justifyContent: 'center', color: T3, transition: 'all 0.15s', textDecoration: 'none' }}
                   onMouseEnter={e => { (e.currentTarget as HTMLElement).style.borderColor = G; (e.currentTarget as HTMLElement).style.color = G; }}
                   onMouseLeave={e => { (e.currentTarget as HTMLElement).style.borderColor = BD2; (e.currentTarget as HTMLElement).style.color = T3; }}>
                   {ic}
@@ -680,64 +702,65 @@ function Footer() {
             </div>
           </div>
           {[
-            { t: 'Services', links: [{ l: 'Zyphix Now', h: '#' }, { l: 'Zyphix Eats', h: '#' }, { l: 'For Restaurants', h: '/restaurant-setup' }, { l: 'For Merchants', h: '/merchant-setup' }, { l: 'Delivery Partners', h: '/delivery-setup' }] },
-            { t: 'Company', links: [{ l: 'About Us', h: '/about' }, { l: 'Contact', h: '/contact' }, { l: 'Splash Video', h: '/splash-video' }, { l: 'Blog', h: '#' }, { l: 'Careers', h: '#' }] },
+            { t: 'Product', links: [{ l: 'ZyphixNow', h: '#' }, { l: 'ZyphixEats', h: '#' }, { l: 'For Restaurants', h: '/restaurant-setup' }, { l: 'For Merchants', h: '/merchant-setup' }, { l: 'Delivery Partners', h: '/delivery-setup' }] },
+            { t: 'Company', links: [{ l: 'About Us', h: '/about' }, { l: 'Contact', h: '/contact' }, { l: 'Brand Video', h: '/splash-video' }, { l: 'Careers', h: '#' }] },
             { t: 'Legal', links: [{ l: 'Privacy Policy', h: '/privacy' }, { l: 'Terms of Service', h: '/terms' }, { l: 'Refund Policy', h: '/terms' }] },
           ].map(({ t, links }) => (
             <div key={t}>
-              <p style={{ fontWeight: 700, color: T1, fontSize: 12.5, marginBottom: 16, letterSpacing: '.03em' }}>{t}</p>
-              <ul style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+              <p style={{ fontWeight: 600, color: 'rgba(255,255,255,0.7)', fontSize: 13, marginBottom: 16, letterSpacing: '0.02em' }}>{t}</p>
+              <ul style={{ display: 'flex', flexDirection: 'column', gap: 11 }}>
                 {links.map(({ l, h }) => (
-                  <li key={l}>
-                    <a href={h} style={{ fontSize: 13, color: T3, transition: 'color .15s', textDecoration: 'none' }}
-                      onMouseEnter={e => (e.currentTarget as HTMLElement).style.color = T1}
-                      onMouseLeave={e => (e.currentTarget as HTMLElement).style.color = T3}>{l}</a>
-                  </li>
+                  <li key={l}><a href={h} style={{ fontSize: 13, color: T3, textDecoration: 'none', transition: 'color 0.15s' }}
+                    onMouseEnter={e => (e.currentTarget.style.color = T2)}
+                    onMouseLeave={e => (e.currentTarget.style.color = T3)}>{l}</a></li>
                 ))}
               </ul>
             </div>
           ))}
         </div>
-        <div style={{ borderTop: `1px solid ${BD}`, paddingTop: 24, display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 12 }}>
+        <div style={{ borderTop: `1px solid ${BD}`, paddingTop: 24, display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 10 }}>
           <p style={{ fontSize: 12, color: T3 }}>© 2025 Clavix Technologies Pvt. Ltd. All rights reserved.</p>
-          <p style={{ fontSize: 12, color: T3 }}>Made with ❤️ in Jammu, J&K</p>
+          <p style={{ fontSize: 12, color: T3 }}>Made with care in Jammu, J&K</p>
         </div>
       </div>
     </footer>
   );
 }
 
-/* ═══════ WHATSAPP FLOAT ═══════ */
-function WhatsAppFloat() {
+/* ─────────────────────────────────────────────
+   WHATSAPP FLOAT
+───────────────────────────────────────────── */
+function WAFloat() {
   return (
     <motion.a href="https://wa.me/919682394363" target="_blank" rel="noopener noreferrer"
-      initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ delay: 2, type: 'spring', stiffness: 300 }}
-      whileHover={{ scale: 1.12 }} whileTap={{ scale: 0.92 }}
-      style={{ position: 'fixed', bottom: 28, right: 28, zIndex: 999, width: 56, height: 56, borderRadius: '50%', background: '#25D366', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 8px 32px rgba(37,211,102,.45)', textDecoration: 'none' }}>
-      <svg width="26" height="26" viewBox="0 0 24 24" fill="white">
+      initial={{ scale: 0, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} transition={{ delay: 2.5, type: 'spring', stiffness: 260 }}
+      whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.92 }}
+      style={{ position: 'fixed', bottom: 24, right: 24, zIndex: 999, width: 52, height: 52, borderRadius: '50%', background: '#25D366', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 4px 20px rgba(37,211,102,0.4)', textDecoration: 'none' }}>
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="white">
         <path d="M20.52 3.48A11.95 11.95 0 0012 0C5.37 0 0 5.37 0 12c0 2.11.55 4.17 1.6 5.98L0 24l6.18-1.57A11.94 11.94 0 0012 24c6.63 0 12-5.37 12-12 0-3.2-1.25-6.21-3.48-8.52zM12 22c-1.85 0-3.66-.5-5.24-1.43l-.38-.22-3.91 1 1.02-3.81-.24-.39A9.96 9.96 0 012 12C2 6.48 6.48 2 12 2c2.67 0 5.18 1.04 7.07 2.93A9.95 9.95 0 0122 12c0 5.52-4.48 10-10 10zm5.47-7.33c-.3-.15-1.77-.87-2.04-.97s-.47-.15-.67.15-.77.97-.94 1.17-.35.22-.64.07a8.12 8.12 0 01-2.4-1.48 9.03 9.03 0 01-1.66-2.07c-.17-.3-.02-.46.13-.61.13-.13.3-.35.45-.52.15-.17.2-.3.3-.5.1-.2.05-.37-.02-.52s-.67-1.62-.92-2.22c-.24-.58-.49-.5-.67-.51h-.57c-.2 0-.52.07-.79.37S6 9.04 6 10.17c0 1.13.82 2.22.93 2.37.12.15 1.62 2.47 3.93 3.46.55.24.98.38 1.31.48.55.17 1.05.15 1.45.09.44-.07 1.37-.56 1.56-1.1.2-.54.2-1 .14-1.1-.06-.1-.24-.16-.5-.3z"/>
       </svg>
     </motion.a>
   );
 }
 
-/* ═══════ HOME ═══════ */
+/* ─────────────────────────────────────────────
+   HOME
+───────────────────────────────────────────── */
 export function Home() {
   return (
-    <div style={{ background: BG, minHeight: '100vh', fontFamily: "'Outfit', sans-serif" }}>
+    <div style={{ fontFamily: "'Outfit', 'Inter', sans-serif", background: BG, minHeight: '100vh' }}>
       <AnnoBar />
-      <Navbar />
+      <Nav />
       <Hero />
-      <ServiceSplit />
-      <StatsStrip />
-      <WaitlistSection />
+      <Services />
+      <StatsRow />
       <HowItWorks />
-      <Categories />
-      <SocialProof />
+      <WaitlistSection />
+      <Testimonials />
       <TrustSection />
-      <BottomCTA />
+      <CtaBanner />
       <Footer />
-      <WhatsAppFloat />
+      <WAFloat />
     </div>
   );
 }
