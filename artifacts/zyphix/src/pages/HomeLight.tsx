@@ -618,7 +618,7 @@ function TrustSection() {
           <div style={{ display: 'flex', gap: 12, alignItems: 'center' }}>
             <div style={{ width: 48, height: 48, borderRadius: 14, background: `${G}12`, border: `1.5px solid ${G}25`, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 22 }}>👨‍💼</div>
             <div>
-              <p style={{ fontWeight: 800, color: T1, fontSize: 14 }}>Rahul Sangral</p>
+              <p style={{ fontWeight: 800, color: T1, fontSize: 14 }}>Rahul</p>
               <p style={{ fontSize: 12.5, color: T3 }}>Founder, Clavix Technologies Pvt. Ltd.</p>
             </div>
           </div>
