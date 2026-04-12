@@ -162,19 +162,48 @@ function Navbar({ tab = 'now', setTab }: { tab?: TabId; setTab?: (t: TabId) => v
     if (!navigator.geolocation) { saveLocation('Jammu, J&K'); return; }
     setLocating(true);
     navigator.geolocation.getCurrentPosition(
-      () => { setLocating(false); saveLocation('Current Location · Jammu'); },
-      () => { setLocating(false); saveLocation('Jammu, J&K'); },
-      { timeout: 7000 }
+      async (pos) => {
+        try {
+          const { latitude: lat, longitude: lon } = pos.coords;
+          const res = await fetch(
+            `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}&zoom=16&addressdetails=1`,
+            { headers: { 'Accept-Language': 'en-US,en' } }
+          );
+          const data = await res.json();
+          const addr = data.address || {};
+          const area =
+            addr.suburb || addr.neighbourhood || addr.quarter ||
+            addr.village || addr.town || addr.city_district || '';
+          const city =
+            addr.city || addr.town || addr.county ||
+            addr.state_district || addr.state || '';
+          const label = area
+            ? `${area}${city ? ', ' + city : ''}`
+            : city || 'Current Location';
+          setLocating(false);
+          saveLocation(label);
+        } catch {
+          setLocating(false);
+          saveLocation('Current Location · Jammu');
+        }
+      },
+      (err) => {
+        setLocating(false);
+        const msg =
+          err.code === 1 ? 'Location access denied. Pick manually.' : 'Could not detect location.';
+        alert(msg);
+      },
+      { timeout: 12000, enableHighAccuracy: true }
     );
   };
 
   const allAreas = Object.values(LOC_AREAS).flat();
   const active = SVCS.find(s => s.id === tab);
 
+  const VALLEY_KEYWORDS = ['Srinagar', 'Baramulla', 'Anantnag', 'Pulwama', 'Sopore', 'Budgam'];
+  const isValley = VALLEY_KEYWORDS.some(k => locVal.toLowerCase().includes(k.toLowerCase()));
   const delivMins = locVal
-    ? locVal.includes('Srinagar') ? '45 mins'
-    : locVal.startsWith('Current') ? '28 mins'
-    : '30 mins'
+    ? isValley ? '45 mins' : '30 mins'
     : null;
   const areaLabel = locVal
     ? locVal.length > 20 ? locVal.slice(0, 19) + '…' : locVal
@@ -234,7 +263,7 @@ function Navbar({ tab = 'now', setTab }: { tab?: TabId; setTab?: (t: TabId) => v
 
                 {/* GPS row */}
                 <button onClick={detectGPS} disabled={locating}
-                  style={{ width: '100%', display: 'flex', alignItems: 'center', gap: 12, padding: '14px 16px', borderBottom: `1px solid ${BD}`, background: '#F0FDF9', cursor: 'pointer', transition: 'background .12s', border: 'none', borderBottom: `1px solid ${BD}` }}
+                  style={{ width: '100%', display: 'flex', alignItems: 'center', gap: 12, padding: '14px 16px', borderTop: 'none', borderLeft: 'none', borderRight: 'none', borderBottom: `1px solid ${BD}`, background: '#F0FDF9', cursor: 'pointer', transition: 'background .12s' }}
                   onMouseEnter={e => (e.currentTarget.style.background = '#DCFCE7')}
                   onMouseLeave={e => (e.currentTarget.style.background = '#F0FDF9')}>
                   <div style={{ width: 34, height: 34, borderRadius: 10, background: locating ? T3 : G, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, transition: 'background .2s' }}>
