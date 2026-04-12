@@ -86,66 +86,72 @@ export function SavingsCalculator() {
   const perMonth = spend * 0.28;
   const perYear  = spend * 12 * 0.28;
 
+  const cards = [
+    { label: 'You save per order', value: fmt(perOrder), sub: '30% off every order',    icon: '🛒', accent: G },
+    { label: 'You save per month', value: fmt(perMonth), sub: 'No hidden charges',       icon: '📅', accent: G },
+    { label: 'You save per year',  value: fmt(perYear),  sub: funEquivalent(perYear),    icon: '🎯', accent: '#059669', big: true },
+  ];
+
   return (
-    <div style={{ background: '#0A0E1A', padding: '64px 24px' }}>
-      <div style={{ maxWidth: 900, margin: '0 auto' }}>
-        <div style={{ textAlign: 'center', marginBottom: 40 }}>
-          <p style={{ fontSize: 12, fontWeight: 700, color: G, letterSpacing: '.1em', textTransform: 'uppercase', marginBottom: 12 }}>💰 Real Savings</p>
-          <h2 style={{ fontFamily: "'Outfit',sans-serif", fontWeight: 900, fontSize: 'clamp(1.6rem,3vw,2.3rem)', color: '#fff', letterSpacing: '-.04em', lineHeight: 1.1, marginBottom: 12 }}>
+    <div style={{ background: BG, borderTop: `1px solid ${BD}`, padding: '72px 24px' }}>
+      <div style={{ maxWidth: 860, margin: '0 auto' }}>
+
+        {/* Header */}
+        <div style={{ textAlign: 'center', marginBottom: 44 }}>
+          <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6, background: '#ECFDF5', border: `1px solid #A7F3D0`, borderRadius: 999, padding: '5px 14px', fontSize: 11.5, fontWeight: 700, color: '#065F46', letterSpacing: '.07em', textTransform: 'uppercase', marginBottom: 16 }}>
+            💰 Real Savings
+          </span>
+          <h2 style={{ fontFamily: "'Outfit',sans-serif", fontWeight: 900, fontSize: 'clamp(1.6rem,3vw,2.25rem)', color: T1, letterSpacing: '-.04em', lineHeight: 1.15, marginBottom: 12 }}>
             See exactly how much you save<br />switching to Zyphix
           </h2>
-          <p style={{ fontSize: 15, color: 'rgba(255,255,255,.5)', maxWidth: 460, margin: '0 auto' }}>
+          <p style={{ fontSize: 15, color: T2, maxWidth: 440, margin: '0 auto', lineHeight: 1.6 }}>
             Most Jammu families spend ₹3,000–₹8,000/month on food &amp; groceries
           </p>
         </div>
 
-        {/* Slider */}
-        <div style={{ background: 'rgba(255,255,255,.04)', border: '1px solid rgba(255,255,255,.08)', borderRadius: 20, padding: '28px 32px', marginBottom: 28 }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 14 }}>
-            <p style={{ fontSize: 14, fontWeight: 600, color: 'rgba(255,255,255,.6)' }}>My monthly food + grocery spend</p>
-            <span style={{ fontFamily: "'Outfit',sans-serif", fontWeight: 900, fontSize: '1.5rem', color: G }}>{fmt(spend)}</span>
+        {/* Slider card */}
+        <div style={{ background: W, border: `1.5px solid ${BD}`, borderRadius: 20, padding: '28px 32px', marginBottom: 24, boxShadow: '0 2px 12px rgba(0,0,0,.06)' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16, flexWrap: 'wrap', gap: 8 }}>
+            <p style={{ fontSize: 14, fontWeight: 600, color: T2 }}>My monthly food + grocery spend</p>
+            <span style={{ fontFamily: "'Outfit',sans-serif", fontWeight: 900, fontSize: '1.6rem', color: G, letterSpacing: '-.03em' }}>{fmt(spend)}</span>
           </div>
           <input type="range" min={500} max={10000} step={100} value={spend}
             onChange={e => setSpend(Number(e.target.value))}
-            style={{ width: '100%', accentColor: G, height: 6, cursor: 'pointer' }} />
-          <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: 6 }}>
-            <span style={{ fontSize: 11, color: 'rgba(255,255,255,.3)' }}>₹500</span>
-            <span style={{ fontSize: 11, color: 'rgba(255,255,255,.3)' }}>₹10,000</span>
+            style={{ width: '100%', accentColor: G, height: 6, cursor: 'pointer', borderRadius: 99 }} />
+          <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: 8 }}>
+            <span style={{ fontSize: 11.5, color: T3, fontWeight: 500 }}>₹500</span>
+            <span style={{ fontSize: 11.5, color: T3, fontWeight: 500 }}>₹10,000</span>
           </div>
         </div>
 
         {/* Result cards */}
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 16, marginBottom: 28 }}>
-          {[
-            { label: 'You save per order', value: fmt(perOrder), color: '#2DD4BF', sub: '30% off every order' },
-            { label: 'You save per month', value: fmt(perMonth), color: '#4ADE80', sub: 'No hidden charges' },
-            { label: 'You save per year', value: fmt(perYear),  color: '#FBBF24', sub: funEquivalent(perYear), big: true },
-          ].map(({ label, value, color, sub, big }) => (
-            <motion.div key={label}
-              layout
-              style={{ background: 'rgba(255,255,255,.05)', border: `1px solid ${color}30`, borderRadius: 18, padding: '24px 20px', textAlign: 'center' }}>
-              <p style={{ fontSize: 12, color: 'rgba(255,255,255,.4)', marginBottom: 10, fontWeight: 600 }}>{label}</p>
-              <p style={{ fontFamily: "'Outfit',sans-serif", fontWeight: 900, fontSize: big ? '2.2rem' : '1.8rem', color, letterSpacing: '-.04em', lineHeight: 1, marginBottom: 10 }}>
+        <div className="savings-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: 16, marginBottom: 32 }}>
+          {cards.map(({ label, value, sub, icon, accent, big }) => (
+            <motion.div key={label} layout
+              style={{ background: W, border: `1.5px solid ${BD}`, borderRadius: 18, padding: '24px 20px', textAlign: 'center', boxShadow: '0 2px 10px rgba(0,0,0,.05)' }}>
+              <p style={{ fontSize: 20, marginBottom: 8 }}>{icon}</p>
+              <p style={{ fontSize: 11.5, fontWeight: 700, color: T3, textTransform: 'uppercase', letterSpacing: '.06em', marginBottom: 10 }}>{label}</p>
+              <p style={{ fontFamily: "'Outfit',sans-serif", fontWeight: 900, fontSize: big ? '2.1rem' : '1.75rem', color: accent, letterSpacing: '-.04em', lineHeight: 1, marginBottom: 10 }}>
                 {value}
               </p>
-              <p style={{ fontSize: 11.5, color: 'rgba(255,255,255,.35)', lineHeight: 1.4 }}>{sub}</p>
+              <p style={{ fontSize: 12, color: T2, lineHeight: 1.45 }}>{sub}</p>
             </motion.div>
           ))}
         </div>
 
+        {/* CTA */}
         <div style={{ textAlign: 'center' }}>
           <button onClick={scrollToWaitlist}
-            style={{ display: 'inline-flex', alignItems: 'center', gap: 8, background: G, color: '#fff', fontSize: 15, fontWeight: 800, padding: '15px 32px', borderRadius: 13, border: 'none', cursor: 'pointer', boxShadow: '0 8px 28px rgba(13,163,102,.4)', transition: 'filter .15s' }}
-            onMouseEnter={e => (e.currentTarget as HTMLElement).style.filter = 'brightness(1.12)'}
-            onMouseLeave={e => (e.currentTarget as HTMLElement).style.filter = 'brightness(1)'}>
+            style={{ display: 'inline-flex', alignItems: 'center', gap: 8, background: G, color: '#fff', fontSize: 15, fontWeight: 800, padding: '15px 34px', borderRadius: 13, border: 'none', cursor: 'pointer', boxShadow: '0 6px 24px rgba(13,163,102,.35)', transition: 'filter .15s, transform .15s' }}
+            onMouseEnter={e => { const el = e.currentTarget as HTMLElement; el.style.filter='brightness(1.1)'; el.style.transform='translateY(-1px)'; }}
+            onMouseLeave={e => { const el = e.currentTarget as HTMLElement; el.style.filter='brightness(1)'; el.style.transform='translateY(0)'; }}>
             Start saving — Join Waitlist →
           </button>
         </div>
       </div>
+
       <style>{`
-        @media(max-width:640px){
-          .savings-grid{grid-template-columns:1fr !important;}
-        }
+        @media(max-width:640px){ .savings-grid{ grid-template-columns:1fr !important; } }
       `}</style>
     </div>
   );
