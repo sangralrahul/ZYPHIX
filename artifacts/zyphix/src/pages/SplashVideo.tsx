@@ -89,8 +89,8 @@ function Scene1() {
   }, []);
 
   return (
-    <motion.div className="absolute inset-0 flex flex-col items-center justify-center"
-      style={{ background: BG, overflow: 'hidden' }}
+    <motion.div
+      style={{ position: 'absolute', inset: 0, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', background: BG, overflow: 'hidden' }}
       initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
       transition={{ duration: 0.55 }}>
       <Grid />
@@ -234,8 +234,8 @@ function Scene2() {
   }, [ph]);
 
   return (
-    <motion.div className="absolute inset-0 flex items-stretch overflow-hidden"
-      style={{ background: BG }}
+    <motion.div
+      style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'stretch', overflow: 'hidden', background: BG }}
       initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
       transition={{ duration: 0.55 }}>
       <Grid />
@@ -436,8 +436,8 @@ function Scene3() {
   const food = FOOD_ITEMS[foodIdx];
 
   return (
-    <motion.div className="absolute inset-0 flex items-stretch overflow-hidden"
-      style={{ background: BG }}
+    <motion.div
+      style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'stretch', overflow: 'hidden', background: BG }}
       initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
       transition={{ duration: 0.55 }}>
       <Grid />
@@ -581,8 +581,8 @@ function Scene4() {
   }, []);
 
   return (
-    <motion.div className="absolute inset-0 flex items-center justify-start overflow-hidden"
-      style={{ background: BG }}
+    <motion.div
+      style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'flex-start', overflow: 'hidden', background: BG }}
       initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
       transition={{ duration: 0.85 }}>
       <Grid />
@@ -676,8 +676,8 @@ function Scene5({ onDone }: { onDone?: () => void }) {
   }, []);
 
   return (
-    <motion.div className="absolute inset-0 flex flex-col items-center justify-center"
-      style={{ background: BG, overflow: 'hidden' }}
+    <motion.div
+      style={{ position: 'absolute', inset: 0, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', background: BG, overflow: 'hidden' }}
       initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ scale: 1.03, opacity: 0 }}
       transition={{ duration: 0.75 }}>
       <Grid />
