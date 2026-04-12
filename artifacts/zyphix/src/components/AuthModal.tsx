@@ -98,12 +98,6 @@ const PERKS = [
   { icon: <CalendarCheck size={14} color="#6EE7B7" />, text: 'Verified home service pros' },
 ];
 
-const TESTIMONIALS = [
-  { name: 'Priya M.', city: 'Bengaluru', text: '"Blinkit kaun? Zyphix is faster and cheaper!"' },
-  { name: 'Arjun S.', city: 'Delhi', text: '"10-min delivery is real. I timed it 🙌"' },
-  { name: 'Neha R.', city: 'Mumbai', text: '"Everything on one app. Absolutely love it."' },
-];
-
 type AuthMethod = 'phone' | 'google' | 'email';
 type EmailMode = 'signin' | 'signup' | 'forgot';
 type PhoneStep = 'enter' | 'otp';
@@ -124,7 +118,6 @@ export function AuthModal() {
   const [forgotSent, setForgotSent] = useState(false);
   const [form, setForm] = useState({ name: '', email: '', phone: '', password: '', confirmPw: '' });
   const [errors, setErrors] = useState<Record<string, string>>({});
-  const [testimonialIdx] = useState(() => Math.floor(Math.random() * TESTIMONIALS.length));
 
   const set = (k: string) => (v: string) => setForm(f => ({ ...f, [k]: v }));
 
@@ -212,7 +205,6 @@ export function AuthModal() {
     setForgotSent(true);
   };
 
-  const t = TESTIMONIALS[testimonialIdx];
   const maskedPhone = phoneNum.replace(/\D/g, '').slice(-10).replace(/(\d{5})(\d{5})/, '$1 $2');
 
   const headings: Record<string, string> = {
@@ -248,27 +240,20 @@ export function AuthModal() {
                 <p style={{ fontFamily: "'Outfit',sans-serif", fontWeight: 900, fontSize: '1.55rem', color: '#fff', lineHeight: 1.25, letterSpacing: '-.04em', marginBottom: 8 }}>India's SuperLocal App</p>
                 <p style={{ fontSize: 13, color: 'rgba(255,255,255,.5)', marginBottom: 30, lineHeight: 1.6 }}>Groceries, food & services — all in one place.</p>
 
-                <div style={{ display: 'flex', flexDirection: 'column', gap: 13, marginBottom: 32 }}>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 14, marginBottom: 36 }}>
                   {PERKS.map((p, i) => (
-                    <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-                      <div style={{ width: 28, height: 28, borderRadius: 8, background: 'rgba(110,231,183,.1)', border: '1px solid rgba(110,231,183,.2)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>{p.icon}</div>
-                      <span style={{ fontSize: 13, color: 'rgba(255,255,255,.75)', fontWeight: 500 }}>{p.text}</span>
+                    <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+                      <div style={{ width: 32, height: 32, borderRadius: 9, background: 'rgba(110,231,183,.12)', border: '1px solid rgba(110,231,183,.22)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>{p.icon}</div>
+                      <span style={{ fontSize: 13.5, color: 'rgba(255,255,255,.8)', fontWeight: 500 }}>{p.text}</span>
                     </div>
                   ))}
                 </div>
 
-                <div style={{ height: 1, background: 'rgba(255,255,255,.08)', marginBottom: 20 }} />
-
-                <div style={{ background: 'rgba(255,255,255,.05)', border: '1px solid rgba(255,255,255,.1)', borderRadius: 14, padding: '14px 16px' }}>
-                  <p style={{ fontSize: 12.5, color: 'rgba(255,255,255,.7)', lineHeight: 1.55, fontStyle: 'italic', marginBottom: 10 }}>{t.text}</p>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                    <div style={{ width: 26, height: 26, borderRadius: '50%', background: 'linear-gradient(135deg,#0DA366,#065F46)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 11, fontWeight: 800, color: '#fff' }}>{t.name[0]}</div>
-                    <div>
-                      <p style={{ fontSize: 11.5, fontWeight: 700, color: '#fff' }}>{t.name}</p>
-                      <p style={{ fontSize: 10.5, color: 'rgba(255,255,255,.4)' }}>{t.city}</p>
-                    </div>
-                    <div style={{ marginLeft: 'auto', display: 'flex', gap: 1 }}>{[...Array(5)].map((_, i) => <span key={i} style={{ color: '#FBBF24', fontSize: 10 }}>★</span>)}</div>
-                  </div>
+                {/* Decorative tagline */}
+                <div style={{ background: 'rgba(13,163,102,.12)', border: '1px solid rgba(13,163,102,.22)', borderRadius: 14, padding: '16px 18px' }}>
+                  <p style={{ fontSize: 13, color: 'rgba(255,255,255,.75)', lineHeight: 1.65, fontWeight: 500 }}>
+                    🇮🇳 Built for <strong style={{ color: '#6EE7B7' }}>Jammu, J&K</strong> and every city that deserves better delivery.
+                  </p>
                 </div>
               </div>
 
