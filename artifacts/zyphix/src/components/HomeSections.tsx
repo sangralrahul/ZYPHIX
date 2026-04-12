@@ -489,28 +489,43 @@ const QUOTES = [
 
 export function KiranaQuotes() {
   return (
-    <div style={{ background: '#0D1117', borderTop: `1px solid rgba(255,255,255,.06)`, padding: '64px 24px' }}>
+    <div style={{ background: W, borderTop: `1px solid ${BD}`, padding: '72px 24px' }}>
       <div style={{ maxWidth: 1100, margin: '0 auto' }}>
-        <div style={{ textAlign: 'center', marginBottom: 44 }}>
-          <h2 style={{ fontFamily: "'Outfit',sans-serif", fontWeight: 900, fontSize: 'clamp(1.5rem,3vw,2.1rem)', color: '#fff', letterSpacing: '-.035em', marginBottom: 10 }}>
+
+        {/* Header */}
+        <div style={{ textAlign: 'center', marginBottom: 48 }}>
+          <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6, background: '#ECFDF5', border: `1px solid #A7F3D0`, borderRadius: 999, padding: '5px 14px', fontSize: 11.5, fontWeight: 700, color: '#065F46', letterSpacing: '.07em', textTransform: 'uppercase', marginBottom: 16 }}>
+            🏪 Real Merchants
+          </span>
+          <h2 style={{ fontFamily: "'Outfit',sans-serif", fontWeight: 900, fontSize: 'clamp(1.5rem,3vw,2.1rem)', color: T1, letterSpacing: '-.04em', lineHeight: 1.15, marginBottom: 10 }}>
             Kirana stores across Jammu are joining us
           </h2>
-          <p style={{ fontSize: 15, color: 'rgba(255,255,255,.4)' }}>Real shop owners. Real excitement.</p>
+          <p style={{ fontSize: 15, color: T2, lineHeight: 1.6 }}>Real shop owners. Real excitement.</p>
         </div>
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: 20 }}>
+
+        {/* Quote cards */}
+        <div className="quotes-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: 20 }}>
           {QUOTES.map(({ quote, name, shop, loc }, i) => (
-            <motion.div key={name} initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.1 }}>
-              <div style={{ background: 'rgba(255,255,255,.03)', border: '1px solid rgba(255,255,255,.07)', borderRadius: 20, padding: '28px 24px', height: '100%', display: 'flex', flexDirection: 'column' }}>
-                <div style={{ fontSize: 32, color: G, lineHeight: 1, marginBottom: 14, fontFamily: 'Georgia, serif' }}>"</div>
-                <p style={{ fontSize: 14, color: 'rgba(255,255,255,.75)', lineHeight: 1.75, marginBottom: 24, flex: 1 }}>{quote}</p>
-                <div style={{ borderTop: '1px solid rgba(255,255,255,.07)', paddingTop: 18 }}>
+            <motion.div key={name}
+              initial={{ opacity: 0, y: 24 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: i * 0.12, duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
+              style={{ height: '100%' }}>
+              <div style={{ background: BG, border: `1.5px solid ${BD}`, borderRadius: 20, padding: '28px 26px', height: '100%', display: 'flex', flexDirection: 'column', boxShadow: '0 2px 10px rgba(0,0,0,.05)' }}>
+                {/* Quote mark */}
+                <div style={{ width: 36, height: 36, borderRadius: 10, background: '#ECFDF5', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 16 }}>
+                  <span style={{ fontSize: 22, color: G, fontFamily: 'Georgia, serif', lineHeight: 1, marginTop: -4 }}>"</span>
+                </div>
+                <p style={{ fontSize: 14, color: T1, lineHeight: 1.8, marginBottom: 24, flex: 1 }}>{quote}</p>
+                <div style={{ borderTop: `1px solid ${BD}`, paddingTop: 18 }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: 12, justifyContent: 'space-between' }}>
                     <div>
-                      <p style={{ fontWeight: 700, color: '#fff', fontSize: 13.5, marginBottom: 2 }}>{name}</p>
-                      <p style={{ fontSize: 12, color: 'rgba(255,255,255,.4)', marginBottom: 3 }}>{shop}</p>
-                      <p style={{ fontSize: 11.5, color: 'rgba(255,255,255,.3)' }}>📍 {loc}</p>
+                      <p style={{ fontWeight: 700, color: T1, fontSize: 13.5, marginBottom: 2 }}>{name}</p>
+                      <p style={{ fontSize: 12, color: T2, marginBottom: 3 }}>{shop}</p>
+                      <p style={{ fontSize: 11.5, color: T3 }}>📍 {loc}</p>
                     </div>
-                    <span style={{ background: `${G}22`, border: `1px solid ${G}55`, color: G, fontSize: 11, fontWeight: 700, padding: '5px 10px', borderRadius: 99, whiteSpace: 'nowrap', flexShrink: 0 }}>
+                    <span style={{ background: '#ECFDF5', border: `1px solid #A7F3D0`, color: '#059669', fontSize: 11, fontWeight: 700, padding: '5px 10px', borderRadius: 99, whiteSpace: 'nowrap', flexShrink: 0 }}>
                       Waitlisted ✓
                     </span>
                   </div>
@@ -520,6 +535,7 @@ export function KiranaQuotes() {
           ))}
         </div>
       </div>
+      <style>{`@media(max-width:767px){.quotes-grid{grid-template-columns:1fr !important;}}`}</style>
     </div>
   );
 }

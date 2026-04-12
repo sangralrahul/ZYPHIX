@@ -2,7 +2,7 @@
 
 ## Overview
 
-pnpm workspace monorepo using TypeScript. Contains the ZYPHIX super-local app frontend.
+pnpm workspace monorepo using TypeScript. Contains the ZYPHIX superlocal app — India's SuperLocal App for Jammu, J&K. Frontend-only React + Vite + TypeScript + Tailwind, built by Clavix Technologies Pvt. Ltd.
 
 ## Stack
 
@@ -10,43 +10,46 @@ pnpm workspace monorepo using TypeScript. Contains the ZYPHIX super-local app fr
 - **Node.js version**: 24
 - **Package manager**: pnpm
 - **TypeScript version**: 5.9
-- **API framework**: Express 5
-- **Database**: PostgreSQL + Drizzle ORM
-- **Validation**: Zod (`zod/v4`), `drizzle-zod`
-- **API codegen**: Orval (from OpenAPI spec)
-- **Build**: esbuild (CJS bundle)
+- **Build**: Vite
 
 ## Artifacts
 
 ### ZYPHIX — India's SuperLocal App (`artifacts/zyphix/`)
 - **Type**: React + Vite + TypeScript
 - **Preview path**: `/`
-- **Framework**: React 18 + Vite, Tailwind CSS, Framer Motion, Lucide React, Wouter routing
-- **Theme**: Dark-only, custom color palette:
-  - Background: `#0A0E1A`
-  - Card/navbar: `#0F1B35`
-  - Teal accent (CTA): `#00C9A7`
-  - Gold accent (Eats): `#F5A623`
-  - Orange accent (Book): `#FF6B35`
-  - Brand blue: `#1E4FC2`
-  - Borders: `#1E3A6E`
+- **Framework**: React 18 + Vite, Tailwind CSS v4, Framer Motion, Lucide React, Wouter routing
+- **Design**: Light theme with design tokens:
+  - BG `#F8F9FA`, G (green) `#0DA366`, T1 `#111827`, T2 `#6B7280`, T3 `#9CA3AF`, BD `#E5E7EB`, W `#FFFFFF`
+  - Restaurant accent: `#E11D48`
+- **Company**: Clavix Technologies Pvt. Ltd.
 - **Pages**:
-  - `/` — Home (hero cards, categories, trending products, restaurants, services)
-  - `/now` — ZyphixNow (grocery delivery with filter pills and store sections)
-  - `/eats` — ZyphixEats (food delivery from dhabas and restaurants)
-  - `/book` — ZyphixBook (appointment booking for barbers, garages, doctors)
-  - `/map` — Kirana Near Me (store map with sidebar list)
-  - `/offers` — Offers & promo codes
-- **Data**: Frontend-only, all data in `src/data/mockData.ts`
-- **Location**: Jammu & Kashmir, India (Tier 2 city focus)
+  - `/` — Home (hero waitlist, services, savings calculator, live counter, kirana quotes, app preview)
+  - `/about` — About page
+  - `/privacy` — Privacy policy
+  - `/terms` — Terms of service
+  - `/contact` — Contact page
+  - `/merchant-setup` — Merchant waitlist signup (grouped area dropdowns by district)
+  - `/delivery-setup` — Delivery partner signup (grouped area dropdowns by district)
+  - `/restaurant-setup` — Restaurant partner signup (grouped area dropdowns by district)
+  - `/splash-video` — 5-scene brand splash video (framer-motion, auto-advances)
+- **Components**: HomeSections.tsx (all Home sub-sections), ZyphixLogo.tsx (animated), Navbar.tsx (logo replay on route change)
+- **Key features**:
+  - WhatsApp fixed button (wa.me/919682394363)
+  - Area dropdowns with AREAS_BY_DISTRICT (Jammu ~35, Samba 12, Kathua 13 localities) and `<optgroup>` labels
+  - Logo animation: icon spring, `//` fade, ZYPH/IX word-slide; replays on every route via `key={location}`
+  - Splash video images in `public/images/` (groceries, food, scooter, jammu-bg)
+- **Data**: Frontend-only, waitlist stored in `localStorage` key `zyphix_waitlist`, base count 500
+
+### API Server (`artifacts/api-server/`)
+- Express 5 backend (minimal, not used by frontend)
+
+### Canvas / Mockup Sandbox (`artifacts/mockup-sandbox/`)
+- Vite dev server for component previews on the canvas board
 
 ## Key Commands
 
+- `pnpm --filter @workspace/zyphix run dev` — run ZYPHIX frontend
 - `pnpm run typecheck` — full typecheck across all packages
 - `pnpm run build` — typecheck + build all packages
-- `pnpm --filter @workspace/api-spec run codegen` — regenerate API hooks and Zod schemas from OpenAPI spec
-- `pnpm --filter @workspace/db run push` — push DB schema changes (dev only)
-- `pnpm --filter @workspace/api-server run dev` — run API server locally
-- `pnpm --filter @workspace/zyphix run dev` — run ZYPHIX frontend
 
 See the `pnpm-workspace` skill for workspace structure, TypeScript setup, and package details.
