@@ -1,7 +1,8 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, Mail, Lock, User, Phone, Eye, EyeOff, Check, AlertCircle, Zap, ShoppingCart, CalendarCheck, ArrowRight, ChevronLeft } from 'lucide-react';
+import { X, Mail, User, Phone, Check, AlertCircle, Zap, ShoppingCart, CalendarCheck, ArrowRight, ChevronLeft } from 'lucide-react';
 import { useAuth } from '@/context/AuthContext';
+import { ZyphixLogo } from './ZyphixLogo';
 
 const G = '#0DA366';
 const G2 = '#0A8C58';
@@ -13,12 +14,9 @@ const BG = '#F8F9FA';
 const W = '#FFFFFF';
 const ERR = '#EF4444';
 
-import { ZyphixLogo } from './ZyphixLogo';
-
-function Field({ label, type, value, onChange, icon, error, placeholder, toggle }: {
+function Field({ label, type, value, onChange, icon, error, placeholder }: {
   label: string; type: string; value: string; onChange: (v: string) => void;
   icon: React.ReactNode; error?: string; placeholder: string;
-  toggle?: { show: boolean; onToggle: () => void };
 }) {
   return (
     <div>
@@ -26,15 +24,10 @@ function Field({ label, type, value, onChange, icon, error, placeholder, toggle 
       <div style={{ position: 'relative' }}>
         <div style={{ position: 'absolute', left: 13, top: '50%', transform: 'translateY(-50%)', color: error ? ERR : T3 }}>{icon}</div>
         <input type={type} value={value} onChange={e => onChange(e.target.value)} placeholder={placeholder}
-          style={{ width: '100%', paddingLeft: 42, paddingRight: toggle ? 42 : 14, paddingTop: 11, paddingBottom: 11, borderRadius: 10, border: `1.5px solid ${error ? ERR + '80' : BD}`, background: error ? '#FFF5F5' : W, fontSize: 14, color: T1, fontFamily: 'inherit', outline: 'none', transition: 'all .18s', boxSizing: 'border-box' }}
+          style={{ width: '100%', paddingLeft: 42, paddingRight: 14, paddingTop: 11, paddingBottom: 11, borderRadius: 10, border: `1.5px solid ${error ? ERR + '80' : BD}`, background: error ? '#FFF5F5' : W, fontSize: 14, color: T1, fontFamily: 'inherit', outline: 'none', transition: 'all .18s', boxSizing: 'border-box' }}
           onFocus={e => { e.target.style.borderColor = error ? ERR : G; e.target.style.boxShadow = `0 0 0 3px ${error ? ERR : G}18`; }}
           onBlur={e => { e.target.style.borderColor = error ? ERR + '80' : BD; e.target.style.boxShadow = 'none'; }}
         />
-        {toggle && (
-          <button type="button" onClick={toggle.onToggle} style={{ position: 'absolute', right: 13, top: '50%', transform: 'translateY(-50%)', color: T3, background: 'none', border: 'none', cursor: 'pointer' }}>
-            {toggle.show ? <EyeOff size={15} /> : <Eye size={15} />}
-          </button>
-        )}
       </div>
       {error && <p style={{ fontSize: 11.5, color: ERR, marginTop: 4, display: 'flex', alignItems: 'center', gap: 4 }}><AlertCircle size={11} />{error}</p>}
     </div>
@@ -86,7 +79,7 @@ function Countdown({ seconds, onDone }: { seconds: number; onDone: () => void })
     if (left <= 0) { onDone(); return; }
     const t = setTimeout(() => setLeft(l => l - 1), 1000);
     return () => clearTimeout(t);
-  }, [left]);
+  }, [left, onDone]);
   const m = String(Math.floor(left / 60)).padStart(2, '0');
   const s = String(left % 60).padStart(2, '0');
   return <span style={{ color: T3, fontWeight: 600 }}>{m}:{s}</span>;
@@ -99,60 +92,55 @@ const PERKS = [
 ];
 
 type AuthMethod = 'phone' | 'google' | 'email';
-type EmailMode = 'signin' | 'signup' | 'forgot';
 type PhoneStep = 'enter' | 'otp';
+type EmailStep = 'enter' | 'otp';
 
 export function AuthModal() {
   const { showModal, closeModal, login } = useAuth();
-  const [method, setMethod] = useState<AuthMethod>('phone');
-  const [emailMode, setEmailMode] = useState<EmailMode>('signin');
-  const [phoneStep, setPhoneStep] = useState<PhoneStep>('enter');
-  const [phoneNum, setPhoneNum] = useState('');
-  const [otp, setOtp] = useState(['', '', '', '', '', '']);
-  const [canResend, setCanResend] = useState(false);
+  const [method, setMethod]         = useState<AuthMethod>('phone');
+  const [phoneStep, setPhoneStep]   = useState<PhoneStep>('enter');
+  const [emailStep, setEmailStep]   = useState<EmailStep>('enter');
+  const [phoneNum, setPhoneNum]     = useState('');
+  const [otp, setOtp]               = useState(['', '', '', '', '', '']);
+  const [emailOtp, setEmailOtp]     = useState(['', '', '', '', '', '']);
+  const [canResend, setCanResend]   = useState(false);
   const [countdownKey, setCountdownKey] = useState(0);
-  const [showPw, setShowPw] = useState(false);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading]       = useState(false);
   const [googleLoading, setGoogleLoading] = useState(false);
-  const [success, setSuccess] = useState(false);
-  const [forgotSent, setForgotSent] = useState(false);
-  const [form, setForm] = useState({ name: '', email: '', phone: '', password: '', confirmPw: '' });
-  const [errors, setErrors] = useState<Record<string, string>>({});
+  const [success, setSuccess]       = useState(false);
+  const [apiError, setApiError]     = useState('');
+  const [form, setForm]             = useState({ name: '', email: '' });
+  const [errors, setErrors]         = useState<Record<string, string>>({});
 
   const set = (k: string) => (v: string) => setForm(f => ({ ...f, [k]: v }));
 
   const resetAll = () => {
-    setPhoneStep('enter'); setPhoneNum(''); setOtp(['', '', '', '', '', '']);
-    setErrors({}); setSuccess(false); setForgotSent(false); setCanResend(false);
-    setForm({ name: '', email: '', phone: '', password: '', confirmPw: '' });
+    setPhoneStep('enter'); setEmailStep('enter');
+    setPhoneNum(''); setOtp(['', '', '', '', '', '']); setEmailOtp(['', '', '', '', '', '']);
+    setErrors({}); setApiError(''); setSuccess(false); setCanResend(false);
+    setForm({ name: '', email: '' });
     setLoading(false); setGoogleLoading(false);
   };
 
   const switchMethod = (m: AuthMethod) => { resetAll(); setMethod(m); };
-  const switchEmail = (m: EmailMode) => { resetAll(); setEmailMode(m); setMethod('email'); };
 
+  /* ── Phone OTP (UI only for now) ── */
   const sendOtp = async (e?: React.FormEvent) => {
     e?.preventDefault();
     const cleaned = phoneNum.replace(/\D/g, '');
     if (cleaned.length < 10) { setErrors({ phone: 'Enter a valid 10-digit mobile number' }); return; }
-    setErrors({});
-    setLoading(true);
+    setErrors({}); setLoading(true);
     await new Promise(r => setTimeout(r, 1400));
-    setLoading(false);
-    setPhoneStep('otp');
-    setCanResend(false);
-    setCountdownKey(k => k + 1);
+    setLoading(false); setPhoneStep('otp'); setCanResend(false); setCountdownKey(k => k + 1);
   };
 
   const verifyOtp = async (e: React.FormEvent) => {
     e.preventDefault();
     const code = otp.join('');
     if (code.length < 6) { setErrors({ otp: 'Enter the complete 6-digit OTP' }); return; }
-    setErrors({});
-    setLoading(true);
+    setErrors({}); setLoading(true);
     await new Promise(r => setTimeout(r, 1200));
-    setLoading(false);
-    setSuccess(true);
+    setLoading(false); setSuccess(true);
     await new Promise(r => setTimeout(r, 900));
     const num = phoneNum.replace(/\D/g, '');
     login({ name: 'Zyphix User', email: '', phone: `+91 ${num.slice(-10)}` });
@@ -160,11 +148,10 @@ export function AuthModal() {
 
   const handleResend = async () => {
     if (!canResend) return;
-    setOtp(['', '', '', '', '', '']);
-    setCanResend(false);
-    setCountdownKey(k => k + 1);
+    setOtp(['', '', '', '', '', '']); setCanResend(false); setCountdownKey(k => k + 1);
   };
 
+  /* ── Google ── */
   const handleGoogle = async () => {
     setGoogleLoading(true);
     await new Promise(r => setTimeout(r, 1800));
@@ -172,50 +159,82 @@ export function AuthModal() {
     login({ name: 'Google User', email: 'user@gmail.com', avatar: 'G' });
   };
 
-  const validateEmail = () => {
-    const e: Record<string, string> = {};
-    if (emailMode === 'signup' && !form.name.trim()) e.name = 'Name is required';
-    if (!form.email.trim()) e.email = 'Email is required';
-    else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email)) e.email = 'Enter a valid email';
-    if (!form.password) e.password = 'Password is required';
-    else if (form.password.length < 6) e.password = 'At least 6 characters';
-    if (emailMode === 'signup' && form.password !== form.confirmPw) e.confirmPw = 'Passwords do not match';
-    setErrors(e);
-    return Object.keys(e).length === 0;
+  /* ── Email OTP (real) ── */
+  const handleSendEmailOtp = async (e: React.FormEvent) => {
+    e.preventDefault();
+    const errs: Record<string, string> = {};
+    if (!form.email.trim()) errs.email = 'Email is required';
+    else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email)) errs.email = 'Enter a valid email address';
+    if (Object.keys(errs).length) { setErrors(errs); return; }
+    setErrors({}); setApiError(''); setLoading(true);
+    try {
+      const res = await fetch('/api/send-email-otp', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: form.email.trim(), name: form.name.trim() || undefined }),
+      });
+      const data = await res.json() as { success?: boolean; error?: string };
+      if (!res.ok || !data.success) { setApiError(data.error ?? 'Failed to send OTP. Please try again.'); setLoading(false); return; }
+      setLoading(false); setEmailStep('otp'); setCanResend(false); setCountdownKey(k => k + 1);
+    } catch {
+      setApiError('Network error. Please check your connection.'); setLoading(false);
+    }
   };
 
-  const handleEmailSubmit = async (e: React.FormEvent) => {
+  const handleVerifyEmailOtp = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!validateEmail()) return;
-    setLoading(true);
-    await new Promise(r => setTimeout(r, 1400));
-    setLoading(false);
-    setSuccess(true);
-    await new Promise(r => setTimeout(r, 900));
-    const name = form.name || form.email.split('@')[0];
-    login({ name: name.charAt(0).toUpperCase() + name.slice(1), email: form.email, phone: form.phone });
+    const code = emailOtp.join('');
+    if (code.length < 6) { setErrors({ emailOtp: 'Enter the complete 6-digit OTP' }); return; }
+    setErrors({}); setApiError(''); setLoading(true);
+    try {
+      const res = await fetch('/api/verify-email-otp', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: form.email.trim(), otp: code }),
+      });
+      const data = await res.json() as { success?: boolean; name?: string | null; error?: string };
+      if (!res.ok || !data.success) { setErrors({ emailOtp: data.error ?? 'Incorrect OTP. Please try again.' }); setLoading(false); return; }
+      setLoading(false); setSuccess(true);
+      await new Promise(r => setTimeout(r, 900));
+      const displayName = data.name || form.name || form.email.split('@')[0];
+      login({ name: displayName.charAt(0).toUpperCase() + displayName.slice(1), email: form.email.trim() });
+    } catch {
+      setApiError('Network error. Please check your connection.'); setLoading(false);
+    }
   };
 
-  const handleForgot = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!form.email.trim()) { setErrors({ email: 'Enter your email' }); return; }
+  const handleEmailResend = async () => {
+    if (!canResend) return;
+    setEmailOtp(['', '', '', '', '', '']); setApiError('');
     setLoading(true);
-    await new Promise(r => setTimeout(r, 1200));
-    setLoading(false);
-    setForgotSent(true);
+    try {
+      const res = await fetch('/api/send-email-otp', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: form.email.trim(), name: form.name.trim() || undefined }),
+      });
+      const data = await res.json() as { success?: boolean; error?: string };
+      if (!res.ok || !data.success) { setApiError(data.error ?? 'Failed to resend OTP.'); }
+    } catch {
+      setApiError('Network error.');
+    }
+    setLoading(false); setCanResend(false); setCountdownKey(k => k + 1);
   };
 
   const maskedPhone = phoneNum.replace(/\D/g, '').slice(-10).replace(/(\d{5})(\d{5})/, '$1 $2');
+  const maskedEmail = form.email.replace(/(.{2})(.*)(@.*)/, (_, a, b, c) => a + b.replace(/./g, '●') + c);
 
   const headings: Record<string, string> = {
-    phone: phoneStep === 'enter' ? 'Enter mobile number' : 'Verify OTP',
+    phone:  phoneStep === 'enter' ? 'Enter mobile number' : 'Verify OTP',
     google: 'Continue with Google',
-    email: emailMode === 'forgot' ? 'Reset password' : emailMode === 'signin' ? 'Welcome back' : 'Join Zyphix',
+    email:  emailStep === 'enter' ? 'Sign in with email' : 'Verify your email',
   };
   const subheadings: Record<string, string> = {
-    phone: phoneStep === 'enter' ? "We'll send a one-time password to your number" : `OTP sent to +91 ${maskedPhone}`,
+    phone:  phoneStep === 'enter' ? "We'll send a one-time password to your number" : `OTP sent to +91 ${maskedPhone}`,
     google: 'Sign in instantly using your Google account',
-    email: emailMode === 'forgot' ? "We'll send a reset link to your inbox." : emailMode === 'signin' ? 'Sign in to track orders & unlock deals.' : 'Get 50% off your first order!',
+    email:  emailStep === 'enter'
+      ? 'Get a one-time code sent to your inbox — no password needed.'
+      : `OTP sent to ${maskedEmail}`,
   };
 
   return (
@@ -249,7 +268,6 @@ export function AuthModal() {
                   ))}
                 </div>
 
-                {/* Decorative tagline */}
                 <div style={{ background: 'rgba(13,163,102,.12)', border: '1px solid rgba(13,163,102,.22)', borderRadius: 14, padding: '16px 18px' }}>
                   <p style={{ fontSize: 13, color: 'rgba(255,255,255,.75)', lineHeight: 1.65, fontWeight: 500 }}>
                     🇮🇳 Built for <strong style={{ color: '#6EE7B7' }}>Jammu, J&K</strong> and every city that deserves better delivery.
@@ -285,7 +303,7 @@ export function AuthModal() {
                   <p style={{ fontSize: 13.5, color: T2 }}>{subheadings[method]}</p>
                 </div>
 
-                {/* ── AUTH METHOD SELECTOR ── */}
+                {/* ── Method selector ── */}
                 {!success && (
                   <div style={{ display: 'flex', gap: 8, marginBottom: 22 }}>
                     {([
@@ -302,6 +320,7 @@ export function AuthModal() {
                 )}
 
                 <AnimatePresence mode="wait">
+                  {/* ── Success ── */}
                   {success ? (
                     <motion.div key="success" initial={{ opacity: 0, scale: .92 }} animate={{ opacity: 1, scale: 1 }} style={{ textAlign: 'center', padding: '28px 0' }}>
                       <div style={{ width: 72, height: 72, borderRadius: '50%', background: 'rgba(13,163,102,.08)', border: '2px solid rgba(13,163,102,.2)', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 18px' }}>
@@ -312,6 +331,7 @@ export function AuthModal() {
                     </motion.div>
 
                   ) : method === 'phone' ? (
+                    /* ── Phone OTP ── */
                     <motion.div key={`phone-${phoneStep}`} initial={{ opacity: 0, x: 12 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -12 }} transition={{ duration: .18 }}>
                       {phoneStep === 'enter' ? (
                         <form onSubmit={sendOtp} style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
@@ -362,12 +382,14 @@ export function AuthModal() {
                     </motion.div>
 
                   ) : method === 'google' ? (
+                    /* ── Google ── */
                     <motion.div key="google" initial={{ opacity: 0, x: 12 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -12 }} transition={{ duration: .18 }}>
                       <button onClick={handleGoogle} disabled={googleLoading}
                         style={{ width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 12, padding: '15px', borderRadius: 14, border: `1.5px solid ${BD}`, background: W, fontSize: 15, fontWeight: 700, color: T1, transition: 'all .18s', cursor: googleLoading ? 'wait' : 'pointer', opacity: googleLoading ? .7 : 1, boxShadow: '0 2px 8px rgba(0,0,0,.07)' }}
                         onMouseEnter={e => { if (!googleLoading) { (e.currentTarget as HTMLElement).style.background = BG; (e.currentTarget as HTMLElement).style.borderColor = '#D1D5DB'; } }}
                         onMouseLeave={e => { (e.currentTarget as HTMLElement).style.background = W; (e.currentTarget as HTMLElement).style.borderColor = BD; }}>
-                        {googleLoading ? <span style={{ width: 20, height: 20, border: '2.5px solid #CBD5E1', borderTopColor: G, borderRadius: '50%', display: 'inline-block', animation: 'spin .7s linear infinite' }} />
+                        {googleLoading
+                          ? <span style={{ width: 20, height: 20, border: '2.5px solid #CBD5E1', borderTopColor: G, borderRadius: '50%', display: 'inline-block', animation: 'spin .7s linear infinite' }} />
                           : <svg width="20" height="20" viewBox="0 0 18 18"><path d="M17.64 9.2c0-.637-.057-1.251-.164-1.84H9v3.481h4.844c-.209 1.125-.843 2.078-1.796 2.717v2.258h2.908c1.702-1.567 2.684-3.875 2.684-6.615z" fill="#4285F4"/><path d="M9 18c2.43 0 4.467-.806 5.956-2.184l-2.908-2.258c-.806.54-1.837.86-3.048.86-2.344 0-4.328-1.584-5.036-3.711H.957v2.332A8.997 8.997 0 0 0 9 18z" fill="#34A853"/><path d="M3.964 10.707A5.41 5.41 0 0 1 3.682 9c0-.593.102-1.17.282-1.707V4.961H.957A8.996 8.996 0 0 0 0 9c0 1.452.348 2.827.957 4.039l3.007-2.332z" fill="#FBBC05"/><path d="M9 3.58c1.321 0 2.508.454 3.44 1.345l2.582-2.58C13.463.891 11.426 0 9 0A8.997 8.997 0 0 0 .957 4.961L3.964 7.293C4.672 5.166 6.656 3.58 9 3.58z" fill="#EA4335"/></svg>}
                         {googleLoading ? 'Signing you in…' : 'Continue with Google'}
                       </button>
@@ -377,53 +399,76 @@ export function AuthModal() {
                     </motion.div>
 
                   ) : (
-                    <motion.div key={`email-${emailMode}`} initial={{ opacity: 0, x: 12 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -12 }} transition={{ duration: .18 }}>
-                      {/* Email sub-tabs */}
-                      {emailMode !== 'forgot' && (
-                        <div style={{ display: 'flex', background: BG, borderRadius: 12, padding: 4, marginBottom: 20, border: `1px solid ${BD}` }}>
-                          {(['signin', 'signup'] as const).map(m => (
-                            <button key={m} onClick={() => switchEmail(m)} style={{ flex: 1, padding: '9px', borderRadius: 9, fontSize: 13.5, fontWeight: 700, transition: 'all .18s', background: emailMode === m ? W : 'transparent', color: emailMode === m ? T1 : T3, boxShadow: emailMode === m ? '0 1px 4px rgba(0,0,0,.1)' : 'none', cursor: 'pointer', border: 'none' }}>
-                              {m === 'signin' ? 'Sign In' : 'Create Account'}
-                            </button>
-                          ))}
-                        </div>
-                      )}
+                    /* ── Email OTP ── */
+                    <motion.div key={`email-${emailStep}`} initial={{ opacity: 0, x: 12 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -12 }} transition={{ duration: .18 }}>
+                      {emailStep === 'enter' ? (
+                        <form onSubmit={handleSendEmailOtp} style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
+                          <Field label="Your Name (optional)" type="text" value={form.name} onChange={set('name')}
+                            icon={<User size={15} />} placeholder="Rahul Sharma" />
+                          <Field label="Email Address" type="email" value={form.email} onChange={set('email')}
+                            icon={<Mail size={15} />} error={errors.email} placeholder="you@example.com" />
 
-                      {forgotSent ? (
-                        <div style={{ textAlign: 'center', padding: '20px 0' }}>
-                          <div style={{ width: 56, height: 56, borderRadius: '50%', background: 'rgba(13,163,102,.08)', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 14px' }}>
-                            <Mail size={24} color={G} />
+                          {/* Info note */}
+                          <div style={{ background: '#F0FDF4', border: '1px solid #BBF7D0', borderRadius: 10, padding: '10px 14px', display: 'flex', alignItems: 'center', gap: 10 }}>
+                            <Mail size={14} color={G} style={{ flexShrink: 0 }} />
+                            <p style={{ margin: 0, fontSize: 12.5, color: '#065F46', lineHeight: 1.5 }}>
+                              A <strong>6-digit OTP</strong> will be sent to your inbox from <strong>noreply@zyphix.in</strong>
+                            </p>
                           </div>
-                          <p style={{ fontWeight: 800, color: T1, fontSize: 16, marginBottom: 6 }}>Check your inbox</p>
-                          <p style={{ fontSize: 13.5, color: T2, marginBottom: 20, lineHeight: 1.6 }}>Reset link sent to <strong>{form.email}</strong></p>
-                          <button onClick={() => switchEmail('signin')} style={{ fontSize: 13.5, fontWeight: 700, color: G, cursor: 'pointer', border: 'none', background: 'transparent' }}>← Back to Sign In</button>
-                        </div>
-                      ) : (
-                        <form onSubmit={emailMode === 'forgot' ? handleForgot : handleEmailSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 13 }}>
-                          {emailMode === 'signup' && <Field label="Full Name" type="text" value={form.name} onChange={set('name')} icon={<User size={15} />} error={errors.name} placeholder="Rahul Sharma" />}
-                          <Field label="Email Address" type="email" value={form.email} onChange={set('email')} icon={<Mail size={15} />} error={errors.email} placeholder="you@example.com" />
-                          {emailMode === 'signup' && <Field label="Phone (optional)" type="tel" value={form.phone} onChange={set('phone')} icon={<Phone size={15} />} placeholder="+91 98765 43210" />}
-                          {emailMode !== 'forgot' && (
-                            <Field label="Password" type={showPw ? 'text' : 'password'} value={form.password} onChange={set('password')} icon={<Lock size={15} />} error={errors.password} placeholder={emailMode === 'signup' ? 'Min 6 characters' : 'Your password'} toggle={{ show: showPw, onToggle: () => setShowPw(p => !p) }} />
-                          )}
-                          {emailMode === 'signup' && <Field label="Confirm Password" type="password" value={form.confirmPw} onChange={set('confirmPw')} icon={<Lock size={15} />} error={errors.confirmPw} placeholder="Repeat password" />}
-                          {emailMode === 'signin' && (
-                            <div style={{ textAlign: 'right', marginTop: -6 }}>
-                              <button type="button" onClick={() => switchEmail('forgot')} style={{ fontSize: 12.5, fontWeight: 600, color: G, cursor: 'pointer', border: 'none', background: 'transparent' }}>Forgot password?</button>
+
+                          {apiError && (
+                            <div style={{ background: '#FEF2F2', border: '1px solid #FCA5A5', borderRadius: 10, padding: '10px 14px', fontSize: 13, color: '#DC2626', display: 'flex', alignItems: 'center', gap: 8 }}>
+                              <AlertCircle size={14} />{apiError}
                             </div>
                           )}
+
                           <motion.button type="submit" disabled={loading} whileTap={{ scale: .98 }}
-                            style={{ width: '100%', padding: '13px', borderRadius: 12, background: loading ? G + 'BB' : `linear-gradient(135deg, ${G}, ${G2})`, color: '#fff', fontSize: 15, fontWeight: 800, marginTop: 4, cursor: loading ? 'wait' : 'pointer', border: 'none', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, boxShadow: loading ? 'none' : `0 4px 18px ${G}40` }}>
-                            {loading ? <><span style={{ width: 16, height: 16, border: '2px solid rgba(255,255,255,.3)', borderTopColor: '#fff', borderRadius: '50%', display: 'inline-block', animation: 'spin .7s linear infinite' }} />{emailMode === 'forgot' ? 'Sending…' : emailMode === 'signin' ? 'Signing in…' : 'Creating account…'}</> : <>{emailMode === 'forgot' ? 'Send Reset Link' : emailMode === 'signin' ? 'Sign In' : 'Create Account'} <ArrowRight size={15} /></>}
+                            style={{ width: '100%', padding: '13px', borderRadius: 12, background: loading ? G + 'BB' : `linear-gradient(135deg, ${G}, ${G2})`, color: '#fff', fontSize: 15, fontWeight: 800, marginTop: 2, cursor: loading ? 'wait' : 'pointer', border: 'none', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, boxShadow: loading ? 'none' : `0 4px 18px ${G}40` }}>
+                            {loading ? <><span style={{ width: 16, height: 16, border: '2px solid rgba(255,255,255,.3)', borderTopColor: '#fff', borderRadius: '50%', display: 'inline-block', animation: 'spin .7s linear infinite' }} />Sending OTP…</> : <>Send OTP to my Email <ArrowRight size={15} /></>}
                           </motion.button>
-                          {emailMode === 'forgot' && <button type="button" onClick={() => switchEmail('signin')} style={{ textAlign: 'center', fontSize: 13, color: T2, marginTop: 4, width: '100%', cursor: 'pointer', border: 'none', background: 'transparent' }}>← Back to Sign In</button>}
-                          {emailMode === 'signup' && (
-                            <p style={{ fontSize: 11, color: T3, textAlign: 'center', lineHeight: 1.6, marginTop: 2 }}>
-                              By creating an account you agree to our{' '}
-                              <a href="/terms" onClick={closeModal} style={{ color: T2, fontWeight: 600 }}>Terms</a>{' '}and{' '}
-                              <a href="/privacy" onClick={closeModal} style={{ color: T2, fontWeight: 600 }}>Privacy Policy</a>.
-                            </p>
+                          <p style={{ fontSize: 11, color: T3, textAlign: 'center', lineHeight: 1.6 }}>
+                            By continuing you agree to our{' '}
+                            <a href="/terms" onClick={closeModal} style={{ color: T2, fontWeight: 600 }}>Terms</a>{' '}&{' '}
+                            <a href="/privacy" onClick={closeModal} style={{ color: T2, fontWeight: 600 }}>Privacy Policy</a>.
+                          </p>
+                        </form>
+                      ) : (
+                        <form onSubmit={handleVerifyEmailOtp} style={{ display: 'flex', flexDirection: 'column', gap: 18 }}>
+                          <div style={{ background: BG, borderRadius: 12, padding: '12px 16px', display: 'flex', alignItems: 'center', gap: 10 }}>
+                            <div style={{ width: 36, height: 36, borderRadius: 10, background: `${G}12`, border: `1px solid ${G}30`, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                              <Mail size={16} color={G} />
+                            </div>
+                            <div>
+                              <p style={{ margin: 0, fontSize: 12, color: T3, fontWeight: 600, letterSpacing: '.03em', textTransform: 'uppercase' }}>OTP sent to</p>
+                              <p style={{ margin: 0, fontSize: 13.5, color: T1, fontWeight: 700 }}>{form.email}</p>
+                            </div>
+                          </div>
+
+                          <OtpInput value={emailOtp} onChange={setEmailOtp} error={errors.emailOtp} />
+
+                          {apiError && (
+                            <div style={{ background: '#FEF2F2', border: '1px solid #FCA5A5', borderRadius: 10, padding: '10px 14px', fontSize: 13, color: '#DC2626', display: 'flex', alignItems: 'center', gap: 8 }}>
+                              <AlertCircle size={14} />{apiError}
+                            </div>
                           )}
+
+                          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                            <button type="button" onClick={() => { setEmailStep('enter'); setEmailOtp(['','','','','','']); setErrors({}); setApiError(''); }}
+                              style={{ display: 'flex', alignItems: 'center', gap: 4, fontSize: 13, fontWeight: 600, color: T2, border: 'none', background: 'transparent', cursor: 'pointer' }}>
+                              <ChevronLeft size={14} /> Change email
+                            </button>
+                            <span style={{ fontSize: 13, color: T2 }}>
+                              {canResend
+                                ? <button type="button" onClick={handleEmailResend} style={{ color: G, fontWeight: 700, border: 'none', background: 'transparent', cursor: 'pointer' }}>Resend OTP</button>
+                                : <span>Resend in <Countdown key={countdownKey} seconds={60} onDone={() => setCanResend(true)} /></span>
+                              }
+                            </span>
+                          </div>
+
+                          <motion.button type="submit" disabled={loading} whileTap={{ scale: .98 }}
+                            style={{ width: '100%', padding: '13px', borderRadius: 12, background: loading ? G + 'BB' : `linear-gradient(135deg, ${G}, ${G2})`, color: '#fff', fontSize: 15, fontWeight: 800, cursor: loading ? 'wait' : 'pointer', border: 'none', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, boxShadow: loading ? 'none' : `0 4px 18px ${G}40` }}>
+                            {loading ? <><span style={{ width: 16, height: 16, border: '2px solid rgba(255,255,255,.3)', borderTopColor: '#fff', borderRadius: '50%', display: 'inline-block', animation: 'spin .7s linear infinite' }} />Verifying…</> : <>Verify & Sign In <ArrowRight size={15} /></>}
+                          </motion.button>
                         </form>
                       )}
                     </motion.div>
