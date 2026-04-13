@@ -2109,10 +2109,11 @@ const WLIST_ROLES = [
 ];
 
 function WaitlistSection() {
-  const [, setLoc] = useLocation();
-  const [form, setForm]   = useState({ name: '', phone: '', city: '', role: '' });
+  const [form, setForm]   = useState({ name: '', email: '', phone: '', city: '', role: '' });
   const [errors, setErrors] = useState<Record<string,string>>({});
   const [submitted, setSubmitted] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [apiError, setApiError] = useState('');
   const [count, setCount] = useState(500);
   const [dispCount, setDispCount] = useState(500);
 
@@ -2134,26 +2135,43 @@ function WaitlistSection() {
 
   const validate = () => {
     const e: Record<string,string> = {};
-    if (!form.name.trim())             e.name  = 'Name is required';
+    if (!form.name.trim())               e.name  = 'Name is required';
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email)) e.email = 'Enter a valid email address';
     if (!/^[0-9]{10}$/.test(form.phone)) e.phone = 'Enter a valid 10-digit number';
-    if (!form.city)                    e.city  = 'Please select a city';
-    if (!form.role)                    e.role  = 'Please select your role';
+    if (!form.city)                      e.city  = 'Please select a city';
+    if (!form.role)                      e.role  = 'Please select your role';
     return e;
   };
 
-  const submit = () => {
+  const submit = async () => {
     const e = validate();
     if (Object.keys(e).length) { setErrors(e); return; }
+    setApiError('');
+    setLoading(true);
     try {
-      const stored = JSON.parse(localStorage.getItem('zyphix_waitlist') || '[]') as object[];
-      stored.push({ ...form, ts: Date.now() });
-      localStorage.setItem('zyphix_waitlist', JSON.stringify(stored));
-      const newCount = 500 + stored.length;
-      setCount(newCount); setDispCount(newCount);
-    } catch {}
-    if (form.role === 'restaurant') { setTimeout(() => setLoc('/restaurant-setup'), 300); return; }
-    if (form.role === 'merchant')  { setTimeout(() => setLoc('/merchant-setup'),  300); return; }
-    if (form.role === 'delivery')  { setTimeout(() => setLoc('/delivery-setup'),  300); return; }
+      const isPartner = ['restaurant','merchant','delivery'].includes(form.role);
+      if (isPartner) {
+        const res = await fetch('/api/partner-register', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(form),
+        });
+        const data = await res.json() as { success?: boolean; error?: string };
+        if (!res.ok || !data.success) { setApiError(data.error ?? 'Something went wrong. Please try again.'); setLoading(false); return; }
+      }
+      try {
+        const stored = JSON.parse(localStorage.getItem('zyphix_waitlist') || '[]') as object[];
+        stored.push({ ...form, ts: Date.now() });
+        localStorage.setItem('zyphix_waitlist', JSON.stringify(stored));
+        const newCount = 500 + stored.length;
+        setCount(newCount); setDispCount(newCount);
+      } catch {}
+    } catch {
+      setApiError('Network error. Please check your connection and try again.');
+      setLoading(false);
+      return;
+    }
+    setLoading(false);
     setSubmitted(true);
   };
 
@@ -2298,11 +2316,22 @@ function WaitlistSection() {
                   style={{ textAlign:'center', padding:'12px 0 8px' }}>
                   <motion.div animate={{ rotate:[0,14,-14,10,-8,0], scale:[1,1.25,1] }} transition={{ duration:.7 }}
                     style={{ fontSize:56, marginBottom:14 }}>🎉</motion.div>
-                  <h3 style={{ fontFamily:"'Outfit',sans-serif", fontWeight:900, color:T1, fontSize:'1.4rem', marginBottom:8 }}>You're on the list!</h3>
-                  <p style={{ color:T2, fontSize:14, lineHeight:1.65, marginBottom:22 }}>We'll reach out before launch.<br />Your ₹125 credit is reserved — use code <strong style={{color:G}}>ZYPHIX125</strong></p>
+                  <h3 style={{ fontFamily:"'Outfit',sans-serif", fontWeight:900, color:T1, fontSize:'1.4rem', marginBottom:8 }}>
+                    {['restaurant','merchant','delivery'].includes(form.role) ? 'Application Received!' : "You're on the list!"}
+                  </h3>
+                  <p style={{ color:T2, fontSize:14, lineHeight:1.65, marginBottom:22 }}>
+                    {['restaurant','merchant','delivery'].includes(form.role)
+                      ? <>Our team will review your details and reach out within <strong style={{color:G}}>24–48 hours</strong>. A confirmation email has been sent to <strong style={{color:G}}>{form.email}</strong>.</>
+                      : <>We'll reach out before launch.<br />Your ₹125 credit is reserved — use code <strong style={{color:G}}>ZYPHIX125</strong></>
+                    }
+                  </p>
                   <motion.div animate={{ scale:[1,1.02,1] }} transition={{ repeat:Infinity, duration:2 }}
                     style={{ background:`${G}10`, border:`1.5px solid ${G}35`, borderRadius:12, padding:'14px 20px' }}>
-                    <p style={{ fontSize:13.5, color:G, fontWeight:800 }}>🌟 You're #{count} on the waitlist</p>
+                    <p style={{ fontSize:13.5, color:G, fontWeight:800 }}>
+                      {['restaurant','merchant','delivery'].includes(form.role)
+                        ? '📋 Reference saved — check your email!'
+                        : `🌟 You're #${count} on the waitlist`}
+                    </p>
                   </motion.div>
                 </motion.div>
               ) : (
@@ -2324,6 +2353,17 @@ function WaitlistSection() {
                       onFocus={e=>{e.target.style.borderColor=G;e.target.style.boxShadow=`0 0 0 3px ${G}1A`;}}
                       onBlur={e=>{e.target.style.borderColor=errors.name?'#EF4444':BD;e.target.style.boxShadow='none';}} />
                     {errors.name && <motion.p initial={{opacity:0,y:-4}} animate={{opacity:1,y:0}} style={{fontSize:11.5,color:'#EF4444',marginTop:4}}>{errors.name}</motion.p>}
+                  </div>
+
+                  {/* Email */}
+                  <div>
+                    <label style={{ fontSize:11.5, fontWeight:700, color:T2, marginBottom:5, display:'block', textTransform:'uppercase' as const, letterSpacing:'.04em' }}>Email Address</label>
+                    <motion.input whileFocus={{ scale:1.005 }} value={form.email} type="email"
+                      onChange={e=>{setForm(f=>({...f,email:e.target.value}));setErrors(x=>({...x,email:''}));}}
+                      placeholder="your@email.com" style={inp(errors.email)}
+                      onFocus={e=>{e.target.style.borderColor=G;e.target.style.boxShadow=`0 0 0 3px ${G}1A`;}}
+                      onBlur={e=>{e.target.style.borderColor=errors.email?'#EF4444':BD;e.target.style.boxShadow='none';}} />
+                    {errors.email && <motion.p initial={{opacity:0,y:-4}} animate={{opacity:1,y:0}} style={{fontSize:11.5,color:'#EF4444',marginTop:4}}>{errors.email}</motion.p>}
                   </div>
 
                   {/* Phone */}
@@ -2366,13 +2406,29 @@ function WaitlistSection() {
                     {errors.role && <motion.p initial={{opacity:0,y:-4}} animate={{opacity:1,y:0}} style={{fontSize:11.5,color:'#EF4444',marginTop:4}}>{errors.role}</motion.p>}
                   </div>
 
+                  {/* API error */}
+                  {apiError && (
+                    <motion.div initial={{opacity:0,y:-6}} animate={{opacity:1,y:0}}
+                      style={{ padding:'11px 14px', borderRadius:10, background:'#FEF2F2', border:'1.5px solid #FCA5A5', fontSize:13, color:'#DC2626', fontWeight:500 }}>
+                      ⚠️ {apiError}
+                    </motion.div>
+                  )}
+
                   {/* CTA */}
-                  <motion.button onClick={submit}
-                    whileHover={{ scale:1.025 }} whileTap={{ scale:.97 }}
+                  <motion.button onClick={submit} disabled={loading}
+                    whileHover={loading ? {} : { scale:1.025 }} whileTap={loading ? {} : { scale:.97 }}
                     animate={{ boxShadow:[`0 4px 18px ${G}45`,`0 8px 34px ${G}70`,`0 4px 18px ${G}45`] }}
                     transition={{ boxShadow:{ repeat:Infinity, duration:2, ease:'easeInOut' } }}
-                    style={{ width:'100%', padding:'15px', borderRadius:13, background:G, color:'#fff', fontSize:15.5, fontWeight:800, border:'none', cursor:'pointer', display:'flex', alignItems:'center', justifyContent:'center', gap:8, marginTop:2, letterSpacing:'-.01em' }}>
-                    Join the Waitlist <ArrowRight size={16} />
+                    style={{ width:'100%', padding:'15px', borderRadius:13, background: loading ? '#6B7280' : G, color:'#fff', fontSize:15.5, fontWeight:800, border:'none', cursor: loading ? 'not-allowed' : 'pointer', display:'flex', alignItems:'center', justifyContent:'center', gap:8, marginTop:2, letterSpacing:'-.01em', transition:'background .2s' }}>
+                    {loading ? (
+                      <>
+                        <motion.div animate={{ rotate:360 }} transition={{ repeat:Infinity, duration:.8, ease:'linear' }}
+                          style={{ width:18, height:18, border:'2.5px solid rgba(255,255,255,.3)', borderTopColor:'#fff', borderRadius:'50%' }} />
+                        Submitting…
+                      </>
+                    ) : (
+                      <>Join the Waitlist <ArrowRight size={16} /></>
+                    )}
                   </motion.button>
 
                   <p style={{ textAlign:'center', fontSize:12.5, color:T3 }}>
