@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Link, useLocation } from 'wouter';
-import { Search, MapPin, ShoppingCart, User, ChevronDown, Menu, X, LogOut, Settings, Package, Home } from 'lucide-react';
+import { Search, MapPin, ShoppingCart, User, ChevronDown, Menu, X, LogOut, Settings, Package } from 'lucide-react';
 import { ZyphixLogo } from '../ZyphixLogo';
 import { useAuth } from '@/context/AuthContext';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -8,13 +8,21 @@ import { motion, AnimatePresence } from 'framer-motion';
 const G = '#0DA366';
 
 export function Navbar() {
-  const [location] = useLocation();
+  const [location, nav] = useLocation();
   const [scrolled, setScrolled]     = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [focused, setFocused]       = useState(false);
   const [dropdown, setDropdown]     = useState(false);
+  const [query, setQuery]           = useState('');
   const dropRef = useRef<HTMLDivElement>(null);
   const cartCount = 3;
+
+  const handleSearch = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter' && query.trim()) {
+      nav(`/now?q=${encodeURIComponent(query.trim())}`);
+      setQuery('');
+    }
+  };
 
   const { user, logout, openModal } = useAuth();
 
@@ -74,7 +82,10 @@ export function Navbar() {
               style={{ height: 16, width: 16, color: focused ? 'var(--z-green)' : 'var(--z-muted)' }} />
             <input
               type="text"
-              placeholder="Search groceries, food, services..."
+              value={query}
+              onChange={e => setQuery(e.target.value)}
+              onKeyDown={handleSearch}
+              placeholder="Search groceries, food, services… (press Enter)"
               onFocus={() => setFocused(true)}
               onBlur={() => setFocused(false)}
               className="w-full pl-10 pr-4 py-2.5 rounded-xl text-sm text-white outline-none transition-all duration-200 placeholder:text-[var(--z-muted)]"
@@ -130,10 +141,10 @@ export function Navbar() {
                       {/* Menu items */}
                       <div style={{ padding: '8px' }}>
                         {[
-                          { icon: <User size={14} />, label: 'My Profile',  href: '/account' },
-                          { icon: <MapPin size={14} />, label: 'My Addresses', href: '/account', tab: 'addresses' },
-                          { icon: <Package size={14} />, label: 'My Orders',   href: '/account', tab: 'orders' },
-                          { icon: <Settings size={14} />, label: 'Settings',   href: '/account', tab: 'settings' },
+                          { icon: <User size={14} />, label: 'My Profile',    href: '/account?tab=profile' },
+                          { icon: <MapPin size={14} />, label: 'My Addresses', href: '/account?tab=addresses' },
+                          { icon: <Package size={14} />, label: 'My Orders',   href: '/account?tab=orders' },
+                          { icon: <Settings size={14} />, label: 'Settings',   href: '/account?tab=settings' },
                         ].map(({ icon, label, href }) => (
                           <Link key={label} href={href}
                             style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '10px 10px', borderRadius: 10, color: 'rgba(255,255,255,.8)', fontSize: 13.5, fontWeight: 600, cursor: 'pointer', textDecoration: 'none', transition: 'background .15s' }}
@@ -166,7 +177,8 @@ export function Navbar() {
             )}
 
             {/* Cart */}
-            <button className="relative flex items-center gap-2 rounded-xl px-4 py-2.5 text-sm btn-primary">
+            <button onClick={() => nav('/now')}
+              className="relative flex items-center gap-2 rounded-xl px-4 py-2.5 text-sm btn-primary">
               <ShoppingCart style={{ height: 16, width: 16 }} />
               <span className="hidden sm:inline font-black">Cart</span>
               {cartCount > 0 && (

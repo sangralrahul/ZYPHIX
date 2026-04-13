@@ -1,11 +1,11 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { useLocation } from 'wouter';
+import { useLocation, useSearch } from 'wouter';
 import {
   User, MapPin, ShoppingBag, Settings, Plus, Edit2, Trash2,
   Home, Briefcase, Building2, Check, ChevronRight, Bell, Moon,
   Lock, LogOut, Phone, Mail, Camera, Save, X, Star, Clock,
-  Package, AlertCircle, Heart,
+  Package, AlertCircle, Heart, ExternalLink,
 } from 'lucide-react';
 import { useAuth } from '@/context/AuthContext';
 
@@ -240,16 +240,28 @@ function ProfileTab() {
     background: err ? '#FFF5F5' : W, color: T1, outline: 'none', fontFamily: 'inherit', boxSizing: 'border-box', transition: 'border-color .15s',
   });
 
+  const fileRef = useRef<HTMLInputElement>(null);
+  const [avatar, setAvatar] = useState<string | null>(() => localStorage.getItem('zyphix_avatar'));
+  const handleAvatarChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = ev => { const url = ev.target?.result as string; setAvatar(url); localStorage.setItem('zyphix_avatar', url); };
+    reader.readAsDataURL(file);
+  };
+
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
       {/* Avatar card */}
       <SectionCard>
         <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
           <div style={{ position: 'relative', flexShrink: 0 }}>
-            <div style={{ width: 72, height: 72, borderRadius: '50%', background: `linear-gradient(135deg, ${G}, ${G2})`, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 28, fontWeight: 900, color: '#fff', fontFamily: "'Outfit',sans-serif" }}>
-              {initial}
+            <div style={{ width: 72, height: 72, borderRadius: '50%', background: avatar ? 'transparent' : `linear-gradient(135deg, ${G}, ${G2})`, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 28, fontWeight: 900, color: '#fff', fontFamily: "'Outfit',sans-serif", overflow: 'hidden' }}>
+              {avatar ? <img src={avatar} alt="avatar" style={{ width: '100%', height: '100%', objectFit: 'cover' }} /> : initial}
             </div>
-            <div style={{ position: 'absolute', bottom: 0, right: 0, width: 24, height: 24, borderRadius: '50%', background: W, border: `2px solid ${BD}`, display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer' }}>
+            <input ref={fileRef} type="file" accept="image/*" style={{ display: 'none' }} onChange={handleAvatarChange} />
+            <div onClick={() => fileRef.current?.click()}
+              style={{ position: 'absolute', bottom: 0, right: 0, width: 24, height: 24, borderRadius: '50%', background: W, border: `2px solid ${BD}`, display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer' }}>
               <Camera size={11} color={T2} />
             </div>
           </div>
@@ -446,6 +458,7 @@ function AddressesTab() {
 
 /* ── ORDERS TAB ── */
 function OrdersTab() {
+  const [, nav] = useLocation();
   const statusMeta = {
     delivered:  { label: 'Delivered',  color: '#065F46', bg: '#F0FDF4', dot: G },
     processing: { label: 'Processing', color: '#92400E', bg: '#FFFBEB', dot: '#F59E0B' },
@@ -496,8 +509,14 @@ function OrdersTab() {
                   <p style={{ margin: 0, fontSize: 15, fontWeight: 900, color: T1, fontFamily: "'Outfit',sans-serif" }}>₹{order.total}</p>
                 </div>
                 {order.status === 'delivered' && (
-                  <button style={{ marginTop: 10, width: '100%', padding: '9px', borderRadius: 10, border: `1.5px solid ${G}40`, background: `${G}08`, fontSize: 13, fontWeight: 700, color: G, cursor: 'pointer' }}>
-                    Reorder
+                  <button onClick={() => {
+                    const dest = order.icon === '🍱' ? '/eats' : order.icon === '🧹' ? '/book' : '/now';
+                    nav(dest);
+                  }}
+                    style={{ marginTop: 10, width: '100%', padding: '9px', borderRadius: 10, border: `1.5px solid ${G}40`, background: `${G}08`, fontSize: 13, fontWeight: 700, color: G, cursor: 'pointer', transition: 'background .15s' }}
+                    onMouseEnter={e => (e.currentTarget.style.background = `${G}18`)}
+                    onMouseLeave={e => (e.currentTarget.style.background = `${G}08`)}>
+                    🔁 Reorder
                   </button>
                 )}
               </div>
@@ -511,6 +530,8 @@ function OrdersTab() {
 
 /* ── SETTINGS TAB ── */
 function SettingsTab() {
+  const [, nav] = useLocation();
+  const [otpMsg, setOtpMsg] = useState(false);
   const [prefs, setPrefs] = useState(() => getLS(LS_PREFS, {
     orderUpdates: true, promos: true, newArrivals: false, soundAlerts: true,
   }) as Record<string, boolean>);
@@ -546,15 +567,32 @@ function SettingsTab() {
         </div>
       </SectionCard>
 
+      {otpMsg && (
+        <div style={{ padding: '12px 16px', background: '#EFF6FF', border: '1px solid #BFDBFE', borderRadius: 12, display: 'flex', alignItems: 'flex-start', gap: 10 }}>
+          <Lock size={15} color="#3B82F6" style={{ flexShrink: 0, marginTop: 2 }} />
+          <div>
+            <p style={{ margin: 0, fontSize: 13.5, fontWeight: 700, color: '#1E40AF' }}>Passwordless Account</p>
+            <p style={{ margin: '2px 0 0', fontSize: 12.5, color: '#3B82F6', lineHeight: 1.5 }}>
+              ZYPHIX uses email OTP for secure sign-in — no password needed. Your account is already protected by one-time codes.
+            </p>
+          </div>
+          <button onClick={() => setOtpMsg(false)} style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#93C5FD', flexShrink: 0, padding: 0 }}>
+            <X size={14} />
+          </button>
+        </div>
+      )}
+
       <SectionCard title="Privacy & Security">
         <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
-          {[
-            { icon: <Lock size={15} />, label: 'Change Password', sub: 'Update your account password' },
-            { icon: <Heart size={15} />, label: 'Saved Items', sub: 'Products you\'ve favourited' },
-            { icon: <Bell size={15} />, label: 'Notification Preferences', sub: 'Manage how we contact you' },
-          ].map(({ icon, label, sub }) => (
-            <button key={label}
-              style={{ width: '100%', display: 'flex', alignItems: 'center', gap: 12, padding: '11px 0', border: 'none', background: 'transparent', cursor: 'pointer', borderBottom: `1px solid ${BD}` }}>
+          {([
+            { icon: <Lock size={15} />, label: 'Change Password', sub: 'Passwordless OTP — learn more', action: () => setOtpMsg(true) },
+            { icon: <Heart size={15} />, label: 'Saved Items', sub: 'Products you\'ve favourited', action: () => nav('/now') },
+            { icon: <Bell size={15} />, label: 'Notification Preferences', sub: 'Manage how we contact you', action: () => window.scrollTo({ top: 0, behavior: 'smooth' }) },
+          ] as { icon: React.ReactNode; label: string; sub: string; action: () => void }[]).map(({ icon, label, sub, action }) => (
+            <button key={label} onClick={action}
+              style={{ width: '100%', display: 'flex', alignItems: 'center', gap: 12, padding: '11px 0', border: 'none', background: 'transparent', cursor: 'pointer', borderBottom: `1px solid ${BD}`, transition: 'opacity .15s' }}
+              onMouseEnter={e => (e.currentTarget.style.opacity = '.7')}
+              onMouseLeave={e => (e.currentTarget.style.opacity = '1')}>
               <div style={{ width: 34, height: 34, borderRadius: 10, background: BG, border: `1px solid ${BD}`, display: 'flex', alignItems: 'center', justifyContent: 'center', color: T2, flexShrink: 0 }}>
                 {icon}
               </div>
@@ -570,11 +608,22 @@ function SettingsTab() {
 
       <SectionCard title="About">
         <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-          {[['App Version', '1.0.0 (Beta)'], ['Terms of Service', '→'], ['Privacy Policy', '→'], ['Contact Support', '→']].map(([l, v]) => (
-            <div key={l} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '8px 0', borderBottom: `1px solid ${BD}` }}>
-              <p style={{ margin: 0, fontSize: 13.5, color: T1 }}>{l}</p>
-              <p style={{ margin: 0, fontSize: 13.5, color: T3 }}>{v}</p>
-            </div>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '8px 0', borderBottom: `1px solid ${BD}` }}>
+            <p style={{ margin: 0, fontSize: 13.5, color: T1 }}>App Version</p>
+            <p style={{ margin: 0, fontSize: 13.5, color: T3 }}>1.0.0 (Beta)</p>
+          </div>
+          {([
+            { label: 'Terms of Service', href: '/terms' },
+            { label: 'Privacy Policy',   href: '/privacy' },
+            { label: 'Contact Support',  href: 'mailto:support@zyphix.in' },
+          ] as { label: string; href: string }[]).map(({ label, href }) => (
+            <a key={label} href={href} target={href.startsWith('mailto') ? '_self' : '_blank'} rel="noopener noreferrer"
+              style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '8px 0', borderBottom: `1px solid ${BD}`, textDecoration: 'none', cursor: 'pointer', transition: 'opacity .15s' }}
+              onMouseEnter={e => (e.currentTarget.style.opacity = '.7')}
+              onMouseLeave={e => (e.currentTarget.style.opacity = '1')}>
+              <p style={{ margin: 0, fontSize: 13.5, color: T1 }}>{label}</p>
+              <ExternalLink size={13} color={T3} />
+            </a>
           ))}
         </div>
       </SectionCard>
@@ -582,11 +631,24 @@ function SettingsTab() {
   );
 }
 
+type TabId = 'profile' | 'addresses' | 'orders' | 'settings';
+const VALID_TABS: TabId[] = ['profile', 'addresses', 'orders', 'settings'];
+
 /* ─── ROOT EXPORT ─── */
 export function Account() {
   const { user, openModal } = useAuth();
-  const [, setLoc] = useLocation();
-  const [tab, setTab] = useState<'profile' | 'addresses' | 'orders' | 'settings'>('profile');
+  const [, nav] = useLocation();
+  const search = useSearch();
+  const paramTab = (new URLSearchParams(search)).get('tab') as TabId | null;
+  const initTab: TabId = paramTab && VALID_TABS.includes(paramTab) ? paramTab : 'profile';
+  const [tab, setTab] = useState<TabId>(initTab);
+
+  const goTab = (t: TabId) => { setTab(t); nav(`/account?tab=${t}`, { replace: true }); };
+
+  useEffect(() => {
+    const t = (new URLSearchParams(window.location.search)).get('tab') as TabId | null;
+    if (t && VALID_TABS.includes(t)) setTab(t);
+  }, [search]);
 
   useEffect(() => { if (!user) openModal(); }, []);
 
@@ -628,7 +690,7 @@ export function Account() {
         {/* ── Sidebar ── */}
         <div style={{ background: 'rgba(255,255,255,.03)', border: '1px solid rgba(255,255,255,.08)', borderRadius: 18, padding: 12, display: 'flex', flexDirection: 'column', gap: 4, position: 'sticky', top: 80 }}>
           {TABS.map(t => (
-            <TabBtn key={t.id} active={tab === t.id} onClick={() => setTab(t.id)} icon={t.icon} label={t.label} />
+            <TabBtn key={t.id} active={tab === t.id} onClick={() => goTab(t.id)} icon={t.icon} label={t.label} />
           ))}
 
           {/* Quick stats */}
