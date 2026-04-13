@@ -193,7 +193,7 @@ router.post("/partner-register", async (req, res) => {
     // 1️⃣ Email owner at partner@zyphix.in with PDF attached
     await client.transactionalEmails.sendTransacEmail({
       subject: `🆕 New Partner Registration — ${roleLabel} (${name})`,
-      sender:  { name: "Zyphix Waitlist", email: "app@zyphix.in" },
+      sender:  { name: "Zyphix Partner", email: "partner@zyphix.in" },
       to:      [{ email: "rahul.rishusangral@gmail.com", name: "Rahul (Zyphix Owner)" }],
       replyTo: { email: email!, name: name! },
       tags:    ["partner-registration", role!],
@@ -259,7 +259,7 @@ router.post("/partner-register", async (req, res) => {
     // 2️⃣ Confirmation email to the partner
     await client.transactionalEmails.sendTransacEmail({
       subject: `Your Zyphix partner application is received! 🎉`,
-      sender:  { name: "Zyphix", email: "app@zyphix.in" },
+      sender:  { name: "Zyphix Partner", email: "partner@zyphix.in" },
       to:      [{ email: email!, name: name! }],
       replyTo: { email: "partner@zyphix.in", name: "Zyphix Partnerships" },
       tags:    ["partner-confirmation", role!],
