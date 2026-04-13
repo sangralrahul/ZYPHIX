@@ -1,20 +1,42 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Link, useLocation } from 'wouter';
-import { Search, MapPin, ShoppingCart, User, ChevronDown, Menu, X } from 'lucide-react';
+import { Search, MapPin, ShoppingCart, User, ChevronDown, Menu, X, LogOut, Settings, Package, Home } from 'lucide-react';
 import { ZyphixLogo } from '../ZyphixLogo';
+import { useAuth } from '@/context/AuthContext';
+import { motion, AnimatePresence } from 'framer-motion';
+
+const G = '#0DA366';
 
 export function Navbar() {
   const [location] = useLocation();
-  const [scrolled, setScrolled] = useState(false);
+  const [scrolled, setScrolled]     = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
-  const [focused, setFocused] = useState(false);
+  const [focused, setFocused]       = useState(false);
+  const [dropdown, setDropdown]     = useState(false);
+  const dropRef = useRef<HTMLDivElement>(null);
   const cartCount = 3;
+
+  const { user, logout, openModal } = useAuth();
 
   useEffect(() => {
     const h = () => setScrolled(window.scrollY > 10);
     window.addEventListener('scroll', h, { passive: true });
     return () => window.removeEventListener('scroll', h);
   }, []);
+
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    const handler = (e: MouseEvent) => {
+      if (dropRef.current && !dropRef.current.contains(e.target as Node)) setDropdown(false);
+    };
+    document.addEventListener('mousedown', handler);
+    return () => document.removeEventListener('mousedown', handler);
+  }, []);
+
+  // Close dropdown on navigation
+  useEffect(() => { setDropdown(false); setMobileOpen(false); }, [location]);
+
+  const initial = user ? user.name.charAt(0).toUpperCase() : 'U';
 
   return (
     <div className="sticky top-0 z-50 w-full transition-all duration-300"
@@ -67,11 +89,83 @@ export function Navbar() {
 
           {/* ── Actions ── */}
           <div className="flex items-center gap-2 shrink-0">
-            <button className="hidden sm:flex items-center gap-1.5 btn-ghost rounded-xl px-3.5 py-2 text-sm">
-              <User style={{ height: 15, width: 15 }} />
-              <span className="hidden lg:inline">Login</span>
-            </button>
 
+            {/* Auth button / Avatar */}
+            {user ? (
+              /* ── Avatar + dropdown ── */
+              <div ref={dropRef} style={{ position: 'relative' }}>
+                <button onClick={() => setDropdown(d => !d)}
+                  style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '6px 10px', borderRadius: 12, background: dropdown ? 'rgba(13,163,102,.12)' : 'rgba(255,255,255,.05)', border: `1px solid ${dropdown ? G + '40' : 'rgba(255,255,255,.08)'}`, cursor: 'pointer', transition: 'all .18s' }}>
+                  <div style={{ width: 30, height: 30, borderRadius: '50%', background: `linear-gradient(135deg, ${G}, #0A8C58)`, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 13, fontWeight: 900, color: '#fff', fontFamily: "'Outfit',sans-serif", flexShrink: 0 }}>
+                    {initial}
+                  </div>
+                  <span className="hidden lg:inline" style={{ fontSize: 13.5, fontWeight: 700, color: '#fff', maxWidth: 90, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                    {user.name.split(' ')[0]}
+                  </span>
+                  <ChevronDown style={{ height: 13, width: 13, color: 'rgba(255,255,255,.45)', transform: dropdown ? 'rotate(180deg)' : 'none', transition: 'transform .2s' }} />
+                </button>
+
+                <AnimatePresence>
+                  {dropdown && (
+                    <motion.div
+                      initial={{ opacity: 0, scale: .95, y: -6 }}
+                      animate={{ opacity: 1, scale: 1, y: 0 }}
+                      exit={{ opacity: 0, scale: .95, y: -6 }}
+                      transition={{ duration: .15, ease: 'easeOut' }}
+                      style={{ position: 'absolute', right: 0, top: 'calc(100% + 8px)', width: 230, borderRadius: 16, background: 'rgba(14,16,22,0.98)', border: '1px solid rgba(255,255,255,.1)', boxShadow: '0 20px 60px rgba(0,0,0,.6)', overflow: 'hidden', zIndex: 100 }}>
+
+                      {/* User info header */}
+                      <div style={{ padding: '14px 16px', borderBottom: '1px solid rgba(255,255,255,.07)', background: 'rgba(13,163,102,.06)' }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                          <div style={{ width: 36, height: 36, borderRadius: '50%', background: `linear-gradient(135deg, ${G}, #0A8C58)`, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 15, fontWeight: 900, color: '#fff', fontFamily: "'Outfit',sans-serif", flexShrink: 0 }}>
+                            {initial}
+                          </div>
+                          <div style={{ minWidth: 0 }}>
+                            <p style={{ margin: 0, fontSize: 14, fontWeight: 800, color: '#fff', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{user.name}</p>
+                            <p style={{ margin: '1px 0 0', fontSize: 11.5, color: 'rgba(255,255,255,.4)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{user.email || user.phone || 'Zyphix Member'}</p>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Menu items */}
+                      <div style={{ padding: '8px' }}>
+                        {[
+                          { icon: <User size={14} />, label: 'My Profile',  href: '/account' },
+                          { icon: <MapPin size={14} />, label: 'My Addresses', href: '/account', tab: 'addresses' },
+                          { icon: <Package size={14} />, label: 'My Orders',   href: '/account', tab: 'orders' },
+                          { icon: <Settings size={14} />, label: 'Settings',   href: '/account', tab: 'settings' },
+                        ].map(({ icon, label, href }) => (
+                          <Link key={label} href={href}
+                            style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '10px 10px', borderRadius: 10, color: 'rgba(255,255,255,.8)', fontSize: 13.5, fontWeight: 600, cursor: 'pointer', textDecoration: 'none', transition: 'background .15s' }}
+                            onMouseEnter={e => (e.currentTarget as HTMLElement).style.background = 'rgba(255,255,255,.06)'}
+                            onMouseLeave={e => (e.currentTarget as HTMLElement).style.background = 'transparent'}>
+                            <span style={{ color: 'rgba(255,255,255,.4)' }}>{icon}</span>{label}
+                          </Link>
+                        ))}
+                      </div>
+
+                      <div style={{ padding: '8px', borderTop: '1px solid rgba(255,255,255,.07)' }}>
+                        <button onClick={() => { logout(); setDropdown(false); }}
+                          style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '10px 10px', borderRadius: 10, color: '#F87171', fontSize: 13.5, fontWeight: 600, cursor: 'pointer', width: '100%', border: 'none', background: 'transparent', transition: 'background .15s' }}
+                          onMouseEnter={e => (e.currentTarget as HTMLElement).style.background = 'rgba(239,68,68,.08)'}
+                          onMouseLeave={e => (e.currentTarget as HTMLElement).style.background = 'transparent'}>
+                          <LogOut size={14} />Sign Out
+                        </button>
+                      </div>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </div>
+            ) : (
+              /* ── Login button ── */
+              <button onClick={openModal}
+                className="hidden sm:flex items-center gap-1.5 btn-ghost rounded-xl px-3.5 py-2 text-sm">
+                <User style={{ height: 15, width: 15 }} />
+                <span className="hidden lg:inline">Login</span>
+              </button>
+            )}
+
+            {/* Cart */}
             <button className="relative flex items-center gap-2 rounded-xl px-4 py-2.5 text-sm btn-primary">
               <ShoppingCart style={{ height: 16, width: 16 }} />
               <span className="hidden sm:inline font-black">Cart</span>
@@ -83,6 +177,7 @@ export function Navbar() {
               )}
             </button>
 
+            {/* Mobile menu toggle */}
             <button className="md:hidden p-2 rounded-xl transition-colors hover:bg-white/5"
               style={{ color: 'var(--z-muted)' }}
               onClick={() => setMobileOpen(!mobileOpen)}>
@@ -93,27 +188,60 @@ export function Navbar() {
       </div>
 
       {/* Mobile menu */}
-      {mobileOpen && (
-        <div style={{ background: 'rgba(9,9,14,0.99)', borderTop: '1px solid rgba(255,255,255,0.06)' }}>
-          <div className="max-w-screen-xl mx-auto px-4 py-4 space-y-1">
-            {[
-              { icon: '⚡', label: 'Zyphix Now', href: '/now' },
-              { icon: '🍱', label: 'Zyphix Eats', href: '/eats' },
-              { icon: '📅', label: 'Zyphix Book', href: '/book' },
-              { icon: '🗺️', label: 'Kirana Near Me', href: '/kirana-map' },
-              { icon: '🏷️', label: 'Offers', href: '/offers' },
-            ].map(({ icon, label, href }) => (
-              <Link key={label} href={href} onClick={() => setMobileOpen(false)}
-                className="flex items-center gap-3 py-3 px-3 rounded-xl hover:bg-white/5 transition-colors cursor-pointer font-medium text-white/80">
-                <span>{icon}</span>{label}
-              </Link>
-            ))}
-            <button className="w-full mt-3 py-3 rounded-xl font-black text-sm btn-primary">
-              Get Started — It's Free
-            </button>
-          </div>
-        </div>
-      )}
+      <AnimatePresence>
+        {mobileOpen && (
+          <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: 'auto' }} exit={{ opacity: 0, height: 0 }}
+            style={{ background: 'rgba(9,9,14,0.99)', borderTop: '1px solid rgba(255,255,255,0.06)', overflow: 'hidden' }}>
+            <div className="max-w-screen-xl mx-auto px-4 py-4 space-y-1">
+
+              {/* Logged-in user strip */}
+              {user && (
+                <div style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '10px 12px', background: 'rgba(13,163,102,.08)', borderRadius: 12, marginBottom: 8, border: '1px solid rgba(13,163,102,.15)' }}>
+                  <div style={{ width: 34, height: 34, borderRadius: '50%', background: `linear-gradient(135deg, ${G}, #0A8C58)`, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 14, fontWeight: 900, color: '#fff', flexShrink: 0 }}>
+                    {initial}
+                  </div>
+                  <div>
+                    <p style={{ margin: 0, fontSize: 14, fontWeight: 700, color: '#fff' }}>{user.name}</p>
+                    <p style={{ margin: 0, fontSize: 12, color: 'rgba(255,255,255,.4)' }}>{user.email || user.phone || 'Member'}</p>
+                  </div>
+                </div>
+              )}
+
+              {[
+                { icon: '⚡', label: 'Zyphix Now',    href: '/now' },
+                { icon: '🍱', label: 'Zyphix Eats',   href: '/eats' },
+                { icon: '📅', label: 'Zyphix Book',   href: '/book' },
+                { icon: '🗺️', label: 'Kirana Near Me', href: '/kirana-map' },
+                { icon: '🏷️', label: 'Offers',        href: '/offers' },
+              ].map(({ icon, label, href }) => (
+                <Link key={label} href={href} onClick={() => setMobileOpen(false)}
+                  className="flex items-center gap-3 py-3 px-3 rounded-xl hover:bg-white/5 transition-colors cursor-pointer font-medium text-white/80">
+                  <span>{icon}</span>{label}
+                </Link>
+              ))}
+
+              {user ? (
+                <>
+                  <Link href="/account" onClick={() => setMobileOpen(false)}
+                    className="flex items-center gap-3 py-3 px-3 rounded-xl hover:bg-white/5 transition-colors cursor-pointer font-medium text-white/80">
+                    <User style={{ height: 16, width: 16, color: G }} />My Account
+                  </Link>
+                  <button onClick={() => { logout(); setMobileOpen(false); }}
+                    className="w-full flex items-center gap-3 py-3 px-3 rounded-xl hover:bg-white/5 transition-colors cursor-pointer font-medium"
+                    style={{ color: '#F87171', background: 'transparent', border: 'none' }}>
+                    <LogOut style={{ height: 16, width: 16 }} />Sign Out
+                  </button>
+                </>
+              ) : (
+                <button onClick={() => { openModal(); setMobileOpen(false); }}
+                  className="w-full mt-3 py-3 rounded-xl font-black text-sm btn-primary">
+                  Sign In / Get Started
+                </button>
+              )}
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }

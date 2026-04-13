@@ -22,6 +22,7 @@ import { ZyphixBook } from "@/pages/ZyphixBook";
 import { KiranaMap } from "@/pages/KiranaMap";
 import { Offers } from "@/pages/Offers";
 import { AppComingSoon } from "@/pages/AppComingSoon";
+import { Account } from "@/pages/Account";
 import { AuthProvider } from "@/context/AuthContext";
 import { AuthModal } from "@/components/AuthModal";
 import { Navbar } from "@/components/layout/Navbar";
@@ -74,6 +75,9 @@ function Router() {
         <DarkLayout><KiranaMap /></DarkLayout>
       </Route>
       <Route path="/app" component={AppComingSoon} />
+      <Route path="/account">
+        <DarkLayout><Account /></DarkLayout>
+      </Route>
       <Route component={NotFound} />
     </Switch>
   );
