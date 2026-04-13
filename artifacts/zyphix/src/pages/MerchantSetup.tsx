@@ -277,7 +277,7 @@ function StoreInfoStep({ onNext }: { onNext:(d:object)=>void }) {
     if (!form.address.trim()) e.address='Address required';
     if (!form.ownerName.trim()) e.ownerName='Owner name required';
     if (!/^[0-9]{10}$/.test(form.phone)) e.phone='Enter valid 10-digit number';
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email)) e.email='Enter a valid email address';
+    if (form.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email)) e.email='Enter a valid email address';
     if (!form.type) e.type='Select store type';
     return e;
   };
@@ -369,7 +369,7 @@ function StoreInfoStep({ onNext }: { onNext:(d:object)=>void }) {
 
           {/* Email */}
           <div>
-            <label style={{ fontSize:12, fontWeight:700, color:T2, textTransform:'uppercase', letterSpacing:'.04em', display:'block', marginBottom:5 }}>Email Address <span style={{color:'#EF4444'}}>*</span></label>
+            <label style={{ fontSize:12, fontWeight:700, color:T2, textTransform:'uppercase', letterSpacing:'.04em', display:'block', marginBottom:5 }}>Email Address <span style={{color:T2,fontWeight:400,fontSize:11}}>(optional)</span></label>
             <input value={form.email} onChange={e=>f('email',e.target.value)} type="email" inputMode="email" placeholder="you@example.com — for confirmation email"
               style={inp(errors.email)}
               onFocus={e=>{e.target.style.borderColor=G;e.target.style.boxShadow=`0 0 0 3px ${G}1A`;}}

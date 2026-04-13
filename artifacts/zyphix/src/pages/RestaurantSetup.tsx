@@ -172,7 +172,7 @@ function RestaurantInfoStep({ onNext }: { onNext: (d: object) => void }) {
     if (!form.name.trim()) e.name = 'Restaurant name is required';
     if (!form.owner.trim()) e.owner = 'Owner/manager name is required';
     if (!/^[0-9]{10}$/.test(form.phone)) e.phone = 'Enter a valid 10-digit number';
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email)) e.email = 'Enter a valid email address';
+    if (form.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email)) e.email = 'Enter a valid email address';
     if (!form.area) e.area = 'Please select an area';
     if (!form.address.trim()) e.address = 'Full address is required';
     if (!form.type) e.type = 'Please select restaurant type';
@@ -197,7 +197,7 @@ function RestaurantInfoStep({ onNext }: { onNext: (d: object) => void }) {
             { k: 'name', label: 'Restaurant Name', ph: 'e.g. Sharma Dhaba', full: true },
             { k: 'owner', label: 'Owner / Manager Name', ph: 'Full name' },
             { k: 'phone', label: 'Mobile Number', ph: '10-digit number', type: 'tel' },
-            { k: 'email', label: 'Email Address *', ph: 'you@example.com — for confirmation', type: 'email' },
+            { k: 'email', label: 'Email Address (optional)', ph: 'you@example.com — for confirmation', type: 'email' },
             { k: 'seating', label: 'Seating Capacity (optional)', ph: 'e.g. 30 seats', type: 'number' },
           ].map(({ k, label, ph, full, type }) => (
             <div key={k} style={{ gridColumn: full ? '1 / -1' : undefined }}>
