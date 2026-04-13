@@ -2108,6 +2108,32 @@ const WLIST_ROLES = [
   { v: 'delivery',   Icon: Bike,     l: 'Delivery\nPartner', bg: '#F0F9FF', ac: '#2563EB', tc: '#1E40AF' },
 ];
 
+const PARTNER_ROLES = ['restaurant','merchant','delivery'];
+
+const CUISINE_TYPES = ['North Indian','South Indian','Chinese','Fast Food','Mughlai','Punjabi','Tandoor','Bakery & Desserts','Biryani','Street Food','Continental','Other'];
+const PRODUCT_CATS  = ['Groceries & Staples','Dairy & Eggs','Fruits & Vegetables','Snacks & Beverages','Household & Cleaning','Personal Care','Medicines','Electronics','Clothing','Stationery','Other'];
+const VEHICLE_TYPES = ['Bike (Petrol)', 'Bike (Electric)', 'Bicycle', 'Auto', 'Car'];
+
+/* ─── Shared sub-components (module-level to avoid hooks violation) ─── */
+function PartnerField({ label, error, children }: { label:string; error?: string; children: React.ReactNode }) {
+  return (
+    <div>
+      <label style={{ fontSize:11.5, fontWeight:700, color:T2, marginBottom:5, display:'block', textTransform:'uppercase', letterSpacing:'.04em' }}>{label}</label>
+      {children}
+      {error && <motion.p initial={{opacity:0,y:-4}} animate={{opacity:1,y:0}} style={{fontSize:11.5,color:'#EF4444',marginTop:4}}>{error}</motion.p>}
+    </div>
+  );
+}
+
+function ToggleChip({ label, active, onClick, ac = G }: { label:string; active:boolean; onClick:()=>void; ac?: string }) {
+  return (
+    <button type="button" onClick={onClick}
+      style={{ padding:'6px 12px', borderRadius:20, fontSize:12, fontWeight:700, border:`1.5px solid ${active?ac:BD}`, background:active?`${ac}15`:W, color:active?ac:T2, cursor:'pointer', transition:'all .15s', whiteSpace:'nowrap' }}>
+      {active ? '✓ ' : ''}{label}
+    </button>
+  );
+}
+
 function WaitlistSection() {
   const [form, setForm]   = useState({ name: '', email: '', phone: '', city: '', role: '' });
   const [errors, setErrors] = useState<Record<string,string>>({});
@@ -2116,6 +2142,13 @@ function WaitlistSection() {
   const [apiError, setApiError] = useState('');
   const [count, setCount] = useState(500);
   const [dispCount, setDispCount] = useState(500);
+  const [step, setStep] = useState<1|2>(1);
+
+  /* ── Partner-specific detail state ── */
+  const [restaurant, setRestaurant] = useState({ shopName:'', cuisines:[] as string[], address:'', fssai:'', openFrom:'', openTo:'', seating:'', dishes:'' });
+  const [merchant,   setMerchant]   = useState({ shopName:'', categories:[] as string[], address:'', gst:'', openFrom:'', openTo:'', monthlyRevenue:'' });
+  const [delivery,   setDelivery]   = useState({ vehicle:'', vehicleNumber:'', areas:'', experience:'', prevApp:'' });
+  const [step2Errors, setStep2Errors] = useState<Record<string,string>>({});
 
   useEffect(() => {
     let t: ReturnType<typeof setInterval> | undefined;
@@ -2123,17 +2156,13 @@ function WaitlistSection() {
       const real = 500 + (JSON.parse(localStorage.getItem('zyphix_waitlist') || '[]') as unknown[]).length;
       setCount(real);
       let cur = 500;
-      const step = Math.max(1, Math.ceil((real - 500) / 25));
-      t = setInterval(() => {
-        cur = Math.min(cur + step, real);
-        setDispCount(cur);
-        if (cur >= real) clearInterval(t);
-      }, 40);
+      const s = Math.max(1, Math.ceil((real - 500) / 25));
+      t = setInterval(() => { cur = Math.min(cur + s, real); setDispCount(cur); if (cur >= real) clearInterval(t); }, 40);
     } catch {}
     return () => { if (t) clearInterval(t); };
   }, []);
 
-  const validate = () => {
+  const validate1 = () => {
     const e: Record<string,string> = {};
     if (!form.name.trim())               e.name  = 'Name is required';
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email)) e.email = 'Enter a valid email address';
@@ -2143,33 +2172,54 @@ function WaitlistSection() {
     return e;
   };
 
-  const submit = async () => {
-    const e = validate();
+  const validate2 = () => {
+    const e: Record<string,string> = {};
+    if (form.role === 'restaurant') {
+      if (!restaurant.shopName.trim()) e.shopName = 'Restaurant name is required';
+      if (!restaurant.cuisines.length) e.cuisines = 'Select at least one cuisine';
+      if (!restaurant.address.trim())  e.address  = 'Address is required';
+    } else if (form.role === 'merchant') {
+      if (!merchant.shopName.trim())     e.shopName  = 'Shop name is required';
+      if (!merchant.categories.length)   e.categories = 'Select at least one category';
+      if (!merchant.address.trim())      e.address    = 'Address is required';
+    } else if (form.role === 'delivery') {
+      if (!delivery.vehicle)            e.vehicle = 'Select your vehicle type';
+      if (!delivery.areas.trim())       e.areas   = 'Enter the areas you can cover';
+    }
+    return e;
+  };
+
+  const handleContinue = () => {
+    const e = validate1();
     if (Object.keys(e).length) { setErrors(e); return; }
+    if (PARTNER_ROLES.includes(form.role)) { setStep(2); return; }
+    handleSubmit();
+  };
+
+  const handleSubmit = async () => {
+    if (step === 2) {
+      const e = validate2();
+      if (Object.keys(e).length) { setStep2Errors(e); return; }
+    }
     setApiError('');
     setLoading(true);
     try {
-      const isPartner = ['restaurant','merchant','delivery'].includes(form.role);
-      if (isPartner) {
-        const res = await fetch('/api/partner-register', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(form),
-        });
+      const details = form.role === 'restaurant' ? restaurant : form.role === 'merchant' ? merchant : form.role === 'delivery' ? delivery : {};
+      const payload = { ...form, details };
+      if (PARTNER_ROLES.includes(form.role)) {
+        const res = await fetch('/api/partner-register', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(payload) });
         const data = await res.json() as { success?: boolean; error?: string };
         if (!res.ok || !data.success) { setApiError(data.error ?? 'Something went wrong. Please try again.'); setLoading(false); return; }
       }
       try {
         const stored = JSON.parse(localStorage.getItem('zyphix_waitlist') || '[]') as object[];
-        stored.push({ ...form, ts: Date.now() });
+        stored.push({ ...payload, ts: Date.now() });
         localStorage.setItem('zyphix_waitlist', JSON.stringify(stored));
-        const newCount = 500 + stored.length;
-        setCount(newCount); setDispCount(newCount);
+        const nc = 500 + stored.length; setCount(nc); setDispCount(nc);
       } catch {}
     } catch {
       setApiError('Network error. Please check your connection and try again.');
-      setLoading(false);
-      return;
+      setLoading(false); return;
     }
     setLoading(false);
     setSubmitted(true);
@@ -2181,6 +2231,9 @@ function WaitlistSection() {
     fontSize: 14, color: T1, outline: 'none', boxSizing: 'border-box' as const,
     transition: 'border-color .15s, box-shadow .15s',
   });
+
+  const focusStyle = (e: React.FocusEvent<HTMLInputElement|HTMLSelectElement|HTMLTextAreaElement>) => { e.target.style.borderColor=G; e.target.style.boxShadow=`0 0 0 3px ${G}1A`; };
+  const blurStyle  = (e: React.FocusEvent<HTMLInputElement|HTMLSelectElement|HTMLTextAreaElement>, err?: string) => { e.target.style.borderColor=err?'#EF4444':BD; e.target.style.boxShadow='none'; };
 
   return (
     <div id="waitlist" style={{ background: BG, padding: '52px 24px 64px', borderBottom: `1px solid ${BD}`, position: 'relative', overflow: 'hidden' }}>
@@ -2312,15 +2365,16 @@ function WaitlistSection() {
               <div style={{ position:'absolute', top:0, left:0, right:0, height:3, background:`linear-gradient(90deg, ${G} 0%, #22C55E 100%)` }} />
 
               {submitted ? (
+                /* ── SUCCESS ── */
                 <motion.div initial={{ scale:.8, opacity:0 }} animate={{ scale:1, opacity:1 }} transition={{ type:'spring', stiffness:200 }}
                   style={{ textAlign:'center', padding:'12px 0 8px' }}>
                   <motion.div animate={{ rotate:[0,14,-14,10,-8,0], scale:[1,1.25,1] }} transition={{ duration:.7 }}
                     style={{ fontSize:56, marginBottom:14 }}>🎉</motion.div>
                   <h3 style={{ fontFamily:"'Outfit',sans-serif", fontWeight:900, color:T1, fontSize:'1.4rem', marginBottom:8 }}>
-                    {['restaurant','merchant','delivery'].includes(form.role) ? 'Application Received!' : "You're on the list!"}
+                    {PARTNER_ROLES.includes(form.role) ? 'Application Received!' : "You're on the list!"}
                   </h3>
                   <p style={{ color:T2, fontSize:14, lineHeight:1.65, marginBottom:22 }}>
-                    {['restaurant','merchant','delivery'].includes(form.role)
+                    {PARTNER_ROLES.includes(form.role)
                       ? <>Our team will review your details and reach out within <strong style={{color:G}}>24–48 hours</strong>. A confirmation email has been sent to <strong style={{color:G}}>{form.email}</strong>.</>
                       : <>We'll reach out before launch.<br />Your ₹125 credit is reserved — use code <strong style={{color:G}}>ZYPHIX125</strong></>
                     }
@@ -2328,13 +2382,13 @@ function WaitlistSection() {
                   <motion.div animate={{ scale:[1,1.02,1] }} transition={{ repeat:Infinity, duration:2 }}
                     style={{ background:`${G}10`, border:`1.5px solid ${G}35`, borderRadius:12, padding:'14px 20px' }}>
                     <p style={{ fontSize:13.5, color:G, fontWeight:800 }}>
-                      {['restaurant','merchant','delivery'].includes(form.role)
-                        ? '📋 Reference saved — check your email!'
-                        : `🌟 You're #${count} on the waitlist`}
+                      {PARTNER_ROLES.includes(form.role) ? '📋 Reference saved — check your email!' : `🌟 You're #${count} on the waitlist`}
                     </p>
                   </motion.div>
                 </motion.div>
-              ) : (
+
+              ) : step === 1 ? (
+                /* ── STEP 1: Basic Info ── */
                 <div style={{ display:'flex', flexDirection:'column', gap:15 }}>
                   <div style={{ marginBottom:4, paddingBottom:18, borderBottom:`1px solid ${BD}` }}>
                     <div style={{ display:'flex', alignItems:'center', gap:10, marginBottom:6 }}>
@@ -2350,8 +2404,7 @@ function WaitlistSection() {
                     <motion.input whileFocus={{ scale:1.005 }} value={form.name}
                       onChange={e => { setForm(f=>({...f,name:e.target.value})); setErrors(x=>({...x,name:''})); }}
                       placeholder="Your full name" style={inp(errors.name)}
-                      onFocus={e=>{e.target.style.borderColor=G;e.target.style.boxShadow=`0 0 0 3px ${G}1A`;}}
-                      onBlur={e=>{e.target.style.borderColor=errors.name?'#EF4444':BD;e.target.style.boxShadow='none';}} />
+                      onFocus={focusStyle} onBlur={e=>blurStyle(e,errors.name)} />
                     {errors.name && <motion.p initial={{opacity:0,y:-4}} animate={{opacity:1,y:0}} style={{fontSize:11.5,color:'#EF4444',marginTop:4}}>{errors.name}</motion.p>}
                   </div>
 
@@ -2361,8 +2414,7 @@ function WaitlistSection() {
                     <motion.input whileFocus={{ scale:1.005 }} value={form.email} type="email"
                       onChange={e=>{setForm(f=>({...f,email:e.target.value}));setErrors(x=>({...x,email:''}));}}
                       placeholder="your@email.com" style={inp(errors.email)}
-                      onFocus={e=>{e.target.style.borderColor=G;e.target.style.boxShadow=`0 0 0 3px ${G}1A`;}}
-                      onBlur={e=>{e.target.style.borderColor=errors.email?'#EF4444':BD;e.target.style.boxShadow='none';}} />
+                      onFocus={focusStyle} onBlur={e=>blurStyle(e,errors.email)} />
                     {errors.email && <motion.p initial={{opacity:0,y:-4}} animate={{opacity:1,y:0}} style={{fontSize:11.5,color:'#EF4444',marginTop:4}}>{errors.email}</motion.p>}
                   </div>
 
@@ -2372,8 +2424,7 @@ function WaitlistSection() {
                     <input value={form.phone} type="tel" inputMode="numeric" maxLength={10}
                       onChange={e=>{setForm(f=>({...f,phone:e.target.value}));setErrors(x=>({...x,phone:''}));}}
                       placeholder="10-digit mobile number" style={inp(errors.phone)}
-                      onFocus={e=>{e.target.style.borderColor=G;e.target.style.boxShadow=`0 0 0 3px ${G}1A`;}}
-                      onBlur={e=>{e.target.style.borderColor=errors.phone?'#EF4444':BD;e.target.style.boxShadow='none';}} />
+                      onFocus={focusStyle} onBlur={e=>blurStyle(e,errors.phone)} />
                     {errors.phone && <motion.p initial={{opacity:0,y:-4}} animate={{opacity:1,y:0}} style={{fontSize:11.5,color:'#EF4444',marginTop:4}}>{errors.phone}</motion.p>}
                   </div>
 
@@ -2404,7 +2455,189 @@ function WaitlistSection() {
                       ))}
                     </div>
                     {errors.role && <motion.p initial={{opacity:0,y:-4}} animate={{opacity:1,y:0}} style={{fontSize:11.5,color:'#EF4444',marginTop:4}}>{errors.role}</motion.p>}
+
+                    {/* Partner hint badge */}
+                    <AnimatePresence>
+                      {PARTNER_ROLES.includes(form.role) && (
+                        <motion.div initial={{opacity:0,y:6}} animate={{opacity:1,y:0}} exit={{opacity:0,y:6}}
+                          style={{ marginTop:10, padding:'9px 12px', borderRadius:10, background:'#F0FDF9', border:`1px solid ${G}40`, display:'flex', alignItems:'center', gap:8 }}>
+                          <span style={{ fontSize:14 }}>📋</span>
+                          <p style={{ fontSize:12, color:'#065F46', fontWeight:600, lineHeight:1.4 }}>
+                            Next step: Add your {form.role === 'restaurant' ? 'restaurant' : form.role === 'merchant' ? 'shop' : 'delivery'} details — shop info, timings & more.
+                          </p>
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
                   </div>
+
+                  {/* CTA */}
+                  <motion.button onClick={handleContinue} disabled={loading}
+                    whileHover={loading ? {} : { scale:1.025 }} whileTap={loading ? {} : { scale:.97 }}
+                    animate={{ boxShadow:[`0 4px 18px ${G}45`,`0 8px 34px ${G}70`,`0 4px 18px ${G}45`] }}
+                    transition={{ boxShadow:{ repeat:Infinity, duration:2, ease:'easeInOut' } }}
+                    style={{ width:'100%', padding:'15px', borderRadius:13, background:G, color:'#fff', fontSize:15.5, fontWeight:800, border:'none', cursor:'pointer', display:'flex', alignItems:'center', justifyContent:'center', gap:8, marginTop:2, letterSpacing:'-.01em' }}>
+                    {PARTNER_ROLES.includes(form.role)
+                      ? <>Continue <ArrowRight size={16} /></>
+                      : <>Join the Waitlist <ArrowRight size={16} /></>}
+                  </motion.button>
+
+                  <p style={{ textAlign:'center', fontSize:12.5, color:T3 }}>
+                    <span style={{ color:G, fontWeight:700 }}>{dispCount}+</span> people already joined · Free to join
+                  </p>
+                </div>
+
+              ) : (
+                /* ── STEP 2: Partner Details ── */
+                <div style={{ display:'flex', flexDirection:'column', gap:15 }}>
+
+                  {/* Step 2 header */}
+                  <div style={{ paddingBottom:16, borderBottom:`1px solid ${BD}` }}>
+                    <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between', marginBottom:4 }}>
+                      <button onClick={()=>{ setStep(1); setStep2Errors({}); }}
+                        style={{ display:'flex', alignItems:'center', gap:5, background:'none', border:'none', cursor:'pointer', color:T2, fontSize:13, fontWeight:700, padding:0 }}>
+                        ← Back
+                      </button>
+                      <span style={{ fontSize:11.5, fontWeight:700, color:T3, background:'#F3F4F6', padding:'3px 10px', borderRadius:20 }}>Step 2 of 2</span>
+                    </div>
+                    <div style={{ display:'flex', alignItems:'center', gap:10, marginTop:10 }}>
+                      <div style={{ width:4, height:28, borderRadius:3, background:`linear-gradient(to bottom, ${G}, #059669)`, flexShrink:0 }} />
+                      <h3 style={{ fontFamily:"'Outfit',sans-serif", fontWeight:900, fontSize:'1.15rem', color:T1, letterSpacing:'-.03em', lineHeight:1 }}>
+                        {form.role === 'restaurant' ? '🍴 Restaurant Details' : form.role === 'merchant' ? '🏪 Shop Details' : '🚴 Delivery Partner Details'}
+                      </h3>
+                    </div>
+                    {/* Summary strip */}
+                    <div style={{ marginTop:10, padding:'8px 12px', borderRadius:10, background:'#F8FAFB', border:`1px solid ${BD}`, display:'flex', gap:16, flexWrap:'wrap' as const }}>
+                      {[['👤', form.name], ['📧', form.email], ['📍', form.city]].map(([icon, val]) => (
+                        <span key={val} style={{ fontSize:12, color:T2, fontWeight:600 }}>{icon} {val}</span>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Role-specific fields */}
+                  <AnimatePresence mode="wait">
+                    <motion.div key={form.role} initial={{opacity:0,x:20}} animate={{opacity:1,x:0}} exit={{opacity:0,x:-20}} transition={{duration:.2}}
+                      style={{ display:'flex', flexDirection:'column', gap:14 }}>
+
+                      {/* ── Restaurant ── */}
+                      {form.role === 'restaurant' && <>
+                        <PartnerField label="Restaurant / Shop Name *" error={step2Errors.shopName}>
+                          <input value={restaurant.shopName} onChange={e=>{ setRestaurant(r=>({...r,shopName:e.target.value})); setStep2Errors(x=>({...x,shopName:''})); }}
+                            placeholder="e.g. Sharma Dhaba" style={inp(step2Errors.shopName)} onFocus={focusStyle} onBlur={e=>blurStyle(e,step2Errors.shopName)} />
+                        </PartnerField>
+                        <PartnerField label="Cuisine Type *" error={step2Errors.cuisines}>
+                          <div style={{ display:'flex', flexWrap:'wrap', gap:6 }}>
+                            {CUISINE_TYPES.map(c=><ToggleChip key={c} label={c} active={restaurant.cuisines.includes(c)}
+                              onClick={()=>{ setStep2Errors(x=>({...x,cuisines:''})); setRestaurant(r=>({ ...r, cuisines: r.cuisines.includes(c) ? r.cuisines.filter(x=>x!==c) : [...r.cuisines,c] })); }} />)}
+                          </div>
+                        </PartnerField>
+                        <PartnerField label="Restaurant Address *" error={step2Errors.address}>
+                          <textarea value={restaurant.address} onChange={e=>{ setRestaurant(r=>({...r,address:e.target.value})); setStep2Errors(x=>({...x,address:''})); }}
+                            placeholder="Full address with locality, street, pincode" rows={2}
+                            style={{ ...inp(step2Errors.address), resize:'vertical' as const, fontFamily:'inherit' }} onFocus={focusStyle} onBlur={e=>blurStyle(e,step2Errors.address)} />
+                        </PartnerField>
+                        <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:10 }}>
+                          <PartnerField label="Opens At">
+                            <input type="time" value={restaurant.openFrom} onChange={e=>setRestaurant(r=>({...r,openFrom:e.target.value}))} style={inp()} onFocus={focusStyle} onBlur={blurStyle} />
+                          </PartnerField>
+                          <PartnerField label="Closes At">
+                            <input type="time" value={restaurant.openTo} onChange={e=>setRestaurant(r=>({...r,openTo:e.target.value}))} style={inp()} onFocus={focusStyle} onBlur={blurStyle} />
+                          </PartnerField>
+                        </div>
+                        <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:10 }}>
+                          <PartnerField label="FSSAI License No. (optional)">
+                            <input value={restaurant.fssai} onChange={e=>setRestaurant(r=>({...r,fssai:e.target.value}))} placeholder="14-digit number" style={inp()} onFocus={focusStyle} onBlur={blurStyle} />
+                          </PartnerField>
+                          <PartnerField label="Seating Capacity">
+                            <input type="number" value={restaurant.seating} onChange={e=>setRestaurant(r=>({...r,seating:e.target.value}))} placeholder="e.g. 40" style={inp()} onFocus={focusStyle} onBlur={blurStyle} />
+                          </PartnerField>
+                        </div>
+                        <PartnerField label="Signature / Best-Selling Dishes">
+                          <textarea value={restaurant.dishes} onChange={e=>setRestaurant(r=>({...r,dishes:e.target.value}))}
+                            placeholder="e.g. Rogan Josh, Tandoori Chicken, Paneer Tikka" rows={2}
+                            style={{ ...inp(), resize:'vertical' as const, fontFamily:'inherit' }} onFocus={focusStyle} onBlur={blurStyle} />
+                        </PartnerField>
+                      </>}
+
+                      {/* ── Merchant ── */}
+                      {form.role === 'merchant' && <>
+                        <PartnerField label="Shop / Store Name *" error={step2Errors.shopName}>
+                          <input value={merchant.shopName} onChange={e=>{ setMerchant(m=>({...m,shopName:e.target.value})); setStep2Errors(x=>({...x,shopName:''})); }}
+                            placeholder="e.g. Sharma General Store" style={inp(step2Errors.shopName)} onFocus={focusStyle} onBlur={e=>blurStyle(e,step2Errors.shopName)} />
+                        </PartnerField>
+                        <PartnerField label="Product Categories *" error={step2Errors.categories}>
+                          <div style={{ display:'flex', flexWrap:'wrap', gap:6 }}>
+                            {PRODUCT_CATS.map(c=><ToggleChip key={c} label={c} active={merchant.categories.includes(c)}
+                              onClick={()=>{ setStep2Errors(x=>({...x,categories:''})); setMerchant(m=>({ ...m, categories: m.categories.includes(c) ? m.categories.filter(x=>x!==c) : [...m.categories,c] })); }} />)}
+                          </div>
+                        </PartnerField>
+                        <PartnerField label="Shop Address *" error={step2Errors.address}>
+                          <textarea value={merchant.address} onChange={e=>{ setMerchant(m=>({...m,address:e.target.value})); setStep2Errors(x=>({...x,address:''})); }}
+                            placeholder="Full address with locality, street, pincode" rows={2}
+                            style={{ ...inp(step2Errors.address), resize:'vertical' as const, fontFamily:'inherit' }} onFocus={focusStyle} onBlur={e=>blurStyle(e,step2Errors.address)} />
+                        </PartnerField>
+                        <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:10 }}>
+                          <PartnerField label="Opens At">
+                            <input type="time" value={merchant.openFrom} onChange={e=>setMerchant(m=>({...m,openFrom:e.target.value}))} style={inp()} onFocus={focusStyle} onBlur={blurStyle} />
+                          </PartnerField>
+                          <PartnerField label="Closes At">
+                            <input type="time" value={merchant.openTo} onChange={e=>setMerchant(m=>({...m,openTo:e.target.value}))} style={inp()} onFocus={focusStyle} onBlur={blurStyle} />
+                          </PartnerField>
+                        </div>
+                        <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:10 }}>
+                          <PartnerField label="GST Number (optional)">
+                            <input value={merchant.gst} onChange={e=>setMerchant(m=>({...m,gst:e.target.value}))} placeholder="15-digit GSTIN" style={inp()} onFocus={focusStyle} onBlur={blurStyle} />
+                          </PartnerField>
+                          <PartnerField label="Est. Monthly Revenue">
+                            <select value={merchant.monthlyRevenue} onChange={e=>setMerchant(m=>({...m,monthlyRevenue:e.target.value}))}
+                              style={{ ...inp(), color:merchant.monthlyRevenue?T1:T3, appearance:'none' as const, cursor:'pointer' }}>
+                              <option value="">Select range</option>
+                              {['Under ₹50K','₹50K – ₹1L','₹1L – ₹5L','₹5L – ₹10L','Above ₹10L'].map(v=><option key={v} value={v}>{v}</option>)}
+                            </select>
+                          </PartnerField>
+                        </div>
+                      </>}
+
+                      {/* ── Delivery Partner ── */}
+                      {form.role === 'delivery' && <>
+                        <PartnerField label="Vehicle Type *" error={step2Errors.vehicle}>
+                          <div style={{ display:'flex', flexWrap:'wrap', gap:8 }}>
+                            {VEHICLE_TYPES.map(v=>(
+                              <button type="button" key={v} onClick={()=>{ setDelivery(d=>({...d,vehicle:v})); setStep2Errors(x=>({...x,vehicle:''})); }}
+                                style={{ padding:'8px 14px', borderRadius:10, fontSize:13, fontWeight:700, border:`1.5px solid ${delivery.vehicle===v?'#2563EB':BD}`, background:delivery.vehicle===v?'#EFF6FF':W, color:delivery.vehicle===v?'#2563EB':T2, cursor:'pointer', transition:'all .15s' }}>
+                                {v}
+                              </button>
+                            ))}
+                          </div>
+                        </PartnerField>
+                        <PartnerField label="Vehicle Number (optional)">
+                          <input value={delivery.vehicleNumber} onChange={e=>setDelivery(d=>({...d,vehicleNumber:e.target.value}))}
+                            placeholder="e.g. JK01AB1234" style={inp()} onFocus={focusStyle} onBlur={blurStyle} />
+                        </PartnerField>
+                        <PartnerField label="Areas / Localities You Can Cover *" error={step2Errors.areas}>
+                          <textarea value={delivery.areas} onChange={e=>{ setDelivery(d=>({...d,areas:e.target.value})); setStep2Errors(x=>({...x,areas:''})); }}
+                            placeholder="e.g. Gandhi Nagar, Talab Tillo, Shastri Nagar, Bathindi…" rows={2}
+                            style={{ ...inp(step2Errors.areas), resize:'vertical' as const, fontFamily:'inherit' }} onFocus={focusStyle} onBlur={e=>blurStyle(e,step2Errors.areas)} />
+                        </PartnerField>
+                        <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:10 }}>
+                          <PartnerField label="Delivery Experience">
+                            <select value={delivery.experience} onChange={e=>setDelivery(d=>({...d,experience:e.target.value}))}
+                              style={{ ...inp(), color:delivery.experience?T1:T3, appearance:'none' as const, cursor:'pointer' }}>
+                              <option value="">Select</option>
+                              {['Fresher (No experience)','Less than 6 months','6 months – 1 year','1 – 3 years','3+ years'].map(v=><option key={v} value={v}>{v}</option>)}
+                            </select>
+                          </PartnerField>
+                          <PartnerField label="Previously Worked With">
+                            <select value={delivery.prevApp} onChange={e=>setDelivery(d=>({...d,prevApp:e.target.value}))}
+                              style={{ ...inp(), color:delivery.prevApp?T1:T3, appearance:'none' as const, cursor:'pointer' }}>
+                              <option value="">Select app</option>
+                              {['None','Zomato','Swiggy','Blinkit','Zepto','Dunzo','Other'].map(v=><option key={v} value={v}>{v}</option>)}
+                            </select>
+                          </PartnerField>
+                        </div>
+                      </>}
+
+                    </motion.div>
+                  </AnimatePresence>
 
                   {/* API error */}
                   {apiError && (
@@ -2414,26 +2647,18 @@ function WaitlistSection() {
                     </motion.div>
                   )}
 
-                  {/* CTA */}
-                  <motion.button onClick={submit} disabled={loading}
+                  {/* Submit */}
+                  <motion.button onClick={handleSubmit} disabled={loading}
                     whileHover={loading ? {} : { scale:1.025 }} whileTap={loading ? {} : { scale:.97 }}
                     animate={{ boxShadow:[`0 4px 18px ${G}45`,`0 8px 34px ${G}70`,`0 4px 18px ${G}45`] }}
                     transition={{ boxShadow:{ repeat:Infinity, duration:2, ease:'easeInOut' } }}
-                    style={{ width:'100%', padding:'15px', borderRadius:13, background: loading ? '#6B7280' : G, color:'#fff', fontSize:15.5, fontWeight:800, border:'none', cursor: loading ? 'not-allowed' : 'pointer', display:'flex', alignItems:'center', justifyContent:'center', gap:8, marginTop:2, letterSpacing:'-.01em', transition:'background .2s' }}>
+                    style={{ width:'100%', padding:'15px', borderRadius:13, background:loading?'#6B7280':G, color:'#fff', fontSize:15.5, fontWeight:800, border:'none', cursor:loading?'not-allowed':'pointer', display:'flex', alignItems:'center', justifyContent:'center', gap:8, marginTop:4, letterSpacing:'-.01em', transition:'background .2s' }}>
                     {loading ? (
-                      <>
-                        <motion.div animate={{ rotate:360 }} transition={{ repeat:Infinity, duration:.8, ease:'linear' }}
-                          style={{ width:18, height:18, border:'2.5px solid rgba(255,255,255,.3)', borderTopColor:'#fff', borderRadius:'50%' }} />
-                        Submitting…
-                      </>
-                    ) : (
-                      <>Join the Waitlist <ArrowRight size={16} /></>
-                    )}
+                      <><motion.div animate={{ rotate:360 }} transition={{ repeat:Infinity, duration:.8, ease:'linear' }}
+                        style={{ width:18, height:18, border:'2.5px solid rgba(255,255,255,.3)', borderTopColor:'#fff', borderRadius:'50%' }} />Submitting…</>
+                    ) : <>Submit Application <ArrowRight size={16} /></>}
                   </motion.button>
-
-                  <p style={{ textAlign:'center', fontSize:12.5, color:T3 }}>
-                    <span style={{ color:G, fontWeight:700 }}>{dispCount}+</span> people already joined · Free to join
-                  </p>
+                  <p style={{ textAlign:'center', fontSize:12, color:T3 }}>Your details are encrypted and only shared with the ZYPHIX team.</p>
                 </div>
               )}
 

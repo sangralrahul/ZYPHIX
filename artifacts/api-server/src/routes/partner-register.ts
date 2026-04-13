@@ -15,8 +15,11 @@ function hexToRgb(hex: string) {
   return rgb(((n >> 16) & 255) / 255, ((n >> 8) & 255) / 255, (n & 255) / 255);
 }
 
+type PartnerDetails = Record<string, string | string[]>;
+
 async function generatePDF(data: {
   name: string; email: string; phone: string; city: string; role: string; ts: string; ref: string;
+  details?: PartnerDetails;
 }): Promise<Uint8Array> {
   const pdfDoc = await PDFDocument.create();
   const page = pdfDoc.addPage([595.28, 841.89]); // A4
@@ -100,6 +103,31 @@ async function generatePDF(data: {
   page.drawLine({ start: { x: 50, y }, end: { x: width - 50, y },
     thickness: 1, color: LGRAY });
 
+  /* ── Partner-specific details ── */
+  if (data.details && Object.keys(data.details).length) {
+    y -= 18;
+    page.drawText("Partner Details", { x: 50, y, size: 11, font: fontBold, color: INK });
+    y -= 8;
+    const detailEntries = Object.entries(data.details).filter(([, v]) => {
+      if (Array.isArray(v)) return v.length > 0;
+      return v && String(v).trim();
+    });
+    detailEntries.forEach(([key, val], i) => {
+      const label = key.replace(/([A-Z])/g, " $1").replace(/^./, s => s.toUpperCase());
+      const value = Array.isArray(val) ? val.join(", ") : String(val);
+      const rowH = 36;
+      y -= rowH;
+      page.drawRectangle({ x: 50, y, width: width - 100, height: rowH,
+        color: i % 2 === 0 ? XGRAY : WHITE });
+      page.drawText(label.toUpperCase(),
+        { x: 66, y: y + rowH - 14, size: 8, font: fontBold, color: GRAY });
+      const truncated = value.length > 72 ? value.slice(0, 72) + "…" : value;
+      page.drawText(truncated, { x: 66, y: y + rowH - 28, size: 11, font: fontReg, color: INK });
+    });
+    page.drawLine({ start: { x: 50, y }, end: { x: width - 50, y },
+      thickness: 1, color: LGRAY });
+  }
+
   /* ── Action box ── */
   y -= 28;
   const actionBoxH = 90;
@@ -152,8 +180,8 @@ async function generatePDF(data: {
 }
 
 router.post("/partner-register", async (req, res) => {
-  const { name, email, phone, city, role } = req.body as {
-    name?: string; email?: string; phone?: string; city?: string; role?: string;
+  const { name, email, phone, city, role, details } = req.body as {
+    name?: string; email?: string; phone?: string; city?: string; role?: string; details?: PartnerDetails;
   };
 
   const missing = (["name", "email", "phone", "city", "role"] as const)
@@ -184,7 +212,7 @@ router.post("/partner-register", async (req, res) => {
   const roleLabel = ROLE_LABELS[role!] ?? role!;
 
   try {
-    const pdfBytes   = await generatePDF({ name: name!, email: email!, phone: phone!, city: city!, role: role!, ts, ref });
+    const pdfBytes   = await generatePDF({ name: name!, email: email!, phone: phone!, city: city!, role: role!, ts, ref, details });
     const pdfBase64  = Buffer.from(pdfBytes).toString("base64");
     const fileName   = `zyphix-partner-${name!.toLowerCase().replace(/\s+/g, "-")}-${ref}.pdf`;
 
@@ -236,6 +264,21 @@ router.post("/partner-register", async (req, res) => {
       <td style="padding:10px 16px;font-size:13px;color:#111827;font-weight:600;">${v}</td>
     </tr>`).join("")}
   </table>
+
+  ${details && Object.keys(details).length ? `
+  <div style="margin-top:20px;">
+    <p style="margin:0 0 10px;font-size:11px;font-weight:700;color:#6B7280;letter-spacing:0.06em;">PARTNER-SPECIFIC DETAILS</p>
+    <table width="100%" cellpadding="0" cellspacing="0" border="0" style="border-radius:12px;overflow:hidden;border:1px solid #E5E7EB;">
+      ${Object.entries(details).filter(([,v]) => Array.isArray(v) ? (v as string[]).length > 0 : String(v||"").trim()).map(([key, val], i) => {
+        const label = key.replace(/([A-Z])/g, " $1").replace(/^./, s => s.toUpperCase());
+        const value = Array.isArray(val) ? (val as string[]).join(", ") : String(val);
+        return `<tr style="background:${i % 2 === 0 ? "#F9FAFB" : "#FFFFFF"};">
+          <td style="padding:10px 16px;font-size:11px;font-weight:700;color:#9CA3AF;letter-spacing:0.05em;width:160px;">${label.toUpperCase()}</td>
+          <td style="padding:10px 16px;font-size:13px;color:#111827;font-weight:600;">${value}</td>
+        </tr>`;
+      }).join("")}
+    </table>
+  </div>` : ""}
 
   <div style="margin-top:24px;background:#FFF7ED;border-radius:12px;padding:18px 20px;border-left:4px solid #F97316;">
     <p style="margin:0 0 6px;font-size:13px;font-weight:700;color:#9A3412;">⚡ Action Required</p>
