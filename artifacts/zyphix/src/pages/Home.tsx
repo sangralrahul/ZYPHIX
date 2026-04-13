@@ -210,15 +210,22 @@ function Navbar({ tab = 'now', setTab }: { tab?: TabId; setTab?: (t: TabId) => v
 
   return (
     <div className="sticky top-0 z-50" style={{ background: W, borderBottom: `1px solid ${BD}`, boxShadow: scrolled ? '0 1px 8px rgba(0,0,0,.06)' : 'none', transition: 'box-shadow .2s' }}>
-      <div style={{ maxWidth: 1280, margin: '0 auto', padding: '0 20px', height: 68, display: 'flex', alignItems: 'center', gap: 12 }}>
+      <style>{`
+        @media (max-width: 640px) {
+          .nav-location { display: none !important; }
+          .nav-login { display: none !important; }
+          .nav-cart-text { display: none !important; }
+        }
+      `}</style>
+      <div style={{ maxWidth: 1280, margin: '0 auto', padding: '0 16px', height: 60, display: 'flex', alignItems: 'center', gap: 10 }}>
 
         {/* Logo */}
         <a href="/" style={{ textDecoration: 'none', flexShrink: 0 }}>
-          <LogoMark size={30} />
+          <LogoMark size={28} />
         </a>
 
         {/* ── Location picker ── */}
-        <div ref={locRef} style={{ position: 'relative', flexShrink: 0 }}>
+        <div ref={locRef} className="nav-location" style={{ position: 'relative', flexShrink: 0 }}>
           <button onClick={() => { setLocOpen(o => !o); setLocSearch(''); }}
             style={{ display: 'flex', alignItems: 'center', gap: 6, background: 'transparent', border: 'none', cursor: 'pointer', padding: '6px 10px 6px 8px', borderRadius: 10, transition: 'background .12s' }}
             onMouseEnter={e => (e.currentTarget.style.background = BG)}
@@ -390,7 +397,7 @@ function Navbar({ tab = 'now', setTab }: { tab?: TabId; setTab?: (t: TabId) => v
               </AnimatePresence>
             </div>
           ) : (
-            <button onClick={openModal}
+            <button className="nav-login" onClick={openModal}
               style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '9px 18px', borderRadius: 10, border: `1.5px solid ${BD}`, fontSize: 13, fontWeight: 700, color: T1, background: W, cursor: 'pointer', transition: 'all .13s', whiteSpace: 'nowrap' }}
               onMouseEnter={e => { (e.currentTarget as HTMLElement).style.borderColor = G; (e.currentTarget as HTMLElement).style.color = G; }}
               onMouseLeave={e => { (e.currentTarget as HTMLElement).style.borderColor = BD; (e.currentTarget as HTMLElement).style.color = T1; }}>
@@ -398,11 +405,11 @@ function Navbar({ tab = 'now', setTab }: { tab?: TabId; setTab?: (t: TabId) => v
             </button>
           )}
           <button
-            style={{ position: 'relative', display: 'flex', alignItems: 'center', gap: 7, padding: '9px 20px', borderRadius: 10, background: G, fontSize: 13.5, fontWeight: 700, color: '#fff', border: 'none', cursor: 'pointer', transition: 'background .13s', boxShadow: `0 2px 10px rgba(13,163,102,.28)`, whiteSpace: 'nowrap' }}
+            style={{ position: 'relative', display: 'flex', alignItems: 'center', gap: 7, padding: '9px 16px', borderRadius: 10, background: G, fontSize: 13.5, fontWeight: 700, color: '#fff', border: 'none', cursor: 'pointer', transition: 'background .13s', boxShadow: `0 2px 10px rgba(13,163,102,.28)`, whiteSpace: 'nowrap' }}
             onMouseEnter={e => (e.currentTarget as HTMLElement).style.background = G2}
             onMouseLeave={e => (e.currentTarget as HTMLElement).style.background = G}>
             <ShoppingCart size={15} />
-            <span>Cart</span>
+            <span className="nav-cart-text">Cart</span>
             <span style={{ position: 'absolute', top: -6, right: -6, width: 18, height: 18, borderRadius: '50%', background: '#EF4444', color: '#fff', fontSize: 9.5, fontWeight: 900, display: 'flex', alignItems: 'center', justifyContent: 'center', border: '2px solid #fff' }}>3</span>
           </button>
         </div>

@@ -1,4 +1,4 @@
-import { Switch, Route, Router as WouterRouter } from "wouter";
+import { Switch, Route, Router as WouterRouter, useLocation } from "wouter";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -16,10 +16,31 @@ import { MerchantSetup } from "@/pages/MerchantSetup";
 import { DeliverySetup } from "@/pages/DeliverySetup";
 import { RestaurantSetup } from "@/pages/RestaurantSetup";
 import { SplashVideo } from "@/pages/SplashVideo";
+import { ZyphixNow } from "@/pages/ZyphixNow";
+import { ZyphixEats } from "@/pages/ZyphixEats";
+import { ZyphixBook } from "@/pages/ZyphixBook";
+import { KiranaMap } from "@/pages/KiranaMap";
+import { Offers } from "@/pages/Offers";
 import { AuthProvider } from "@/context/AuthContext";
 import { AuthModal } from "@/components/AuthModal";
+import { Navbar } from "@/components/layout/Navbar";
+import { BottomNav } from "@/components/layout/BottomNav";
 
 const queryClient = new QueryClient();
+
+const DARK_ROUTES = ['/now', '/eats', '/book', '/offers', '/kirana-map'];
+
+function DarkLayout({ children }: { children: React.ReactNode }) {
+  return (
+    <div style={{ minHeight: '100vh', background: '#0A0E1A', color: '#fff' }}>
+      <Navbar />
+      <div style={{ maxWidth: 1280, margin: '0 auto', padding: '24px 16px 96px', boxSizing: 'border-box' as const }}>
+        {children}
+      </div>
+      <BottomNav />
+    </div>
+  );
+}
 
 function Router() {
   return (
@@ -36,6 +57,21 @@ function Router() {
       <Route path="/delivery-setup" component={DeliverySetup} />
       <Route path="/restaurant-setup" component={RestaurantSetup} />
       <Route path="/splash-video" component={SplashVideo} />
+      <Route path="/now">
+        <DarkLayout><ZyphixNow /></DarkLayout>
+      </Route>
+      <Route path="/eats">
+        <DarkLayout><ZyphixEats /></DarkLayout>
+      </Route>
+      <Route path="/book">
+        <DarkLayout><ZyphixBook /></DarkLayout>
+      </Route>
+      <Route path="/offers">
+        <DarkLayout><Offers /></DarkLayout>
+      </Route>
+      <Route path="/kirana-map">
+        <DarkLayout><KiranaMap /></DarkLayout>
+      </Route>
       <Route component={NotFound} />
     </Switch>
   );

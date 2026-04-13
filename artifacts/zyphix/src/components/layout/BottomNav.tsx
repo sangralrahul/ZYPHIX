@@ -2,34 +2,45 @@ import React from 'react';
 import { Link, useLocation } from 'wouter';
 import { Home, Zap, Utensils, CalendarCheck, MapPin, Tag } from 'lucide-react';
 
+const navItems = [
+  { label: 'Home',   path: '/',           icon: Home,          color: '#00D97E' },
+  { label: 'Now',    path: '/now',         icon: Zap,           color: '#00C9A7' },
+  { label: 'Eats',   path: '/eats',        icon: Utensils,      color: '#F97316' },
+  { label: 'Book',   path: '/book',        icon: CalendarCheck, color: '#F97316' },
+  { label: 'Offers', path: '/offers',      icon: Tag,           color: '#D4AF37' },
+];
+
 export function BottomNav() {
   const [location] = useLocation();
 
-  const navItems = [
-    { label: 'Home', path: '/', icon: Home },
-    { label: 'Now', path: '/now', icon: Zap, color: 'text-zyphix-teal' },
-    { label: 'Eats', path: '/eats', icon: Utensils, color: 'text-zyphix-gold' },
-    { label: 'Book', path: '/book', icon: CalendarCheck, color: 'text-zyphix-orange' },
-    { label: 'Offers', path: '/offers', icon: Tag },
-  ];
-
   return (
-    <div className="md:hidden fixed bottom-0 left-0 right-0 z-50 bg-card border-t border-border pb-safe pt-2 px-2 shadow-lg">
-      <div className="flex justify-between items-center max-w-md mx-auto">
+    <div style={{
+      position: 'fixed', bottom: 0, left: 0, right: 0, zIndex: 50,
+      background: 'rgba(9,9,14,0.97)', backdropFilter: 'blur(20px)',
+      borderTop: '1px solid rgba(255,255,255,0.07)',
+      paddingBottom: 'env(safe-area-inset-bottom, 6px)',
+      paddingTop: 8,
+      paddingLeft: 8,
+      paddingRight: 8,
+      display: 'flex',
+    }}
+    className="md:hidden"
+    >
+      <div style={{ display: 'flex', justifyContent: 'space-around', alignItems: 'center', width: '100%', maxWidth: 480, margin: '0 auto' }}>
         {navItems.map((item) => {
           const isActive = location === item.path || (item.path !== '/' && location.startsWith(item.path));
           const Icon = item.icon;
-          
           return (
-            <Link key={item.path} href={item.path} className="flex-1 flex flex-col items-center justify-center p-2 group">
-              <div className={`mb-1 transition-transform group-active:scale-95 ${
-                isActive ? (item.color || 'text-primary') : 'text-muted-foreground'
-              }`}>
-                <Icon className={`h-6 w-6 ${isActive && item.color ? '' : ''}`} strokeWidth={isActive ? 2.5 : 2} />
+            <Link key={item.path} href={item.path} style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '6px 4px 8px', textDecoration: 'none', transition: 'opacity .15s', gap: 4 }}
+              onClick={() => {}}>
+              <div style={{
+                width: 32, height: 32, borderRadius: 10, display: 'flex', alignItems: 'center', justifyContent: 'center',
+                background: isActive ? `${item.color}22` : 'transparent',
+                transition: 'background .15s',
+              }}>
+                <Icon size={22} color={isActive ? item.color : 'rgba(255,255,255,0.38)'} strokeWidth={isActive ? 2.5 : 2} />
               </div>
-              <span className={`text-[10px] font-medium ${
-                isActive ? 'text-white' : 'text-muted-foreground'
-              }`}>
+              <span style={{ fontSize: 10, fontWeight: isActive ? 700 : 500, color: isActive ? item.color : 'rgba(255,255,255,0.38)', letterSpacing: '.01em' }}>
                 {item.label}
               </span>
             </Link>

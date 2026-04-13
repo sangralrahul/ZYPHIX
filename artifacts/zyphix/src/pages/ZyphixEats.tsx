@@ -145,9 +145,9 @@ export function ZyphixEats() {
               {restaurants.map((r) => (
                 <motion.div key={r.id} variants={fadeUp}>
                   <div className="rounded-2xl glass border-[#1E3A6E] hover:border-[#F5A623]/40 card-hover cursor-pointer p-4 flex gap-4 group">
-                    <div className="w-20 h-20 rounded-xl flex items-center justify-center text-4xl shrink-0"
-                      style={{ background: 'rgba(245,166,35,0.1)', border: '1px solid rgba(245,166,35,0.2)' }}>
-                      {r.thumbnail}
+                    <div className="w-20 h-20 rounded-xl overflow-hidden shrink-0"
+                      style={{ border: '1px solid rgba(245,166,35,0.2)' }}>
+                      <img src={r.image} alt={r.name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                     </div>
                     <div className="flex-1 min-w-0">
                       <div className="flex items-start justify-between mb-1">
@@ -168,7 +168,7 @@ export function ZyphixEats() {
                             Free delivery
                           </span>
                         )}
-                        {r.badges.filter(b => b !== '₹0 delivery').map(badge => (
+                        {(r.tags || []).filter(b => b !== 'Free Delivery').map(badge => (
                           <span key={badge} className="text-xs font-semibold px-2 py-0.5 rounded-full"
                             style={{ background: 'rgba(245,166,35,0.15)', color: '#F5A623', border: '1px solid rgba(245,166,35,0.3)' }}>
                             {badge}

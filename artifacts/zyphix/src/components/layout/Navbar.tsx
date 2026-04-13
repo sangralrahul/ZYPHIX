@@ -96,16 +96,17 @@ export function Navbar() {
       {mobileOpen && (
         <div style={{ background: 'rgba(9,9,14,0.99)', borderTop: '1px solid rgba(255,255,255,0.06)' }}>
           <div className="max-w-screen-xl mx-auto px-4 py-4 space-y-1">
-            <div className="relative mb-3">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2" style={{ height: 15, width: 15, color: 'var(--z-muted)' }} />
-              <input placeholder="Search..." className="w-full pl-9 pr-4 py-2.5 rounded-xl text-white text-sm outline-none placeholder:text-[var(--z-muted)]"
-                style={{ background: 'rgba(22,24,31,0.8)', border: '1px solid rgba(255,255,255,0.07)' }} />
-            </div>
-            {[['⚡', 'ZyphixNow'], ['🍱', 'ZyphixEats'], ['🗺️', 'Kirana Near Me'], ['🏷️', 'Offers']].map(([icon, label]) => (
-              <div key={label} onClick={() => setMobileOpen(false)}
+            {[
+              { icon: '⚡', label: 'Zyphix Now', href: '/now' },
+              { icon: '🍱', label: 'Zyphix Eats', href: '/eats' },
+              { icon: '📅', label: 'Zyphix Book', href: '/book' },
+              { icon: '🗺️', label: 'Kirana Near Me', href: '/kirana-map' },
+              { icon: '🏷️', label: 'Offers', href: '/offers' },
+            ].map(({ icon, label, href }) => (
+              <Link key={label} href={href} onClick={() => setMobileOpen(false)}
                 className="flex items-center gap-3 py-3 px-3 rounded-xl hover:bg-white/5 transition-colors cursor-pointer font-medium text-white/80">
                 <span>{icon}</span>{label}
-              </div>
+              </Link>
             ))}
             <button className="w-full mt-3 py-3 rounded-xl font-black text-sm btn-primary">
               Get Started — It's Free
