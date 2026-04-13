@@ -142,14 +142,32 @@ export function AppComingSoon() {
   const [submitted, setSubmitted] = useState(false);
   const [error, setError] = useState('');
   const [focused, setFocused] = useState(false);
+  const [loading, setLoading] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
       setError('Please enter a valid email address');
       return;
     }
-    setSubmitted(true);
+    setLoading(true);
+    setError('');
+    try {
+      const res = await fetch('/api/notify', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, source: 'app-page' }),
+      });
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}));
+        throw new Error((data as { error?: string }).error || 'Something went wrong.');
+      }
+      setSubmitted(true);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to send. Please try again.');
+    } finally {
+      setLoading(false);
+    }
   };
 
   const features = [
@@ -308,11 +326,12 @@ export function AppComingSoon() {
                       />
                     </div>
                     <motion.button
-                      whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.97 }}
+                      whileHover={loading ? {} : { scale: 1.04 }} whileTap={loading ? {} : { scale: 0.97 }}
                       type="submit"
-                      style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '13px 24px', borderRadius: 12, background: `linear-gradient(135deg, ${G} 0%, ${G2} 100%)`, color: '#fff', fontSize: 14, fontWeight: 800, border: 'none', cursor: 'pointer', whiteSpace: 'nowrap', boxShadow: `0 8px 24px ${G}44` }}
+                      disabled={loading}
+                      style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '13px 24px', borderRadius: 12, background: loading ? `${G}80` : `linear-gradient(135deg, ${G} 0%, ${G2} 100%)`, color: '#fff', fontSize: 14, fontWeight: 800, border: 'none', cursor: loading ? 'not-allowed' : 'pointer', whiteSpace: 'nowrap', boxShadow: `0 8px 24px ${G}44` }}
                     >
-                      Notify Me <ArrowRight size={15} />
+                      {loading ? 'Sending…' : <><span>Notify Me</span> <ArrowRight size={15} /></>}
                     </motion.button>
                     {error && (
                       <motion.p initial={{ opacity: 0, y: -4 }} animate={{ opacity: 1, y: 0 }} style={{ width: '100%', fontSize: 12, color: '#EF4444', marginTop: -4 }}>{error}</motion.p>

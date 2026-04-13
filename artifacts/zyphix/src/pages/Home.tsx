@@ -1523,9 +1523,33 @@ function AppDownload() {
   const [submitted, setSubmitted] = useState(false);
   const [inputFocused, setInputFocused] = useState(false);
 
-  const handleNotify = (e: React.FormEvent) => {
+  const [notifyLoading, setNotifyLoading] = useState(false);
+  const [notifyError, setNotifyError] = useState('');
+
+  const handleNotify = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (email && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) setSubmitted(true);
+    if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      setNotifyError('Please enter a valid email address.');
+      return;
+    }
+    setNotifyLoading(true);
+    setNotifyError('');
+    try {
+      const res = await fetch('/api/notify', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, source: 'homepage' }),
+      });
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}));
+        throw new Error((data as { error?: string }).error || 'Something went wrong.');
+      }
+      setSubmitted(true);
+    } catch (err) {
+      setNotifyError(err instanceof Error ? err.message : 'Failed to send. Please try again.');
+    } finally {
+      setNotifyLoading(false);
+    }
   };
 
   return (
@@ -1630,25 +1654,27 @@ function AppDownload() {
                     <input
                       type="email"
                       value={email}
-                      onChange={e => setEmail(e.target.value)}
+                      onChange={e => { setEmail(e.target.value); setNotifyError(''); }}
                       onFocus={() => setInputFocused(true)}
                       onBlur={() => setInputFocused(false)}
                       placeholder="your@email.com"
+                      disabled={notifyLoading}
                       style={{
                         flex: 1, minWidth: 180, padding: '12px 16px', borderRadius: 11, fontSize: 13.5,
                         color: '#fff', background: inputFocused ? 'rgba(255,255,255,0.09)' : 'rgba(255,255,255,0.05)',
-                        border: `1.5px solid ${inputFocused ? 'rgba(13,163,102,0.6)' : 'rgba(255,255,255,0.1)'}`,
+                        border: `1.5px solid ${notifyError ? '#EF4444' : inputFocused ? 'rgba(13,163,102,0.6)' : 'rgba(255,255,255,0.1)'}`,
                         outline: 'none', fontFamily: 'inherit', transition: 'all .15s', boxSizing: 'border-box',
                       }}
                     />
-                    <button type="submit" style={{
+                    <button type="submit" disabled={notifyLoading} style={{
                       padding: '12px 22px', borderRadius: 11, fontSize: 14, fontWeight: 800,
-                      background: `linear-gradient(135deg, #0DA366 0%, #00D97E 100%)`,
-                      color: '#fff', border: 'none', cursor: 'pointer', whiteSpace: 'nowrap',
+                      background: notifyLoading ? 'rgba(13,163,102,0.5)' : 'linear-gradient(135deg, #0DA366 0%, #00D97E 100%)',
+                      color: '#fff', border: 'none', cursor: notifyLoading ? 'not-allowed' : 'pointer', whiteSpace: 'nowrap',
                       boxShadow: '0 8px 24px rgba(13,163,102,0.4)', fontFamily: 'inherit',
                     }}>
-                      Notify Me →
+                      {notifyLoading ? 'Sending…' : 'Notify Me →'}
                     </button>
+                    {notifyError && <p style={{ width: '100%', fontSize: 12, color: '#EF4444', margin: '-4px 0 0' }}>{notifyError}</p>}
                   </form>
                 ) : (
                   <div style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '14px 18px', background: 'rgba(13,163,102,0.15)', border: '1.5px solid rgba(13,163,102,0.35)', borderRadius: 12 }}>
