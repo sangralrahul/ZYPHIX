@@ -448,18 +448,15 @@ function DualHeroBanners() {
           onMouseEnter={() => setHovNow(true)} onMouseLeave={() => setHovNow(false)}
           onClick={() => scrollToWaitlist()}
         >
-          {/* YouTube background — vegetable cutting */}
+          {/* Video background — groceries */}
           <div style={{ position: 'absolute', inset: 0, overflow: 'hidden', zIndex: 0 }}>
-            <img
-              src="https://images.unsplash.com/photo-1542838132-92c53300491e?w=1600&h=1100&fit=crop&q=85"
+            <video
+              src="/videos/grocery.mp4"
+              autoPlay
+              muted
+              loop
+              playsInline
               style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover' }}
-              alt=""
-            />
-            <iframe
-              src="https://www.youtube.com/embed/yIF2jlC05TU?autoplay=1&mute=1&loop=1&controls=0&playlist=yIF2jlC05TU&rel=0&modestbranding=1&iv_load_policy=3&disablekb=1&playsinline=1"
-              style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%,-50%)', width: '200%', height: '200%', border: 'none', pointerEvents: 'none' }}
-              allow="autoplay; encrypted-media"
-              title="vegetable-bg"
             />
           </div>
           <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(175deg, rgba(3,32,18,.2) 0%, rgba(4,58,34,.72) 45%, rgba(2,26,14,.98) 100%)' }} />
@@ -503,18 +500,15 @@ function DualHeroBanners() {
           onMouseEnter={() => setHovEats(true)} onMouseLeave={() => setHovEats(false)}
           onClick={() => scrollToWaitlist()}
         >
-          {/* YouTube background — cheese pull pizza */}
+          {/* Video background — food */}
           <div style={{ position: 'absolute', inset: 0, overflow: 'hidden', zIndex: 0 }}>
-            <img
-              src="https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=1600&h=1100&fit=crop&q=85"
+            <video
+              src="/videos/food.mp4"
+              autoPlay
+              muted
+              loop
+              playsInline
               style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover' }}
-              alt=""
-            />
-            <iframe
-              src="https://www.youtube.com/embed/dbx5V4a3hW4?autoplay=1&mute=1&loop=1&controls=0&playlist=dbx5V4a3hW4&rel=0&modestbranding=1&iv_load_policy=3&disablekb=1&playsinline=1"
-              style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%,-50%)', width: '200%', height: '200%', border: 'none', pointerEvents: 'none' }}
-              allow="autoplay; encrypted-media"
-              title="pizza-bg"
             />
           </div>
           <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(175deg, rgba(50,10,5,.15) 0%, rgba(100,22,5,.68) 45%, rgba(40,4,0,.98) 100%)' }} />
