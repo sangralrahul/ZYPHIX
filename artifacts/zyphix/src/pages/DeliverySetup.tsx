@@ -71,7 +71,7 @@ function StepBar({ step }: { step: number }) {
 /* ─── Step 1: Personal Details ─── */
 function PersonalStep({ onNext }: { onNext:(d:object)=>void }) {
   const q = new URLSearchParams(window.location.search);
-  const [form, setForm] = useState({ name: q.get('name') || '', phone: q.get('phone') || '', age:'', area:'', emergency:'' });
+  const [form, setForm] = useState({ name: q.get('name') || '', phone: q.get('phone') || '', email: q.get('email') || '', age:'', area:'', emergency:'' });
   const [errors, setErrors] = useState<Record<string,string>>({});
   const f = (k:string,v:string) => { setForm(p=>({...p,[k]:v}));setErrors(p=>({...p,[k]:''})); };
 
@@ -79,6 +79,7 @@ function PersonalStep({ onNext }: { onNext:(d:object)=>void }) {
     const e:Record<string,string>={};
     if (!form.name.trim()) e.name='Name required';
     if (!/^[0-9]{10}$/.test(form.phone)) e.phone='Enter valid 10-digit number';
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email)) e.email='Enter a valid email address';
     const age=parseInt(form.age);
     if (!form.age||isNaN(age)||age<18||age>55) e.age='Age must be 18–55';
     if (!form.area) e.area='Select your area';
@@ -140,6 +141,13 @@ function PersonalStep({ onNext }: { onNext:(d:object)=>void }) {
               onFocus={e=>{e.target.style.borderColor=G;e.target.style.boxShadow=`0 0 0 3px ${G}1A`;}}
               onBlur={e=>{e.target.style.borderColor=errors.emergency?'#EF4444':BD;e.target.style.boxShadow='none';}} />
             {errors.emergency && <p style={{fontSize:11.5,color:'#EF4444',marginTop:4}}>{errors.emergency}</p>}
+          </div>
+          <div>
+            <label style={{ fontSize:12,fontWeight:700,color:T2,textTransform:'uppercase',letterSpacing:'.04em',display:'block',marginBottom:5 }}>Email Address <span style={{color:'#EF4444'}}>*</span></label>
+            <input value={form.email} onChange={e=>f('email',e.target.value)} type="email" inputMode="email" placeholder="you@example.com — for confirmation email" style={inp(errors.email)}
+              onFocus={e=>{e.target.style.borderColor=G;e.target.style.boxShadow=`0 0 0 3px ${G}1A`;}}
+              onBlur={e=>{e.target.style.borderColor=errors.email?'#EF4444':BD;e.target.style.boxShadow='none';}} />
+            {errors.email && <p style={{fontSize:11.5,color:'#EF4444',marginTop:4}}>{errors.email}</p>}
           </div>
         </div>
         <motion.button onClick={next} whileHover={{scale:1.02}} whileTap={{scale:.97}}
@@ -406,7 +414,7 @@ function VehicleStep({ onNext, onBack }: { onNext:(d:object)=>void; onBack:()=>v
 }
 
 /* ─── Step 4: Availability ─── */
-function AvailabilityStep({ onNext, onBack }: { onNext:(d:object)=>void; onBack:()=>void }) {
+function AvailabilityStep({ onNext, onBack, submitting }: { onNext:()=>void; onBack:()=>void; submitting?:boolean }) {
   const DAYS = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
   const SHIFTS = [
     { v:'morning',  e:'🌅', l:'Morning',   t:'6 AM – 2 PM' },
@@ -424,7 +432,7 @@ function AvailabilityStep({ onNext, onBack }: { onNext:(d:object)=>void; onBack:
     if (days.size===0) e.days='Select at least one day';
     if (!shift) e.shift='Select a shift preference';
     if (Object.keys(e).length){setErrors(e);return;}
-    onNext({ days:[...days], shift });
+    onNext();
   };
 
   return (
@@ -476,9 +484,9 @@ function AvailabilityStep({ onNext, onBack }: { onNext:(d:object)=>void; onBack:
           <button onClick={onBack} style={{ padding:'14px 22px',borderRadius:12,background:W,border:`1.5px solid ${BD}`,color:T2,fontSize:14,fontWeight:700,cursor:'pointer',display:'flex',alignItems:'center',gap:6 }}>
             <ArrowLeft size={15}/> Back
           </button>
-          <motion.button onClick={next} whileHover={{scale:1.02}} whileTap={{scale:.97}}
-            style={{ flex:1,padding:'15px',borderRadius:13,background:G,color:'#fff',fontSize:15.5,fontWeight:800,border:'none',cursor:'pointer',display:'flex',alignItems:'center',justifyContent:'center',gap:8,boxShadow:`0 6px 24px ${G}45` }}>
-            Submit Application <ArrowRight size={16}/>
+          <motion.button onClick={next} disabled={submitting} whileHover={{scale:submitting?1:1.02}} whileTap={{scale:submitting?1:.97}}
+            style={{ flex:1,padding:'15px',borderRadius:13,background:submitting?'#6B7280':G,color:'#fff',fontSize:15.5,fontWeight:800,border:'none',cursor:submitting?'not-allowed':'pointer',display:'flex',alignItems:'center',justifyContent:'center',gap:8,boxShadow:`0 6px 24px ${G}45`,opacity:submitting?.7:1 }}>
+            {submitting ? 'Submitting…' : <> Submit Application <ArrowRight size={16}/></>}
           </motion.button>
         </div>
       </div>
@@ -602,9 +610,32 @@ function SuccessStep({ personal }: { personal: Record<string,string> }) {
 export function DeliverySetup() {
   const [step, setStep] = useState(0);
   const [personal, setPersonal] = useState<Record<string,string>>({});
+  const [submitting, setSubmitting] = useState(false);
   const [, setLoc] = useLocation();
 
   const go = (s:number) => { setStep(s); window.scrollTo(0,0); };
+
+  const handleAvailabilityNext = async () => {
+    setSubmitting(true);
+    try {
+      await fetch('/api/partner-register', {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          name: personal.name,
+          email: personal.email,
+          phone: personal.phone,
+          city: personal.area || 'Jammu',
+          role: 'delivery',
+          details: {
+            age: personal.age,
+            emergencyContact: personal.emergency,
+          },
+        }),
+      });
+    } catch { /* non-blocking */ }
+    setSubmitting(false);
+    go(4);
+  };
 
   return (
     <div style={{ background:BG, minHeight:'100vh' }}>
@@ -631,7 +662,7 @@ export function DeliverySetup() {
           {step===0 && <PersonalStep key="s0" onNext={d=>{setPersonal(d as Record<string,string>);go(1);}} />}
           {step===1 && <LicenseStep key="s1" onNext={()=>go(2)} onBack={()=>go(0)} />}
           {step===2 && <VehicleStep key="s2" onNext={()=>go(3)} onBack={()=>go(1)} />}
-          {step===3 && <AvailabilityStep key="s3" onNext={()=>go(4)} onBack={()=>go(2)} />}
+          {step===3 && <AvailabilityStep key="s3" onNext={handleAvailabilityNext} submitting={submitting} onBack={()=>go(2)} />}
           {step===4 && <SuccessStep key="s4" personal={personal} />}
         </AnimatePresence>
       </div>

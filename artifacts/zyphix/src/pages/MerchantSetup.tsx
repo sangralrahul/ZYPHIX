@@ -266,7 +266,7 @@ function StepBar({ step }: { step: number }) {
 /* ─── Step 1: Store Info ─── */
 function StoreInfoStep({ onNext }: { onNext:(d:object)=>void }) {
   const q = new URLSearchParams(window.location.search);
-  const [form, setForm] = useState({ name:'', area:'', address:'', ownerName: q.get('name') || '', phone: q.get('phone') || '', type:'' });
+  const [form, setForm] = useState({ name:'', area:'', address:'', ownerName: q.get('name') || '', phone: q.get('phone') || '', email: q.get('email') || '', type:'' });
   const [errors, setErrors] = useState<Record<string,string>>({});
   const f = (k:string, v:string) => { setForm(p=>({...p,[k]:v})); setErrors(p=>({...p,[k]:''})); };
 
@@ -277,6 +277,7 @@ function StoreInfoStep({ onNext }: { onNext:(d:object)=>void }) {
     if (!form.address.trim()) e.address='Address required';
     if (!form.ownerName.trim()) e.ownerName='Owner name required';
     if (!/^[0-9]{10}$/.test(form.phone)) e.phone='Enter valid 10-digit number';
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email)) e.email='Enter a valid email address';
     if (!form.type) e.type='Select store type';
     return e;
   };
@@ -364,6 +365,16 @@ function StoreInfoStep({ onNext }: { onNext:(d:object)=>void }) {
                 onBlur={e=>{e.target.style.borderColor=errors.phone?'#EF4444':BD;e.target.style.boxShadow='none';}} />
               {errors.phone && <p style={{fontSize:11.5,color:'#EF4444',marginTop:4}}>{errors.phone}</p>}
             </div>
+          </div>
+
+          {/* Email */}
+          <div>
+            <label style={{ fontSize:12, fontWeight:700, color:T2, textTransform:'uppercase', letterSpacing:'.04em', display:'block', marginBottom:5 }}>Email Address <span style={{color:'#EF4444'}}>*</span></label>
+            <input value={form.email} onChange={e=>f('email',e.target.value)} type="email" inputMode="email" placeholder="you@example.com — for confirmation email"
+              style={inp(errors.email)}
+              onFocus={e=>{e.target.style.borderColor=G;e.target.style.boxShadow=`0 0 0 3px ${G}1A`;}}
+              onBlur={e=>{e.target.style.borderColor=errors.email?'#EF4444':BD;e.target.style.boxShadow='none';}} />
+            {errors.email && <p style={{fontSize:11.5,color:'#EF4444',marginTop:4}}>{errors.email}</p>}
           </div>
         </div>
 
@@ -588,7 +599,7 @@ function CategoriesStep({ onNext, onBack }: { onNext:(s:Set<string>, subs:Record
 }
 
 /* ─── Step 3: Business Details ─── */
-function BusinessStep({ onNext, onBack }: { onNext:()=>void; onBack:()=>void }) {
+function BusinessStep({ onNext, onBack, submitting }: { onNext:()=>void; onBack:()=>void; submitting?:boolean }) {
   const [hasGst, setHasGst] = useState<boolean|null>(null);
   const [gst, setGst] = useState('');
   const [timings, setTimings] = useState({ open:'08:00', close:'22:00' });
@@ -669,9 +680,9 @@ function BusinessStep({ onNext, onBack }: { onNext:()=>void; onBack:()=>void }) 
             style={{ padding:'14px 22px', borderRadius:12, background:W, border:`1.5px solid ${BD}`, color:T2, fontSize:14, fontWeight:700, cursor:'pointer', display:'flex', alignItems:'center', gap:6 }}>
             <ArrowLeft size={15}/> Back
           </button>
-          <motion.button onClick={onNext} whileHover={{scale:1.02}} whileTap={{scale:.97}}
-            style={{ flex:1, padding:'15px', borderRadius:13, background:G, color:'#fff', fontSize:15.5, fontWeight:800, border:'none', cursor:'pointer', display:'flex', alignItems:'center', justifyContent:'center', gap:8, boxShadow:`0 6px 24px ${G}45` }}>
-            Submit Store Registration <ArrowRight size={16}/>
+          <motion.button onClick={onNext} disabled={submitting} whileHover={{scale:submitting?1:1.02}} whileTap={{scale:submitting?1:.97}}
+            style={{ flex:1, padding:'15px', borderRadius:13, background:submitting?'#6B7280':G, color:'#fff', fontSize:15.5, fontWeight:800, border:'none', cursor:submitting?'not-allowed':'pointer', display:'flex', alignItems:'center', justifyContent:'center', gap:8, boxShadow:`0 6px 24px ${G}45`, opacity:submitting?.7:1 }}>
+            {submitting ? 'Submitting…' : <>Submit Store Registration <ArrowRight size={16}/></>}
           </motion.button>
         </div>
       </div>
@@ -888,11 +899,40 @@ export function MerchantSetup() {
   const [storeData, setStoreData] = useState<Record<string,string>>({});
   const [categories, setCategories] = useState<Set<string>>(new Set());
   const [selectedSubs, setSelectedSubs] = useState<Record<string,Set<string>>>({});
+  const [submitting, setSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState('');
   const [, setLoc] = useLocation();
 
   const handleStoreNext = (d: object) => { setStoreData(d as Record<string,string>); setStep(1); window.scrollTo(0,0); };
   const handleCatsNext  = (s: Set<string>, subs: Record<string,Set<string>>) => { setCategories(s); setSelectedSubs(subs); setStep(2); window.scrollTo(0,0); };
-  const handleBizNext   = () => { setStep(3); window.scrollTo(0,0); };
+  const handleBizNext   = async () => {
+    setSubmitting(true); setSubmitError('');
+    try {
+      const catSummary = [...categories].map(id => {
+        const items = [...(selectedSubs[id] ?? [])];
+        return items.length ? `${id}: ${items.join(', ')}` : id;
+      }).join(' | ');
+      await fetch('/api/partner-register', {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          name: storeData.ownerName || storeData.name,
+          email: storeData.email,
+          phone: storeData.phone,
+          city: storeData.area || 'Jammu',
+          role: 'merchant',
+          details: {
+            storeName: storeData.name,
+            storeType: storeData.type,
+            address: storeData.address,
+            categories: [...categories].join(', '),
+            itemsSummary: catSummary,
+          },
+        }),
+      });
+    } catch { /* non-blocking — still show success */ }
+    setSubmitting(false);
+    setStep(3); window.scrollTo(0,0);
+  };
 
   return (
     <div style={{ background:BG, minHeight:'100vh' }}>
@@ -918,7 +958,7 @@ export function MerchantSetup() {
         <AnimatePresence mode="wait">
           {step===0 && <StoreInfoStep key="s0" onNext={handleStoreNext} />}
           {step===1 && <CategoriesStep key="s1" onNext={handleCatsNext} onBack={()=>{setStep(0);window.scrollTo(0,0);}} />}
-          {step===2 && <BusinessStep key="s2" onNext={handleBizNext} onBack={()=>{setStep(1);window.scrollTo(0,0);}} />}
+          {step===2 && <BusinessStep key="s2" onNext={handleBizNext} onBack={()=>{setStep(1);window.scrollTo(0,0);}} submitting={submitting} />}
           {step===3 && <SuccessStep key="s3" storeData={storeData} categories={categories} selectedSubs={selectedSubs} />}
         </AnimatePresence>
       </div>

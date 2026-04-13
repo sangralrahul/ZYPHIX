@@ -163,7 +163,7 @@ function StepBar({ step }: { step: number }) {
 /* ─── Step 1: Restaurant Info ─── */
 function RestaurantInfoStep({ onNext }: { onNext: (d: object) => void }) {
   const q = new URLSearchParams(window.location.search);
-  const [form, setForm] = useState({ name: '', owner: q.get('name') || '', phone: q.get('phone') || '', area: '', address: '', type: '', seating: '' });
+  const [form, setForm] = useState({ name: '', owner: q.get('name') || '', phone: q.get('phone') || '', email: q.get('email') || '', area: '', address: '', type: '', seating: '' });
   const [errors, setErrors] = useState<Record<string, string>>({});
   const f = (k: string, v: string) => { setForm(p => ({ ...p, [k]: v })); setErrors(p => ({ ...p, [k]: '' })); };
 
@@ -172,6 +172,7 @@ function RestaurantInfoStep({ onNext }: { onNext: (d: object) => void }) {
     if (!form.name.trim()) e.name = 'Restaurant name is required';
     if (!form.owner.trim()) e.owner = 'Owner/manager name is required';
     if (!/^[0-9]{10}$/.test(form.phone)) e.phone = 'Enter a valid 10-digit number';
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email)) e.email = 'Enter a valid email address';
     if (!form.area) e.area = 'Please select an area';
     if (!form.address.trim()) e.address = 'Full address is required';
     if (!form.type) e.type = 'Please select restaurant type';
@@ -196,6 +197,7 @@ function RestaurantInfoStep({ onNext }: { onNext: (d: object) => void }) {
             { k: 'name', label: 'Restaurant Name', ph: 'e.g. Sharma Dhaba', full: true },
             { k: 'owner', label: 'Owner / Manager Name', ph: 'Full name' },
             { k: 'phone', label: 'Mobile Number', ph: '10-digit number', type: 'tel' },
+            { k: 'email', label: 'Email Address *', ph: 'you@example.com — for confirmation', type: 'email' },
             { k: 'seating', label: 'Seating Capacity (optional)', ph: 'e.g. 30 seats', type: 'number' },
           ].map(({ k, label, ph, full, type }) => (
             <div key={k} style={{ gridColumn: full ? '1 / -1' : undefined }}>
@@ -367,7 +369,7 @@ function MenuStep({ onNext, onBack }: { onNext: (cuisines: Set<string>, items: R
 }
 
 /* ─── Step 3: Operations ─── */
-function OperationsStep({ onNext, onBack }: { onNext: () => void; onBack: () => void }) {
+function OperationsStep({ onNext, onBack, submitting }: { onNext: () => void; onBack: () => void; submitting?: boolean }) {
   const [form, setForm] = useState({ open: '', close: '', prepTime: '', delivery: '', dine: '', payment: '' });
   const [errors, setErrors] = useState<Record<string, string>>({});
   const f = (k: string, v: string) => { setForm(p => ({ ...p, [k]: v })); setErrors(p => ({ ...p, [k]: '' })); };
@@ -462,9 +464,9 @@ function OperationsStep({ onNext, onBack }: { onNext: () => void; onBack: () => 
             <ArrowLeft size={15} /> Back
           </button>
           <motion.button onClick={() => { const e = validate(); if (Object.keys(e).length) { setErrors(e); return; } onNext(); }}
-            whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.97 }}
-            style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '13px 28px', borderRadius: 12, background: RA, color: '#fff', fontSize: 14, fontWeight: 800, border: 'none', cursor: 'pointer', boxShadow: `0 4px 20px ${RA}40` }}>
-            Submit Registration <ArrowRight size={16} />
+            disabled={submitting} whileHover={{ scale: submitting ? 1 : 1.02 }} whileTap={{ scale: submitting ? 1 : 0.97 }}
+            style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '13px 28px', borderRadius: 12, background: submitting ? '#6B7280' : RA, color: '#fff', fontSize: 14, fontWeight: 800, border: 'none', cursor: submitting ? 'not-allowed' : 'pointer', boxShadow: `0 4px 20px ${RA}40`, opacity: submitting ? 0.7 : 1 }}>
+            {submitting ? 'Submitting…' : <> Submit Registration <ArrowRight size={16} /></>}
           </motion.button>
         </div>
       </div>
@@ -683,7 +685,33 @@ export function RestaurantSetup() {
   const [step, setStep] = useState(0);
   const [restData, setRestData] = useState<Record<string, string>>({});
   const [cuisines, setCuisines] = useState<Set<string>>(new Set());
+  const [submitting, setSubmitting] = useState(false);
   const [, setLoc] = useLocation();
+
+  const handleOperationsNext = async () => {
+    setSubmitting(true);
+    try {
+      await fetch('/api/partner-register', {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          name: restData.owner || restData.name,
+          email: restData.email,
+          phone: restData.phone,
+          city: restData.area || 'Jammu',
+          role: 'restaurant',
+          details: {
+            restaurantName: restData.name,
+            restaurantType: restData.type,
+            address: restData.address,
+            seating: restData.seating,
+            cuisines: [...cuisines].join(', '),
+          },
+        }),
+      });
+    } catch { /* non-blocking */ }
+    setSubmitting(false);
+    setStep(3); window.scrollTo(0, 0);
+  };
 
   return (
     <div style={{ background: BG, minHeight: '100vh' }}>
@@ -709,7 +737,7 @@ export function RestaurantSetup() {
         <AnimatePresence mode="wait">
           {step === 0 && <RestaurantInfoStep key="r0" onNext={d => { setRestData(d as Record<string, string>); setStep(1); window.scrollTo(0, 0); }} />}
           {step === 1 && <MenuStep key="r1" onNext={(c, _) => { setCuisines(c); setStep(2); window.scrollTo(0, 0); }} onBack={() => { setStep(0); window.scrollTo(0, 0); }} />}
-          {step === 2 && <OperationsStep key="r2" onNext={() => { setStep(3); window.scrollTo(0, 0); }} onBack={() => { setStep(1); window.scrollTo(0, 0); }} />}
+          {step === 2 && <OperationsStep key="r2" onNext={handleOperationsNext} submitting={submitting} onBack={() => { setStep(1); window.scrollTo(0, 0); }} />}
           {step === 3 && <SuccessStep key="r3" restData={restData} cuisines={cuisines} />}
         </AnimatePresence>
       </div>
