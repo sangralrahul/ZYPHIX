@@ -567,57 +567,56 @@ function exportDeliveryPDF(personal: Record<string,string>) {
   if (win) { win.document.write(html); win.document.close(); }
 }
 
-/* ─── Flower Burst Animation ─── */
+/* ─── Confetti Celebration ─── */
 function FlowerBurst() {
   useEffect(() => {
-    if (!document.getElementById('flower-fire-anim')) {
+    if (!document.getElementById('confetti-anim')) {
       const s = document.createElement('style');
-      s.id = 'flower-fire-anim';
-      s.textContent = `@keyframes flowerFire{0%{transform:translate(0,0) rotate(0deg) scale(1.3);opacity:1;}60%{opacity:1;}100%{transform:translate(var(--tx),var(--ty)) rotate(var(--rot)) scale(.15);opacity:0;}}`;
+      s.id = 'confetti-anim';
+      s.textContent =
+        '@keyframes cFall{from{transform:translateY(-60px) translateX(0);opacity:1;}to{transform:translateY(110vh) translateX(var(--cx));opacity:0;}}' +
+        '@keyframes cFlip{0%,100%{transform:rotate(0deg) scaleX(1);}50%{transform:rotate(var(--ch)) scaleX(0);}}';
       document.head.appendChild(s);
     }
   }, []);
-  const particles = useMemo(() => {
-    const F = ['🌸','🌺','🌼','🌻','🌹','💐','🌷','🌸','🌺','🌼','🌸','🌺'];
-    const make = (side: 'L'|'R', wave: number, i: number) => {
-      const angle = side === 'L'
-        ? -(10 + Math.random() * 80)
-        : -(100 + Math.random() * 80);
-      const rad = angle * Math.PI / 180;
-      const dist = 220 + Math.random() * 320;
+  const pieces = useMemo(() => {
+    const C = ['#16a34a','#22c55e','#4ade80','#f59e0b','#fbbf24','#ffffff','#f97316','#c084fc','#bbf7d0','#fde68a','#34d399','#fb923c'];
+    return Array.from({length:80}, (_, i) => {
+      const isCircle = i % 6 === 0;
+      const isStrip  = i % 8 === 1;
       return {
-        id: `${side}${wave}${i}`,
-        emoji: F[(wave * 4 + i) % F.length],
-        side,
-        topPct: 45 + Math.random() * 25,
-        delay: wave * 0.65 + Math.random() * 0.18,
-        duration: 0.75 + Math.random() * 0.55,
-        size: 20 + Math.floor(Math.random() * 18),
-        tx: (side === 'L' ? 1 : -1) * Math.abs(Math.cos(rad)) * dist,
-        ty: Math.sin(rad) * dist,
-        rot: (Math.random() > 0.5 ? 1 : -1) * (240 + Math.random() * 400),
+        id: i,
+        color: C[i % C.length],
+        isCircle, isStrip,
+        left: Math.random() * 100,
+        delay: Math.random() * 4.5,
+        duration: 3 + Math.random() * 2.5,
+        flipDur: 0.28 + Math.random() * 0.44,
+        w: isStrip ? 3 : isCircle ? 5 + Math.floor(Math.random() * 4) : 7 + Math.floor(Math.random() * 5),
+        h: isStrip ? 18 + Math.floor(Math.random() * 10) : 9 + Math.floor(Math.random() * 6),
+        dx: (Math.random() - 0.5) * 200,
+        ch: (Math.random() > 0.5 ? 1 : -1) * 90,
       };
-    };
-    const out = [];
-    for (let w = 0; w < 3; w++)
-      for (let i = 0; i < 10; i++) {
-        out.push(make('L', w, i));
-        out.push(make('R', w, i));
-      }
-    return out;
+    });
   }, []);
   return (
     <div style={{position:'fixed',inset:0,pointerEvents:'none',zIndex:9999,overflow:'hidden'}}>
-      {particles.map(p => (
+      {pieces.map(p => (
         <div key={p.id} style={{
-          position:'absolute',
-          top:`${p.topPct}%`,
-          left: p.side === 'L' ? 0 : 'auto',
-          right: p.side === 'R' ? 0 : 'auto',
-          fontSize:p.size, lineHeight:1,
-          animation:`flowerFire ${p.duration}s ${p.delay}s cubic-bezier(.2,.8,.4,1) forwards`,
-          '--tx':`${p.tx}px`, '--ty':`${p.ty}px`, '--rot':`${p.rot}deg`,
-        } as React.CSSProperties}>{p.emoji}</div>
+          position:'absolute', top:0, left:`${p.left}%`,
+          animation:`cFall ${p.duration}s ${p.delay}s linear forwards`,
+          '--cx':`${p.dx}px`,
+        } as React.CSSProperties}>
+          <div style={{
+            width:p.w,
+            height:p.isCircle ? p.w : p.h,
+            background:p.color,
+            borderRadius:p.isCircle ? '50%' : p.isStrip ? 1 : 2,
+            boxShadow:p.isCircle ? `0 0 4px ${p.color}80` : 'none',
+            animation:`cFlip ${p.flipDur}s ${p.delay}s ease-in-out infinite`,
+            '--ch':`${p.ch}deg`,
+          } as React.CSSProperties} />
+        </div>
       ))}
     </div>
   );
