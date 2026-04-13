@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ArrowLeft, ArrowRight, Check, Utensils, Clock, FileText, Star, FileDown } from 'lucide-react';
 import { useLocation } from 'wouter';
@@ -594,6 +594,42 @@ function exportRestaurantPDF(restData: Record<string, string>, cuisines: Set<str
   if (win) { win.document.write(html); win.document.close(); }
 }
 
+/* ─── Flower Burst Animation ─── */
+function FlowerBurst() {
+  useEffect(() => {
+    if (!document.getElementById('flower-fall-anim')) {
+      const s = document.createElement('style');
+      s.id = 'flower-fall-anim';
+      s.textContent = `@keyframes flowerFall{0%{transform:translate(0,-80px) rotate(0deg) scale(1.1);opacity:0;}10%{opacity:1;}85%{opacity:.9;}100%{transform:translate(var(--fdx),110vh) rotate(var(--frot)) scale(.4);opacity:0;}}`;
+      document.head.appendChild(s);
+    }
+  }, []);
+  const particles = useMemo(() => {
+    const F = ['🌸','🌺','🌼','🌻','🌹','💐','🌷','🌸','🌺','🌼'];
+    return Array.from({length:32}, (_,i) => ({
+      id: i, emoji: F[i % F.length],
+      left: Math.random() * 100,
+      delay: Math.random() * 4,
+      duration: 2.6 + Math.random() * 2.4,
+      size: 14 + Math.floor(Math.random() * 22),
+      dx: (Math.random() - 0.5) * 160,
+      rot: (Math.random() > 0.5 ? 1 : -1) * (200 + Math.random() * 420),
+    }));
+  }, []);
+  return (
+    <div style={{position:'fixed',inset:0,pointerEvents:'none',zIndex:9999,overflow:'hidden'}}>
+      {particles.map(p => (
+        <div key={p.id} style={{
+          position:'absolute', top:0, left:`${p.left}%`,
+          fontSize:p.size, lineHeight:1,
+          animation:`flowerFall ${p.duration}s ${p.delay}s ease-in forwards`,
+          '--fdx':`${p.dx}px`, '--frot':`${p.rot}deg`,
+        } as React.CSSProperties}>{p.emoji}</div>
+      ))}
+    </div>
+  );
+}
+
 /* ─── Step 4: Success ─── */
 const BENEFITS = [
   { icon: '📈', title: '3× More Orders', desc: 'Reach customers who can\'t visit physically — online orders add 30–60% revenue on average' },
@@ -605,6 +641,8 @@ const BENEFITS = [
 function SuccessStep({ restData, cuisines }: { restData: Record<string, string>; cuisines: Set<string> }) {
   const [, setLoc] = useLocation();
   return (
+    <>
+    <FlowerBurst />
     <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} transition={{ type: 'spring', stiffness: 180 }}>
       <div style={{ maxWidth: 640, margin: '0 auto', textAlign: 'center', padding: '20px 0' }}>
         <motion.div animate={{ rotate: [0, 14, -14, 10, -8, 0], scale: [1, 1.3, 1] }} transition={{ duration: 0.8 }}
@@ -677,6 +715,7 @@ function SuccessStep({ restData, cuisines }: { restData: Record<string, string>;
         </div>
       </div>
     </motion.div>
+    </>
   );
 }
 

@@ -1,4 +1,4 @@
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ArrowLeft, ArrowRight, Check, Upload, User, Bike, Calendar, CreditCard, FileDown } from 'lucide-react';
 import { useLocation } from 'wouter';
@@ -567,10 +567,48 @@ function exportDeliveryPDF(personal: Record<string,string>) {
   if (win) { win.document.write(html); win.document.close(); }
 }
 
+/* ─── Flower Burst Animation ─── */
+function FlowerBurst() {
+  useEffect(() => {
+    if (!document.getElementById('flower-fall-anim')) {
+      const s = document.createElement('style');
+      s.id = 'flower-fall-anim';
+      s.textContent = `@keyframes flowerFall{0%{transform:translate(0,-80px) rotate(0deg) scale(1.1);opacity:0;}10%{opacity:1;}85%{opacity:.9;}100%{transform:translate(var(--fdx),110vh) rotate(var(--frot)) scale(.4);opacity:0;}}`;
+      document.head.appendChild(s);
+    }
+  }, []);
+  const particles = useMemo(() => {
+    const F = ['🌸','🌺','🌼','🌻','🌹','💐','🌷','🌸','🌺','🌼'];
+    return Array.from({length:32}, (_,i) => ({
+      id: i, emoji: F[i % F.length],
+      left: Math.random() * 100,
+      delay: Math.random() * 4,
+      duration: 2.6 + Math.random() * 2.4,
+      size: 14 + Math.floor(Math.random() * 22),
+      dx: (Math.random() - 0.5) * 160,
+      rot: (Math.random() > 0.5 ? 1 : -1) * (200 + Math.random() * 420),
+    }));
+  }, []);
+  return (
+    <div style={{position:'fixed',inset:0,pointerEvents:'none',zIndex:9999,overflow:'hidden'}}>
+      {particles.map(p => (
+        <div key={p.id} style={{
+          position:'absolute', top:0, left:`${p.left}%`,
+          fontSize:p.size, lineHeight:1,
+          animation:`flowerFall ${p.duration}s ${p.delay}s ease-in forwards`,
+          '--fdx':`${p.dx}px`, '--frot':`${p.rot}deg`,
+        } as React.CSSProperties}>{p.emoji}</div>
+      ))}
+    </div>
+  );
+}
+
 /* ─── Step 5: Success ─── */
 function SuccessStep({ personal }: { personal: Record<string,string> }) {
   const [, setLoc] = useLocation();
   return (
+    <>
+    <FlowerBurst />
     <motion.div initial={{opacity:0,scale:.9}} animate={{opacity:1,scale:1}} transition={{type:'spring',stiffness:180}}
       style={{ maxWidth:540, margin:'0 auto', textAlign:'center', padding:'20px 0' }}>
       <motion.div animate={{y:[0,-8,0]}} transition={{repeat:Infinity,duration:1.8}} style={{fontSize:64,marginBottom:20}}>🛵</motion.div>
@@ -603,6 +641,7 @@ function SuccessStep({ personal }: { personal: Record<string,string> }) {
         </motion.button>
       </div>
     </motion.div>
+    </>
   );
 }
 
