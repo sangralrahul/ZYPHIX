@@ -1517,60 +1517,189 @@ function SocialProof() {
   );
 }
 
-/* ═══════════════ APP DOWNLOAD ═══════════════ */
+/* ═══════════════ APP COMING SOON ═══════════════ */
 function AppDownload() {
+  const [email, setEmail] = useState('');
+  const [submitted, setSubmitted] = useState(false);
+  const [inputFocused, setInputFocused] = useState(false);
+
+  const handleNotify = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (email && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) setSubmitted(true);
+  };
+
   return (
-    <div style={{ background: W, borderTop: `1px solid ${BD}`, padding: '60px 0' }}>
+    <div id="app-download" style={{ background: W, borderTop: `1px solid ${BD}`, padding: '60px 0' }}>
+      <style>{`
+        @keyframes zBlobA { 0%,100%{transform:scale(1) translate(0,0)} 50%{transform:scale(1.18) translate(20px,-15px)} }
+        @keyframes zBlobB { 0%,100%{transform:scale(1) translate(0,0)} 50%{transform:scale(1.12) translate(-18px,12px)} }
+        @keyframes zBlobC { 0%,100%{transform:scale(1)} 50%{transform:scale(1.22)} }
+        @keyframes zFloat { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-14px)} }
+        @keyframes zFloat2 { 0%,100%{transform:translateY(-10px)} 50%{transform:translateY(4px)} }
+        @keyframes zPulse { 0%,100%{opacity:.7;transform:scale(1)} 50%{opacity:1;transform:scale(1.15)} }
+        @keyframes zSpin { from{transform:rotate(0deg)} to{transform:rotate(360deg)} }
+        @keyframes zShimmer { 0%{background-position:-200% center} 100%{background-position:200% center} }
+      `}</style>
       <div style={{ maxWidth: 1320, margin: '0 auto', padding: '0 24px' }}>
-        <div style={{ background: `linear-gradient(135deg, #064E3B 0%, #065F46 45%, #047857 100%)`, borderRadius: 26, padding: '52px 56px', display: 'flex', alignItems: 'center', gap: 48, flexWrap: 'wrap', justifyContent: 'space-between', position: 'relative', overflow: 'hidden' }}>
-          {/* Decorative */}
-          <div style={{ position: 'absolute', top: -60, right: -60, width: 280, height: 280, borderRadius: '50%', background: 'rgba(255,255,255,.04)' }} />
-          <div style={{ position: 'absolute', bottom: -40, right: 100, width: 180, height: 180, borderRadius: '50%', background: 'rgba(255,255,255,.03)' }} />
-          <div style={{ maxWidth: 520, position: 'relative' }}>
-            <p style={{ fontSize: 11, fontWeight: 700, color: '#86EFAC', letterSpacing: '.1em', textTransform: 'uppercase', marginBottom: 16 }}>Download Free</p>
-            <h2 style={{ fontFamily: "'Outfit',sans-serif", fontWeight: 900, color: '#fff', lineHeight: 1.08, fontSize: 'clamp(1.8rem,3.2vw,2.7rem)', letterSpacing: '-.04em', marginBottom: 14 }}>
-              Get the Zyphix app.<br />Order in 30 seconds.
-            </h2>
-            <p style={{ color: 'rgba(255,255,255,.55)', fontSize: 15, marginBottom: 30, lineHeight: 1.65 }}>App-only deals · Live order tracking · Offline mode</p>
-            <div style={{ display: 'flex', flexWrap: 'wrap', gap: 12, marginBottom: 32 }}>
-              {/* App Store Badge */}
-              <a href="/app" style={{ textDecoration: 'none', display: 'flex', alignItems: 'center', gap: 12, padding: '11px 20px', borderRadius: 13, background: 'rgba(255,255,255,.1)', border: '1px solid rgba(255,255,255,.15)', transition: 'background .2s', cursor: 'pointer', position: 'relative' }}
-                onMouseEnter={e => (e.currentTarget as HTMLElement).style.background = 'rgba(255,255,255,.18)'}
-                onMouseLeave={e => (e.currentTarget as HTMLElement).style.background = 'rgba(255,255,255,.1)'}>
-                <span style={{ position: 'absolute', top: 6, right: 8, fontSize: 8, fontWeight: 800, color: '#00D97E', background: 'rgba(0,217,126,0.15)', padding: '1px 5px', borderRadius: 4, letterSpacing: '.06em' }}>SOON</span>
-                <svg width="26" height="26" viewBox="0 0 814 1000" fill="white"><path d="M788.1 340.9c-5.8 4.5-108.2 62.2-108.2 190.5 0 148.4 130.3 200.9 134.2 202.2-.6 3.2-20.7 71.9-68.7 141.9-42.8 61.6-87.5 123.1-155.5 123.1s-85.5-39.5-164-39.5c-76 0-103.7 40.8-165.9 40.8s-105.2-57.8-155.5-127.4C46 790.7 0 663 0 541.8c0-207.2 135.4-316.8 268.9-316.8 71 0 130.1 46.3 173.4 46.3 41.7 0 107.7-50.4 185.3-50.4 30.9 0 108.2 2.6 168.2 81.4zm-90.5-185.3c33.5-39.8 57-94.8 57-150.8 0-7.7-.7-15.4-2-22.5-53.7 2-117.3 35.7-157.4 80.7-34.5 39.2-64.4 94.8-64.4 153.6 0 8.4 1.3 16.7 1.9 19.2 3.5.6 9 1.3 14.5 1.3 47.7 0 105.4-31.9 150.4-81.5z"/></svg>
-                <div style={{ textAlign: 'left' }}>
-                  <p style={{ fontSize: 9.5, color: 'rgba(255,255,255,.5)', fontWeight: 500, lineHeight: 1 }}>Download on the</p>
-                  <p style={{ fontSize: 16, fontWeight: 800, color: '#fff', lineHeight: 1.3 }}>App Store</p>
-                </div>
-              </a>
-              {/* Google Play Badge */}
-              <a href="/app" style={{ textDecoration: 'none', display: 'flex', alignItems: 'center', gap: 12, padding: '11px 20px', borderRadius: 13, background: 'rgba(255,255,255,.1)', border: '1px solid rgba(255,255,255,.15)', transition: 'background .2s', cursor: 'pointer', position: 'relative' }}
-                onMouseEnter={e => (e.currentTarget as HTMLElement).style.background = 'rgba(255,255,255,.18)'}
-                onMouseLeave={e => (e.currentTarget as HTMLElement).style.background = 'rgba(255,255,255,.1)'}>
-                <span style={{ position: 'absolute', top: 6, right: 8, fontSize: 8, fontWeight: 800, color: '#00D97E', background: 'rgba(0,217,126,0.15)', padding: '1px 5px', borderRadius: 4, letterSpacing: '.06em' }}>SOON</span>
-                <svg width="26" height="26" viewBox="0 0 512 512" fill="none"><path d="M48 432c0 17.7 19.3 28 34.3 18.9L416 272v-32L82.3 61.1C67.3 52 48 62.3 48 80v352z" fill="#4285F4"/><path d="M48 80c0-17.7 19.3-28 34.3-18.9L282 181l-52 52L48 80z" fill="#34A853"/><path d="M230 181l52-52 100.4 60.6-52 52L230 181z" fill="#FBBC05"/><path d="M282 331 82.3 449.9C67.3 459 48 448.7 48 431l182-153 52 53z" fill="#EA4335"/><path d="M330.4 271.6 416 272l-85.6.4-100.4-60.4 52-52 48 51.6z" fill="#FBBC05" opacity=".5"/></svg>
-                <div style={{ textAlign: 'left' }}>
-                  <p style={{ fontSize: 9.5, color: 'rgba(255,255,255,.5)', fontWeight: 500, lineHeight: 1 }}>Get it on</p>
-                  <p style={{ fontSize: 16, fontWeight: 800, color: '#fff', lineHeight: 1.3 }}>Google Play</p>
-                </div>
-              </a>
+        <div style={{
+          background: 'linear-gradient(135deg, #020D08 0%, #041A10 40%, #062210 100%)',
+          borderRadius: 28, overflow: 'hidden', position: 'relative',
+          border: '1px solid rgba(13,163,102,0.25)',
+          boxShadow: '0 0 0 1px rgba(13,163,102,0.1), 0 40px 80px rgba(0,0,0,0.5)',
+        }}>
+          {/* ── Animated blobs ── */}
+          <div style={{ position: 'absolute', inset: 0, pointerEvents: 'none', overflow: 'hidden' }}>
+            <div style={{ position: 'absolute', top: '-30%', left: '-10%', width: '55%', height: '180%', borderRadius: '50%', background: 'radial-gradient(circle, rgba(13,163,102,0.28) 0%, transparent 65%)', animation: 'zBlobA 9s ease-in-out infinite' }} />
+            <div style={{ position: 'absolute', bottom: '-40%', right: '-5%', width: '50%', height: '160%', borderRadius: '50%', background: 'radial-gradient(circle, rgba(0,217,126,0.18) 0%, transparent 65%)', animation: 'zBlobB 11s ease-in-out infinite' }} />
+            <div style={{ position: 'absolute', top: '20%', right: '25%', width: '30%', height: '100%', borderRadius: '50%', background: 'radial-gradient(circle, rgba(52,211,153,0.1) 0%, transparent 70%)', animation: 'zBlobC 13s ease-in-out infinite' }} />
+            {/* Grid */}
+            <div style={{ position: 'absolute', inset: 0, backgroundImage: 'linear-gradient(rgba(13,163,102,0.06) 1px, transparent 1px), linear-gradient(90deg, rgba(13,163,102,0.06) 1px, transparent 1px)', backgroundSize: '48px 48px' }} />
+            {/* Floating dots */}
+            {[
+              { top: '15%', left: '12%', size: 5, delay: '0s', dur: '4s' },
+              { top: '60%', left: '6%', size: 3, delay: '1s', dur: '5s' },
+              { top: '80%', left: '20%', size: 4, delay: '2s', dur: '3.5s' },
+              { top: '25%', right: '18%', size: 5, delay: '.5s', dur: '4.5s' },
+              { top: '70%', right: '12%', size: 3, delay: '1.5s', dur: '5.5s' },
+            ].map((d, i) => (
+              <div key={i} style={{ position: 'absolute', ...d, width: d.size, height: d.size, borderRadius: '50%', background: '#00D97E', opacity: .5, animation: `zPulse ${d.dur} ${d.delay} ease-in-out infinite` }} />
+            ))}
+          </div>
+
+          {/* ── Content grid ── */}
+          <div style={{ position: 'relative', display: 'flex', flexWrap: 'wrap', alignItems: 'center', justifyContent: 'space-between', gap: 40, padding: 'clamp(36px,5vw,60px) clamp(24px,5vw,60px)' }}>
+
+            {/* ── Left: text + form ── */}
+            <div style={{ flex: '1 1 440px', minWidth: 0 }}>
+
+              {/* Badge */}
+              <div style={{ display: 'inline-flex', alignItems: 'center', gap: 8, background: 'rgba(13,163,102,0.15)', border: '1px solid rgba(13,163,102,0.35)', borderRadius: 99, padding: '6px 16px', marginBottom: 24 }}>
+                <span style={{ display: 'inline-block', width: 7, height: 7, borderRadius: '50%', background: '#00D97E', animation: 'zPulse 1.6s ease-in-out infinite' }} />
+                <span style={{ fontSize: 11, fontWeight: 800, color: '#00D97E', letterSpacing: '.1em' }}>COMING SOON ON iOS & ANDROID</span>
+              </div>
+
+              {/* Headline */}
+              <h2 style={{ fontFamily: "'Outfit',sans-serif", fontWeight: 900, color: '#fff', lineHeight: 1.06, fontSize: 'clamp(1.9rem,3.5vw,3rem)', letterSpacing: '-.05em', marginBottom: 14 }}>
+                The Zyphix app is<br />
+                <span style={{
+                  background: 'linear-gradient(90deg, #00D97E 0%, #34D399 40%, #6EE7B7 70%, #00D97E 100%)',
+                  backgroundSize: '200% auto',
+                  WebkitBackgroundClip: 'text',
+                  WebkitTextFillColor: 'transparent',
+                  animation: 'zShimmer 3s linear infinite',
+                }}>
+                  on its way.
+                </span>
+              </h2>
+
+              {/* Sub */}
+              <p style={{ color: 'rgba(255,255,255,0.5)', fontSize: 15, marginBottom: 28, lineHeight: 1.7 }}>
+                Stay tuned — we're bringing hyperlocal delivery to your fingertips. Groceries, food, local services — all in one app. Register now to get exclusive early-access perks.
+              </p>
+
+              {/* Feature chips */}
+              <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8, marginBottom: 32 }}>
+                {['⚡ 30-min delivery', '🍱 Local food', '📍 Live tracking', '🏷️ App-only deals', '🔔 Push alerts'].map(f => (
+                  <span key={f} style={{ fontSize: 12, fontWeight: 600, color: 'rgba(255,255,255,0.65)', background: 'rgba(255,255,255,0.07)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: 99, padding: '5px 13px' }}>{f}</span>
+                ))}
+              </div>
+
+              {/* Store badges */}
+              <div style={{ display: 'flex', flexWrap: 'wrap', gap: 12, marginBottom: 32 }}>
+                {[
+                  { icon: <svg width="24" height="24" viewBox="0 0 814 1000" fill="white"><path d="M788.1 340.9c-5.8 4.5-108.2 62.2-108.2 190.5 0 148.4 130.3 200.9 134.2 202.2-.6 3.2-20.7 71.9-68.7 141.9-42.8 61.6-87.5 123.1-155.5 123.1s-85.5-39.5-164-39.5c-76 0-103.7 40.8-165.9 40.8s-105.2-57.8-155.5-127.4C46 790.7 0 663 0 541.8c0-207.2 135.4-316.8 268.9-316.8 71 0 130.1 46.3 173.4 46.3 41.7 0 107.7-50.4 185.3-50.4 30.9 0 108.2 2.6 168.2 81.4zm-90.5-185.3c33.5-39.8 57-94.8 57-150.8 0-7.7-.7-15.4-2-22.5-53.7 2-117.3 35.7-157.4 80.7-34.5 39.2-64.4 94.8-64.4 153.6 0 8.4 1.3 16.7 1.9 19.2 3.5.6 9 1.3 14.5 1.3 47.7 0 105.4-31.9 150.4-81.5z"/></svg>, sub: 'Download on the', title: 'App Store' },
+                  { icon: <svg width="24" height="24" viewBox="0 0 512 512" fill="none"><path d="M48 432c0 17.7 19.3 28 34.3 18.9L416 272v-32L82.3 61.1C67.3 52 48 62.3 48 80v352z" fill="#4285F4"/><path d="M48 80c0-17.7 19.3-28 34.3-18.9L282 181l-52 52L48 80z" fill="#34A853"/><path d="M230 181l52-52 100.4 60.6-52 52L230 181z" fill="#FBBC05"/><path d="M282 331 82.3 449.9C67.3 459 48 448.7 48 431l182-153 52 53z" fill="#EA4335"/></svg>, sub: 'Get it on', title: 'Google Play' },
+                ].map(b => (
+                  <div key={b.title} style={{ display: 'flex', alignItems: 'center', gap: 11, padding: '10px 18px', borderRadius: 13, background: 'rgba(255,255,255,0.07)', border: '1px solid rgba(255,255,255,0.12)', opacity: .75 }}>
+                    {b.icon}
+                    <div>
+                      <p style={{ fontSize: 9, color: 'rgba(255,255,255,0.4)', fontWeight: 500, lineHeight: 1 }}>{b.sub}</p>
+                      <p style={{ fontSize: 15, fontWeight: 800, color: '#fff', lineHeight: 1.3 }}>{b.title}</p>
+                    </div>
+                    <span style={{ fontSize: 9, fontWeight: 800, color: '#00D97E', background: 'rgba(0,217,126,0.15)', padding: '2px 6px', borderRadius: 4, letterSpacing: '.06em', marginLeft: 4 }}>SOON</span>
+                  </div>
+                ))}
+              </div>
+
+              {/* Email form */}
+              <div style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.09)', borderRadius: 18, padding: '22px 24px' }}>
+                <p style={{ fontSize: 13, fontWeight: 700, color: '#fff', marginBottom: 4 }}>🔔 Get notified at launch</p>
+                <p style={{ fontSize: 12, color: 'rgba(255,255,255,0.4)', marginBottom: 16 }}>Drop your email — we'll ping you the moment the app goes live with an exclusive launch offer.</p>
+                {!submitted ? (
+                  <form onSubmit={handleNotify} style={{ display: 'flex', gap: 10, flexWrap: 'wrap' }}>
+                    <input
+                      type="email"
+                      value={email}
+                      onChange={e => setEmail(e.target.value)}
+                      onFocus={() => setInputFocused(true)}
+                      onBlur={() => setInputFocused(false)}
+                      placeholder="your@email.com"
+                      style={{
+                        flex: 1, minWidth: 180, padding: '12px 16px', borderRadius: 11, fontSize: 13.5,
+                        color: '#fff', background: inputFocused ? 'rgba(255,255,255,0.09)' : 'rgba(255,255,255,0.05)',
+                        border: `1.5px solid ${inputFocused ? 'rgba(13,163,102,0.6)' : 'rgba(255,255,255,0.1)'}`,
+                        outline: 'none', fontFamily: 'inherit', transition: 'all .15s', boxSizing: 'border-box',
+                      }}
+                    />
+                    <button type="submit" style={{
+                      padding: '12px 22px', borderRadius: 11, fontSize: 14, fontWeight: 800,
+                      background: `linear-gradient(135deg, #0DA366 0%, #00D97E 100%)`,
+                      color: '#fff', border: 'none', cursor: 'pointer', whiteSpace: 'nowrap',
+                      boxShadow: '0 8px 24px rgba(13,163,102,0.4)', fontFamily: 'inherit',
+                    }}>
+                      Notify Me →
+                    </button>
+                  </form>
+                ) : (
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '14px 18px', background: 'rgba(13,163,102,0.15)', border: '1.5px solid rgba(13,163,102,0.35)', borderRadius: 12 }}>
+                    <div style={{ width: 30, height: 30, borderRadius: '50%', background: '#0DA366', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 14, flexShrink: 0 }}>✓</div>
+                    <div>
+                      <p style={{ fontSize: 13.5, fontWeight: 700, color: '#fff' }}>You're on the list!</p>
+                      <p style={{ fontSize: 12, color: 'rgba(255,255,255,0.5)', marginTop: 2 }}>We'll email you the moment the app drops. 🚀</p>
+                    </div>
+                  </div>
+                )}
+              </div>
             </div>
-            <div style={{ display: 'flex', gap: 20, flexWrap: 'wrap' }}>
-              {[['4.8 ★', 'App Store rating'], ['4.7 ★', 'Play Store rating'], ['5L+', 'Downloads']].map(([v, l]) => (
-                <div key={l}>
-                  <p style={{ fontFamily: "'Outfit',sans-serif", fontWeight: 900, color: '#fff', fontSize: '1.3rem' }}>{v}</p>
-                  <p style={{ fontSize: 11, color: 'rgba(255,255,255,.45)', marginTop: 2 }}>{l}</p>
+
+            {/* ── Right: phone mockups ── */}
+            <div style={{ flex: '0 1 320px', display: 'flex', gap: 18, justifyContent: 'center', alignItems: 'flex-end', paddingBottom: 12, flexShrink: 0 }}>
+              {[
+                { icon: '🛒', label: 'Zyphix Now', color: '#0DA366', anim: 'zFloat 4s ease-in-out infinite', top: 0 },
+                { icon: '🍱', label: 'Zyphix Eats', color: '#F97316', anim: 'zFloat2 3.5s ease-in-out infinite', top: -24 },
+              ].map(p => (
+                <div key={p.label} style={{ animation: p.anim }}>
+                  <div style={{
+                    width: 120, height: 240, borderRadius: 26,
+                    background: 'linear-gradient(145deg, rgba(255,255,255,0.10), rgba(255,255,255,0.03))',
+                    border: '1px solid rgba(255,255,255,0.12)',
+                    display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 10, position: 'relative', overflow: 'hidden', marginTop: p.top,
+                    boxShadow: `0 28px 56px rgba(0,0,0,0.45), inset 0 1px 0 rgba(255,255,255,0.08)`,
+                  }}>
+                    <div style={{ position: 'absolute', inset: 0, background: `radial-gradient(circle at 50% 40%, ${p.color}22, transparent 70%)` }} />
+                    <div style={{ position: 'absolute', top: 10, width: 36, height: 7, borderRadius: 4, background: 'rgba(0,0,0,0.4)' }} />
+                    <div style={{ width: 52, height: 52, borderRadius: 14, background: `linear-gradient(145deg, ${p.color}44, ${p.color}18)`, border: `1px solid ${p.color}55`, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 26 }}>{p.icon}</div>
+                    <p style={{ fontSize: 10, fontWeight: 700, color: 'rgba(255,255,255,0.55)', letterSpacing: '.03em' }}>{p.label}</p>
+                    <div style={{ position: 'absolute', bottom: 12, width: 36, height: 4, borderRadius: 2, background: 'rgba(255,255,255,0.2)' }} />
+                  </div>
                 </div>
               ))}
             </div>
           </div>
-          <div style={{ display: 'flex', gap: 16, flexShrink: 0, position: 'relative' }}>
-            {['🛒', '🍱'].map((em, i) => (
-              <div key={i} style={{ width: 100, height: 200, borderRadius: 20, background: 'rgba(255,255,255,.1)', border: '1px solid rgba(255,255,255,.15)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 40, transform: i === 1 ? 'translateY(-12px)' : 'none' }}>
-                {em}
-              </div>
-            ))}
+
+          {/* ── Bottom stats bar ── */}
+          <div style={{ borderTop: '1px solid rgba(255,255,255,0.07)', padding: '20px clamp(24px,5vw,60px)', display: 'flex', flexWrap: 'wrap', gap: 24, justifyContent: 'space-between', alignItems: 'center', position: 'relative' }}>
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: 32 }}>
+              {[['3,200+', 'Pre-registered'], ['iOS + Android', 'Both platforms'], ['Q2 2025', 'Target launch'], ['50% OFF', 'Launch day deal']].map(([v, l]) => (
+                <div key={l}>
+                  <p style={{ fontFamily: "'Outfit',sans-serif", fontWeight: 900, color: '#fff', fontSize: '1.1rem', letterSpacing: '-.03em' }}>{v}</p>
+                  <p style={{ fontSize: 11, color: 'rgba(255,255,255,0.35)', marginTop: 2, fontWeight: 500 }}>{l}</p>
+                </div>
+              ))}
+            </div>
+            <a href="/app" style={{ display: 'inline-flex', alignItems: 'center', gap: 8, fontSize: 13, fontWeight: 700, color: '#00D97E', textDecoration: 'none' }}>
+              See full details →
+            </a>
           </div>
         </div>
       </div>
