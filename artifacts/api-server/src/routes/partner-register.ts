@@ -194,7 +194,7 @@ router.post("/partner-register", async (req, res) => {
     await client.transactionalEmails.sendTransacEmail({
       subject: `🆕 New Partner Registration — ${roleLabel} (${name})`,
       sender:  { name: "Zyphix Waitlist", email: "app@zyphix.in" },
-      to:      [{ email: "partner@zyphix.in", name: "Zyphix Team" }],
+      to:      [{ email: "rahul.rishusangral@gmail.com", name: "Rahul (Zyphix Owner)" }],
       replyTo: { email: email!, name: name! },
       tags:    ["partner-registration", role!],
       attachment: [{ content: pdfBase64, name: fileName }],
