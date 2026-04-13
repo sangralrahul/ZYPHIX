@@ -2135,6 +2135,7 @@ function ToggleChip({ label, active, onClick, ac = G }: { label:string; active:b
 }
 
 function WaitlistSection() {
+  const [, setLoc] = useLocation();
   const [form, setForm]   = useState({ name: '', email: '', phone: '', city: '', role: '' });
   const [errors, setErrors] = useState<Record<string,string>>({});
   const [submitted, setSubmitted] = useState(false);
@@ -2192,7 +2193,18 @@ function WaitlistSection() {
   const handleContinue = () => {
     const e = validate1();
     if (Object.keys(e).length) { setErrors(e); return; }
-    if (PARTNER_ROLES.includes(form.role)) { setStep(2); return; }
+    if (form.role === 'restaurant') {
+      const q = new URLSearchParams({ name: form.name, email: form.email, phone: form.phone, city: form.city });
+      setLoc(`/restaurant-setup?${q.toString()}`); return;
+    }
+    if (form.role === 'merchant') {
+      const q = new URLSearchParams({ name: form.name, email: form.email, phone: form.phone, city: form.city });
+      setLoc(`/merchant-setup?${q.toString()}`); return;
+    }
+    if (form.role === 'delivery') {
+      const q = new URLSearchParams({ name: form.name, email: form.email, phone: form.phone, city: form.city });
+      setLoc(`/delivery-setup?${q.toString()}`); return;
+    }
     handleSubmit();
   };
 

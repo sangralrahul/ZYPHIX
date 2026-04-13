@@ -265,7 +265,8 @@ function StepBar({ step }: { step: number }) {
 
 /* ─── Step 1: Store Info ─── */
 function StoreInfoStep({ onNext }: { onNext:(d:object)=>void }) {
-  const [form, setForm] = useState({ name:'', area:'', address:'', ownerName:'', phone:'', type:'' });
+  const q = new URLSearchParams(window.location.search);
+  const [form, setForm] = useState({ name:'', area:'', address:'', ownerName: q.get('name') || '', phone: q.get('phone') || '', type:'' });
   const [errors, setErrors] = useState<Record<string,string>>({});
   const f = (k:string, v:string) => { setForm(p=>({...p,[k]:v})); setErrors(p=>({...p,[k]:''})); };
 
@@ -380,6 +381,8 @@ function CategoriesStep({ onNext, onBack }: { onNext:(s:Set<string>, subs:Record
   const [selectedCats, setSelectedCats] = useState<Set<string>>(new Set());
   const [expandedCat, setExpandedCat] = useState<string|null>(null);
   const [selectedSubs, setSelectedSubs] = useState<Record<string,Set<string>>>({});
+  const [customInput, setCustomInput] = useState<Record<string,string>>({});
+  const [customItems, setCustomItems] = useState<Record<string,string[]>>({});
 
   const getSubs = (id:string): Set<string> => selectedSubs[id] ?? new Set();
   const totalItems = Object.values(selectedSubs).reduce((acc,s)=>acc+s.size,0);
@@ -407,6 +410,28 @@ function CategoriesStep({ onNext, onBack }: { onNext:(s:Set<string>, subs:Record
 
   const clearAll = (catId:string) => {
     setSelectedSubs(prev => ({...prev, [catId]: new Set()}));
+  };
+
+  const addCustomItem = (catId:string) => {
+    const val = (customInput[catId] ?? '').trim();
+    if (!val) return;
+    setCustomItems(prev => ({ ...prev, [catId]: [...(prev[catId] ?? []), val] }));
+    setSelectedSubs(prev => {
+      const cur = new Set(prev[catId] ?? []);
+      cur.add(val);
+      return { ...prev, [catId]: cur };
+    });
+    setSelectedCats(prev => { const n=new Set(prev); n.add(catId); return n; });
+    setCustomInput(prev => ({ ...prev, [catId]: '' }));
+  };
+
+  const removeCustomItem = (catId:string, item:string) => {
+    setCustomItems(prev => ({ ...prev, [catId]: (prev[catId] ?? []).filter(i=>i!==item) }));
+    setSelectedSubs(prev => {
+      const cur = new Set(prev[catId] ?? []);
+      cur.delete(item);
+      return { ...prev, [catId]: cur };
+    });
   };
 
   const expandedCatData = expandedCat ? CATS.find(c=>c.id===expandedCat) : null;
@@ -487,7 +512,7 @@ function CategoriesStep({ onNext, onBack }: { onNext:(s:Set<string>, subs:Record
             </div>
 
             {/* Item tiles */}
-            <div style={{ display:'grid', gridTemplateColumns:'repeat(auto-fill,minmax(88px,1fr))', gap:8 }}>
+            <div style={{ display:'grid', gridTemplateColumns:'repeat(auto-fill,minmax(88px,1fr))', gap:8, marginBottom:14 }}>
               {expandedSubs.map(({n:item, e:icon}) => {
                 const on = expandedSelSet.has(item);
                 return (
@@ -504,6 +529,45 @@ function CategoriesStep({ onNext, onBack }: { onNext:(s:Set<string>, subs:Record
                   </motion.button>
                 );
               })}
+            </div>
+
+            {/* Custom items already added */}
+            {(customItems[expandedCat] ?? []).length > 0 && (
+              <div style={{ marginBottom:10 }}>
+                <p style={{ fontSize:11, fontWeight:700, color:T3, textTransform:'uppercase', letterSpacing:'.05em', marginBottom:8 }}>Your custom items</p>
+                <div style={{ display:'flex', flexWrap:'wrap', gap:7 }}>
+                  {(customItems[expandedCat] ?? []).map(item => (
+                    <span key={item} style={{ display:'inline-flex', alignItems:'center', gap:6, background:expandedCatData.c, color:'#fff', fontSize:12, fontWeight:700, padding:'5px 10px 5px 12px', borderRadius:99 }}>
+                      ✏️ {item}
+                      <button onClick={()=>removeCustomItem(expandedCat, item)}
+                        style={{ background:'rgba(255,255,255,.25)', border:'none', borderRadius:'50%', width:16, height:16, cursor:'pointer', display:'inline-flex', alignItems:'center', justifyContent:'center', fontSize:10, color:'#fff', padding:0, lineHeight:1 }}>
+                        ×
+                      </button>
+                    </span>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Add custom item input */}
+            <div style={{ borderTop:`1px dashed ${expandedCatData.c}40`, paddingTop:12, marginTop:4 }}>
+              <p style={{ fontSize:11.5, fontWeight:700, color:T2, marginBottom:8 }}>+ Add your own item not listed above</p>
+              <div style={{ display:'flex', gap:8 }}>
+                <input
+                  value={customInput[expandedCat] ?? ''}
+                  onChange={e=>setCustomInput(prev=>({...prev, [expandedCat]:e.target.value}))}
+                  onKeyDown={e=>{ if(e.key==='Enter') addCustomItem(expandedCat); }}
+                  placeholder={`e.g. "Organic Tomato", "Buffalo Milk"…`}
+                  style={{ flex:1, padding:'9px 13px', borderRadius:10, border:`1.5px solid ${expandedCatData.c}50`, background:'rgba(255,255,255,.9)', fontSize:13, color:T1, outline:'none' }}
+                  onFocus={e=>{e.target.style.borderColor=expandedCatData.c; e.target.style.boxShadow=`0 0 0 3px ${expandedCatData.c}25`;}}
+                  onBlur={e=>{e.target.style.borderColor=`${expandedCatData.c}50`; e.target.style.boxShadow='none';}}
+                />
+                <motion.button whileHover={{scale:1.05}} whileTap={{scale:.95}}
+                  onClick={()=>addCustomItem(expandedCat)}
+                  style={{ padding:'9px 18px', borderRadius:10, background:expandedCatData.c, color:'#fff', fontSize:13, fontWeight:800, border:'none', cursor:'pointer', whiteSpace:'nowrap' }}>
+                  Add ✓
+                </motion.button>
+              </div>
             </div>
           </motion.div>
         )}

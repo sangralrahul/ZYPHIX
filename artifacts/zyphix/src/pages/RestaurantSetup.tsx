@@ -72,21 +72,71 @@ const CUISINES = [
 ];
 
 const MENU_ITEMS: Record<string, string[]> = {
-  north_indian: ['Dal Makhani', 'Butter Chicken', 'Paneer Tikka', 'Rajma', 'Aloo Gobi', 'Kadhi Pakoda', 'Chole Bhature', 'Palak Paneer'],
-  mughlai: ['Mutton Rogan Josh', 'Chicken Korma', 'Seekh Kebab', 'Shami Kebab', 'Biryani', 'Nihari', 'Haleem'],
-  chinese: ['Fried Rice', 'Noodles', 'Manchurian', 'Spring Rolls', 'Chilli Chicken', 'Soup', 'Momos'],
-  fast_food: ['Burger', 'French Fries', 'Sandwich', 'Hot Dog', 'Wrap', 'Nuggets', 'Milkshake'],
-  pizza: ['Margherita', 'Pepperoni', 'Veggie', 'BBQ Chicken', 'Cheese Burst', 'Paneer Pizza', 'Garlic Bread'],
-  biryani: ['Chicken Biryani', 'Mutton Biryani', 'Veg Biryani', 'Egg Biryani', 'Fish Biryani', 'Raita', 'Shorba'],
-  sweets: ['Gulab Jamun', 'Jalebi', 'Barfi', 'Halwa', 'Kheer', 'Rasgulla', 'Peda', 'Ladoo', 'Kulfi'],
-  snacks: ['Pani Puri', 'Bhel Puri', 'Dahi Puri', 'Aloo Chaat', 'Samosa', 'Kachori', 'Pakora'],
-  continental: ['Pasta', 'Lasagna', 'Salad', 'Soup', 'Bruschetta', 'Risotto', 'Grilled Chicken'],
-  south_indian: ['Dosa', 'Idli', 'Vada', 'Sambhar', 'Uttapam', 'Pongal', 'Curd Rice'],
-  tandoor: ['Tandoori Chicken', 'Naan', 'Roti', 'Paratha', 'Tandoori Paneer', 'Seekh Kebab'],
-  beverages: ['Tea', 'Coffee', 'Lassi', 'Fresh Juice', 'Lemonade', 'Cold Coffee', 'Soft Drinks'],
-  desserts: ['Ice Cream', 'Brownie', 'Pastry', 'Mousse', 'Pudding', 'Cheesecake', 'Waffle'],
-  bakes: ['Bread', 'Croissant', 'Muffin', 'Cake', 'Cookies', 'Bun', 'Pita'],
-  healthy: ['Green Salad', 'Fruit Bowl', 'Smoothie', 'Quinoa Bowl', 'Oatmeal', 'Protein Shake'],
+  north_indian: ['Dal Makhani', 'Butter Chicken', 'Paneer Tikka', 'Rajma', 'Aloo Gobi', 'Kadhi Pakoda', 'Chole Bhature', 'Palak Paneer', 'Shahi Paneer', 'Matar Paneer', 'Aloo Paratha', 'Puri Sabzi', 'Dal Tadka', 'Mix Veg', 'Sarson Ka Saag', 'Makki Roti'],
+  mughlai: ['Mutton Rogan Josh', 'Chicken Korma', 'Seekh Kebab', 'Shami Kebab', 'Biryani', 'Nihari', 'Haleem', 'Mutton Keema', 'Chicken Tikka', 'Boti Kebab', 'Pasanda', 'Yakhni', 'Paya Shorba'],
+  chinese: ['Fried Rice', 'Noodles', 'Manchurian', 'Spring Rolls', 'Chilli Chicken', 'Soup', 'Momos', 'Hakka Noodles', 'Schezwan Rice', 'Dim Sum', 'Honey Chilli Potato', 'Kung Pao Chicken', 'Wonton Soup'],
+  fast_food: ['Burger', 'French Fries', 'Sandwich', 'Hot Dog', 'Wrap', 'Nuggets', 'Milkshake', 'Aloo Tikki Burger', 'Grilled Sandwich', 'Club Sandwich', 'Tacos', 'Quesadilla', 'Onion Rings', 'Loaded Fries'],
+  pizza: ['Margherita', 'Pepperoni', 'Veggie Supreme', 'BBQ Chicken', 'Cheese Burst', 'Paneer Pizza', 'Garlic Bread', 'Farmhouse', 'Double Cheese', 'Spicy Chicken', 'Mexican Wave', 'Peri Peri Paneer', 'Calzone'],
+  biryani: ['Chicken Biryani', 'Mutton Biryani', 'Veg Biryani', 'Egg Biryani', 'Fish Biryani', 'Raita', 'Shorba', 'Dum Biryani', 'Hyderabadi Biryani', 'Lucknowi Biryani', 'Kolkata Biryani', 'Prawn Biryani', 'Soya Biryani'],
+  sweets: ['Gulab Jamun', 'Jalebi', 'Barfi', 'Halwa', 'Kheer', 'Rasgulla', 'Peda', 'Ladoo', 'Kulfi', 'Rabri', 'Imarti', 'Rasmalai', 'Gajrela', 'Pinni', 'Besan Ladoo', 'Milk Cake'],
+  snacks: ['Pani Puri', 'Bhel Puri', 'Dahi Puri', 'Aloo Chaat', 'Samosa', 'Kachori', 'Pakora', 'Dahi Bhalla', 'Papdi Chaat', 'Raj Kachori', 'Sev Puri', 'Aloo Tikki', 'Bread Pakora', 'Vada Pav'],
+  continental: ['Pasta', 'Lasagna', 'Salad', 'Soup', 'Bruschetta', 'Risotto', 'Grilled Chicken', 'Penne Arrabbiata', 'Carbonara', 'Caesar Salad', 'Mushroom Soup', 'Baked Ziti', 'Focaccia'],
+  south_indian: [
+    'Masala Dosa', 'Plain Dosa', 'Rava Dosa', 'Paper Dosa', 'Set Dosa', 'Onion Dosa', 'Paneer Dosa', 'Egg Dosa',
+    'Idli', 'Rava Idli', 'Mini Idli', 'Idli Sambar',
+    'Medu Vada', 'Sambar Vada', 'Curd Vada', 'Masala Vada',
+    'Sambar', 'Rasam', 'Coconut Chutney', 'Tomato Chutney', 'Groundnut Chutney',
+    'Uttapam', 'Onion Uttapam', 'Tomato Uttapam',
+    'Pongal', 'Khichdi Pongal', 'Curd Rice', 'Lemon Rice', 'Tamarind Rice', 'Tomato Rice', 'Bisibelebath',
+    'Upma', 'Vermicelli Upma', 'Rava Upma',
+    'Appam', 'Puttu', 'Kadala Curry', 'Kerala Fish Curry',
+    'Pesarattu', 'Poha', 'Kesari Bath', 'Filter Coffee', 'Buttermilk', 'Payasam',
+  ],
+  tandoor: ['Tandoori Chicken', 'Naan', 'Butter Naan', 'Garlic Naan', 'Rumali Roti', 'Tandoori Roti', 'Paratha', 'Tandoori Paneer', 'Seekh Kebab', 'Tandoori Fish', 'Chicken Tikka', 'Malai Tikka'],
+  beverages: ['Tea', 'Coffee', 'Lassi', 'Fresh Juice', 'Lemonade', 'Cold Coffee', 'Soft Drinks', 'Masala Chai', 'Green Tea', 'Mango Lassi', 'Rose Lassi', 'Buttermilk', 'Shikanji', 'Aam Panna', 'Sugarcane Juice'],
+  desserts: ['Ice Cream', 'Brownie', 'Pastry', 'Mousse', 'Pudding', 'Cheesecake', 'Waffle', 'Chocolate Lava Cake', 'Tiramisu', 'Panna Cotta', 'Crème Brûlée', 'Sundae', 'Banana Split'],
+  bakes: ['Bread', 'Croissant', 'Muffin', 'Cake', 'Cookies', 'Bun', 'Pita', 'Danish Pastry', 'Cinnamon Roll', 'Focaccia', 'Brioche', 'Bagel', 'Scone', 'Banana Bread'],
+  healthy: ['Green Salad', 'Fruit Bowl', 'Smoothie', 'Quinoa Bowl', 'Oatmeal', 'Protein Shake', 'Avocado Toast', 'Acai Bowl', 'Chia Pudding', 'Detox Juice', 'Grilled Veggies', 'Sprout Salad'],
+};
+
+const DISH_EMOJIS: Record<string, string> = {
+  'Dal Makhani':'🫘','Butter Chicken':'🍗','Paneer Tikka':'🧆','Rajma':'🫘','Aloo Gobi':'🥔','Kadhi Pakoda':'🍲','Chole Bhature':'🫓','Palak Paneer':'🌿',
+  'Shahi Paneer':'🧀','Matar Paneer':'🟩','Aloo Paratha':'🫓','Puri Sabzi':'🍽️','Dal Tadka':'🫘','Mix Veg':'🥦','Sarson Ka Saag':'🌿','Makki Roti':'🫓',
+  'Mutton Rogan Josh':'🍖','Chicken Korma':'🍛','Seekh Kebab':'🍢','Shami Kebab':'🥩','Biryani':'🍚','Nihari':'🍲','Haleem':'🫕','Mutton Keema':'🥩',
+  'Chicken Tikka':'🍗','Boti Kebab':'🍢','Pasanda':'🍛','Yakhni':'🫕','Paya Shorba':'🫗',
+  'Fried Rice':'🍳','Noodles':'🍜','Manchurian':'🟤','Spring Rolls':'🌯','Chilli Chicken':'🌶️','Soup':'🍜','Momos':'🥟','Hakka Noodles':'🍜',
+  'Schezwan Rice':'🍚','Dim Sum':'🥟','Honey Chilli Potato':'🥔','Kung Pao Chicken':'🍗','Wonton Soup':'🍜',
+  'Burger':'🍔','French Fries':'🍟','Sandwich':'🥪','Hot Dog':'🌭','Wrap':'🌯','Nuggets':'🍗','Milkshake':'🥤','Aloo Tikki Burger':'🍔',
+  'Grilled Sandwich':'🥪','Club Sandwich':'🥪','Tacos':'🌮','Quesadilla':'🫓','Onion Rings':'🧅','Loaded Fries':'🍟',
+  'Margherita':'🍕','Pepperoni':'🍕','Veggie Supreme':'🍕','BBQ Chicken':'🍕','Cheese Burst':'🍕','Paneer Pizza':'🍕','Garlic Bread':'🥖',
+  'Farmhouse':'🍕','Double Cheese':'🧀','Spicy Chicken':'🌶️','Mexican Wave':'🌮','Peri Peri Paneer':'🍕','Calzone':'🥟',
+  'Chicken Biryani':'🍗','Mutton Biryani':'🍖','Veg Biryani':'🌿','Egg Biryani':'🥚','Fish Biryani':'🐟','Raita':'🥛','Shorba':'🫕',
+  'Dum Biryani':'🍚','Hyderabadi Biryani':'🍚','Lucknowi Biryani':'🍚','Kolkata Biryani':'🍚','Prawn Biryani':'🦐','Soya Biryani':'🫘',
+  'Gulab Jamun':'🟤','Jalebi':'🟠','Barfi':'🟪','Halwa':'🟡','Kheer':'🥛','Rasgulla':'⚪','Peda':'🟤','Ladoo':'🟡','Kulfi':'🍦',
+  'Rabri':'🥛','Imarti':'🟠','Rasmalai':'⚪','Gajrela':'🟠','Pinni':'🟤','Besan Ladoo':'🟡','Milk Cake':'🟤',
+  'Pani Puri':'🫙','Bhel Puri':'🍿','Dahi Puri':'🫙','Aloo Chaat':'🥔','Samosa':'🥟','Kachori':'🥟','Pakora':'🟤','Dahi Bhalla':'🟡',
+  'Papdi Chaat':'🍿','Raj Kachori':'🥟','Sev Puri':'🍿','Aloo Tikki':'🥔','Bread Pakora':'🍞','Vada Pav':'🍔',
+  'Pasta':'🍝','Lasagna':'🫕','Salad':'🥗','Continental Soup':'🍲','Bruschetta':'🥖','Risotto':'🍚','Grilled Chicken':'🍗',
+  'Penne Arrabbiata':'🍝','Carbonara':'🍝','Caesar Salad':'🥗','Mushroom Soup':'🍲','Baked Ziti':'🍝','Focaccia':'🥖',
+  'Masala Dosa':'🥞','Plain Dosa':'🥞','Rava Dosa':'🥞','Paper Dosa':'🥞','Set Dosa':'🥞','Onion Dosa':'🥞','Paneer Dosa':'🥞','Egg Dosa':'🥚',
+  'Idli':'🍚','Rava Idli':'🍚','Mini Idli':'🍚','Idli Sambar':'🍚',
+  'Medu Vada':'🍩','Sambar Vada':'🍩','Curd Vada':'🍩','Masala Vada':'🍩',
+  'Sambar':'🫕','Rasam':'🫗','Coconut Chutney':'🥥','Tomato Chutney':'🍅','Groundnut Chutney':'🥜',
+  'Uttapam':'🥞','Onion Uttapam':'🥞','Tomato Uttapam':'🥞',
+  'Pongal':'🍚','Khichdi Pongal':'🍚','Curd Rice':'🥛','Lemon Rice':'🍋','Tamarind Rice':'🍚','Tomato Rice':'🍅','Bisibelebath':'🍲',
+  'Upma':'🍚','Vermicelli Upma':'🍚','Rava Upma':'🍚',
+  'Appam':'🫓','Puttu':'🍚','Kadala Curry':'🫘','Kerala Fish Curry':'🐟',
+  'Pesarattu':'🥞','Poha':'🍚','Kesari Bath':'🟡','Filter Coffee':'☕','Buttermilk':'🥛','Payasam':'🍮',
+  'Tandoori Chicken':'🍗','Naan':'🫓','Butter Naan':'🫓','Garlic Naan':'🫓','Rumali Roti':'🫓','Tandoori Roti':'🫓',
+  'Paratha':'🫓','Tandoori Paneer':'🧀','Tandoori Fish':'🐟','Malai Tikka':'🍢',
+  'Tea':'🍵','Coffee':'☕','Lassi':'🥛','Fresh Juice':'🧃','Lemonade':'🍋','Cold Coffee':'☕','Soft Drinks':'🥤',
+  'Masala Chai':'🍵','Green Tea':'🍵','Mango Lassi':'🥭','Rose Lassi':'🌹','Shikanji':'🍋','Aam Panna':'🥭','Sugarcane Juice':'🌿',
+  'Ice Cream':'🍨','Brownie':'🍫','Pastry':'🧁','Mousse':'🍮','Pudding':'🍮','Cheesecake':'🍰','Waffle':'🧇',
+  'Chocolate Lava Cake':'🎂','Tiramisu':'🍰','Panna Cotta':'🍮','Crème Brûlée':'🍮','Sundae':'🍨','Banana Split':'🍌',
+  'Bread':'🍞','Croissant':'🥐','Muffin':'🧁','Cake':'🎂','Cookies':'🍪','Bun':'🍞','Pita':'🫓','Danish Pastry':'🥐',
+  'Cinnamon Roll':'🍥','Brioche':'🥐','Bagel':'🥯','Scone':'🥐','Banana Bread':'🍌',
+  'Green Salad':'🥗','Fruit Bowl':'🍎','Smoothie':'🥤','Quinoa Bowl':'🌾','Oatmeal':'🫙','Protein Shake':'💪',
+  'Avocado Toast':'🥑','Acai Bowl':'🫐','Chia Pudding':'🫙','Detox Juice':'🧃','Grilled Veggies':'🥦','Sprout Salad':'🌱',
 };
 
 function StepBar({ step }: { step: number }) {
@@ -112,7 +162,8 @@ function StepBar({ step }: { step: number }) {
 
 /* ─── Step 1: Restaurant Info ─── */
 function RestaurantInfoStep({ onNext }: { onNext: (d: object) => void }) {
-  const [form, setForm] = useState({ name: '', owner: '', phone: '', area: '', address: '', type: '', seating: '' });
+  const q = new URLSearchParams(window.location.search);
+  const [form, setForm] = useState({ name: '', owner: q.get('name') || '', phone: q.get('phone') || '', area: '', address: '', type: '', seating: '' });
   const [errors, setErrors] = useState<Record<string, string>>({});
   const f = (k: string, v: string) => { setForm(p => ({ ...p, [k]: v })); setErrors(p => ({ ...p, [k]: '' })); };
 
@@ -281,9 +332,11 @@ function MenuStep({ onNext, onBack }: { onNext: (cuisines: Set<string>, items: R
                   {(MENU_ITEMS[expanded] || []).map(item => {
                     const isSel = selectedItems[expanded!]?.has(item);
                     const { c, bg } = CUISINES.find(x => x.id === expanded) || { c: T2, bg: BG };
+                    const emoji = DISH_EMOJIS[item] ?? '🍽️';
                     return (
                       <button key={item} onClick={() => toggleItem(expanded!, item)}
-                        style={{ padding: '6px 12px', borderRadius: 99, border: `1.5px solid ${isSel ? c : BD}`, background: isSel ? bg : W, color: isSel ? c : T2, fontSize: 12, fontWeight: 600, cursor: 'pointer', transition: 'all .12s' }}>
+                        style={{ padding: '6px 10px 6px 8px', borderRadius: 99, border: `1.5px solid ${isSel ? c : BD}`, background: isSel ? bg : W, color: isSel ? c : T2, fontSize: 12, fontWeight: 600, cursor: 'pointer', transition: 'all .12s', display: 'flex', alignItems: 'center', gap: 6 }}>
+                        <img src={tw(emoji)} alt="" draggable={false} style={{ width: 18, height: 18, objectFit: 'contain', flexShrink: 0 }} />
                         {item}
                       </button>
                     );

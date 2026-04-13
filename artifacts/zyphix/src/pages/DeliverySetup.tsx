@@ -70,7 +70,8 @@ function StepBar({ step }: { step: number }) {
 
 /* ─── Step 1: Personal Details ─── */
 function PersonalStep({ onNext }: { onNext:(d:object)=>void }) {
-  const [form, setForm] = useState({ name:'', phone:'', age:'', area:'', emergency:'' });
+  const q = new URLSearchParams(window.location.search);
+  const [form, setForm] = useState({ name: q.get('name') || '', phone: q.get('phone') || '', age:'', area:'', emergency:'' });
   const [errors, setErrors] = useState<Record<string,string>>({});
   const f = (k:string,v:string) => { setForm(p=>({...p,[k]:v}));setErrors(p=>({...p,[k]:''})); };
 
