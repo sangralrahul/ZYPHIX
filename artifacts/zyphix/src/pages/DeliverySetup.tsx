@@ -570,33 +570,53 @@ function exportDeliveryPDF(personal: Record<string,string>) {
 /* ─── Flower Burst Animation ─── */
 function FlowerBurst() {
   useEffect(() => {
-    if (!document.getElementById('flower-fall-anim')) {
+    if (!document.getElementById('flower-fire-anim')) {
       const s = document.createElement('style');
-      s.id = 'flower-fall-anim';
-      s.textContent = `@keyframes flowerFall{0%{transform:translate(0,-80px) rotate(0deg) scale(1.1);opacity:0;}10%{opacity:1;}85%{opacity:.9;}100%{transform:translate(var(--fdx),110vh) rotate(var(--frot)) scale(.4);opacity:0;}}`;
+      s.id = 'flower-fire-anim';
+      s.textContent = `@keyframes flowerFire{0%{transform:translate(0,0) rotate(0deg) scale(1.3);opacity:1;}60%{opacity:1;}100%{transform:translate(var(--tx),var(--ty)) rotate(var(--rot)) scale(.15);opacity:0;}}`;
       document.head.appendChild(s);
     }
   }, []);
   const particles = useMemo(() => {
-    const F = ['🌸','🌺','🌼','🌻','🌹','💐','🌷','🌸','🌺','🌼'];
-    return Array.from({length:32}, (_,i) => ({
-      id: i, emoji: F[i % F.length],
-      left: Math.random() * 100,
-      delay: Math.random() * 4,
-      duration: 2.6 + Math.random() * 2.4,
-      size: 14 + Math.floor(Math.random() * 22),
-      dx: (Math.random() - 0.5) * 160,
-      rot: (Math.random() > 0.5 ? 1 : -1) * (200 + Math.random() * 420),
-    }));
+    const F = ['🌸','🌺','🌼','🌻','🌹','💐','🌷','🌸','🌺','🌼','🌸','🌺'];
+    const make = (side: 'L'|'R', wave: number, i: number) => {
+      const angle = side === 'L'
+        ? -(10 + Math.random() * 80)
+        : -(100 + Math.random() * 80);
+      const rad = angle * Math.PI / 180;
+      const dist = 220 + Math.random() * 320;
+      return {
+        id: `${side}${wave}${i}`,
+        emoji: F[(wave * 4 + i) % F.length],
+        side,
+        topPct: 45 + Math.random() * 25,
+        delay: wave * 0.65 + Math.random() * 0.18,
+        duration: 0.75 + Math.random() * 0.55,
+        size: 20 + Math.floor(Math.random() * 18),
+        tx: (side === 'L' ? 1 : -1) * Math.abs(Math.cos(rad)) * dist,
+        ty: Math.sin(rad) * dist,
+        rot: (Math.random() > 0.5 ? 1 : -1) * (240 + Math.random() * 400),
+      };
+    };
+    const out = [];
+    for (let w = 0; w < 3; w++)
+      for (let i = 0; i < 10; i++) {
+        out.push(make('L', w, i));
+        out.push(make('R', w, i));
+      }
+    return out;
   }, []);
   return (
     <div style={{position:'fixed',inset:0,pointerEvents:'none',zIndex:9999,overflow:'hidden'}}>
       {particles.map(p => (
         <div key={p.id} style={{
-          position:'absolute', top:0, left:`${p.left}%`,
+          position:'absolute',
+          top:`${p.topPct}%`,
+          left: p.side === 'L' ? 0 : 'auto',
+          right: p.side === 'R' ? 0 : 'auto',
           fontSize:p.size, lineHeight:1,
-          animation:`flowerFall ${p.duration}s ${p.delay}s ease-in forwards`,
-          '--fdx':`${p.dx}px`, '--frot':`${p.rot}deg`,
+          animation:`flowerFire ${p.duration}s ${p.delay}s cubic-bezier(.2,.8,.4,1) forwards`,
+          '--tx':`${p.tx}px`, '--ty':`${p.ty}px`, '--rot':`${p.rot}deg`,
         } as React.CSSProperties}>{p.emoji}</div>
       ))}
     </div>
