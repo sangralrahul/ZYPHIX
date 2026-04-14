@@ -475,6 +475,10 @@ function OperationsStep({ onNext, onBack, submitting }: { onNext: () => void; on
 }
 
 /* ─── PDF Export ─── */
+function escHtml(s: unknown): string {
+  return String(s ?? '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#x27;');
+}
+
 function exportRestaurantPDF(restData: Record<string, string>, cuisines: Set<string>) {
   const ref = `ZYX-R-${Date.now()}`;
   const date = new Date().toLocaleDateString('en-IN', { day: '2-digit', month: 'long', year: 'numeric' });
@@ -494,13 +498,13 @@ function exportRestaurantPDF(restData: Record<string, string>, cuisines: Set<str
 
   const tableRows = rows.map(([ label, val ], i) =>
     `<tr style="background:${i%2===0?'#fff':'#F9FAFB'}">
-      <td style="padding:11px 16px;font-size:11px;font-weight:700;color:#6B7280;text-transform:uppercase;letter-spacing:.05em;width:38%;border-right:1px solid #F3F4F6;">${label}</td>
-      <td style="padding:11px 16px;font-size:13.5px;font-weight:600;color:#111827;">${val}</td>
+      <td style="padding:11px 16px;font-size:11px;font-weight:700;color:#6B7280;text-transform:uppercase;letter-spacing:.05em;width:38%;border-right:1px solid #F3F4F6;">${escHtml(label)}</td>
+      <td style="padding:11px 16px;font-size:13.5px;font-weight:600;color:#111827;">${escHtml(val)}</td>
     </tr>`
   ).join('');
 
   const cuisineTags = cuisineList.map(n =>
-    `<span style="display:inline-block;background:#FFF1F2;border:1.5px solid #FECDD3;color:#9F1239;font-size:11px;font-weight:700;padding:4px 12px;border-radius:99px;margin:3px 4px 3px 0;">${n}</span>`
+    `<span style="display:inline-block;background:#FFF1F2;border:1.5px solid #FECDD3;color:#9F1239;font-size:11px;font-weight:700;padding:4px 12px;border-radius:99px;margin:3px 4px 3px 0;">${escHtml(n)}</span>`
   ).join('');
 
   const html = `<!DOCTYPE html><html><head><meta charset="utf-8"/>
@@ -573,7 +577,7 @@ function exportRestaurantPDF(restData: Record<string, string>, cuisines: Set<str
 
   <div class="next-box">
     <div class="next-title">What Happens Next</div>
-    <div class="step"><div class="step-num">1</div><div class="step-text">Our team will call you on <strong>${restData.phone || 'your number'}</strong> within 24 hours to verify your restaurant</div></div>
+    <div class="step"><div class="step-num">1</div><div class="step-text">Our team will call you on <strong>${escHtml(restData.phone || 'your number')}</strong> within 24 hours to verify your restaurant</div></div>
     <div class="step"><div class="step-num">2</div><div class="step-text">We'll help you upload your menu, photos, and pricing on ZyphixEats</div></div>
     <div class="step"><div class="step-num">3</div><div class="step-text">Your restaurant goes live and starts receiving orders from Jammu customers!</div></div>
   </div>

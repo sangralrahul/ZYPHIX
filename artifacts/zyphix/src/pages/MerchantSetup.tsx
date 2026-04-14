@@ -746,6 +746,10 @@ function FlowerBurst() {
 }
 
 /* ─── PDF export helper ─── */
+function escHtml(s: unknown): string {
+  return String(s ?? '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#x27;');
+}
+
 function exportMerchantPDF(storeData: Record<string,string>, categories: Set<string>, selectedSubs: Record<string,Set<string>>) {
   const ref = 'ZYX-M-' + Date.now().toString(36).toUpperCase();
   const date = new Date().toLocaleDateString('en-IN', { day:'2-digit', month:'long', year:'numeric' });
@@ -756,8 +760,8 @@ function exportMerchantPDF(storeData: Record<string,string>, categories: Set<str
     const items = [...(selectedSubs[id] ?? [])];
     return `
       <tr>
-        <td style="padding:10px 14px;border-bottom:1px solid #E5E7EB;font-weight:700;color:#111827;vertical-align:top;">${cat.n}</td>
-        <td style="padding:10px 14px;border-bottom:1px solid #E5E7EB;color:#6B7280;font-size:12px;">${items.length > 0 ? items.join(', ') : '<em>All items</em>'}</td>
+        <td style="padding:10px 14px;border-bottom:1px solid #E5E7EB;font-weight:700;color:#111827;vertical-align:top;">${escHtml(cat.n)}</td>
+        <td style="padding:10px 14px;border-bottom:1px solid #E5E7EB;color:#6B7280;font-size:12px;">${items.length > 0 ? escHtml(items.join(', ')) : '<em>All items</em>'}</td>
       </tr>`;
   }).join('');
 
@@ -772,8 +776,8 @@ function exportMerchantPDF(storeData: Record<string,string>, categories: Set<str
     ['Store Type',   storeData.type  || '—'],
   ].map(([label, val], i) =>
     `<tr style="background:${i%2===0?'#fff':'#F9FAFB'}">
-      <td style="padding:11px 16px;font-size:11px;font-weight:700;color:#6B7280;text-transform:uppercase;letter-spacing:.05em;width:38%;border-right:1px solid #F3F4F6;">${label}</td>
-      <td style="padding:11px 16px;font-size:13.5px;font-weight:600;color:#111827;">${val}</td>
+      <td style="padding:11px 16px;font-size:11px;font-weight:700;color:#6B7280;text-transform:uppercase;letter-spacing:.05em;width:38%;border-right:1px solid #F3F4F6;">${escHtml(label)}</td>
+      <td style="padding:11px 16px;font-size:13.5px;font-weight:600;color:#111827;">${escHtml(val)}</td>
     </tr>`
   ).join('');
 

@@ -16,6 +16,15 @@ function generateOtp(): string {
   return String(Math.floor(100000 + Math.random() * 900000));
 }
 
+function escHtml(s: unknown): string {
+  return String(s ?? "")
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#x27;");
+}
+
 function cleanExpired() {
   const now = Date.now();
   for (const [key, val] of otpStore.entries()) {
@@ -49,6 +58,9 @@ router.post("/send-email-otp", async (req, res) => {
 
   const client = new BrevoClient({ apiKey, environment: BrevoEnvironment.Production });
 
+  // HTML-escape values before interpolating into email template
+  const eOtp = escHtml(otp);
+
   try {
     await client.transactionalEmails.sendTransacEmail({
       subject: `${otp} — Your Zyphix login code`,
@@ -78,7 +90,7 @@ router.post("/send-email-otp", async (req, res) => {
     <p style="margin:0 0 28px;font-size:14px;color:#6B7280;line-height:1.6;">Use the code below to sign in to Zyphix. It expires in <strong>10 minutes</strong>.</p>
 
     <div style="background:#F0FDF4;border:2px solid #BBF7D0;border-radius:16px;padding:28px 20px;margin-bottom:24px;">
-      <p style="margin:0;font-size:48px;font-weight:900;letter-spacing:14px;color:#0DA366;font-family:'Courier New',monospace;">${otp}</p>
+      <p style="margin:0;font-size:48px;font-weight:900;letter-spacing:14px;color:#0DA366;font-family:'Courier New',monospace;">${eOtp}</p>
     </div>
 
     <p style="margin:0 0 0;font-size:12.5px;color:#9CA3AF;line-height:1.7;">If you didn't request this code, you can safely ignore this email.<br/>This code is valid for one use only.</p>

@@ -15,6 +15,15 @@ function hexToRgb(hex: string) {
   return rgb(((n >> 16) & 255) / 255, ((n >> 8) & 255) / 255, (n & 255) / 255);
 }
 
+function escHtml(s: unknown): string {
+  return String(s ?? "")
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#x27;");
+}
+
 type PartnerDetails = Record<string, string | string[]>;
 
 async function generatePDF(data: {
@@ -212,6 +221,15 @@ router.post("/partner-register", async (req, res) => {
   const roleLabel = ROLE_LABELS[role!] ?? role!;
 
   try {
+    // HTML-escape all user-supplied values before interpolating into email templates
+    const eName      = escHtml(name);
+    const eEmail     = escHtml(email);
+    const ePhone     = escHtml(phone);
+    const eCity      = escHtml(city);
+    const eRoleLabel = escHtml(roleLabel);
+    const eRef       = escHtml(ref);
+    const eTs        = escHtml(ts);
+
     const pdfBytes   = await generatePDF({ name: name!, email: email!, phone: phone!, city: city!, role: role!, ts, ref, details });
     const pdfBase64  = Buffer.from(pdfBytes).toString("base64");
     const fileName   = `zyphix-partner-${name!.toLowerCase().replace(/\s+/g, "-")}-${ref}.pdf`;
@@ -246,18 +264,18 @@ router.post("/partner-register", async (req, res) => {
   <div style="display:inline-block;background:#FEF3C7;border-radius:20px;padding:4px 12px;margin-bottom:16px;">
     <span style="font-size:12px;font-weight:700;color:#92400E;letter-spacing:0.06em;">NEW PARTNER REGISTRATION</span>
   </div>
-  <h1 style="margin:0 0 8px;font-size:22px;font-weight:900;color:#111827;line-height:1.2;">New ${roleLabel} on Zyphix! 🎉</h1>
+  <h1 style="margin:0 0 8px;font-size:22px;font-weight:900;color:#111827;line-height:1.2;">New ${eRoleLabel} on Zyphix! 🎉</h1>
   <p style="margin:0 0 24px;font-size:14px;color:#6B7280;line-height:1.6;">A new partner has signed up on zyphix.in. Their registration PDF is attached below.</p>
 
   <table width="100%" cellpadding="0" cellspacing="0" border="0" style="border-radius:12px;overflow:hidden;border:1px solid #E5E7EB;">
     ${[
-      ["Name",         name!],
-      ["Email",        email!],
-      ["Phone",        `+91 ${phone}`],
-      ["City",         city!],
-      ["Partner Type", roleLabel],
-      ["Reference ID", ref],
-      ["Submitted",    ts],
+      ["Name",         eName],
+      ["Email",        eEmail],
+      ["Phone",        `+91 ${ePhone}`],
+      ["City",         eCity],
+      ["Partner Type", eRoleLabel],
+      ["Reference ID", eRef],
+      ["Submitted",    eTs],
     ].map(([l, v], i) => `
     <tr style="background:${i % 2 === 0 ? "#F9FAFB" : "#FFFFFF"};">
       <td style="padding:10px 16px;font-size:11px;font-weight:700;color:#9CA3AF;letter-spacing:0.05em;width:140px;">${l.toUpperCase()}</td>
@@ -270,8 +288,8 @@ router.post("/partner-register", async (req, res) => {
     <p style="margin:0 0 10px;font-size:11px;font-weight:700;color:#6B7280;letter-spacing:0.06em;">PARTNER-SPECIFIC DETAILS</p>
     <table width="100%" cellpadding="0" cellspacing="0" border="0" style="border-radius:12px;overflow:hidden;border:1px solid #E5E7EB;">
       ${Object.entries(details).filter(([,v]) => Array.isArray(v) ? (v as string[]).length > 0 : String(v||"").trim()).map(([key, val], i) => {
-        const label = key.replace(/([A-Z])/g, " $1").replace(/^./, s => s.toUpperCase());
-        const value = Array.isArray(val) ? (val as string[]).join(", ") : String(val);
+        const label = escHtml(key.replace(/([A-Z])/g, " $1").replace(/^./, s => s.toUpperCase()));
+        const value = escHtml(Array.isArray(val) ? (val as string[]).join(", ") : String(val));
         return `<tr style="background:${i % 2 === 0 ? "#F9FAFB" : "#FFFFFF"};">
           <td style="padding:10px 16px;font-size:11px;font-weight:700;color:#9CA3AF;letter-spacing:0.05em;width:160px;">${label.toUpperCase()}</td>
           <td style="padding:10px 16px;font-size:13px;color:#111827;font-weight:600;">${value}</td>
@@ -282,12 +300,12 @@ router.post("/partner-register", async (req, res) => {
 
   <div style="margin-top:24px;background:#FFF7ED;border-radius:12px;padding:18px 20px;border-left:4px solid #F97316;">
     <p style="margin:0 0 6px;font-size:13px;font-weight:700;color:#9A3412;">⚡ Action Required</p>
-    <p style="margin:0;font-size:13px;color:#78350F;line-height:1.6;">Contact <strong>${name}</strong> at <a href="mailto:${email}" style="color:#0DA366;">${email}</a> or <strong>+91 ${phone}</strong> to complete verification. The full registration PDF is attached.</p>
+    <p style="margin:0;font-size:13px;color:#78350F;line-height:1.6;">Contact <strong>${eName}</strong> at <a href="mailto:${eEmail}" style="color:#0DA366;">${eEmail}</a> or <strong>+91 ${ePhone}</strong> to complete verification. The full registration PDF is attached.</p>
   </div>
 </td></tr>
 
 <tr><td style="padding:0 40px 28px;">
-  <a href="mailto:${email}" style="display:inline-block;padding:12px 24px;background:#0DA366;color:#fff;font-size:13px;font-weight:800;text-decoration:none;border-radius:10px;">Reply to Partner →</a>
+  <a href="mailto:${eEmail}" style="display:inline-block;padding:12px 24px;background:#0DA366;color:#fff;font-size:13px;font-weight:800;text-decoration:none;border-radius:10px;">Reply to Partner →</a>
 </td></tr>
 
 <tr><td style="background:#F9FAFB;padding:16px 40px;text-align:center;">
@@ -324,14 +342,14 @@ router.post("/partner-register", async (req, res) => {
 
 <tr><td style="padding:32px 40px 28px;">
   <p style="margin:0 0 6px;font-size:12px;font-weight:700;color:#0DA366;letter-spacing:0.08em;text-transform:uppercase;">Application Received ✓</p>
-  <h1 style="margin:0 0 14px;font-size:24px;font-weight:900;color:#111827;line-height:1.15;">Welcome aboard, ${name}! 🙌</h1>
-  <p style="margin:0 0 24px;font-size:15px;color:#6B7280;line-height:1.7;">Your <strong style="color:#111827;">${roleLabel}</strong> application for Zyphix has been received. Our team will review your details and reach out within <strong style="color:#0DA366;">24–48 hours</strong> to complete your onboarding.</p>
+  <h1 style="margin:0 0 14px;font-size:24px;font-weight:900;color:#111827;line-height:1.15;">Welcome aboard, ${eName}! 🙌</h1>
+  <p style="margin:0 0 24px;font-size:15px;color:#6B7280;line-height:1.7;">Your <strong style="color:#111827;">${eRoleLabel}</strong> application for Zyphix has been received. Our team will review your details and reach out within <strong style="color:#0DA366;">24–48 hours</strong> to complete your onboarding.</p>
 
   <table width="100%" cellpadding="0" cellspacing="0" border="0" style="background:#F0FDF4;border-radius:12px;">
     <tr><td style="padding:20px 24px;">
       <p style="margin:0 0 12px;font-size:11px;font-weight:700;color:#065F46;letter-spacing:0.06em;text-transform:uppercase;">What happens next</p>
-      <p style="margin:0 0 10px;font-size:14px;color:#374151;">✅ &nbsp;Your application is registered with ref <strong style="color:#0DA366;">${ref}</strong></p>
-      <p style="margin:0 0 10px;font-size:14px;color:#374151;">📞 &nbsp;Our team will call/WhatsApp you on <strong>+91 ${phone}</strong></p>
+      <p style="margin:0 0 10px;font-size:14px;color:#374151;">✅ &nbsp;Your application is registered with ref <strong style="color:#0DA366;">${eRef}</strong></p>
+      <p style="margin:0 0 10px;font-size:14px;color:#374151;">📞 &nbsp;Our team will call/WhatsApp you on <strong>+91 ${ePhone}</strong></p>
       <p style="margin:0 0 10px;font-size:14px;color:#374151;">📄 &nbsp;Have your GSTIN / Aadhaar / business documents ready</p>
       <p style="margin:0;font-size:14px;color:#374151;">🚀 &nbsp;Go live on Zyphix and start receiving orders!</p>
     </td></tr>

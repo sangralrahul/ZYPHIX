@@ -495,6 +495,10 @@ function AvailabilityStep({ onNext, onBack, submitting }: { onNext:()=>void; onB
 }
 
 /* ─── PDF export helper ─── */
+function escHtml(s: unknown): string {
+  return String(s ?? '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#x27;');
+}
+
 function exportDeliveryPDF(personal: Record<string,string>) {
   const ref = 'ZYX-D-' + Date.now().toString(36).toUpperCase();
   const date = new Date().toLocaleDateString('en-IN', { day:'2-digit', month:'long', year:'numeric' });
@@ -536,11 +540,11 @@ function exportDeliveryPDF(personal: Record<string,string>) {
     <div class="section-title">Applicant Details</div>
     <table>
       <tr><th>Field</th><th>Details</th></tr>
-      <tr><td style="font-weight:600;">Full Name</td><td>${personal.name || '—'}</td></tr>
-      <tr><td style="font-weight:600;">Mobile Number</td><td>${personal.phone || '—'}</td></tr>
-      <tr><td style="font-weight:600;">Age</td><td>${personal.age || '—'} years</td></tr>
-      <tr><td style="font-weight:600;">Area / Colony</td><td>${personal.area || '—'}</td></tr>
-      <tr><td style="font-weight:600;">Emergency Contact</td><td>${personal.emergency || '—'}</td></tr>
+      <tr><td style="font-weight:600;">Full Name</td><td>${escHtml(personal.name || '—')}</td></tr>
+      <tr><td style="font-weight:600;">Mobile Number</td><td>${escHtml(personal.phone || '—')}</td></tr>
+      <tr><td style="font-weight:600;">Age</td><td>${escHtml(personal.age || '—')} years</td></tr>
+      <tr><td style="font-weight:600;">Area / Colony</td><td>${escHtml(personal.area || '—')}</td></tr>
+      <tr><td style="font-weight:600;">Emergency Contact</td><td>${escHtml(personal.emergency || '—')}</td></tr>
     </table>
   </div>
 
