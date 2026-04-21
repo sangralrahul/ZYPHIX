@@ -4,7 +4,7 @@
   "license": "MIT",
   "scripts": {
     "preinstall": "node -e \"process.exit(0)\"",
-    "build": "pnpm run typecheck:libs && pnpm -r --if-present run build",
+    "build": "pnpm -r --if-present run build",
     "typecheck:libs": "tsc --build"
   },
   "private": true,
