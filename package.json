@@ -4,7 +4,7 @@
   "license": "MIT",
   "scripts": {
     "preinstall": "node -e \"process.exit(0)\"",
-    "build": "pnpm --filter !@workspace/mockup-sandbox -r --if-present run build",
+    "build": "pnpm --filter !@workspace/mockup-sandbox --filter !zyphix-splash -r --if-present run build",
     "typecheck:libs": "tsc --build"
   },
   "private": true,
