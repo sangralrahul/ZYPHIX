@@ -1,10 +1,16 @@
 import express, { type Express } from "express";
 import cors from "cors";
 import pinoHttp from "pino-http";
+import path from "node:path";
+import { fileURLToPath } from "node:url";
 import router from "./routes";
 import { logger } from "./lib/logger";
 
 const app: Express = express();
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+const frontendPath = path.join(__dirname, "../../zyphix/dist/public");
 
 app.use(
   pinoHttp({
@@ -30,12 +36,15 @@ app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// ✅ ADD THIS (ROOT ROUTE FIX)
+app.use("/api", router);
+app.use(express.static(frontendPath));
+
 app.get("/", (req, res) => {
-  res.send("Zyphix Backend is Running 🚀");
+  res.sendFile(path.join(frontendPath, "index.html"));
 });
 
-// existing API routes
-app.use("/api", router);
+app.get("*", (req, res) => {
+  res.sendFile(path.join(frontendPath, "index.html"));
+});
 
 export default app;
