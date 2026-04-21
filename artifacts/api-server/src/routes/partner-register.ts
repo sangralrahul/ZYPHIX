@@ -234,7 +234,7 @@ router.post("/partner-register", async (req, res) => {
     const pdfBase64  = Buffer.from(pdfBytes).toString("base64");
     const fileName   = `zyphix-partner-${name!.toLowerCase().replace(/\s+/g, "-")}-${ref}.pdf`;
 
-    const client = new BrevoClient({ apiKey, environment: BrevoEnvironment.Production });
+    const client = new BrevoClient({ apiKey, environment: BrevoEnvironment.Default });
 
     // 1️⃣ Email owner at partner@zyphix.in with PDF attached
     await client.transactionalEmails.sendTransacEmail({

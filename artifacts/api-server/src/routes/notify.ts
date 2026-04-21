@@ -20,7 +20,7 @@ router.post("/notify", async (req, res) => {
   try {
     const client = new BrevoClient({
       apiKey,
-      environment: BrevoEnvironment.Production,
+      environment: BrevoEnvironment.Default,
     });
 
     await client.transactionalEmails.sendTransacEmail({
