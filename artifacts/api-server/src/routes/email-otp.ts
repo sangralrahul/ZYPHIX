@@ -56,7 +56,7 @@ router.post("/send-email-otp", async (req, res) => {
     name: name?.trim() || undefined,
   });
 
-  const client = new BrevoClient({ apiKey, environment: BrevoEnvironment.Production });
+  const client = new BrevoClient({ apiKey, environment: BrevoEnvironment.Default });
 
   // HTML-escape values before interpolating into email template
   const eOtp = escHtml(otp);
