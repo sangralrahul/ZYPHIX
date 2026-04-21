@@ -25,10 +25,17 @@ app.use(
     },
   }),
 );
+
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+// ✅ ADD THIS (ROOT ROUTE FIX)
+app.get("/", (req, res) => {
+  res.send("Zyphix Backend is Running 🚀");
+});
+
+// existing API routes
 app.use("/api", router);
 
 export default app;
