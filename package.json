@@ -5,6 +5,7 @@
   "scripts": {
     "preinstall": "node -e \"process.exit(0)\"",
     "build": "pnpm --filter !@workspace/mockup-sandbox --filter !zyphix-splash -r --if-present run build",
+    "start": "node artifacts/api-server/dist/index.mjs",
     "typecheck:libs": "tsc --build"
   },
   "private": true,
