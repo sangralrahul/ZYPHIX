@@ -1,0 +1,66 @@
+
+> @workspace/zyphix@0.0.0 dev /home/runner/workspace/artifacts/zyphix
+> vite --config vite.config.ts --host 0.0.0.0
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+[1;1H[0J
+  [32m[1mVITE[22m v7.3.2[39m  [2mready in [0m[1m1709[22m[2m[0m ms[22m
+
+  [32m➜[39m  [1mLocal[22m:   [36mhttp://localhost:[1m20968[22m/[39m
+  [32m➜[39m  [1mNetwork[22m: [36mhttp://172.31.123.2:[1m20968[22m/[39m
+[2m[32m  ➜[39m[22m[2m  press [22m[1mh + enter[22m[2m to show help[22m
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+[1;1H[0J[2m7:59:09 AM[22m [33m[1m[vite][22m[39m [33m[2m(client)[22m[39m [33mwarning: [33mDuplicate key "boxShadow" in object literal[33m
+158 |          style={{ background: W, borderRadius: 22, border: `1px solid ${BD}`, overflow: 'hidden', marginBottom: 32, bo...
+159 |            transform: hovered === featured.slug ? 'translateY(-3px)' : 'none', transition: 'all .2s',
+160 |            boxShadow: hovered === featured.slug ? '0 8px 32px rgba(0,0,0,.12)' : '0 2px 12px rgba(0,0,0,.07)' as any }}
+    |            ^
+161 |          onMouseEnter={() => setHovered(featured.slug)} onMouseLeave={() => setHovered(null)}>
+162 |            <div data-replit-metadata="artifacts/zyphix/src/pages/Blog.tsx:162:10" data-component-name="div" style={{ d...
+[39m
+  Plugin: [35mvite:esbuild[39m
+  File: [36m/home/runner/workspace/artifacts/zyphix/src/pages/Blog.tsx[39m
